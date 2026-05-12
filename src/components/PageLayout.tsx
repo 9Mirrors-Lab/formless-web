@@ -8,6 +8,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface PageLayoutProps {
   children: ReactNode;
+  /** Hide floating nav (e.g. restricted public home). */
+  hideNav?: boolean;
   /** Optional dark mode for pages like The Work that use dark backgrounds */
   dark?: boolean;
   /**
@@ -20,6 +22,7 @@ interface PageLayoutProps {
 
 export function PageLayout({
   children,
+  hideNav = false,
   dark = false,
   briefSpectrum = false,
 }: PageLayoutProps) {
@@ -59,7 +62,7 @@ export function PageLayout({
   return (
     <div ref={pageRef} className={outerSurface}>
       <div className={noiseClass} aria-hidden />
-      <Navbar />
+      {!hideNav ? <Navbar /> : null}
       <main className={mainClass}>{children}</main>
       <Footer />
     </div>

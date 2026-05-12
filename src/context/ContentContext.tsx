@@ -3,7 +3,7 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useReducer,
   type ReactNode,
 } from 'react';
 
@@ -42,31 +42,57 @@ type ContentStateValue = {
 
 const ContentStateContext = createContext<ContentStateValue | null>(null);
 
+type LoadState =
+  | { status: 'loading' }
+  | { status: 'misconfigured'; errorMessage: string }
+  | { status: 'error'; errorMessage: string }
+  | { status: 'ready'; tree: ContentTree };
+
+type LoadAction =
+  | { type: 'misconfigured'; message: string }
+  | { type: 'error'; message: string }
+  | { type: 'ready'; tree: ContentTree };
+
+function loadReducer(state: LoadState, action: LoadAction): LoadState {
+  switch (action.type) {
+    case 'misconfigured':
+      return { status: 'misconfigured', errorMessage: action.message };
+    case 'error':
+      return { status: 'error', errorMessage: action.message };
+    case 'ready':
+      return { status: 'ready', tree: action.tree };
+    default:
+      return state;
+  }
+}
+
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<Status>('loading');
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
-  const [tree, setTree] = useState<ContentTree | null>(null);
+  const [load, dispatch] = useReducer(loadReducer, { status: 'loading' });
 
   useEffect(() => {
     if (!hasSupabaseEnv()) {
-      setStatus('misconfigured');
-      setErrorMessage('Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY. See .env.example.');
+      dispatch({
+        type: 'misconfigured',
+        message: 'Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY. See .env.example.',
+      });
       return;
     }
 
     let cancelled = false;
 
-    (async () => {
+    void (async () => {
       try {
         const client = createBrowserSupabaseClient();
         const rows = await fetchContentRows(client);
         if (cancelled) return;
-        setTree(buildContentTree(rows));
-        setStatus('ready');
+        const tree = buildContentTree(rows);
+        dispatch({ type: 'ready', tree });
       } catch (e) {
         if (cancelled) return;
-        setStatus('error');
-        setErrorMessage(e instanceof Error ? e.message : 'Failed to load content.');
+        dispatch({
+          type: 'error',
+          message: e instanceof Error ? e.message : 'Failed to load content.',
+        });
       }
     })();
 
@@ -76,7 +102,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const api = useMemo((): ContentApi | undefined => {
-    if (!tree) return undefined;
+    if (load.status !== 'ready') return undefined;
+    const { tree } = load;
     return {
       tree,
       getText: (p, s, k) => getText(tree, p, s, k),
@@ -87,12 +114,20 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       textFromEntry,
       getSection: (p, s) => getSection(tree, p, s),
     };
-  }, [tree]);
+  }, [load]);
 
-  const value = useMemo<ContentStateValue>(
-    () => ({ status, errorMessage, api }),
-    [status, errorMessage, api],
-  );
+  const value = useMemo<ContentStateValue>(() => {
+    switch (load.status) {
+      case 'loading':
+        return { status: 'loading' };
+      case 'misconfigured':
+        return { status: 'misconfigured', errorMessage: load.errorMessage };
+      case 'error':
+        return { status: 'error', errorMessage: load.errorMessage };
+      case 'ready':
+        return { status: 'ready', api };
+    }
+  }, [load, api]);
 
   return <ContentStateContext.Provider value={value}>{children}</ContentStateContext.Provider>;
 }

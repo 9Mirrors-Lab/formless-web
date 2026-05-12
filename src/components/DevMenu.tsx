@@ -12,7 +12,8 @@ export const DevMenu = () => {
 
   const devPages = [
     { name: '── Site Pages ──', path: '' },
-    { name: 'Home', path: '/' },
+    { name: 'Holding', path: '/' },
+    { name: 'Full home', path: '/home' },
     { name: 'The Work', path: '/work' },
     { name: 'The Book', path: '/book' },
     { name: 'Science', path: '/science' },

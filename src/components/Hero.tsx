@@ -2,15 +2,25 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '@/context/ContentContext';
+import { useSiteAccess } from '@/context/SiteAccessContext';
+import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function Hero() {
+export function Hero({ showCta = true }: { showCta?: boolean }) {
   const container = useRef<HTMLDivElement>(null);
+  const { restricted } = useSiteAccess();
   const { getText, getLink, getImage } = useContent();
 
   const bg = getImage('home', 'hero', 'background_image').src;
-  const cta = getLink('home', 'hero', 'cta_reflection');
+  const ctaEnabled = showCta && !restricted;
+  const cta = ctaEnabled ? getLink('home', 'hero', 'cta_reflection') : null;
+
+  const cx = (key: string) => {
+    const raw = getText('home', 'hero', key);
+    return restricted ? stripAnchorsFromCopy(raw) : raw;
+  };
+  const lede = cx('lede');
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -55,34 +65,34 @@ export function Hero() {
 
       <div className="hero-content relative z-10 w-full md:w-3/4 max-w-5xl flex flex-col gap-2">
         <span className="hero-elem text-cream/60 font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-4 block">
-          {getText('home', 'hero', 'eyebrow')}
+          {cx('eyebrow')}
         </span>
         <h1 className="text-cream font-serif italic font-light text-5xl md:text-7xl lg:text-[6.5rem] leading-[1.08] tracking-tight">
-          <span className="hero-elem block">{getText('home', 'hero', 'headline_primary')}</span>
-          <span className="hero-elem block ml-4 md:ml-12">
-            {getText('home', 'hero', 'headline_secondary')}
-          </span>
+          <span className="hero-elem block">{cx('headline_primary')}</span>
+          <span className="hero-elem block ml-4 md:ml-12">{cx('headline_secondary')}</span>
         </h1>
         <p className="hero-elem text-cream/60 font-sans text-base md:text-lg max-w-lg mt-8 font-light leading-relaxed">
-          {getText('home', 'hero', 'lede')}
+          {lede}
         </p>
-        <a
-          href={cta.href}
-          className="hero-elem mt-6 inline-flex items-center gap-3 text-cream/70 font-mono text-xs uppercase tracking-[0.2em] hover:text-cream transition-colors duration-500 group w-fit"
-        >
-          {cta.text}
-          <svg
-            className="w-4 h-4 transform group-hover:translate-y-1 transition-transform duration-500"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {ctaEnabled && cta ? (
+          <a
+            href={cta.href}
+            className="hero-elem mt-6 inline-flex items-center gap-3 text-cream/70 font-mono text-xs uppercase tracking-[0.2em] hover:text-cream transition-colors duration-500 group w-fit"
           >
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-        </a>
+            {cta.text}
+            <svg
+              className="w-4 h-4 transform group-hover:translate-y-1 transition-transform duration-500"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </a>
+        ) : null}
       </div>
     </section>
   );

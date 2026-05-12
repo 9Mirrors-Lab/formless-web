@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '@/context/ContentContext';
+import { useSiteAccess } from '@/context/SiteAccessContext';
+import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,7 +11,13 @@ export function CurtainReveal() {
   const containerRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
+  const { restricted } = useSiteAccess();
   const { getText } = useContent();
+
+  const t = (page: string, section: string, key: string) => {
+    const raw = getText(page, section, key);
+    return restricted ? stripAnchorsFromCopy(raw) : raw;
+  };
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -38,12 +46,12 @@ export function CurtainReveal() {
     >
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 bg-charcoal">
         <h2 className="font-serif italic text-4xl md:text-6xl lg:text-[5rem] text-cream leading-[1.1] mb-8 max-w-4xl">
-          {getText('home', 'curtain', 'headline_line1')}
+          {t('home', 'curtain', 'headline_line1')}
           <br />
-          {getText('home', 'curtain', 'headline_line2')}
+          {t('home', 'curtain', 'headline_line2')}
         </h2>
         <p className="font-sans text-lg md:text-xl text-cream/70 max-w-2xl leading-relaxed">
-          {getText('home', 'curtain', 'subtitle')}
+          {t('home', 'curtain', 'subtitle')}
         </p>
       </div>
 
@@ -52,7 +60,7 @@ export function CurtainReveal() {
         className="absolute top-0 bottom-0 left-0 w-1/2 bg-cream z-20 flex items-center justify-end pr-[2vw] border-r border-charcoal/10"
       >
         <div className="font-serif text-[clamp(40px,10vw,120px)] tracking-[0.05em] text-charcoal/80">
-          {getText('home', 'curtain', 'panel_left')}
+          {t('home', 'curtain', 'panel_left')}
         </div>
       </div>
 
@@ -61,7 +69,7 @@ export function CurtainReveal() {
         className="absolute top-0 bottom-0 right-0 w-1/2 bg-cream z-20 flex items-center justify-start pl-[2vw] border-l border-charcoal/10"
       >
         <div className="font-serif text-[clamp(40px,10vw,120px)] tracking-[0.05em] text-charcoal/80">
-          {getText('home', 'curtain', 'panel_right')}
+          {t('home', 'curtain', 'panel_right')}
         </div>
       </div>
     </section>
