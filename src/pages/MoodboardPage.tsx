@@ -81,11 +81,6 @@ function TorusFieldStudy({ compact = false }: { compact?: boolean }) {
           transform="rotate(-27 280 222)"
         />
       </g>
-      <path
-        d="M281 94c21 0 37 16 37 37 0 22-16 39-37 39s-37-17-37-39c0-21 16-37 37-37Zm-56 128c3-30 23-48 56-48 34 0 54 18 57 48l16 114c2 16-9 30-25 32l-23 3-10 62h-34l-10-62-22-3c-16-2-27-16-25-32l20-114Z"
-        fill="#F2F0E9"
-        opacity={compact ? 0.4 : 0.5}
-      />
       <g className="moodboard-drift">
         {Array.from({ length: compact ? 24 : 42 }).map((_, index) => {
           const angle = index * 0.67;
@@ -252,11 +247,11 @@ export default function MoodboardPage() {
         <div className="moodboard-ambient-grid" aria-hidden />
         <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8">
           <a
-            href="/brief"
+            href="formless-hub.html"
             className="moodboard-link inline-flex items-center gap-2 border border-cream/14 bg-cream/[0.06] px-4 py-2 text-sm text-cream/78"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            Brief
+            Project hub
           </a>
           <a
             href="#mood-vocabulary"

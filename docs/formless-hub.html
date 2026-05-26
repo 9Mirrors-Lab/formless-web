@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Eyes Closed project hub</title>
+  <style>
+    :root {
+      --void: #0A0A09;
+      --canvas: #141413;
+      --panel: #1C1C1A;
+      --inset: #222220;
+      --ink: #EDEBE6;
+      --muted: #A8A7A0;
+      --subtle: #6B6A65;
+      --clay: #D97757;
+      --clay-h: #E8956F;
+      --olive: #8FA876;
+      --amber: #C9A227;
+      --rose: #C97A7A;
+      --line: #2A2A27;
+      --line-hi: #3D3D3A;
+      --serif: ui-serif, Georgia, "Times New Roman", serif;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 32px 16px 48px 24px;
+      border-right: 1.5px solid var(--line);
+      background: var(--void);
+      font-size: 13px;
+    }
+
+    nav.toc .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 14px;
+    }
+
+    nav.toc a {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 5px 0;
+    }
+
+    nav.toc a:hover { color: var(--clay-h); }
+    nav.toc .sub { padding-left: 10px; font-size: 12px; color: var(--subtle); }
+
+    main {
+      padding: 40px 36px 64px;
+      background: var(--void);
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: var(--clay);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(34px, 4.8vw, 54px);
+      line-height: 1.06;
+      letter-spacing: -0.018em;
+      font-weight: 400;
+      margin-bottom: 16px;
+      max-width: 16ch;
+    }
+
+    h1 em { font-style: italic; color: var(--clay); }
+
+    .title-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+
+    .title-row h1 {
+      margin-bottom: 0;
+      flex: 1;
+      min-width: 0;
+      max-width: none;
+    }
+
+    .live-preview {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      padding: 10px 14px;
+      background: var(--panel);
+      border: 1px solid var(--line-hi);
+      border-radius: 4px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .live-preview:hover {
+      border-color: rgba(143, 168, 118, 0.45);
+      background: var(--inset);
+    }
+
+    .live-preview-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--olive);
+      box-shadow: 0 0 8px rgba(143, 168, 118, 0.45);
+      flex-shrink: 0;
+    }
+
+    .live-preview-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: flex-start;
+    }
+
+    .live-preview-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      line-height: 1;
+    }
+
+    .live-preview-url {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .live-preview:hover .live-preview-url { color: var(--clay-h); }
+
+    .lede { color: var(--muted); max-width: 58ch; margin-bottom: 28px; }
+
+    section {
+      padding: 40px 0;
+    }
+
+    section:last-of-type { padding-bottom: 0; }
+
+    #brand {
+      padding-top: 8px;
+      padding-bottom: 16px;
+    }
+
+    #brand .diagram-wrap {
+      background: none;
+      border: none;
+    }
+
+    #designs {
+      padding-top: 8px;
+      padding-bottom: 16px;
+    }
+
+    .design-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 4px;
+    }
+
+    .design-plate {
+      display: block;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s;
+    }
+
+    .design-plate:hover { border-color: var(--line-hi); }
+
+    .design-plate img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .design-plate-caption {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .design-plate-caption .label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .design-plate:hover .design-plate-caption .label { color: var(--ink); }
+
+    .design-plate-caption .path {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--subtle);
+      white-space: nowrap;
+    }
+
+    .design-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .design-links a {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      text-decoration: none;
+      padding: 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .design-links a:hover {
+      border-color: var(--clay);
+      color: var(--clay-h);
+    }
+
+    #timeline {
+      padding-top: 8px;
+      padding-bottom: 16px;
+    }
+
+    #pipelines {
+      padding-bottom: 8px;
+    }
+
+    #pipelines .diagram-wrap {
+      margin-bottom: 0;
+      background: none;
+      border: none;
+    }
+
+    #tracks {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    #tracks .three-col {
+      margin-bottom: 8px;
+    }
+
+    #in-progress {
+      padding-top: 12px;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .section-note {
+      color: var(--subtle);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .phase-now {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #9eb4d4;
+      background: rgba(120, 148, 188, 0.12);
+      border: 1px solid rgba(120, 148, 188, 0.32);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 24px;
+    }
+
+    .diagram-wrap {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 20px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    .diagram-wrap svg { display: block; width: 100%; min-width: 640px; height: auto; }
+
+    .pipelines-unified {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 16px 18px;
+      margin: 20px 0;
+    }
+
+    .pipeline-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pipeline-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .pipeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pipeline-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pipeline-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+
+    .meta-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 3px;
+    }
+
+    .meta-value {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .client-note {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    #offerings-direction {
+      padding-top: 24px;
+    }
+
+    #offerings-direction h2 {
+      margin-bottom: 14px;
+    }
+
+    .direction-wrap {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .direction-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+    }
+
+    .direction-block {
+      min-width: 0;
+    }
+
+    .direction-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .name-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .name-chip {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--inset);
+      border: 1px solid var(--line-hi);
+      padding: 5px 9px;
+      border-radius: 3px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .direction-tagline {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .direction-tagline em {
+      font-style: normal;
+      color: rgba(201, 162, 39, 0.88);
+    }
+
+    .direction-tagline span {
+      color: var(--subtle);
+    }
+
+    .direction-list {
+      margin: 0;
+      padding-left: 1.05em;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .direction-list li {
+      margin-bottom: 4px;
+    }
+
+    .direction-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .direction-framework {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .framework-flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px 0;
+    }
+
+    .framework-flow .fw-step {
+      flex-shrink: 0;
+      padding: 5px 9px;
+      background: var(--inset);
+      border: 1px solid var(--line-hi);
+      border-radius: 3px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .framework-flow .fw-step strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .framework-flow .fw-arrow {
+      flex-shrink: 0;
+      width: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--subtle);
+    }
+
+    .framework-flow .fw-arrow svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .framework-detail {
+      margin: 8px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px 16px;
+      font-size: 11px;
+      color: var(--subtle);
+      line-height: 1.35;
+    }
+
+    .framework-detail li strong {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .pipeline-row .pipeline-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .pipeline-row.website .pipeline-label { color: var(--clay); }
+    .pipeline-row.book .pipeline-label { color: var(--olive); }
+    .pipeline-row.offerings .pipeline-label { color: #9BA8C4; }
+    .pipeline-row.substack .pipeline-label { color: #9B8FC4; }
+
+    #substack .diagram-wrap {
+      margin: 12px 0 0;
+    }
+
+    #substack .diagram-wrap svg {
+      min-width: 420px;
+    }
+
+    .substack-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--clay);
+      text-decoration: none;
+    }
+
+    .substack-link:hover { color: var(--clay-h); }
+
+    .badge.research { border-color: #9B8FC4; color: #9B8FC4; }
+
+    .pipeline-flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .pipeline-flow .step {
+      flex-shrink: 0;
+      padding: 7px 11px;
+      background: var(--inset);
+      border: 1px solid var(--line-hi);
+      border-radius: 3px;
+      font-family: var(--sans);
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    .pipeline-flow .step.done {
+      background: rgba(143, 168, 118, 0.1);
+      border-color: rgba(143, 168, 118, 0.28);
+      color: rgba(143, 168, 118, 0.78);
+    }
+
+    .pipeline-flow .step.current {
+      background: rgba(201, 162, 39, 0.1);
+      border-color: rgba(201, 162, 39, 0.35);
+      color: rgba(201, 162, 39, 0.82);
+    }
+
+    .pipeline-flow .step.later {
+      border-style: dashed;
+      border-color: var(--line-hi);
+      color: var(--subtle);
+    }
+
+    .pipeline-flow .pipe-arrow {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      color: var(--subtle);
+    }
+
+    .pipeline-flow .pipe-arrow svg {
+      display: block;
+      min-width: 0;
+      width: 14px;
+      height: 14px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px;
+      border-radius: 2px;
+    }
+
+    .card h3 {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--clay);
+      margin-bottom: 8px;
+    }
+
+    .card p, .card li {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .card ul { padding-left: 1.05em; margin: 0; }
+    .card li { margin-bottom: 4px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 16px 0;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+
+    th {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--subtle);
+      font-weight: 500;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .badge.live { border-color: var(--olive); color: var(--olive); }
+    .badge.wip { border-color: var(--clay); color: var(--clay); }
+    .badge.planned { border-color: var(--subtle); color: var(--subtle); }
+    .badge.feedback { border-color: var(--amber); color: var(--amber); }
+    .badge.gap { border-color: var(--rose); color: var(--rose); }
+
+    #timeline h2 {
+      margin-bottom: 6px;
+    }
+
+    #timeline .section-note {
+      margin-bottom: 14px;
+    }
+
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .phase-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 12px 14px;
+      min-height: 0;
+    }
+
+    .phase-card.done {
+      border-color: rgba(143, 168, 118, 0.22);
+      background: linear-gradient(135deg, rgba(143, 168, 118, 0.08) 0%, var(--panel) 100%);
+    }
+
+    .phase-card.current {
+      border-color: rgba(201, 162, 39, 0.35);
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, var(--panel) 100%);
+      box-shadow: inset 3px 0 0 rgba(201, 162, 39, 0.75);
+    }
+
+    .phase-when {
+      display: block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .phase-card.done .phase-when {
+      color: rgba(143, 168, 118, 0.85);
+    }
+
+    .phase-card.current .phase-when {
+      color: rgba(201, 162, 39, 0.9);
+    }
+
+    .phase-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 5px;
+      color: var(--ink);
+    }
+
+    .phase-desc {
+      font-size: 12px;
+      line-height: 1.42;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    #artifacts {
+      border-top: 1px solid var(--line-hi);
+      margin-top: 8px;
+      padding-top: 36px;
+    }
+
+    .doc-categories {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      --doc-name-w: 196px;
+      --doc-path-w: 268px;
+    }
+
+    .doc-category-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 5px;
+    }
+
+    .doc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+    }
+
+    .doc-row {
+      display: grid;
+      grid-template-columns: var(--doc-name-w) minmax(0, 1fr) var(--doc-path-w);
+      gap: 0 20px;
+      align-items: center;
+      padding: 7px 12px;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid var(--line);
+      transition: background 0.15s;
+    }
+
+    .doc-row:last-child { border-bottom: none; }
+    .doc-row:hover { background: var(--inset); }
+
+    .doc-row .doc-name {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .doc-row:hover .doc-name { color: #bab9b2; }
+
+    .doc-row .doc-desc {
+      font-size: 12px;
+      color: var(--subtle);
+      line-height: 1.35;
+    }
+
+    .doc-row .doc-path {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--clay);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .artifact {
+      display: block;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      border-radius: 2px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s;
+    }
+
+    .artifact:hover { border-color: var(--clay); }
+
+    .artifact .name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .artifact .desc {
+      font-size: 13px;
+      color: var(--subtle);
+      margin-bottom: 8px;
+    }
+
+    .artifact .path {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--clay);
+    }
+
+    blockquote {
+      margin: 16px 0;
+      padding: 14px 20px;
+      border-left: 3px solid var(--clay-d, #B85C3E);
+      font-family: var(--serif);
+      font-size: 20px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1020px) {
+      .phase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 880px) {
+      .layout { grid-template-columns: 1fr; }
+      nav.toc {
+        position: relative;
+        max-height: none;
+        border-right: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        padding: 16px 20px;
+      }
+      nav.toc .label { width: 100%; }
+      nav.toc a { padding: 0; }
+      .three-col, .pillar-grid, .two-col, .seek-grid, .dev-notes { grid-template-columns: 1fr; }
+      .three-col[style*="repeat(4"] { grid-template-columns: 1fr; }
+      .phase-grid { grid-template-columns: 1fr; }
+      .direction-grid { grid-template-columns: 1fr; }
+      .framework-detail { grid-template-columns: 1fr; }
+      .pipeline-meta { grid-template-columns: 1fr; }
+      .doc-row {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+      .doc-row .doc-path { text-align: left; white-space: normal; overflow: visible; }
+      .title-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .live-preview-url { white-space: normal; }
+      main { padding: 28px 20px 64px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="toc">
+      <div class="label">Eyes Closed hub</div>
+      <a href="#brand">Brand model</a>
+      <a href="#designs">Designs</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#pipelines">Where we are</a>
+      <a href="#tracks">Tracks</a>
+      <a href="#in-progress">In progress</a>
+      <a href="#offerings-direction">Offerings direction</a>
+      <a href="#substack">Substack</a>
+      <a href="#artifacts">Project docs</a>
+    </nav>
+
+    <main>
+      <div class="eyebrow">Single source · May 2026</div>
+      <div class="title-row">
+        <h1>Eyes Closed <em>project hub</em></h1>
+        <a class="live-preview" href="https://formless-web.vercel.app/" target="_blank" rel="noopener">
+          <span class="live-preview-dot" aria-hidden="true"></span>
+          <span class="live-preview-text">
+            <span class="live-preview-label">Live preview</span>
+            <span class="live-preview-url">formless-web.vercel.app ↗</span>
+          </span>
+        </a>
+      </div>
+      <div class="phase-now">Current phase: content collection + copy feedback</div>
+
+      <section id="brand">
+        <h2>Brand model</h2>
+        <p class="section-note">Eyes Closed is the organization. Formless is one of many books under that brand.</p>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 720 248" xmlns="http://www.w3.org/2000/svg" aria-label="Brand architecture">
+            <!-- parent org -->
+            <rect x="220" y="12" width="280" height="80" rx="4" fill="#1C1C1A" stroke="#D97757" stroke-width="1.5"/>
+            <text x="360" y="40" text-anchor="middle" fill="#D97757" font-family="ui-monospace,monospace" font-size="10" letter-spacing="1">ORGANIZATION</text>
+            <text x="360" y="66" text-anchor="middle" fill="#EDEBE6" font-size="20" font-family="ui-serif,Georgia,serif">Eyes Closed</text>
+            <text x="360" y="84" text-anchor="middle" fill="#6B6A65" font-size="11" font-family="system-ui">Site brand · mission · practice</text>
+
+            <!-- connector lines -->
+            <line x1="360" y1="92" x2="360" y2="118" stroke="#6B6A65" stroke-width="1.5"/>
+            <line x1="180" y1="118" x2="540" y2="118" stroke="#6B6A65" stroke-width="1.5"/>
+            <line x1="180" y1="118" x2="180" y2="132" stroke="#6B6A65" stroke-width="1.5"/>
+            <line x1="540" y1="118" x2="540" y2="132" stroke="#6B6A65" stroke-width="1.5"/>
+
+            <!-- book -->
+            <rect x="56" y="132" width="248" height="88" rx="4" fill="#1C1C1A" stroke="#8FA876"/>
+            <text x="180" y="158" text-anchor="middle" fill="#8FA876" font-family="ui-monospace,monospace" font-size="10" letter-spacing="1">BOOK</text>
+            <text x="180" y="182" text-anchor="middle" fill="#EDEBE6" font-size="18" font-family="ui-serif,Georgia,serif">Formless</text>
+            <text x="180" y="202" text-anchor="middle" fill="#6B6A65" font-size="11" font-family="system-ui">Title under Eyes Closed · /book</text>
+
+            <!-- offerings -->
+            <rect x="416" y="132" width="248" height="88" rx="4" fill="#222220" stroke="#2A2A27"/>
+            <text x="540" y="158" text-anchor="middle" fill="#A8A7A0" font-family="ui-monospace,monospace" font-size="10" letter-spacing="1">UNDER THE ORG</text>
+            <text x="540" y="180" text-anchor="middle" fill="#EDEBE6" font-size="13" font-family="system-ui">Inner guidance · consulting</text>
+            <text x="540" y="198" text-anchor="middle" fill="#EDEBE6" font-size="13" font-family="system-ui">Large groups · video · speaking</text>
+            <text x="540" y="214" text-anchor="middle" fill="#6B6A65" font-size="10" font-family="system-ui">retreats · community when ready</text>
+          </svg>
+        </div>
+      </section>
+
+      <section id="designs">
+        <h2>Designs</h2>
+        <p class="section-note">Eyes Closed identity exploration. Mark direction: one lash, not an eye.</p>
+
+        <div class="design-stack">
+          <a class="design-plate" href="../eyes-closed-logo-marks.png" target="_blank" rel="noopener">
+            <img src="../eyes-closed-logo-marks.png" alt="Eyes Closed logo mark variations" width="1600" height="1000" loading="lazy">
+            <div class="design-plate-caption">
+              <span class="label">Logo marks</span>
+              <span class="path">eyes-closed-logo-marks.png</span>
+            </div>
+          </a>
+          <a class="design-plate" href="../eyes-closed-web-design-direction.png" target="_blank" rel="noopener">
+            <img src="../eyes-closed-web-design-direction.png" alt="Eyes Closed web design direction" width="1600" height="1000" loading="lazy">
+            <div class="design-plate-caption">
+              <span class="label">Web direction</span>
+              <span class="path">eyes-closed-web-design-direction.png</span>
+            </div>
+          </a>
+          <a class="design-plate" href="../eyes-closed-brandkit-3x3.png" target="_blank" rel="noopener">
+            <img src="../eyes-closed-brandkit-3x3.png" alt="Eyes Closed brand kit overview" width="1600" height="1000" loading="lazy">
+            <div class="design-plate-caption">
+              <span class="label">Brand kit (early)</span>
+              <span class="path">eyes-closed-brandkit-3x3.png</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="design-links">
+          <a href="formless-moodboard.html">Moodboard</a>
+          <a href="https://formless-web.vercel.app/design-system" target="_blank" rel="noopener">Design system ↗</a>
+          <a href="https://formless-web.vercel.app/colors" target="_blank" rel="noopener">Colors ↗</a>
+          <a href="https://formless-web.vercel.app/icons" target="_blank" rel="noopener">Icons ↗</a>
+        </div>
+      </section>
+
+      <section id="timeline">
+        <h2>Timeline</h2>
+
+        <div class="phase-grid">
+          <article class="phase-card done">
+            <span class="phase-when">Done · Apr–May 2026</span>
+            <h3 class="phase-title">Foundation</h3>
+            <p class="phase-desc">Draft website up, main pages in place, copy review underway.</p>
+          </article>
+          <article class="phase-card current">
+            <span class="phase-when">Now</span>
+            <h3 class="phase-title">Direction + copy</h3>
+            <p class="phase-desc">Review copy feedback, rebrand to Eyes Closed, align with Soni and Ryan on language.</p>
+          </article>
+          <article class="phase-card">
+            <span class="phase-when">Next</span>
+            <h3 class="phase-title">Implement copy + design</h3>
+            <p class="phase-desc">Apply approved copy, finish About story, design polish.</p>
+          </article>
+          <article class="phase-card">
+            <span class="phase-when">Parallel</span>
+            <h3 class="phase-title">Book production</h3>
+            <p class="phase-desc">Edit, interior and cover, IngramSpark, proofs, print and ebook. Audiobook phase 2.</p>
+          </article>
+          <article class="phase-card">
+            <span class="phase-when">After copy settles</span>
+            <h3 class="phase-title">Offerings live</h3>
+            <p class="phase-desc">Lock service names, consulting page, large groups, first videos with Soni’s framework.</p>
+          </article>
+          <article class="phase-card">
+            <span class="phase-when">Later</span>
+            <h3 class="phase-title">Expand slowly</h3>
+            <p class="phase-desc">Retreats, community, deeper teachings. Courses only if wanted.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="pipelines">
+        <h2>Where we are</h2>
+
+        <div class="diagram-wrap pipelines-unified">
+
+          <div class="pipeline-row website">
+            <div class="pipeline-header">
+              <div class="pipeline-label">Website</div>
+              <div class="pipeline-status">
+                <span class="badge wip">In progress</span>
+              </div>
+            </div>
+            <div class="pipeline-flow">
+              <span class="step done">Draft pages</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step current">Copy feedback</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Apply copy</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Eyes Closed rebrand</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Design polish</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Live site</span>
+            </div>
+            <div class="pipeline-meta">
+              <div class="meta-item">
+                <span class="meta-label">What exists</span>
+                <span class="meta-value">Draft site with Home, The Practice, Book, Science, and About</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Next</span>
+                <span class="meta-value">Review copy feedback; rebrand site to Eyes Closed</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-row book">
+            <div class="pipeline-header">
+              <div class="pipeline-label">Book · Formless</div>
+              <div class="pipeline-status">
+                <span class="badge wip">In progress</span>
+              </div>
+            </div>
+            <div class="pipeline-flow">
+              <span class="step done">Manuscript</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step current">Proposal</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Edit</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Design</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">IngramSpark</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Print · ebook</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step later">Audible later</span>
+            </div>
+            <div class="pipeline-meta">
+              <div class="meta-item">
+                <span class="meta-label">What exists</span>
+                <span class="meta-value">Manuscript direction and publishing plan</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Next</span>
+                <span class="meta-value">Align with Soni on proposal</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-row offerings">
+            <div class="pipeline-header">
+              <div class="pipeline-label">Eyes Closed · Offerings</div>
+              <div class="pipeline-status">
+                <span class="badge planned">Planned</span>
+              </div>
+            </div>
+            <div class="pipeline-flow">
+              <span class="step done">Client direction</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step current">Name on site</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">1:1 · consulting</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Large group sessions</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Video · speaking</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step later">Resources</span>
+            </div>
+            <div class="pipeline-meta">
+              <div class="meta-item">
+                <span class="meta-label">What exists</span>
+                <span class="meta-value">Service naming options from Soni; video framework; relationship-view content angle</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Next</span>
+                <span class="meta-value">Pick names for site copy; frame author/speaker + large groups; first videos using framework</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-row substack">
+            <div class="pipeline-header">
+              <div class="pipeline-label">Substack · audience</div>
+              <div class="pipeline-status">
+                <span class="badge research">Research</span>
+              </div>
+            </div>
+            <div class="pipeline-flow">
+              <span class="step current">Platform fit</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Publish excerpts</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Grow list</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Pre-launch buzz</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step">Book launch</span>
+              <span class="pipe-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="step later">Sustain · expand</span>
+            </div>
+            <div class="pipeline-meta">
+              <div class="meta-item">
+                <span class="meta-label">What exists</span>
+                <span class="meta-value">Working hypothesis for how Substack supports book + offerings (see flow doc)</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Next</span>
+                <span class="meta-value">Review platform fit with Soni; name, cadence, excerpt policy</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="tracks">
+        <h2>Tracks</h2>
+
+        <div class="three-col" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="card">
+            <h3>Website</h3>
+            <ul>
+              <li>Main pages drafted and live for review</li>
+              <li>Copy feedback from Soni and Ryan in progress</li>
+              <li>Rebrand to Eyes Closed (org) pending</li>
+              <li>Formless stays as the book page</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Book</h3>
+            <ul>
+              <li><em>Formless</em> manuscript in development</li>
+              <li>Publishing path through IngramSpark</li>
+              <li>Print, ebook, and distribution channels under discussion</li>
+              <li>Audiobook likely after initial launch</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Offerings</h3>
+            <ul>
+              <li>Inner alignment guidance · guide for self-discovery</li>
+              <li>Inner Clarity Consulting (name option)</li>
+              <li>Return to inner guidance with Soni C.</li>
+              <li>Author · speaker · large group sessions</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 style="color:#9B8FC4">Substack</h3>
+            <ul>
+              <li>Tool to research · not started</li>
+              <li>Insights and excerpts while book develops</li>
+              <li>Build email list before launch</li>
+              <li>Sustain reader relationship after <em>Formless</em></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="in-progress">
+        <h2>In progress</h2>
+        <p class="section-note">Copy feedback from Soni and Ryan (31 comments total).</p>
+
+        <div class="three-col" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="card">
+            <h3>Structural moves</h3>
+            <ul>
+              <li>Nav rebrand: Formless → Eyes Closed (org)</li>
+              <li>Formless stays as book page title</li>
+              <li>The Work → The Practice</li>
+              <li>Science nav rename (pick one)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Tone shift</h3>
+            <ul>
+              <li>Hero: more explicit spiritual language</li>
+              <li>Work categories: longer, relational copy</li>
+              <li>Reframe block: full teaching paragraph</li>
+            </ul>
+          </div>
+        </div>
+
+        <a class="artifact" href="notes/website-feedback.html" style="margin-top:16px">
+          <div class="name">Copy triage →</div>
+          <div class="desc">Approve / defer / reject each comment, export implementation prompt</div>
+          <div class="path">docs/notes/website-feedback.html</div>
+        </a>
+      </section>
+
+      <section id="offerings-direction">
+        <h2>Offerings direction</h2>
+
+        <div class="direction-wrap">
+          <div class="direction-grid">
+            <div class="direction-block">
+              <div class="direction-label">Service names · pick / combine</div>
+              <div class="name-row">
+                <span class="name-chip">Inner alignment guidance</span>
+                <span class="name-chip">Guide for self discovery</span>
+                <span class="name-chip">Inner Clarity Consulting</span>
+              </div>
+              <p class="direction-tagline"><em>Return to inner guidance with Soni C.</em> <span>· positioning line for sessions and consulting</span></p>
+            </div>
+            <div class="direction-block">
+              <div class="direction-label">Author · speaker</div>
+              <ul class="direction-list">
+                <li>Large group sessions, not only 1:1</li>
+                <li>Lived teaching voice, not a coaching funnel</li>
+                <li>Relationship entry on site: how long have you been in a relationship?</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="direction-framework">
+            <div class="direction-label">Video framework</div>
+            <div class="framework-flow">
+              <span class="fw-step"><strong>Hook</strong></span>
+              <span class="fw-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="fw-step"><strong>Awareness</strong></span>
+              <span class="fw-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="fw-step"><strong>Acceptance</strong></span>
+              <span class="fw-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="fw-step"><strong>Investigation</strong></span>
+              <span class="fw-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="fw-step"><strong>Letting go</strong></span>
+              <span class="fw-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="fw-step"><strong>Reflection</strong></span>
+              <span class="fw-arrow"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="fw-step"><strong>Stillness</strong></span>
+            </div>
+            <ul class="framework-detail">
+              <li><strong>Hook</strong> — human experience; get attention</li>
+              <li><strong>Awareness</strong> — if you are experiencing that…</li>
+              <li><strong>Acceptance</strong> — how things are now; how you feel; that you are unhappy</li>
+              <li><strong>Investigation</strong> — why they need to be different; what belief you hold</li>
+              <li><strong>Letting go</strong> — release that belief</li>
+              <li><strong>Stillness</strong> — end here</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="substack">
+        <h2>Substack</h2>
+        <p class="section-note">Research how this platform fits the Eyes Closed approach: writing channel, audience building, book launch, long-term relationship.</p>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 454 232" xmlns="http://www.w3.org/2000/svg" aria-label="Substack audience flow">
+            <defs>
+              <marker id="hub-flow-arrow" markerWidth="4" markerHeight="4" refX="3.5" refY="2" orient="auto">
+                <path d="M0,0 L4,2 L0,4 Z" fill="#4A4944"/>
+              </marker>
+            </defs>
+
+            <!-- row 1 -->
+            <rect x="16" y="10" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="126" y="22" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">01</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="26" y="32">IDEAS / RESEARCH /</tspan>
+              <tspan x="26" dy="9">WRITING</tspan>
+            </text>
+
+            <rect x="168" y="10" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="278" y="22" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">02</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="178" y="32">PUBLISH INSIGHTS +</tspan>
+              <tspan x="178" dy="9">EXCERPTS</tspan>
+            </text>
+            <text x="178" y="56" fill="#6B6A65" font-size="6" font-family="system-ui">Substack</text>
+
+            <rect x="320" y="10" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="430" y="22" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">03</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="330" y="32">BUILD EMAIL</tspan>
+              <tspan x="330" dy="9">SUBSCRIBERS</tspan>
+            </text>
+            <text x="330" y="56" fill="#6B6A65" font-size="6" font-family="system-ui">Audience</text>
+
+            <!-- row 2 -->
+            <rect x="16" y="90" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="126" y="102" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">04</text>
+            <text x="26" y="118" fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">TEST CONCEPTS</text>
+            <text x="26" y="134" fill="#6B6A65" font-size="6" font-family="system-ui">Refine messaging</text>
+
+            <rect x="168" y="90" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="278" y="102" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">05</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="178" y="112">ANTICIPATION DURING</tspan>
+              <tspan x="178" dy="9">BOOK DEV</tspan>
+            </text>
+            <text x="178" y="136" fill="#6B6A65" font-size="6" font-family="system-ui">Pre-launch</text>
+
+            <rect x="320" y="90" width="118" height="52" rx="4" fill="#181816" stroke="#484845" stroke-width="0.5"/>
+            <text x="430" y="102" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">06</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="330" y="112">LAUNCH TO TRUSTED</tspan>
+              <tspan x="330" dy="9">AUDIENCE</tspan>
+            </text>
+            <text x="330" y="136" fill="#6B6A65" font-size="6" font-family="system-ui">Book launch</text>
+
+            <!-- row 3 -->
+            <rect x="16" y="170" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="126" y="182" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">07</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="26" y="192">READER RELATIONSHIP</tspan>
+              <tspan x="26" dy="9">AFTER LAUNCH</tspan>
+            </text>
+            <text x="26" y="216" fill="#6B6A65" font-size="6" font-family="system-ui">Sustain</text>
+
+            <rect x="168" y="170" width="118" height="52" rx="4" fill="#1C1C1A" stroke="#484845" stroke-width="0.5"/>
+            <text x="278" y="182" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">08</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="178" y="192">EXPAND IMPACT +</tspan>
+              <tspan x="178" dy="9">OPPORTUNITIES</tspan>
+            </text>
+            <text fill="#6B6A65" font-size="6" font-family="system-ui">
+              <tspan x="178" y="214">Books · speaking</tspan>
+              <tspan x="178" dy="7">consulting · community</tspan>
+            </text>
+
+            <line x1="136" y1="36" x2="166" y2="36" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#hub-flow-arrow)"/>
+            <line x1="288" y1="36" x2="318" y2="36" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#hub-flow-arrow)"/>
+            <path d="M 379 62 L 379 74 L 75 74 L 75 90" fill="none" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#hub-flow-arrow)"/>
+            <line x1="136" y1="116" x2="166" y2="116" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#hub-flow-arrow)"/>
+            <line x1="288" y1="116" x2="318" y2="116" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#hub-flow-arrow)"/>
+            <path d="M 379 142 L 379 154 L 75 154 L 75 170" fill="none" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#hub-flow-arrow)"/>
+            <line x1="136" y1="196" x2="166" y2="196" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#hub-flow-arrow)"/>
+          </svg>
+        </div>
+
+        <a class="substack-link" href="substack-approach.html">Full Substack approach doc →</a>
+      </section>
+
+      <section id="artifacts">
+        <h2>Project docs</h2>
+
+        <div class="doc-categories">
+          <div class="doc-category">
+            <h3 class="doc-category-label">Project &amp; content strategy</h3>
+            <ul class="doc-list">
+              <li>
+                <a class="doc-row" href="formless-hub.html">
+                  <span class="doc-name">Project hub (this page)</span>
+                  <span class="doc-desc">Status, timeline, links</span>
+                  <span class="doc-path">docs/formless-hub.html</span>
+                </a>
+              </li>
+              <li>
+                <a class="doc-row" href="formless-project-brief.html">
+                  <span class="doc-name">Project brief</span>
+                  <span class="doc-desc">Audience, messaging pillars, homepage flow, CTAs</span>
+                  <span class="doc-path">docs/formless-project-brief.html</span>
+                </a>
+              </li>
+              <li>
+                <a class="doc-row" href="website-content-arch-guide.html">
+                  <span class="doc-name">Content architecture</span>
+                  <span class="doc-desc">Foundation, pillars, offerings, website plan and copy keys</span>
+                  <span class="doc-path">docs/website-content-arch-guide.html</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="doc-category">
+            <h3 class="doc-category-label">Website development &amp; planning</h3>
+            <ul class="doc-list">
+              <li>
+                <a class="doc-row" href="roadmap-website-notes.html">
+                  <span class="doc-name">Website roadmap notes</span>
+                  <span class="doc-desc">Doorway philosophy, first steps, PDF ideas</span>
+                  <span class="doc-path">docs/roadmap-website-notes.html</span>
+                </a>
+              </li>
+              <li>
+                <a class="doc-row" href="adr/001-supabase-content-and-nextjs.html">
+                  <span class="doc-name">ADR: Supabase + Next.js</span>
+                  <span class="doc-desc">CMS architecture, future migration path</span>
+                  <span class="doc-path">docs/adr/001-supabase-content-and-nextjs.html</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="doc-category">
+            <h3 class="doc-category-label">Publishing &amp; distribution</h3>
+            <ul class="doc-list">
+              <li>
+                <a class="doc-row" href="publishing-roadmap-notes.html">
+                  <span class="doc-name">Publishing roadmap</span>
+                  <span class="doc-desc">IngramSpark pipeline stages</span>
+                  <span class="doc-path">docs/publishing-roadmap-notes.html</span>
+                </a>
+              </li>
+              <li>
+                <a class="doc-row" href="publishing-channels.html">
+                  <span class="doc-name">Distribution channels</span>
+                  <span class="doc-desc">IngramSpark, Amazon, Audible, Substack, retailers</span>
+                  <span class="doc-path">docs/publishing-channels.html</span>
+                </a>
+              </li>
+              <li>
+                <a class="doc-row" href="substack-approach.html">
+                  <span class="doc-name">Substack approach</span>
+                  <span class="doc-desc">Essays + email list; audience before and after book launch</span>
+                  <span class="doc-path">docs/substack-approach.html</span>
+                </a>
+              </li>
+              <li>
+                <a class="doc-row" href="publishing-in-house-savings.html">
+                  <span class="doc-name">In-house vs outsource</span>
+                  <span class="doc-desc">Publishing cost tradeoffs</span>
+                  <span class="doc-path">docs/publishing-in-house-savings.html</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="doc-category">
+            <h3 class="doc-category-label">Feedback &amp; data</h3>
+            <ul class="doc-list">
+              <li>
+                <a class="doc-row" href="notes/website-feedback.html">
+                  <span class="doc-name">Copy triage</span>
+                  <span class="doc-desc">31 Pastel comments, approve / defer / export</span>
+                  <span class="doc-path">docs/notes/website-feedback.html</span>
+                </a>
+              </li>
+              <li>
+                <a class="doc-row" href="notes/pastel-comments-okj0r6y3-exported-2026-05-20.csv">
+                  <span class="doc-name">Pastel CSV export</span>
+                  <span class="doc-desc">Raw comment data source</span>
+                  <span class="doc-path">docs/notes/pastel-comments-okj0r6y3-exported-2026-05-20.csv</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
