@@ -59,6 +59,26 @@ const logoOptions = [
     ).href,
     wide: true,
   },
+  {
+    id: "04M",
+    kind: "Horizontal lockup",
+    name: "Serif right lockup with tagline",
+    src: new URL(
+      "../../design/eyes-closed-logo-variations/04m-horizontal-serif-tagline.svg",
+      import.meta.url,
+    ).href,
+    wide: true,
+  },
+  {
+    id: "04N",
+    kind: "Horizontal lockup",
+    name: "Sans right lockup no tagline",
+    src: new URL(
+      "../../design/eyes-closed-logo-variations/04n-horizontal-sans-no-tagline.svg",
+      import.meta.url,
+    ).href,
+    wide: true,
+  },
 ] as const;
 
 export default function EyesClosedLogoOptionsPage() {
@@ -74,7 +94,7 @@ export default function EyesClosedLogoOptionsPage() {
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-cream/72">
             Reference page for the selected 04 direction. Same mark and wordmark,
-            exploring the lower tagline treatment.
+            exploring tagline treatments and horizontal lockups.
           </p>
         </header>
 
@@ -84,7 +104,7 @@ export default function EyesClosedLogoOptionsPage() {
           </h2>
           <p className="mb-8 max-w-2xl text-sm leading-relaxed text-cream/65">
             Tagline lockups for the final mark direction, shown as isolated dark
-            lockups for contrast and spacing review.
+            lockups for contrast, spacing, and right-side name placement review.
           </p>
 
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-12">
