@@ -1,3 +1,5 @@
+import { Download } from "lucide-react";
+
 const logoOptions = [
   {
     id: "04G",
@@ -8,6 +10,18 @@ const logoOptions = [
       import.meta.url,
     ).href,
     wide: true,
+    downloads: [
+      {
+        label: "Cream SVG",
+        href: "/downloads/eyes-closed/eyes-closed-mark-04g-cream.svg",
+        fileName: "eyes-closed-mark-04g-cream.svg",
+      },
+      {
+        label: "Black SVG",
+        href: "/downloads/eyes-closed/eyes-closed-mark-04g-black.svg",
+        fileName: "eyes-closed-mark-04g-black.svg",
+      },
+    ],
   },
   {
     id: "04H",
@@ -69,16 +83,6 @@ const logoOptions = [
     ).href,
     wide: true,
   },
-  {
-    id: "04N",
-    kind: "Horizontal lockup",
-    name: "Sans right lockup no tagline",
-    src: new URL(
-      "../../design/eyes-closed-logo-variations/04n-horizontal-sans-no-tagline.svg",
-      import.meta.url,
-    ).href,
-    wide: true,
-  },
 ] as const;
 
 export default function EyesClosedLogoOptionsPage() {
@@ -123,6 +127,21 @@ export default function EyesClosedLogoOptionsPage() {
                   <h3 className="text-sm font-bold uppercase tracking-wide text-cream">
                     {option.name}
                   </h3>
+                  {"downloads" in option && option.downloads ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {option.downloads.map((download) => (
+                        <a
+                          key={download.fileName}
+                          href={download.href}
+                          download={download.fileName}
+                          className="inline-flex items-center gap-2 border border-cream/15 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/72 transition hover:border-cream/40 hover:bg-cream/8 hover:text-cream"
+                        >
+                          <Download aria-hidden="true" className="h-3.5 w-3.5" />
+                          {download.label}
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
                 <div
                   className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-[2rem] border border-white/5 bg-[#050806] shadow-inner ${

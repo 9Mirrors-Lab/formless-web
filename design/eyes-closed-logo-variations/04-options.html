@@ -104,6 +104,33 @@
         gap: 8px;
         padding: 0 8px;
       }
+      .downloads {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .download-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgb(242 240 233 / .15);
+        color: rgb(242 240 233 / .72);
+        padding: 8px 12px;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+          "Courier New", monospace;
+        font-size: 10px;
+        letter-spacing: .16em;
+        line-height: 1;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      .download-link:hover {
+        border-color: rgb(242 240 233 / .4);
+        background: rgb(242 240 233 / .08);
+        color: var(--cream);
+      }
       .meta {
         display: flex;
         align-items: center;
@@ -175,6 +202,10 @@
           <div class="copy">
             <div class="meta"><span>04G</span><span>No tagline</span></div>
             <h3>No tagline</h3>
+            <div class="downloads" aria-label="04G mark downloads">
+              <a class="download-link" href="../../public/downloads/eyes-closed/eyes-closed-mark-04g-cream.svg" download="eyes-closed-mark-04g-cream.svg">Download cream SVG</a>
+              <a class="download-link" href="../../public/downloads/eyes-closed/eyes-closed-mark-04g-black.svg" download="eyes-closed-mark-04g-black.svg">Download black SVG</a>
+            </div>
           </div>
           <div class="frame">
             <img class="logo" alt="No tagline lockup" src="04g-tagline-none.svg" />
@@ -232,15 +263,6 @@
           </div>
           <div class="frame">
             <img class="logo" alt="Serif right lockup with tagline" src="04m-horizontal-serif-tagline.svg" />
-          </div>
-        </article>
-        <article class="wide">
-          <div class="copy">
-            <div class="meta"><span>04N</span><span>Horizontal lockup</span></div>
-            <h3>Sans right lockup no tagline</h3>
-          </div>
-          <div class="frame">
-            <img class="logo" alt="Sans right lockup no tagline" src="04n-horizontal-sans-no-tagline.svg" />
           </div>
         </article>
         </div>
