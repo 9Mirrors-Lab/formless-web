@@ -25,6 +25,7 @@ export const DevMenu = () => {
     { name: 'Design Framework', path: '/design-framework' },
     { name: 'Icons', path: '/icons' },
     { name: 'Colors (dark explorations)', path: '/colors' },
+    { name: 'Eyes Closed logo options', path: '/design/eyes-closed-logo-variations/04-options.html' },
   ];
 
   return (
