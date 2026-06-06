@@ -12,14 +12,19 @@ const logoOptions = [
     wide: true,
     downloads: [
       {
-        label: "Cream SVG",
-        href: "/downloads/eyes-closed/eyes-closed-mark-04g-cream.svg",
-        fileName: "eyes-closed-mark-04g-cream.svg",
+        label: "Cream PNG",
+        href: "/downloads/eyes-closed/eyes-closed-logo-04g-cream.png",
+        fileName: "eyes-closed-logo-04g-cream.png",
       },
       {
-        label: "Black SVG",
-        href: "/downloads/eyes-closed/eyes-closed-mark-04g-black.svg",
-        fileName: "eyes-closed-mark-04g-black.svg",
+        label: "Black PNG",
+        href: "/downloads/eyes-closed/eyes-closed-logo-04g-black.png",
+        fileName: "eyes-closed-logo-04g-black.png",
+      },
+      {
+        label: "White PNG",
+        href: "/downloads/eyes-closed/eyes-closed-logo-04g-white.png",
+        fileName: "eyes-closed-logo-04g-white.png",
       },
     ],
   },
