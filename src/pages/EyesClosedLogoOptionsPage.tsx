@@ -3,12 +3,9 @@ import { Download } from "lucide-react";
 const logoOptions = [
   {
     id: "04G",
-    kind: "No tagline",
-    name: "No tagline",
-    src: new URL(
-      "../../design/eyes-closed-logo-variations/04g-tagline-none.svg",
-      import.meta.url,
-    ).href,
+    kind: "Download asset",
+    name: "Final PNG lockup",
+    src: "/downloads/eyes-closed/eyes-closed-logo-04g-cream.png",
     wide: true,
     downloads: [
       {
