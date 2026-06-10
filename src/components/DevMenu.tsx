@@ -12,20 +12,11 @@ export const DevMenu = () => {
 
   const devPages = [
     { name: '── Site Pages ──', path: '' },
-    { name: 'Holding', path: '/' },
-    { name: 'Full home', path: '/home' },
-    { name: 'The Work', path: '/work' },
-    { name: 'The Book', path: '/book' },
-    { name: 'Science', path: '/science' },
-    { name: 'About', path: '/about' },
+    { name: 'Main Page', path: '/' },
     { name: '── Dev Pages ──', path: '' },
-    { name: 'Brief', path: '/brief' },
-    { name: 'Moodboard', path: '/moodboard' },
-    { name: 'Design System', path: '/design-system' },
-    { name: 'Design Framework', path: '/design-framework' },
-    { name: 'Icons', path: '/icons' },
-    { name: 'Colors (dark explorations)', path: '/colors' },
+    { name: 'Brand Export Kit', path: '/brand-kit-export' },
     { name: 'Eyes Closed logo options', path: '/eyes-closed-logo-options' },
+    { name: 'Icons', path: '/icons' },
   ];
 
   return (
