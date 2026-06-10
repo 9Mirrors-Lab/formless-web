@@ -53,6 +53,7 @@ export function Root({ path }: { path: string }) {
   const isScience = path === '/science';
   const isAbout = path === '/about';
   const isColors = path === '/colors';
+  const isAboutMagazine = path === '/about-magazine';
   const isEyesClosedLogoOptions =
     path === '/eyes-closed-logo-options' ||
     path === '/design/eyes-closed-logo-variations/04-options.html';
@@ -71,6 +72,7 @@ export function Root({ path }: { path: string }) {
   if (isBook) return <BookPage />;
   if (isScience) return <SciencePage />;
   if (isAbout) return <AboutPage />;
+  if (isAboutMagazine) return <AboutPage defaultLayout={4} />;
   if (isColors) return <ColorsPage />;
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;

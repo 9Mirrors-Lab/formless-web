@@ -14,6 +14,7 @@ export const DevMenu = () => {
     { name: '── Site Pages ──', path: '' },
     { name: 'Main Page', path: '/' },
     { name: '── Dev Pages ──', path: '' },
+    { name: 'About (Magazine Layout)', path: '/about-magazine' },
     { name: 'Brand Export Kit', path: '/brand-kit-export' },
     { name: 'Eyes Closed logo options', path: '/eyes-closed-logo-options' },
     { name: 'Icons', path: '/icons' },

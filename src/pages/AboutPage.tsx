@@ -1,11 +1,7 @@
-import { useLayoutEffect, useRef, useState, useCallback, type FormEvent } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useState, useCallback, type FormEvent } from 'react';
 import { PageLayout } from '../components/PageLayout';
-import { ParticleButton } from '../components/ParticleButton';
 import { useContent, type ContentApi } from '@/context/ContentContext';
-
-gsap.registerPlugin(ScrollTrigger);
+import './AboutPage.css';
 
 type FutureItem = { title: string; desc: string };
 
@@ -19,142 +15,202 @@ function futureFromContent(api: ContentApi): FutureItem[] {
   });
 }
 
-export default function AboutPage() {
-  const pageRef = useRef<HTMLDivElement>(null);
-  const futureRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState('');
-  const content = useContent();
-  const { getText, getLink, getImage } = content;
-  const futureItems = futureFromContent(content);
-  const heroImage = getImage('about', 'hero', 'image');
-  const emailLink = getLink('about', 'stay_close', 'email_link');
-
-  const handleSubmit = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
-      setEmail('');
-      alert(getText('about', 'stay_close', 'form_success'));
-    },
-    [getText],
-  );
-
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.about-title', { y: 40, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.3 });
-      gsap.from('.about-image', { x: -60, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.5 });
-
-      gsap.from('.future-item', {
-        y: 40,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: futureRef.current, start: 'top 75%', once: true },
-      });
-    }, pageRef);
-    return () => ctx.revert();
-  }, []);
-
+function StayClose({ content, email, setEmail, handleSubmit, emailLink }: any) {
+  const { getText } = content;
   return (
-    <PageLayout briefSpectrum>
-      <div ref={pageRef}>
-        <section className="w-full px-6 md:px-16 lg:px-24 pt-40 pb-16">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="about-image relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:h-[70vh]">
-              <img
-                src={heroImage.src}
-                alt={heroImage.alt || ''}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 to-transparent" />
-            </div>
+    <section className="stay">
+      <svg className="orbit-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <ellipse cx="600" cy="200" rx="240" ry="90" fill="none" stroke="#9fb5aa" strokeWidth="1" opacity=".4" />
+        <ellipse cx="600" cy="200" rx="150" ry="150" fill="none" stroke="#d46544" strokeWidth="1" opacity=".4" />
+        <circle cx="600" cy="200" r="46" fill="none" stroke="#9fb5aa" strokeWidth="1" opacity=".55" />
+      </svg>
+      <div className="stay-inner">
+        <span className="eyebrow">{getText('about', 'stay_close', 'eyebrow')}</span>
+        <h2>{getText('about', 'stay_close', 'title')}</h2>
+        <p className="lede">{getText('about', 'stay_close', 'lede')}</p>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={getText('about', 'stay_close', 'email_placeholder')}
+            required
+          />
+          <button type="submit">{getText('about', 'stay_close', 'submit')}</button>
+        </form>
+        <p className="fine">{getText('about', 'stay_close', 'fine_print')}</p>
+        <div className="signoff">
+          <a href={emailLink.href}>{emailLink.text}</a>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-            <div className="about-title">
-              <span className="font-mono text-xs tracking-[0.3em] uppercase text-charcoal/40 mb-6 block">
-                {getText('about', 'hero', 'eyebrow')}
-              </span>
-              <h1 className="font-serif italic text-5xl md:text-7xl text-charcoal leading-[1.08] mb-8">
-                {getText('about', 'hero', 'title')}
-              </h1>
-              <div className="space-y-6 text-charcoal/70 font-sans text-lg leading-relaxed max-w-xl">
-                <p>{getText('about', 'hero', 'body_para1')}</p>
-                <p>{getText('about', 'hero', 'body_para2')}</p>
-              </div>
+const PHOTOS = [
+  '/assets/Soni-shot1.png',
+  '/assets/Soni-shot2.png',
+  '/assets/Soni-shot3.png',
+  '/assets/Soni-shot4.png',
+  '/assets/Soni-shot5.png',
+  '/assets/Soni-shot6.png'
+];
+
+function PhotoSwitcher({ activeIndex, onChange }: { activeIndex: number, onChange: (i: number) => void }) {
+  return (
+    <div className="absolute top-28 -left-28 flex flex-col gap-3 z-20">
+      {PHOTOS.map((_, idx) => (
+        <button
+          key={idx}
+          onClick={() => onChange(idx)}
+          className={`text-[10px] uppercase tracking-widest font-mono text-left transition-colors whitespace-nowrap ${
+            activeIndex === idx ? 'text-clay' : 'text-cream/40 hover:text-cream'
+          }`}
+        >
+          Photo {idx + 1}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Layout1({ content, futureItems, emailLink, activePhotoIndex, setActivePhotoIndex }: any) {
+  const { getText } = content;
+  return (
+    <section className="layout is-active">
+      <header className="l1-hero">
+        <div className="l1-grid">
+          <div className="l1-portrait relative">
+            <PhotoSwitcher activeIndex={activePhotoIndex} onChange={setActivePhotoIndex} />
+            <div className="frame"><img src={PHOTOS[activePhotoIndex]} alt="Portrait of Sonika Cottman" /></div>
+            <div className="tag">
+              <span className="caption">The Author</span>
+              <span className="name">Sonika Cottman</span>
             </div>
           </div>
-        </section>
+          <div className="l1-copy">
+            <span className="eyebrow">The Author <span className="dot">●</span></span>
+            <h1>{getText('about', 'hero', 'title')}</h1>
+            <div className="body-copy measure">
+              <p>{getText('about', 'hero', 'body_para1')}</p>
+              <p>{getText('about', 'hero', 'body_para2')}</p>
+            </div>
+            <div className="l1-sign"><span className="line"></span><span>Begin with a reflection.</span></div>
+          </div>
+        </div>
+      </header>
 
-        <section
-          ref={futureRef}
-          className="w-full px-6 md:px-16 lg:px-24 py-20 md:py-28 border-t border-charcoal/8"
-        >
-          <div className="max-w-6xl mx-auto">
-            <span className="font-mono text-xs tracking-[0.3em] uppercase text-charcoal/40 mb-6 block">
-              {getText('about', 'future_intro', 'eyebrow')}
-            </span>
-            <h2 className="font-serif italic text-3xl md:text-5xl text-charcoal/90 mb-16 leading-tight">
-              {getText('about', 'future_intro', 'title')}
-            </h2>
+      <section className="l1-future">
+        <div className="future-head">
+          <span className="eyebrow">{getText('about', 'future_intro', 'eyebrow')} <span className="dot">●</span></span>
+          <h2>{getText('about', 'future_intro', 'title')}</h2>
+        </div>
+        <div className="l1-rows">
+          {futureItems.map((item: FutureItem, i: number) => (
+            <div className="l1-row" key={item.title}>
+              <span className="num">0{i + 1}</span>
+              <span className="t">{item.title}</span>
+              <span className="d">{item.desc}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    </section>
+  );
+}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {futureItems.map((item) => (
-                <div
-                  key={item.title}
-                  className="future-item group p-8 rounded-2xl border border-charcoal/8 bg-white/40 hover:border-moss/30 hover:bg-moss/5 transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)]"
-                >
-                  <h3 className="font-sans font-bold text-lg text-charcoal mb-3 group-hover:text-moss transition-colors duration-300">
-                    {item.title}
-                  </h3>
-                  <p className="font-sans text-sm text-charcoal/55 leading-relaxed">{item.desc}</p>
+function Layout4({ content, futureItems, emailLink, activePhotoIndex, setActivePhotoIndex }: any) {
+  const { getText } = content;
+  return (
+    <section className="layout is-active">
+      <div className="l4-wrap">
+        <aside className="l4-aside">
+          <span className="eyebrow">The Author <span className="dot">●</span></span>
+          <div className="name">Sonika<br />Cottman</div>
+          <div className="frame relative">
+            <PhotoSwitcher activeIndex={activePhotoIndex} onChange={setActivePhotoIndex} />
+            <img src={PHOTOS[activePhotoIndex]} alt="Portrait of Sonika Cottman" />
+          </div>
+          <div className="meta">
+            <div className="row"><span>Field</span><span>Inner awareness</span></div>
+            <div className="row"><span>Work</span><span>Formless</span></div>
+            <div className="row"><span>Status</span><span>Unfolding</span></div>
+          </div>
+          <a href={emailLink.href} className="contact">Get in touch →</a>
+        </aside>
+
+        <main className="l4-main">
+          <h1>{getText('about', 'hero', 'title')}</h1>
+          <p className="l4-pull">You are not the voice in the head. Peace does not depend on outer circumstances arranging themselves.</p>
+          <div className="l4-cols">
+            <p>{getText('about', 'hero', 'body_para1')}</p>
+            <p>{getText('about', 'hero', 'body_para2')}</p>
+            <p>That foundation is the recognition that you are not the voice in the head, and that peace does not depend on outer circumstances arranging themselves.</p>
+            <p>The writing continues. The teaching unfolds. This is a studio for a work in progress, not a storefront.</p>
+          </div>
+
+          <section className="l4-future">
+            <span className="eyebrow">{getText('about', 'future_intro', 'eyebrow')} <span className="dot">●</span></span>
+            <div className="items">
+              {futureItems.map((item: FutureItem) => (
+                <div className="l4-fi" key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
+        </main>
+      </div>
+    </section>
+  );
+}
 
-        <section
-          id="stay-close"
-          className="w-full px-6 md:px-16 lg:px-24 py-24 md:py-32 bg-moss text-cream"
-        >
-          <div className="max-w-3xl mx-auto text-center">
-            <span className="font-mono text-xs tracking-[0.3em] uppercase text-cream/40 mb-8 block">
-              {getText('about', 'stay_close', 'eyebrow')}
-            </span>
-            <h2 className="font-serif italic text-4xl md:text-6xl text-cream leading-[1.12] mb-6">
-              {getText('about', 'stay_close', 'title')}
-            </h2>
-            <p className="text-cream/50 font-sans text-base max-w-md mx-auto leading-relaxed mb-12">
-              {getText('about', 'stay_close', 'lede')}
-            </p>
+export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4 } = {}) {
+  const [layout, setLayout] = useState<1 | 4>(defaultLayout);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+  const content = useContent();
+  const { getText, getLink, getImage } = content;
+  const futureItems = futureFromContent(content);
+  const emailLink = getLink('about', 'stay_close', 'email_link');
 
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto mb-6"
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={getText('about', 'stay_close', 'email_placeholder')}
-                required
-                className="w-full sm:flex-1 px-6 py-4 rounded-full bg-cream/10 border border-cream/15 text-cream placeholder:text-cream/30 font-sans text-sm focus:outline-none focus:border-cream/40 transition-colors"
-              />
-              <ParticleButton>{getText('about', 'stay_close', 'submit')}</ParticleButton>
-            </form>
-            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-cream/20">
-              {getText('about', 'stay_close', 'fine_print')}
-            </p>
+  return (
+    <PageLayout briefSpectrum>
+      <div id="about-page-scope">
+        {layout === 1 && (
+          <Layout1 
+            content={content} 
+            futureItems={futureItems} 
+            emailLink={emailLink} 
+            activePhotoIndex={activePhotoIndex}
+            setActivePhotoIndex={setActivePhotoIndex}
+          />
+        )}
+        
+        {layout === 4 && (
+          <Layout4 
+            content={content} 
+            futureItems={futureItems} 
+            emailLink={emailLink} 
+            activePhotoIndex={activePhotoIndex}
+            setActivePhotoIndex={setActivePhotoIndex}
+          />
+        )}
 
-            <div className="mt-16 pt-10 border-t border-cream/10">
-              <a
-                href={emailLink.href}
-                className="text-cream/50 hover:text-cream font-sans text-sm transition-colors"
-              >
-                {emailLink.text}
-              </a>
-            </div>
-          </div>
-        </section>
+        <div className="switcher" role="tablist" aria-label="About page layout">
+          <button 
+            className={layout === 1 ? 'active' : ''} 
+            onClick={() => setLayout(1)}
+          >
+            <span className="n">01</span><span className="lbl">Editorial Split</span>
+          </button>
+          <button 
+            className={layout === 4 ? 'active' : ''} 
+            onClick={() => setLayout(4)}
+          >
+            <span className="n">04</span><span className="lbl">Magazine</span>
+          </button>
+        </div>
       </div>
     </PageLayout>
   );
