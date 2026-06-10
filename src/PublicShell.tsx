@@ -16,6 +16,9 @@ import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
 import ColorsPage from './pages/ColorsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
+import BrandKitExportPage from './pages/BrandKitExportPage';
+import ClientFeedbackRevisionPage from './pages/ClientFeedbackRevisionPage';
+import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
@@ -53,6 +56,8 @@ export function Root({ path }: { path: string }) {
   const isEyesClosedLogoOptions =
     path === '/eyes-closed-logo-options' ||
     path === '/design/eyes-closed-logo-variations/04-options.html';
+  const isBrandKitExport = path === '/brand-kit-export';
+  const isClientFeedbackRevision = path === '/client-feedback-revision';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -68,6 +73,8 @@ export function Root({ path }: { path: string }) {
   if (isAbout) return <AboutPage />;
   if (isColors) return <ColorsPage />;
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
+  if (isBrandKitExport) return <BrandKitExportPage />;
+  if (isClientFeedbackRevision) return <ClientFeedbackRevisionPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -108,10 +115,17 @@ function AppContentShell({ path }: { path: string }) {
 }
 
 export function PublicShell({ path }: { path: string }) {
+  const normalizedPath = path.replace(/\/+$/, '') || '/';
+  const isRevisedSite =
+    normalizedPath === '/revised' || normalizedPath.startsWith('/revised/');
+  const routedPath = isRevisedSite
+    ? normalizedPath.replace(/^\/revised/, '') || '/'
+    : normalizedPath;
+
   return (
     <SiteAccessProvider value={{ restricted: publicSiteRestricted }}>
-      <ContentProvider>
-        <AppContentShell path={path} />
+      <ContentProvider transformTree={isRevisedSite ? applyClientFeedbackRevision : undefined}>
+        <AppContentShell path={routedPath} />
       </ContentProvider>
     </SiteAccessProvider>
   );
