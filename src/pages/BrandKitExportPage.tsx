@@ -3,6 +3,9 @@ import { Download, Check } from "lucide-react";
 
 import logoWhiteSrc from "../../design/eyes-closed-logo-variations/05a-white-transparent-ec-logo.svg";
 import logoBlackSrc from "../../design/eyes-closed-logo-variations/05b-black-transparent-ec-logo.svg";
+import qrCodePngSrc from "../../design/eyes-closed-logo-variations/06c-QR-Code-ec.png";
+import qrCodeSvgSrc from "../../design/eyes-closed-logo-variations/06b-QR-Code-ec.svg";
+import qrCodePdfSrc from "../../design/eyes-closed-logo-variations/06a-QR-Code-ec.pdf?url";
 
 type SafeZoneType = "none" | "circle" | "square";
 
@@ -30,6 +33,18 @@ interface ExportGroup {
 }
 
 const EXPORT_GROUPS: ExportGroup[] = [
+  {
+    id: "qr",
+    name: "QR Code",
+    sizes: [
+      { id: "png", name: "Download PNG", width: 1080, height: 1080, safeZoneType: "none", padding: 100 },
+      { id: "svg", name: "Download SVG", width: 1080, height: 1080, safeZoneType: "none", padding: 100 },
+      { id: "pdf", name: "Download PDF", width: 1080, height: 1080, safeZoneType: "none", padding: 100 },
+    ],
+    themes: [
+      { id: "default", name: "QR Code (Black)", bgColor: "#f4ebd9", logo: qrCodePngSrc },
+    ]
+  },
   {
     id: "standard",
     name: "Standard Logos",
@@ -134,6 +149,16 @@ export default function BrandKitExportPage() {
   const activeTheme = activeGroup.themes.find(t => t.id === activeThemeId) || activeGroup.themes[0];
 
   const handleDownload = () => {
+    if (activeGroup.id === "qr") {
+      const link = document.createElement('a');
+      link.download = `eyes-closed-qr-code.${activeSize.id}`;
+      if (activeSize.id === 'pdf') link.href = qrCodePdfSrc;
+      if (activeSize.id === 'svg') link.href = qrCodeSvgSrc;
+      if (activeSize.id === 'png') link.href = qrCodePngSrc;
+      link.click();
+      return;
+    }
+
     setIsExporting(true);
     const canvas = document.createElement("canvas");
     canvas.width = activeSize.width;
@@ -314,7 +339,7 @@ export default function BrandKitExportPage() {
               className="mt-14 inline-flex items-center gap-3 bg-clay text-charcoal px-10 py-4 rounded-full font-bold uppercase tracking-wide hover:bg-cream transition-colors shadow-lg shadow-clay/20 cursor-pointer disabled:opacity-50"
             >
               <Download size={18} />
-              {isExporting ? 'Exporting...' : `Export ${activeSize.width} × ${activeSize.height}`}
+              {isExporting ? 'Exporting...' : activeGroup.id === "qr" ? activeSize.name : `Export ${activeSize.width} × ${activeSize.height}`}
             </button>
           </div>
           
