@@ -1,4 +1,4 @@
-import { useState, useCallback, type FormEvent } from 'react';
+import { useState } from 'react';
 import { PageLayout } from '../components/PageLayout';
 import { useContent, type ContentApi } from '@/context/ContentContext';
 import './AboutPage.css';
@@ -15,37 +15,7 @@ function futureFromContent(api: ContentApi): FutureItem[] {
   });
 }
 
-function StayClose({ content, email, setEmail, handleSubmit, emailLink }: any) {
-  const { getText } = content;
-  return (
-    <section className="stay">
-      <svg className="orbit-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <ellipse cx="600" cy="200" rx="240" ry="90" fill="none" stroke="#9fb5aa" strokeWidth="1" opacity=".4" />
-        <ellipse cx="600" cy="200" rx="150" ry="150" fill="none" stroke="#d46544" strokeWidth="1" opacity=".4" />
-        <circle cx="600" cy="200" r="46" fill="none" stroke="#9fb5aa" strokeWidth="1" opacity=".55" />
-      </svg>
-      <div className="stay-inner">
-        <span className="eyebrow">{getText('about', 'stay_close', 'eyebrow')}</span>
-        <h2>{getText('about', 'stay_close', 'title')}</h2>
-        <p className="lede">{getText('about', 'stay_close', 'lede')}</p>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={getText('about', 'stay_close', 'email_placeholder')}
-            required
-          />
-          <button type="submit">{getText('about', 'stay_close', 'submit')}</button>
-        </form>
-        <p className="fine">{getText('about', 'stay_close', 'fine_print')}</p>
-        <div className="signoff">
-          <a href={emailLink.href}>{emailLink.text}</a>
-        </div>
-      </div>
-    </section>
-  );
-}
+
 
 const PHOTOS = [
   '/assets/Soni-shot1.png',
@@ -74,7 +44,7 @@ function PhotoSwitcher({ activeIndex, onChange }: { activeIndex: number, onChang
   );
 }
 
-function Layout1({ content, futureItems, emailLink, activePhotoIndex, setActivePhotoIndex }: any) {
+function Layout1({ content, futureItems, activePhotoIndex, setActivePhotoIndex }: any) {
   const { getText } = content;
   return (
     <section className="layout is-active">
@@ -170,7 +140,7 @@ export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4
   const [layout, setLayout] = useState<1 | 4>(defaultLayout);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const content = useContent();
-  const { getText, getLink, getImage } = content;
+  const { getLink } = content;
   const futureItems = futureFromContent(content);
   const emailLink = getLink('about', 'stay_close', 'email_link');
 
@@ -181,7 +151,6 @@ export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4
           <Layout1 
             content={content} 
             futureItems={futureItems} 
-            emailLink={emailLink} 
             activePhotoIndex={activePhotoIndex}
             setActivePhotoIndex={setActivePhotoIndex}
           />
