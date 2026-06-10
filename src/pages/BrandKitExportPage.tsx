@@ -143,10 +143,109 @@ export default function BrandKitExportPage() {
   const [activeThemeId, setActiveThemeId] = useState(EXPORT_GROUPS[0].themes[0].id);
   
   const [isExporting, setIsExporting] = useState(false);
+  const [isZipping, setIsZipping] = useState(false);
 
   const activeGroup = EXPORT_GROUPS.find(g => g.id === activeGroupId)!;
   const activeSize = activeGroup.sizes.find(s => s.id === activeSizeId) || activeGroup.sizes[0];
   const activeTheme = activeGroup.themes.find(t => t.id === activeThemeId) || activeGroup.themes[0];
+
+  const generatePngBlob = async (size: SizeDef, theme: ThemeDef): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size.width;
+      canvas.height = size.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject(new Error("No 2d context"));
+
+      if (theme.bgColor !== "transparent") {
+        ctx.fillStyle = theme.bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      const img = new Image();
+      img.onload = () => {
+        const nativeWidth = img.naturalWidth || img.width || 1401;
+        const nativeHeight = img.naturalHeight || img.height || 799;
+
+        const availableWidth = canvas.width - (size.padding * 2);
+        const availableHeight = canvas.height - (size.padding * 2);
+        
+        const imgRatio = nativeWidth / nativeHeight;
+        const availableRatio = availableWidth / availableHeight;
+
+        let drawWidth, drawHeight;
+
+        if (imgRatio > availableRatio) {
+          drawWidth = availableWidth;
+          drawHeight = drawWidth / imgRatio;
+        } else {
+          drawHeight = availableHeight;
+          drawWidth = drawHeight * imgRatio;
+        }
+
+        const x = (canvas.width - drawWidth) / 2;
+        const y = (canvas.height - drawHeight) / 2;
+
+        ctx.drawImage(img, x, y, drawWidth, drawHeight);
+
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Failed to generate blob"));
+        }, "image/png");
+      };
+      img.onerror = () => reject(new Error("Image failed to load"));
+      img.src = theme.logo;
+    });
+  };
+
+  const handleDownloadAll = async () => {
+    setIsZipping(true);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+
+      for (const group of EXPORT_GROUPS) {
+        if (group.id === "qr") {
+          const folder = zip.folder(group.name);
+          if (!folder) continue;
+          
+          const pngBlob = await fetch(qrCodePngSrc).then(r => r.blob());
+          folder.file('eyes-closed-qr-code.png', pngBlob);
+          
+          const svgBlob = await fetch(qrCodeSvgSrc).then(r => r.blob());
+          folder.file('eyes-closed-qr-code.svg', svgBlob);
+          
+          const pdfBlob = await fetch(qrCodePdfSrc).then(r => r.blob());
+          folder.file('eyes-closed-qr-code.pdf', pdfBlob);
+          continue;
+        }
+
+        const folder = zip.folder(group.name);
+        if (!folder) continue;
+
+        for (const size of group.sizes) {
+          for (const theme of group.themes) {
+            const blob = await generatePngBlob(size, theme);
+            const safeThemeName = theme.name.replace(/\//g, '-');
+            const safeSizeName = size.name.replace(/\//g, '-');
+            folder.file(`eyes-closed-${group.id}-${safeThemeName}-${safeSizeName}.png`, blob);
+          }
+        }
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(content);
+      link.download = "eyes-closed-complete-brand-kit.zip";
+      link.click();
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate zip file.");
+    } finally {
+      setIsZipping(false);
+    }
+  };
 
   const handleDownload = () => {
     if (activeGroup.id === "qr") {
@@ -226,13 +325,33 @@ export default function BrandKitExportPage() {
   return (
     <div className="min-h-screen bg-[#080a09] px-5 py-20 text-cream selection:bg-clay/30 selection:text-cream sm:px-10 lg:px-12">
       <div className="mx-auto w-full max-w-screen-2xl">
-        <header className="mb-16 max-w-3xl text-left">
-          <span className="font-mono text-xs uppercase tracking-widest text-clay">
-            Utility
-          </span>
-          <h1 className="mt-4 font-serif text-4xl italic text-cream md:text-5xl">
-            Brand Export Kit
-          </h1>
+        <header className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 text-left">
+          <div>
+            <span className="font-mono text-xs uppercase tracking-widest text-clay">
+              Utility
+            </span>
+            <h1 className="mt-4 font-serif text-4xl italic text-cream md:text-5xl">
+              Brand Export Kit
+            </h1>
+          </div>
+          
+          <button 
+            onClick={handleDownloadAll}
+            disabled={isZipping}
+            className="flex items-center justify-center gap-3 bg-cream text-charcoal px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-clay hover:text-cream transition-colors shadow-xl disabled:opacity-50"
+          >
+            {isZipping ? (
+              <>
+                <div className="w-4 h-4 border-2 border-charcoal/20 border-t-charcoal rounded-full animate-spin" />
+                Packaging Zip...
+              </>
+            ) : (
+              <>
+                <Download size={16} />
+                Download Entire Kit (ZIP)
+              </>
+            )}
+          </button>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
