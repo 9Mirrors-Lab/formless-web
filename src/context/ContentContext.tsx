@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   useContext,
@@ -20,6 +21,8 @@ import {
   type ContentTree,
 } from '@/lib/content';
 import { createBrowserSupabaseClient, hasSupabaseEnv } from '@/lib/supabase';
+
+type ContentTransform = (tree: ContentTree) => ContentTree;
 
 export type ContentApi = {
   tree: ContentTree;
@@ -66,7 +69,13 @@ function loadReducer(state: LoadState, action: LoadAction): LoadState {
   }
 }
 
-export function ContentProvider({ children }: { children: ReactNode }) {
+export function ContentProvider({
+  children,
+  transformTree,
+}: {
+  children: ReactNode;
+  transformTree?: ContentTransform;
+}) {
   const [load, dispatch] = useReducer(loadReducer, { status: 'loading' });
 
   useEffect(() => {
@@ -85,7 +94,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         const client = createBrowserSupabaseClient();
         const rows = await fetchContentRows(client);
         if (cancelled) return;
-        const tree = buildContentTree(rows);
+        const baseTree = buildContentTree(rows);
+        const tree = transformTree ? transformTree(baseTree) : baseTree;
         dispatch({ type: 'ready', tree });
       } catch (e) {
         if (cancelled) return;
@@ -99,7 +109,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [transformTree]);
 
   const api = useMemo((): ContentApi | undefined => {
     if (load.status !== 'ready') return undefined;

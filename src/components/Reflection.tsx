@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef } from 'react';
+/* eslint-disable react-hooks/purity */
+import React, { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -60,7 +61,7 @@ export function Reflection() {
   }, []);
 
   // Generate scattered fog particles
-  const particles = Array.from({ length: 30 }, (_, i) => {
+  const particles = React.useMemo(() => Array.from({ length: 30 }, (_, i) => {
     const angle = (i / 30) * Math.PI * 2;
     const radius = 100 + Math.random() * 200;
     return {
@@ -69,7 +70,7 @@ export function Reflection() {
       startY: Math.sin(angle) * radius * (0.5 + Math.random()),
       size: 60 + Math.random() * 120,
     };
-  });
+  }), []);
 
   return (
     <section
