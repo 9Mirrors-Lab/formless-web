@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Download, Check } from "lucide-react";
 
-import logoWhiteSrc from "../../design/eyes-closed-logo-variations/05a-white-transparent-ec-logo.svg";
-import logoBlackSrc from "../../design/eyes-closed-logo-variations/05b-black-transparent-ec-logo.svg";
+import logoWhiteSrc from "../../design/eyes-closed-logo-variations/07a-white-transparent-ec-logo.svg";
+import logoBlackSrc from "../../design/eyes-closed-logo-variations/07b-black-transparent-ec-logo.svg";
 import qrCodePngSrc from "../../design/eyes-closed-logo-variations/06c-QR-Code-ec.png";
 import qrCodeSvgSrc from "../../design/eyes-closed-logo-variations/06b-QR-Code-ec.svg";
 import qrCodePdfSrc from "../../design/eyes-closed-logo-variations/06a-QR-Code-ec.pdf?url";
