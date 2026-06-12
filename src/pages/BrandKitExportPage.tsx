@@ -5,6 +5,8 @@ import logoWhiteSrc from "../../design/eyes-closed-logo-variations/07a-white-tra
 import logoBlackSrc from "../../design/eyes-closed-logo-variations/07b-black-transparent-ec-logo.svg";
 import ecPublishingWhiteSrc from "../../design/eyes-closed-logo-variations/EC-White-Publishing.svg";
 import ecPublishingBlackSrc from "../../design/eyes-closed-logo-variations/EC-Black=Publishing.svg";
+import ecPublishingWhitePngSrc from "../../design/eyes-closed-logo-variations/EC-White-Publishing.png";
+import ecPublishingBlackPngSrc from "../../design/eyes-closed-logo-variations/EC-Black=Publishing.png";
 import qrCodePngSrc from "../../design/eyes-closed-logo-variations/06c-QR-Code-ec.png";
 import qrCodeSvgSrc from "../../design/eyes-closed-logo-variations/06b-QR-Code-ec.svg";
 import qrCodePdfSrc from "../../design/eyes-closed-logo-variations/06a-QR-Code-ec.pdf?url";
@@ -40,6 +42,7 @@ const EXPORT_GROUPS: ExportGroup[] = [
     name: "EC Publishing Logo",
     sizes: [
       { id: "svg", name: "Download SVG", width: 1401, height: 799, safeZoneType: "none", padding: 0 },
+      { id: "png", name: "Download PNG", width: 1401, height: 799, safeZoneType: "none", padding: 0 },
     ],
     themes: [
       { id: "white-trans", name: "White Logo", bgColor: "transparent", logo: ecPublishingWhiteSrc },
@@ -227,6 +230,12 @@ export default function BrandKitExportPage() {
           
           const blackSvgBlob = await fetch(ecPublishingBlackSrc).then(r => r.blob());
           folder.file('eyes-closed-publishing-black.svg', blackSvgBlob);
+
+          const whitePngBlob = await fetch(ecPublishingWhitePngSrc).then(r => r.blob());
+          folder.file('eyes-closed-publishing-white.png', whitePngBlob);
+          
+          const blackPngBlob = await fetch(ecPublishingBlackPngSrc).then(r => r.blob());
+          folder.file('eyes-closed-publishing-black.png', blackPngBlob);
           continue;
         }
 
@@ -274,9 +283,16 @@ export default function BrandKitExportPage() {
 
   const handleDownload = () => {
     if (activeGroup.id === "ec-publishing") {
+      const isWhite = activeTheme.id === 'white-trans';
       const link = document.createElement('a');
-      link.download = `eyes-closed-publishing-${activeTheme.id}.svg`;
-      link.href = activeTheme.logo;
+      link.download = `eyes-closed-publishing-${isWhite ? 'white' : 'black'}.${activeSize.id}`;
+      
+      if (activeSize.id === 'svg') {
+        link.href = isWhite ? ecPublishingWhiteSrc : ecPublishingBlackSrc;
+      } else if (activeSize.id === 'png') {
+        link.href = isWhite ? ecPublishingWhitePngSrc : ecPublishingBlackPngSrc;
+      }
+      
       link.click();
       return;
     }
