@@ -71,7 +71,7 @@ export function Hero({ showCta = true }: { showCta?: boolean }) {
           <span className="hero-elem block">{cx('headline_primary')}</span>
           <span className="hero-elem block ml-4 md:ml-12">{cx('headline_secondary')}</span>
         </h1>
-        <p className="hero-elem text-cream/60 font-sans text-base md:text-lg max-w-lg mt-8 font-light leading-relaxed">
+        <p className="hero-elem whitespace-pre-line text-cream/60 font-sans text-base md:text-lg max-w-lg mt-8 font-light leading-relaxed">
           {lede}
         </p>
         {ctaEnabled && cta ? (

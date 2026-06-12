@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eyes Closed — About · Layout Explorations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050806;
+    --bg-2:#0b0f0c;
+    --panel:#0e120f;
+    --fg:#f2f0e9;
+    --fg-70:rgba(242,240,233,.72);
+    --fg-55:rgba(242,240,233,.58);
+    --fg-40:rgba(242,240,233,.42);
+    --moss:#243029;
+    --moss-soft:#9fb5aa;
+    --clay:#d46544;
+    --line:rgba(242,240,233,.12);
+    --line-soft:rgba(242,240,233,.07);
+    --serif:"Cormorant Garamond",Georgia,serif;
+    --sans:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  img{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- shared atoms ---------- */
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    color:var(--fg-40);
+  }
+  .eyebrow .dot{color:var(--clay);}
+  .serif{font-family:var(--serif);}
+  .ital{font-style:italic;}
+  .measure{max-width:34rem;}
+  .body-copy p{
+    font-size:1.075rem;
+    line-height:1.78;
+    color:var(--fg-70);
+    font-weight:400;
+  }
+  .body-copy p + p{margin-top:1.35rem;}
+  .rule{height:1px;background:var(--line);border:0;}
+
+  /* small orbit logomark */
+  .mark{display:inline-flex;align-items:center;gap:.7rem;}
+  .mark svg{width:30px;height:18px;overflow:visible;}
+  .mark .wordmark{
+    font-family:var(--serif);
+    font-size:1.32rem;
+    letter-spacing:.02em;
+    color:var(--fg);
+    line-height:1;
+  }
+
+  /* nav */
+  .nav{
+    position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.15rem clamp(1.25rem,5vw,4rem);
+    background:color-mix(in srgb,var(--bg) 80%,transparent);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav-links{display:flex;align-items:center;gap:clamp(1rem,2.4vw,2.4rem);}
+  .nav-links a{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--fg-55);transition:color .3s ease;
+  }
+  .nav-links a:hover{color:var(--fg);}
+  .nav-links a.active{color:var(--clay);}
+  .nav-cta{
+    border:1px solid var(--fg);border-radius:999px;
+    padding:.5rem 1.1rem;color:var(--fg)!important;
+    transition:background .35s ease,color .35s ease;
+  }
+  .nav-cta:hover{background:var(--fg);color:var(--bg)!important;}
+
+  /* stay-close band (shared, moss) */
+  .stay{
+    background:var(--moss);color:var(--fg);
+    padding:clamp(4.5rem,9vw,8rem) clamp(1.25rem,5vw,4rem);
+    text-align:center;position:relative;overflow:hidden;
+    border-top:1px solid var(--line-soft);
+  }
+  .stay .orbit-bg{position:absolute;inset:0;pointer-events:none;opacity:.6;}
+  .stay-inner{max-width:38rem;margin:0 auto;position:relative;}
+  .stay .eyebrow{color:rgba(242,240,233,.5);}
+  .stay h2{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.08;
+    color:var(--fg);margin:1.4rem 0 1rem;
+  }
+  .stay p.lede{color:rgba(242,240,233,.62);font-size:1rem;line-height:1.7;max-width:26rem;margin:0 auto 2.4rem;}
+  .stay form{display:flex;gap:.6rem;max-width:30rem;margin:0 auto;flex-wrap:wrap;justify-content:center;}
+  .stay input{
+    flex:1 1 14rem;padding:.95rem 1.4rem;border-radius:999px;
+    background:rgba(242,240,233,.08);border:1px solid rgba(242,240,233,.2);
+    color:var(--fg);font-family:var(--sans);font-size:.92rem;
+  }
+  .stay input::placeholder{color:rgba(242,240,233,.4);}
+  .stay input:focus{outline:none;border-color:rgba(242,240,233,.5);}
+  .stay button{
+    padding:.95rem 1.7rem;border-radius:999px;border:0;cursor:pointer;
+    background:var(--fg);color:var(--bg);font-family:var(--sans);
+    font-weight:600;font-size:.86rem;letter-spacing:.02em;
+    transition:transform .35s cubic-bezier(.16,1,.3,1),background .35s ease;
+  }
+  .stay button:hover{transform:translateY(-2px);background:var(--moss-soft);}
+  .stay .fine{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,240,233,.32);margin-top:1.4rem;}
+  .stay .signoff{margin-top:3.4rem;padding-top:2rem;border-top:1px solid rgba(242,240,233,.14);}
+  .stay .signoff a{color:rgba(242,240,233,.55);font-size:.9rem;transition:color .3s;}
+  .stay .signoff a:hover{color:var(--fg);}
+
+  /* future item rows / cards shared bits */
+  .future-head h2{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.1;color:var(--fg);
+  }
+
+  /* ---------- layout host ---------- */
+  .layout{display:none;animation:fade .6s cubic-bezier(.16,1,.3,1);}
+  .layout.is-active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){.layout{animation:none;}}
+
+  .caption{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(242,240,233,.4);}
+
+  /* ============================================================
+     LAYOUT 01 — EDITORIAL SPLIT
+     ============================================================ */
+  .l1-hero{padding:clamp(3rem,7vw,6rem) clamp(1.25rem,5vw,4rem) clamp(3rem,6vw,5rem);}
+  .l1-grid{max-width:78rem;margin:0 auto;display:grid;grid-template-columns:0.92fr 1.08fr;gap:clamp(2.5rem,6vw,6rem);align-items:center;}
+  .l1-portrait{position:relative;}
+  .l1-portrait .frame{
+    position:relative;border-radius:220px 220px 18px 18px;overflow:hidden;
+    aspect-ratio:4/5;box-shadow:0 50px 100px -50px rgba(0,0,0,.85);border:1px solid var(--line-soft);
+  }
+  .l1-portrait .frame img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;}
+  .l1-portrait .tag{
+    position:absolute;left:-0.6rem;bottom:2.2rem;background:var(--panel);
+    border:1px solid var(--line);padding:.7rem 1rem;border-radius:10px;
+    box-shadow:0 18px 40px -22px rgba(0,0,0,.8);
+  }
+  .l1-portrait .tag .caption{display:block;}
+  .l1-portrait .tag .name{font-family:var(--serif);font-style:italic;font-size:1.2rem;color:var(--fg);margin-top:.15rem;}
+  .l1-copy .eyebrow{display:block;margin-bottom:1.6rem;}
+  .l1-copy h1{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(2.8rem,6vw,5rem);line-height:1.04;color:var(--fg);margin-bottom:1.8rem;
+    text-wrap:balance;
+  }
+  .l1-copy .body-copy{margin-bottom:2.2rem;}
+  .l1-sign{display:flex;align-items:center;gap:1rem;}
+  .l1-sign .line{height:1px;width:3rem;background:var(--clay);}
+  .l1-sign span{font-family:var(--serif);font-style:italic;font-size:1.35rem;color:var(--moss-soft);}
+
+  .l1-future{max-width:78rem;margin:0 auto;padding:clamp(3rem,6vw,5rem) clamp(1.25rem,5vw,4rem) clamp(4rem,8vw,7rem);border-top:1px solid var(--line-soft);}
+  .l1-future .future-head{margin-bottom:clamp(2rem,4vw,3.4rem);}
+  .l1-future .future-head .eyebrow{display:block;margin-bottom:1.1rem;}
+  .l1-rows{display:flex;flex-direction:column;}
+  .l1-row{
+    display:grid;grid-template-columns:5rem 1fr auto;gap:2rem;align-items:baseline;
+    padding:1.8rem 0;border-top:1px solid var(--line);transition:padding-left .4s cubic-bezier(.16,1,.3,1);
+  }
+  .l1-row:last-child{border-bottom:1px solid var(--line);}
+  .l1-row:hover{padding-left:1rem;}
+  .l1-row .num{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--clay);}
+  .l1-row .t{font-family:var(--serif);font-style:italic;font-size:clamp(1.5rem,2.6vw,2.1rem);color:var(--fg);}
+  .l1-row .d{font-size:.98rem;line-height:1.6;color:var(--fg-55);max-width:24rem;}
+
+  /* ============================================================
+     LAYOUT 02 — PORTRAIT HERO / FULL-BLEED
+     ============================================================ */
+  .l2-hero{position:relative;min-height:88vh;display:grid;grid-template-columns:1.05fr 0.95fr;}
+  .l2-hero .copy{display:flex;flex-direction:column;justify-content:center;padding:clamp(3rem,7vw,7rem) clamp(1.5rem,5vw,5rem);position:relative;z-index:2;}
+  .l2-hero .copy .eyebrow{display:block;margin-bottom:1.8rem;}
+  .l2-hero h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(3rem,7vw,6rem);line-height:1.02;color:var(--fg);margin-bottom:1.6rem;text-wrap:balance;}
+  .l2-hero .lede{font-size:1.15rem;line-height:1.7;color:var(--fg-70);max-width:30rem;}
+  .l2-hero .media{position:relative;overflow:hidden;background:var(--panel);}
+  .l2-hero .media img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;}
+  .l2-hero .media::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,var(--bg) 0%,rgba(5,8,6,0) 34%);}
+  .l2-hero .vcap{position:absolute;right:1.6rem;bottom:1.6rem;z-index:3;text-align:right;}
+  .l2-hero .vcap .name{font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--fg);text-shadow:0 2px 18px rgba(0,0,0,.6);}
+
+  .l2-body{max-width:48rem;margin:0 auto;padding:clamp(4rem,8vw,7rem) clamp(1.5rem,5vw,4rem);text-align:center;}
+  .l2-body .eyebrow{display:block;margin-bottom:1.4rem;}
+  .l2-body .body-copy p:first-of-type{font-family:var(--serif);font-style:italic;font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.4;color:var(--fg);}
+  .l2-body .body-copy{display:flex;flex-direction:column;gap:1.4rem;}
+  .l2-body .body-copy p:not(:first-of-type){text-align:left;max-width:32rem;margin:0 auto;}
+
+  .l2-future{background:var(--bg-2);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:clamp(3.5rem,7vw,6rem) clamp(1.5rem,5vw,4rem);}
+  .l2-future .wrap{max-width:72rem;margin:0 auto;}
+  .l2-future .future-head{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin-bottom:2.6rem;}
+  .l2-future .future-head .eyebrow{margin-bottom:.9rem;display:block;}
+  .l2-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:0;}
+  .l2-card{padding:2.2rem;border-left:1px solid var(--line);border-top:1px solid var(--line);transition:background .4s ease;}
+  .l2-card:nth-child(odd){border-left:0;}
+  .l2-card:hover{background:rgba(159,181,170,.06);}
+  .l2-card .num{font-family:var(--mono);font-size:11px;color:var(--clay);letter-spacing:.1em;}
+  .l2-card h3{font-family:var(--serif);font-style:italic;font-size:1.9rem;color:var(--fg);margin:.8rem 0 .6rem;}
+  .l2-card p{font-size:.98rem;line-height:1.65;color:var(--fg-55);}
+
+  /* ============================================================
+     LAYOUT 03 — CENTERED MANIFESTO
+     ============================================================ */
+  .l3{padding:clamp(3rem,7vw,6rem) clamp(1.25rem,5vw,4rem) 0;}
+  .l3-hero{max-width:50rem;margin:0 auto;text-align:center;}
+  .l3-hero .eyebrow{display:block;margin-bottom:1.8rem;}
+  .l3-hero h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(2.8rem,6.5vw,5.4rem);line-height:1.05;color:var(--fg);text-wrap:balance;}
+  .l3-portrait{max-width:30rem;margin:clamp(3rem,5vw,4.5rem) auto clamp(2.5rem,4vw,3.5rem);position:relative;}
+  .l3-portrait .frame{border-radius:16px;overflow:hidden;aspect-ratio:4/5;box-shadow:0 60px 120px -55px rgba(0,0,0,.85);border:1px solid var(--line-soft);}
+  .l3-portrait .frame img{width:100%;height:100%;object-fit:cover;object-position:50% 16%;}
+  .l3-portrait .caption{display:flex;align-items:center;justify-content:center;gap:.8rem;margin-top:1.2rem;}
+  .l3-portrait .caption .ln{height:1px;width:1.8rem;background:var(--clay);}
+  .l3-text{max-width:38rem;margin:0 auto;padding-bottom:clamp(4rem,7vw,6rem);}
+  .l3-text .body-copy p{font-size:1.12rem;}
+  .l3-text .body-copy p:first-child{font-family:var(--serif);font-style:italic;font-size:clamp(1.5rem,2.6vw,1.9rem);line-height:1.5;color:var(--fg);}
+
+  .l3-future{max-width:72rem;margin:0 auto;padding:clamp(3.5rem,6vw,5.5rem) clamp(1.25rem,5vw,4rem) clamp(4.5rem,8vw,7rem);border-top:1px solid var(--line-soft);}
+  .l3-future .future-head{text-align:center;margin-bottom:clamp(2.5rem,4vw,3.4rem);}
+  .l3-future .future-head .eyebrow{display:block;margin-bottom:1rem;}
+  .l3-3up{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,3vw,3rem);}
+  .l3-up{border-top:1px solid var(--fg);padding-top:1.4rem;}
+  .l3-up .num{font-family:var(--mono);font-size:11px;color:var(--clay);letter-spacing:.1em;}
+  .l3-up h3{font-family:var(--serif);font-style:italic;font-size:1.7rem;color:var(--fg);margin:1.2rem 0 .7rem;}
+  .l3-up p{font-size:.96rem;line-height:1.65;color:var(--fg-55);}
+
+  /* ============================================================
+     LAYOUT 04 — MAGAZINE / STICKY SIDEBAR
+     ============================================================ */
+  .l4-wrap{max-width:80rem;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,5vw,4rem) 0;display:grid;grid-template-columns:18rem 1fr;gap:clamp(2.5rem,5vw,5rem);align-items:start;}
+  .l4-aside{position:sticky;top:6rem;}
+  .l4-aside .eyebrow{display:block;margin-bottom:1.2rem;}
+  .l4-aside .name{font-family:var(--serif);font-style:italic;font-size:2.2rem;line-height:1.05;color:var(--fg);margin-bottom:1.5rem;}
+  .l4-aside .frame{border-radius:14px;overflow:hidden;aspect-ratio:1/1;margin-bottom:1.5rem;box-shadow:0 40px 80px -45px rgba(0,0,0,.85);border:1px solid var(--line-soft);}
+  .l4-aside .frame img{width:100%;height:100%;object-fit:cover;object-position:50% 14%;}
+  .l4-aside .meta{display:flex;flex-direction:column;gap:.7rem;border-top:1px solid var(--line);padding-top:1.2rem;}
+  .l4-aside .meta .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-40);}
+  .l4-aside .meta .row span:last-child{color:var(--fg);}
+  .l4-aside .contact{margin-top:1.4rem;display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--clay);}
+
+  .l4-main{padding-bottom:clamp(4rem,7vw,6rem);}
+  .l4-main h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(2.6rem,5.5vw,4.6rem);line-height:1.05;color:var(--fg);margin-bottom:2rem;text-wrap:balance;}
+  .l4-pull{font-family:var(--serif);font-style:italic;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.4;color:var(--moss-soft);border-left:2px solid var(--clay);padding-left:1.6rem;margin:2.4rem 0;}
+  .l4-cols{column-count:2;column-gap:2.6rem;}
+  .l4-cols p{font-size:1rem;line-height:1.8;color:var(--fg-70);break-inside:avoid;}
+  .l4-cols p + p{margin-top:1.2rem;}
+  .l4-future{margin-top:clamp(2.5rem,4vw,3.5rem);border-top:1px solid var(--fg);padding-top:1.8rem;}
+  .l4-future .eyebrow{display:block;margin-bottom:1.6rem;}
+  .l4-future .items{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem 2.6rem;}
+  .l4-fi{padding:1.2rem 0;border-top:1px solid var(--line);}
+  .l4-fi h3{font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--fg);margin-bottom:.4rem;}
+  .l4-fi p{font-size:.94rem;line-height:1.6;color:var(--fg-55);}
+
+  /* ---------- switcher ---------- */
+  .switcher{
+    position:fixed;z-index:80;left:50%;bottom:1.4rem;transform:translateX(-50%);
+    display:flex;align-items:center;gap:.25rem;
+    background:rgba(14,18,15,.86);backdrop-filter:blur(14px);
+    border:1px solid rgba(242,240,233,.14);
+    border-radius:999px;padding:.4rem;box-shadow:0 24px 60px -24px rgba(0,0,0,.8);
+  }
+  .switcher button{
+    border:0;cursor:pointer;background:transparent;color:rgba(242,240,233,.55);
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    padding:.6rem .95rem;border-radius:999px;transition:color .3s ease,background .3s ease;white-space:nowrap;
+  }
+  .switcher button .n{color:var(--clay);margin-right:.45rem;}
+  .switcher button:hover{color:var(--fg);}
+  .switcher button.active{background:var(--fg);color:var(--bg);}
+  .switcher button.active .n{color:var(--clay);}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:920px){
+    .l1-grid,.l2-hero,.l4-wrap{grid-template-columns:1fr;}
+    .l2-hero{min-height:auto;}
+    .l2-hero .media{aspect-ratio:4/5;order:-1;}
+    .l2-hero .media::after{background:linear-gradient(0deg,var(--bg) 0%,rgba(5,8,6,0) 30%);}
+    .l3-3up,.l2-cards,.l4-cols,.l4-future .items{grid-template-columns:1fr;column-count:1;}
+    .l2-card{border-left:0;}
+    .l4-aside{position:static;}
+    .l4-aside .frame{max-width:18rem;}
+    .l1-row{grid-template-columns:3rem 1fr;}
+    .l1-row .d{grid-column:2;}
+  }
+  @media (max-width:560px){
+    .switcher button{padding:.55rem .6rem;font-size:9.5px;}
+    .switcher button .lbl{display:none;}
+    .nav-links a:not(.nav-cta){display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================= LAYOUT 01 ========================= -->
+<section class="layout is-active" data-layout="1" data-screen-label="Layout 01 — Editorial Split">
+  <nav class="nav">
+    <span class="mark">
+      <svg viewBox="0 0 60 36" aria-hidden="true">
+        <ellipse cx="30" cy="18" rx="28" ry="11" fill="none" stroke="#f2f0e9" stroke-width="1.1"/>
+        <ellipse cx="30" cy="18" rx="13" ry="13" fill="none" stroke="#d46544" stroke-width="1.1"/>
+        <circle cx="30" cy="18" r="4" fill="#f2f0e9"/>
+      </svg>
+      <span class="wordmark">Eyes Closed</span>
+    </span>
+    <span class="nav-links">
+      <a href="#">Reflections</a>
+      <a href="#">Teachings</a>
+      <a href="#">Book</a>
+      <a href="#" class="active">About</a>
+      <a href="#" class="nav-cta">Begin</a>
+    </span>
+  </nav>
+
+  <header class="l1-hero">
+    <div class="l1-grid">
+      <div class="l1-portrait">
+        <div class="frame"><img src="author.png" alt="Portrait of the author"></div>
+        <div class="tag">
+          <span class="caption">The Author</span>
+          <span class="name">In her own quiet</span>
+        </div>
+      </div>
+      <div class="l1-copy">
+        <span class="eyebrow">The Author <span class="dot">●</span></span>
+        <h1>A living teaching, still unfolding.</h1>
+        <div class="body-copy measure">
+          <p>This work did not begin as a theory. It began as a breaking point: the moment when the old way of living stopped working entirely, and something quieter took its place.</p>
+          <p>Formless is the beginning of something larger: a book, future talks, retreats, community, and deeper teachings that all stem from one foundation.</p>
+        </div>
+        <div class="l1-sign"><span class="line"></span><span>Begin with a reflection.</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="l1-future">
+    <div class="future-head">
+      <span class="eyebrow">What is unfolding <span class="dot">●</span></span>
+      <h2>The beginning of something larger.</h2>
+    </div>
+    <div class="l1-rows">
+      <div class="l1-row"><span class="num">01</span><span class="t">Talks &amp; Gatherings</span><span class="d">Intimate spaces where the teaching is shared in person.</span></div>
+      <div class="l1-row"><span class="num">02</span><span class="t">Retreats</span><span class="d">Structured days of silence, observation, and gentle guidance.</span></div>
+      <div class="l1-row"><span class="num">03</span><span class="t">The Book</span><span class="d">A doorway into the recognition — the foundation of it all.</span></div>
+      <div class="l1-row"><span class="num">04</span><span class="t">Community</span><span class="d">A soft path to stay close as the work continues to open.</span></div>
+    </div>
+  </section>
+
+  <section class="stay">
+    <svg class="orbit-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <ellipse cx="600" cy="200" rx="240" ry="90" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".4"/>
+      <ellipse cx="600" cy="200" rx="150" ry="150" fill="none" stroke="#d46544" stroke-width="1" opacity=".4"/>
+      <circle cx="600" cy="200" r="46" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".55"/>
+    </svg>
+    <div class="stay-inner">
+      <span class="eyebrow">Stay close to the work</span>
+      <h2>Stay close.</h2>
+      <p class="lede">Receive reflections and word of future talks, retreats, and community as the teaching unfolds.</p>
+      <form onsubmit="event.preventDefault();this.reset();">
+        <input type="email" placeholder="Your email" required>
+        <button type="submit">Stay close</button>
+      </form>
+      <p class="fine">No noise. Only what matters.</p>
+      <div class="signoff"><a href="/cdn-cgi/l/email-protection#b5ddd0d9d9daf5d0ccd0c6d6d9dac6d0d19bd6da"><span class="__cf_email__" data-cfemail="147c7178787b54716d716777787b6771703a777b">[email&#160;protected]</span></a></div>
+    </div>
+  </section>
+</section>
+
+<!-- ========================= LAYOUT 02 ========================= -->
+<section class="layout" data-layout="2" data-screen-label="Layout 02 — Portrait Hero">
+  <nav class="nav">
+    <span class="mark">
+      <svg viewBox="0 0 60 36" aria-hidden="true">
+        <ellipse cx="30" cy="18" rx="28" ry="11" fill="none" stroke="#f2f0e9" stroke-width="1.1"/>
+        <ellipse cx="30" cy="18" rx="13" ry="13" fill="none" stroke="#d46544" stroke-width="1.1"/>
+        <circle cx="30" cy="18" r="4" fill="#f2f0e9"/>
+      </svg>
+      <span class="wordmark">Eyes Closed</span>
+    </span>
+    <span class="nav-links">
+      <a href="#">Reflections</a>
+      <a href="#">Teachings</a>
+      <a href="#">Book</a>
+      <a href="#" class="active">About</a>
+      <a href="#" class="nav-cta">Begin</a>
+    </span>
+  </nav>
+
+  <header class="l2-hero">
+    <div class="copy">
+      <span class="eyebrow">The Author <span class="dot">●</span></span>
+      <h1>A living teaching, still unfolding.</h1>
+      <p class="lede">A breaking point became a beginning. What remained was quieter — and it is still being written.</p>
+    </div>
+    <div class="media">
+      <img src="author.png" alt="Portrait of the author">
+      <div class="vcap"><span class="name">In her own quiet</span></div>
+    </div>
+  </header>
+
+  <section class="l2-body">
+    <span class="eyebrow">In her words <span class="dot">●</span></span>
+    <div class="body-copy">
+      <p>This work did not begin as a theory. It began as a breaking point: the moment when the old way of living stopped working entirely, and something quieter took its place.</p>
+      <p>Formless is the beginning of something larger: a book, future talks, retreats, community, and deeper teachings that all stem from one foundation.</p>
+    </div>
+  </section>
+
+  <section class="l2-future">
+    <div class="wrap">
+      <div class="future-head">
+        <div>
+          <span class="eyebrow">What is unfolding <span class="dot">●</span></span>
+          <h2 class="serif ital" style="font-size:clamp(2rem,4vw,3rem);color:var(--fg);">The beginning of something larger.</h2>
+        </div>
+      </div>
+      <div class="l2-cards">
+        <div class="l2-card"><span class="num">01</span><h3>Talks &amp; Gatherings</h3><p>Intimate spaces where the teaching is shared in person.</p></div>
+        <div class="l2-card"><span class="num">02</span><h3>Retreats</h3><p>Structured days of silence, observation, and gentle guidance.</p></div>
+        <div class="l2-card"><span class="num">03</span><h3>The Book</h3><p>A doorway into the recognition — the foundation of it all.</p></div>
+        <div class="l2-card"><span class="num">04</span><h3>Community</h3><p>A soft path to stay close as the work continues to open.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stay">
+    <svg class="orbit-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <ellipse cx="200" cy="200" rx="240" ry="90" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".4"/>
+      <ellipse cx="200" cy="200" rx="150" ry="150" fill="none" stroke="#d46544" stroke-width="1" opacity=".4"/>
+      <circle cx="200" cy="200" r="46" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".55"/>
+    </svg>
+    <div class="stay-inner">
+      <span class="eyebrow">Stay close to the work</span>
+      <h2>Stay close.</h2>
+      <p class="lede">Receive reflections and word of future talks, retreats, and community as the teaching unfolds.</p>
+      <form onsubmit="event.preventDefault();this.reset();">
+        <input type="email" placeholder="Your email" required>
+        <button type="submit">Stay close</button>
+      </form>
+      <p class="fine">No noise. Only what matters.</p>
+      <div class="signoff"><a href="/cdn-cgi/l/email-protection#90f8f5fcfcffd0f5e9f5e3f3fcffe3f5f4bef3ff"><span class="__cf_email__" data-cfemail="365e535a5a5976534f5345555a59455352185559">[email&#160;protected]</span></a></div>
+    </div>
+  </section>
+</section>
+
+<!-- ========================= LAYOUT 03 ========================= -->
+<section class="layout" data-layout="3" data-screen-label="Layout 03 — Centered Manifesto">
+  <nav class="nav">
+    <span class="mark">
+      <svg viewBox="0 0 60 36" aria-hidden="true">
+        <ellipse cx="30" cy="18" rx="28" ry="11" fill="none" stroke="#f2f0e9" stroke-width="1.1"/>
+        <ellipse cx="30" cy="18" rx="13" ry="13" fill="none" stroke="#d46544" stroke-width="1.1"/>
+        <circle cx="30" cy="18" r="4" fill="#f2f0e9"/>
+      </svg>
+      <span class="wordmark">Eyes Closed</span>
+    </span>
+    <span class="nav-links">
+      <a href="#">Reflections</a>
+      <a href="#">Teachings</a>
+      <a href="#">Book</a>
+      <a href="#" class="active">About</a>
+      <a href="#" class="nav-cta">Begin</a>
+    </span>
+  </nav>
+
+  <section class="l3">
+    <div class="l3-hero">
+      <span class="eyebrow">The Author <span class="dot">●</span></span>
+      <h1>A living teaching, still unfolding.</h1>
+    </div>
+    <div class="l3-portrait">
+      <div class="frame"><img src="author.png" alt="Portrait of the author"></div>
+      <div class="caption"><span class="ln"></span><span class="caption">In her own quiet</span><span class="ln"></span></div>
+    </div>
+    <div class="l3-text">
+      <div class="body-copy">
+        <p>This work did not begin as a theory. It began as a breaking point: the moment when the old way of living stopped working entirely, and something quieter took its place.</p>
+        <p>Formless is the beginning of something larger: a book, future talks, retreats, community, and deeper teachings that all stem from one foundation. The writing continues. The teaching unfolds.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="l3-future">
+    <div class="future-head">
+      <span class="eyebrow">What is unfolding <span class="dot">●</span></span>
+      <h2 class="serif ital" style="font-size:clamp(2rem,4.4vw,3.2rem);color:var(--fg);margin-top:.4rem;">The beginning of something larger.</h2>
+    </div>
+    <div class="l3-3up">
+      <div class="l3-up"><span class="num">01</span><h3>Talks &amp; Gatherings</h3><p>Intimate spaces where the teaching is shared in person.</p></div>
+      <div class="l3-up"><span class="num">02</span><h3>Retreats</h3><p>Structured days of silence, observation, and gentle guidance.</p></div>
+      <div class="l3-up"><span class="num">03</span><h3>The Book</h3><p>A doorway into the recognition — the foundation of it all.</p></div>
+    </div>
+  </section>
+
+  <section class="stay">
+    <svg class="orbit-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <ellipse cx="400" cy="200" rx="300" ry="100" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".4"/>
+      <ellipse cx="400" cy="200" rx="160" ry="160" fill="none" stroke="#d46544" stroke-width="1" opacity=".4"/>
+      <circle cx="400" cy="200" r="50" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".55"/>
+    </svg>
+    <div class="stay-inner">
+      <span class="eyebrow">Stay close to the work</span>
+      <h2>Stay close.</h2>
+      <p class="lede">Receive reflections and word of future talks, retreats, and community as the teaching unfolds.</p>
+      <form onsubmit="event.preventDefault();this.reset();">
+        <input type="email" placeholder="Your email" required>
+        <button type="submit">Stay close</button>
+      </form>
+      <p class="fine">No noise. Only what matters.</p>
+      <div class="signoff"><a href="/cdn-cgi/l/email-protection#f9919c959596b99c809c8a9a95968a9c9dd79a96"><span class="__cf_email__" data-cfemail="ea828f868685aa8f938f99898685998f8ec48985">[email&#160;protected]</span></a></div>
+    </div>
+  </section>
+</section>
+
+<!-- ========================= LAYOUT 04 ========================= -->
+<section class="layout" data-layout="4" data-screen-label="Layout 04 — Magazine Sidebar">
+  <nav class="nav">
+    <span class="mark">
+      <svg viewBox="0 0 60 36" aria-hidden="true">
+        <ellipse cx="30" cy="18" rx="28" ry="11" fill="none" stroke="#f2f0e9" stroke-width="1.1"/>
+        <ellipse cx="30" cy="18" rx="13" ry="13" fill="none" stroke="#d46544" stroke-width="1.1"/>
+        <circle cx="30" cy="18" r="4" fill="#f2f0e9"/>
+      </svg>
+      <span class="wordmark">Eyes Closed</span>
+    </span>
+    <span class="nav-links">
+      <a href="#">Reflections</a>
+      <a href="#">Teachings</a>
+      <a href="#">Book</a>
+      <a href="#" class="active">About</a>
+      <a href="#" class="nav-cta">Begin</a>
+    </span>
+  </nav>
+
+  <div class="l4-wrap">
+    <aside class="l4-aside">
+      <span class="eyebrow">The Author <span class="dot">●</span></span>
+      <div class="name">In her<br>own quiet</div>
+      <div class="frame"><img src="author.png" alt="Portrait of the author"></div>
+      <div class="meta">
+        <div class="row"><span>Field</span><span>Inner awareness</span></div>
+        <div class="row"><span>Work</span><span>Formless</span></div>
+        <div class="row"><span>Status</span><span>Unfolding</span></div>
+      </div>
+      <a href="/cdn-cgi/l/email-protection#bbd3ded7d7d4fbdec2dec8d8d7d4c8dedf95d8d4" class="contact">Get in touch →</a>
+    </aside>
+
+    <main class="l4-main">
+      <h1>A living teaching, still unfolding.</h1>
+      <p class="l4-pull">You are not the voice in the head. Peace does not depend on outer circumstances arranging themselves.</p>
+      <div class="l4-cols">
+        <p>This work did not begin as a theory. It began as a breaking point: the moment when the old way of living stopped working entirely, and something quieter took its place.</p>
+        <p>Formless is the beginning of something larger: a book, future talks, retreats, community, and deeper teachings that all stem from one foundation.</p>
+        <p>That foundation is the recognition that you are not the voice in the head, and that peace does not depend on outer circumstances arranging themselves.</p>
+        <p>The writing continues. The teaching unfolds. This is a studio for a work in progress, not a storefront.</p>
+      </div>
+
+      <section class="l4-future">
+        <span class="eyebrow">What is unfolding <span class="dot">●</span></span>
+        <div class="items">
+          <div class="l4-fi"><h3>Talks &amp; Gatherings</h3><p>Intimate spaces where the teaching is shared in person.</p></div>
+          <div class="l4-fi"><h3>Retreats</h3><p>Structured days of silence, observation, and gentle guidance.</p></div>
+          <div class="l4-fi"><h3>The Book</h3><p>A doorway into the recognition — the foundation of it all.</p></div>
+          <div class="l4-fi"><h3>Community</h3><p>A soft path to stay close as the work continues to open.</p></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section class="stay">
+    <svg class="orbit-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <ellipse cx="600" cy="200" rx="240" ry="90" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".4"/>
+      <ellipse cx="600" cy="200" rx="150" ry="150" fill="none" stroke="#d46544" stroke-width="1" opacity=".4"/>
+      <circle cx="600" cy="200" r="46" fill="none" stroke="#9fb5aa" stroke-width="1" opacity=".55"/>
+    </svg>
+    <div class="stay-inner">
+      <span class="eyebrow">Stay close to the work</span>
+      <h2>Stay close.</h2>
+      <p class="lede">Receive reflections and word of future talks, retreats, and community as the teaching unfolds.</p>
+      <form onsubmit="event.preventDefault();this.reset();">
+        <input type="email" placeholder="Your email" required>
+        <button type="submit">Stay close</button>
+      </form>
+      <p class="fine">No noise. Only what matters.</p>
+      <div class="signoff"><a href="/cdn-cgi/l/email-protection#b5ddd0d9d9daf5d0ccd0c6d6d9dac6d0d19bd6da"><span class="__cf_email__" data-cfemail="c0a8a5acacaf80a5b9a5b3a3acafb3a5a4eea3af">[email&#160;protected]</span></a></div>
+    </div>
+  </section>
+</section>
+
+<!-- ========================= SWITCHER ========================= -->
+<div class="switcher" role="tablist" aria-label="About page layout">
+  <button data-go="1" class="active"><span class="n">01</span><span class="lbl">Editorial Split</span></button>
+  <button data-go="2"><span class="n">02</span><span class="lbl">Portrait Hero</span></button>
+  <button data-go="3"><span class="n">03</span><span class="lbl">Centered</span></button>
+  <button data-go="4"><span class="n">04</span><span class="lbl">Magazine</span></button>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  (function(){
+    var KEY='ec-about-layout';
+    var layouts=document.querySelectorAll('.layout');
+    var btns=document.querySelectorAll('.switcher button');
+    function show(n){
+      layouts.forEach(function(l){l.classList.toggle('is-active',l.dataset.layout===String(n));});
+      btns.forEach(function(b){b.classList.toggle('active',b.dataset.go===String(n));});
+      try{localStorage.setItem(KEY,String(n));}catch(e){}
+      window.scrollTo({top:0,behavior:'auto'});
+    }
+    btns.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.go);});});
+    var saved='1';try{saved=localStorage.getItem(KEY)||'1';}catch(e){}
+    show(saved);
+  })();
+</script>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#050806"/>
+    <ellipse cx="600" cy="400" rx="300" ry="120" fill="none" stroke="#9fb5aa" stroke-width="3"/>
+    <ellipse cx="600" cy="400" rx="150" ry="150" fill="none" stroke="#d46544" stroke-width="3"/>
+    <circle cx="600" cy="400" r="46" fill="#f2f0e9"/>
+  </svg>
+</template>
+
+</body>
+</html>

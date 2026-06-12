@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>ADR: Supabase + Next.js</title>
+  <link rel="stylesheet" href="../doc.css">
+</head>
+<body>
+  <div class="doc-layout">
+    <header class="doc-header">
+      <a class="back" href="../formless-hub.html">← Eyes Closed hub</a>
+    </header>
+    <main class="doc-body">
+<h1 id="adr-supabase-backed-site-content-and-a-later-next.js-move">ADR: Supabase-backed site content and a later Next.js move</h1>
+<h2 id="context">Context</h2>
+<p>Marketing copy for Formless lives in Postgres (<code>public.content</code>) with jsonb payloads, stable <code>(page, section, key)</code> identifiers, <code>order</code> for list-like sections, <code>type</code> for editor semantics, and <code>is_published</code> for future drafts.</p>
+<p>The Vite app loads all published rows once in <code>ContentProvider</code>, builds a tree via <code>buildContentTree</code> in <code>src/lib/content.ts</code>, and pages read strings with <code>getText</code> / <code>getLink</code> / <code>listItems</code>.</p>
+<h2 id="next.js-migration-later-phase">Next.js migration (later phase)</h2>
+<ul>
+<li><strong>Keep</strong> <code>src/lib/content.ts</code> free of React: same <code>fetchContentRows</code> + <code>buildContentTree</code> signatures work on the server.</li>
+<li><strong>Replace</strong> <code>src/lib/supabase.ts</code> with a server-only helper using <code>createServerClient</code> from <code>@supabase/ssr</code> and <code>NEXT_PUBLIC_SUPABASE_URL</code> / <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> (plus service role only for admin routes).</li>
+<li><strong>Fetch</strong> in a root <code>layout.tsx</code> or per-route RSC: call <code>fetchContentRows</code> there and pass a serialized tree (or per-section props) into client components that still run GSAP.</li>
+<li><strong>Caching:</strong> wrap the fetch in <code>unstable_cache</code> with a tag like <code>content</code>, or use <code>fetch</code> with <code>next: { revalidate: 60 }</code>; after CMS writes, call <code>revalidateTag('content')</code>.</li>
+<li><strong>Structural change:</strong> split browser vs server Supabase clients; the content table and loader stay the same.</li>
+</ul>
+<h2 id="status">Status</h2>
+<p>Accepted for the current Vite implementation; Next steps are deferred until an App Router app exists.</p>
+    </main>
+  </div>
+</body>
+</html>

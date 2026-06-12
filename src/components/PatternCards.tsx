@@ -69,10 +69,11 @@ export function PatternCards() {
       {/* Section header */}
       <div className="w-full h-[60vh] flex flex-col items-center justify-center relative z-20 px-6 text-center">
         <span className="font-mono text-xs tracking-[0.25em] text-moss/60 uppercase mb-6 block">
-          The Pattern
+          The Pattern Repeats
         </span>
-        <h2 className="text-4xl md:text-6xl font-serif italic text-cream/50">
-          The subject changes.
+        <h2 className="text-4xl md:text-6xl font-serif italic text-cream/50 leading-[1.18]">
+          <span className="block">Outer circumstances change.</span>
+          <span className="block">The pattern remains.</span>
         </h2>
       </div>
 

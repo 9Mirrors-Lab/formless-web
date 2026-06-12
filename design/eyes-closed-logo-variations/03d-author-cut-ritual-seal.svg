@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 760" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed author cut D - ritual seal</title>
+  <desc id="desc">A compact ritual seal for Eyes Closed with crescent eye, orbit rings, and particle marks.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}
+      .ring{fill:none;stroke:#f2f0e9;stroke-opacity:.2;stroke-width:1}.sageRing{fill:none;stroke:#9fb5aa;stroke-opacity:.22;stroke-width:1}
+      .dot{fill:none;stroke-linecap:round;stroke-dasharray:0 8}
+      .word{font-family:"Cormorant Garamond","Iowan Old Style","Times New Roman",serif;font-size:58px;font-weight:400}.tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:5px}
+    </style>
+  </defs>
+  <rect class="bg" width="760" height="760"/>
+  <g transform="translate(380 292)">
+    <circle r="180" class="ring"/>
+    <circle r="138" class="sageRing"/>
+    <circle r="72" class="ring"/>
+    <path class="dot" d="M-150 -10 C-72 -88 74 -88 152 -10" stroke="#9fb5aa" stroke-opacity=".46" stroke-width="2.3"/>
+    <path class="dot" d="M-122 36 C-38 5 42 4 128 36" stroke="#f2f0e9" stroke-opacity=".54" stroke-width="2.5"/>
+    <path class="cream" d="M-132 40 C-46 97 68 96 148 40 C68 78 -51 78 -132 40 Z"/>
+    <path d="M-28 -102 L0 -138 L28 -102" fill="none" stroke="#cc5833" stroke-width="1.5" stroke-opacity=".75"/>
+    <path d="M-28 150 L0 186 L28 150" fill="none" stroke="#9fb5aa" stroke-width="1.5" stroke-opacity=".75"/>
+    <circle class="cream" cx="-92" cy="-18" r="2.6"/><circle class="cream" cx="-30" cy="-42" r="1.6"/><circle class="cream" cx="35" cy="-45" r="2.8"/><circle class="sage" cx="92" cy="-20" r="1.6"/><circle class="ember" cx="128" cy="-2" r="1.4"/>
+  </g>
+  <text x="380" y="575" text-anchor="middle" class="cream word">Eyes Closed</text>
+  <text x="380" y="615" text-anchor="middle" class="sage tag">INNER AWARENESS</text>
+</svg>

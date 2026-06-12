@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Distribution channels · Formless</title>
+  <link rel="stylesheet" href="doc.css">
+</head>
+<body>
+  <div class="doc-layout">
+    <header class="doc-header">
+      <a class="back" href="formless-hub.html">← Eyes Closed hub</a>
+    </header>
+    <main class="doc-body">
+<h1 id="distribution-channels-high-level">Distribution channels (high level)</h1>
+<p>Early map of where the <em>Formless</em> book may be sold. Channels are under discussion; nothing is locked except using <strong>IngramSpark</strong> as the primary print/ebook production hub.</p>
+<p>See also: <code>publishing-roadmap-notes.md</code> (pipeline), <code>publishing-in-house-savings.md</code> (what to DIY vs hire), <code>publishing-ingramspark.md</code> in proj-001 coordination (portal workflow).</p>
+<h2 id="channel-overview">Channel overview</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Format</th>
+<th>Role (today)</th>
+<th>Portal / entry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IngramSpark</strong></td>
+<td>Print (HC/PB), ebook</td>
+<td>Primary setup: files, proofs, metadata, wide distribution</td>
+<td><a href="https://myaccount.ingramspark.com/">myaccount.ingramspark.com</a></td>
+</tr>
+<tr>
+<td><strong>Amazon</strong></td>
+<td>Kindle ebook, KDP print</td>
+<td>Major retail destination; may be direct (KDP) and/or via IngramSpark distribution</td>
+<td><a href="https://kdp.amazon.com/">KDP</a></td>
+</tr>
+<tr>
+<td><strong>Audible</strong></td>
+<td>Audiobook</td>
+<td>Separate product; production and rights via ACX</td>
+<td><a href="https://www.acx.com/">ACX</a></td>
+</tr>
+<tr>
+<td><strong>Substack</strong></td>
+<td>Essays, email</td>
+<td>Research: publish excerpts during book dev, build subscriber list, test messaging, sustain readers after launch</td>
+<td><a href="https://substack.com/">substack.com</a> · <a href="substack-approach.html">approach doc</a></td>
+</tr>
+<tr>
+<td>Other retailers</td>
+<td>Ebook, print</td>
+<td>Often reached through IngramSpark expanded distribution (Apple Books, Kobo, B&amp;N, etc.)</td>
+<td>Via IngramSpark title settings</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ingramspark">IngramSpark</h2>
+<ul>
+<li>Print on demand: hardcover, paperback (color or B&amp;W).</li>
+<li>Ebook distribution to many retailers from one title record.</li>
+<li>Operational home for ISBN-linked metadata, interior/cover PDFs, proofs, pricing, and channel toggles.</li>
+</ul>
+<h2 id="amazon">Amazon</h2>
+<p>Two common patterns (decide later):</p>
+<ol type="1">
+<li><strong>Wide via IngramSpark</strong> — Enable Amazon in IngramSpark distribution; Amazon listing feeds from that pipeline.</li>
+<li><strong>Direct KDP</strong> — Publish Kindle and/or KDP paperback on Amazon separately for more control or KDP Select; must avoid duplicate ISBN/listing conflicts.</li>
+</ol>
+<p>Open: exclusive vs non-exclusive Amazon, print match between KDP and IngramSpark, and whether KDP Select is worth it for launch.</p>
+<h2 id="audible-acx">Audible (ACX)</h2>
+<p>Audiobook is a <strong>separate deliverable</strong>, not a file upload beside the print PDF:</p>
+<ul>
+<li>Narration (author-read, pro narrator, or hybrid).</li>
+<li>Audio mastering to ACX specs.</li>
+<li>Rights and distribution: Audible / Amazon / iTunes via ACX.</li>
+<li>Often follows print/ebook once manuscript is stable.</li>
+</ul>
+<p>Open: timeline (launch with print or phase 2), production budget, exclusive vs non-exclusive ACX.</p>
+<h2 id="substack">Substack</h2>
+<p>Parallel <strong>audience channel</strong> (not a bookstore). Status: research / not started. See <a href="substack-approach.html"><code>substack-approach.html</code></a>.</p>
+<ul>
+<li>Publish insights and adapted excerpts while the manuscript develops.</li>
+<li>Build an owned email list; test themes and language with reader feedback.</li>
+<li>Create pre-launch anticipation; launch <em>Formless</em> to subscribers who already trust the teaching.</li>
+<li>Continue essays and relationship after print/ebook; point readers to the Eyes Closed site and offerings when ready.</li>
+</ul>
+<p>Open: publication name (Eyes Closed vs Soni C. vs <em>Formless</em>), cadence, free vs paid tier, excerpt policy vs net-new writing.</p>
+<h2 id="how-channels-relate">How channels relate</h2>
+<pre class="text"><code>Manuscript + design (upstream)
+        │
+        ├─► IngramSpark ──► print POD + ebook ──► many stores (incl. possible Amazon)
+        ├─► Amazon KDP ──► (optional direct) Kindle / Amazon print
+        ├─► ACX ──► audiobook ──► Audible / Amazon audio
+        └─► Substack ──► essays + email ──► audience before / during / after launch</code></pre>
+<p>Marketing site (<code>formless-web</code>) points readers to buy/listen; it does not replace any publisher portal.</p>
+<h2 id="open-questions">Open questions</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Amazon: IngramSpark only, KDP only, or both (and how to avoid duplicate listings)?</label></li>
+<li><label><input type="checkbox" />Audiobook: launch day one vs phase 2?</label></li>
+<li><label><input type="checkbox" />Which IngramSpark ebook retailers to enable at launch vs add later?</label></li>
+<li><label><input type="checkbox" />One ISBN strategy across print/ebook/audio (audio may use its own identifiers).</label></li>
+<li><label><input type="checkbox" />Substack: when to start, name, cadence, and how it links to the site without feeling like a funnel?</label></li>
+</ul>
+<h2 id="session-notes">Session notes</h2>
+<ul>
+<li>2026-05-18 — High-level channel map added (IngramSpark, Amazon, Audible); status = discussing.</li>
+<li>2026-05-20 — Substack added as research channel for audience building and pre/post-launch relationship.</li>
+</ul>
+    </main>
+  </div>
+</body>
+</html>

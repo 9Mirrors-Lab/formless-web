@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed source particle variation H - knife edge sans</title>
+  <desc id="desc">A very slim knife-edge crescent with sparse particles and an understated sans-serif wordmark.</desc>
+  <defs><style>.bg{fill:#050806}.cream{fill:#f2f0e9}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.23;stroke-width:.5}.word{font-family:"Avenir Next","Optima","Helvetica Neue",Arial,sans-serif;font-size:45px;font-weight:300;letter-spacing:4px}</style></defs>
+  <rect class="bg" width="960" height="300"/>
+  <path class="cream" d="M238 122 C342 166 492 165 606 122 C497 151 343 152 238 122 Z"/>
+  <path class="fine" d="M594 132 C632 107 681 86 746 67"/>
+  <g class="cream"><circle cx="612" cy="126" r="1"/><circle cx="636" cy="113" r="1.2"/><circle cx="664" cy="101" r="1"/><circle cx="696" cy="88" r="1.6"/><circle cx="724" cy="77" r="1"/><circle cx="750" cy="66" r="1.5"/></g>
+  <text x="480" y="242" text-anchor="middle" class="cream word">EYES CLOSED</text>
+</svg>

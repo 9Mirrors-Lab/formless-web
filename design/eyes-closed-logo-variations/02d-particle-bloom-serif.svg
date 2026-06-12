@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 450" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed dynamic variation D - particle bloom serif</title>
+  <desc id="desc">A crescent eyelid releasing a denser blooming particle field with an elegant serif lockup.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}.word{font-family:"Didot","Bodoni 72","Baskerville","Times New Roman",serif;font-size:62px;font-weight:400;letter-spacing:1px}.tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:5.8px}.dotline{fill:none;stroke-linecap:round;stroke-dasharray:0 6.5}
+    </style>
+  </defs>
+  <rect class="bg" width="1100" height="450"/>
+  <g>
+    <path class="cream" d="M250 152 C384 219 572 219 706 152 C578 199 378 200 250 152 Z"/>
+    <path class="dotline" d="M630 151 C720 72 848 30 1010 33" stroke="#f2f0e9" stroke-opacity=".48" stroke-width="2.1"/>
+    <path class="dotline" d="M620 162 C731 102 850 78 1030 83" stroke="#9fb5aa" stroke-opacity=".38" stroke-width="2.8"/>
+    <path class="dotline" d="M622 176 C746 146 866 133 1044 148" stroke="#f2f0e9" stroke-opacity=".36" stroke-width="2.2"/>
+    <path class="dotline" d="M622 190 C746 202 864 214 1010 200" stroke="#cc5833" stroke-opacity=".42" stroke-width="1.6"/>
+    <g>
+      <circle class="cream" cx="660" cy="143" r="1.1"/><circle class="cream" cx="682" cy="127" r="1.8"/><circle class="cream" cx="708" cy="113" r="2.5"/><circle class="sage" cx="740" cy="99" r="1.2"/><circle class="cream" cx="776" cy="84" r="3.1"/><circle class="sage" cx="818" cy="70" r="1.6"/><circle class="ember" cx="862" cy="57" r="1.4"/>
+      <circle class="cream" cx="705" cy="165" r="1.4"/><circle class="cream" cx="748" cy="158" r="2.2"/><circle class="sage" cx="802" cy="151" r="1.4"/><circle class="ember" cx="890" cy="146" r="1.6"/><circle class="cream" cx="956" cy="148" r="1.1"/>
+    </g>
+  </g>
+  <text x="550" y="330" text-anchor="middle" class="cream word">Eyes Closed</text>
+  <text x="550" y="365" text-anchor="middle" class="sage tag">INNER AWARENESS</text>
+</svg>

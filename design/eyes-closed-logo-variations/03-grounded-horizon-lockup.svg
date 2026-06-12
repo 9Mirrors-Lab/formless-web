@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed logo variation 03 - grounded horizon lockup</title>
+  <desc id="desc">A closed-eye crescent grounded by a subtle sage horizon line above the Eyes Closed wordmark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.serif{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:68px;font-weight:400}.mono{font-family:"Space Mono","Courier New",monospace;font-size:11px;letter-spacing:6px}
+    </style>
+    <linearGradient id="horizon03" x1="0" x2="1">
+      <stop offset="0" stop-color="#9fb5aa" stop-opacity="0"/>
+      <stop offset=".18" stop-color="#9fb5aa" stop-opacity=".76"/>
+      <stop offset=".5" stop-color="#f2f0e9" stop-opacity=".78"/>
+      <stop offset=".82" stop-color="#9fb5aa" stop-opacity=".76"/>
+      <stop offset="1" stop-color="#9fb5aa" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect class="bg" width="960" height="340"/>
+  <path d="M262 118 C356 184 603 184 698 118 C591 165 369 165 262 118 Z" class="cream"/>
+  <rect x="207" y="177" width="546" height="2" fill="url(#horizon03)"/>
+  <text x="480" y="262" text-anchor="middle" class="cream serif">Eyes Closed</text>
+  <text x="480" y="294" text-anchor="middle" class="sage mono">STILLNESS WITH SIGNAL</text>
+</svg>

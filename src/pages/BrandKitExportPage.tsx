@@ -3,6 +3,8 @@ import { Download, Check } from "lucide-react";
 
 import logoWhiteSrc from "../../design/eyes-closed-logo-variations/07a-white-transparent-ec-logo.svg";
 import logoBlackSrc from "../../design/eyes-closed-logo-variations/07b-black-transparent-ec-logo.svg";
+import ecPublishingWhiteSrc from "../../design/eyes-closed-logo-variations/EC-White-Publishing.svg";
+import ecPublishingBlackSrc from "../../design/eyes-closed-logo-variations/EC-Black=Publishing.svg";
 import qrCodePngSrc from "../../design/eyes-closed-logo-variations/06c-QR-Code-ec.png";
 import qrCodeSvgSrc from "../../design/eyes-closed-logo-variations/06b-QR-Code-ec.svg";
 import qrCodePdfSrc from "../../design/eyes-closed-logo-variations/06a-QR-Code-ec.pdf?url";
@@ -33,6 +35,19 @@ interface ExportGroup {
 }
 
 const EXPORT_GROUPS: ExportGroup[] = [
+  {
+    id: "ec-publishing",
+    name: "EC Publishing Logo",
+    sizes: [
+      { id: "large", name: "Large (2048px)", width: 2048, height: 1168, safeZoneType: "none", padding: 0 },
+      { id: "medium", name: "Medium (1024px)", width: 1024, height: 584, safeZoneType: "none", padding: 0 },
+      { id: "small", name: "Small (512px)", width: 512, height: 292, safeZoneType: "none", padding: 0 },
+    ],
+    themes: [
+      { id: "white-trans", name: "White Logo (Transparent)", bgColor: "transparent", logo: ecPublishingWhiteSrc },
+      { id: "black-trans", name: "Black Logo (Transparent)", bgColor: "transparent", logo: ecPublishingBlackSrc },
+    ]
+  },
   {
     id: "qr",
     name: "QR Code",

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed source particle variation C - quiet Garamond</title>
+  <desc id="desc">A quiet source particle mark with a smaller Garamond-style wordmark.</desc>
+  <defs><style>.bg{fill:#050806}.cream{fill:#f2f0e9}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.28;stroke-width:.6}.word{font-family:"Adobe Garamond Pro","EB Garamond","Garamond","Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:.7px}</style></defs>
+  <rect class="bg" width="960" height="300"/>
+  <path class="cream" d="M228 116 C337 179 499 179 613 116 C503 163 335 164 228 116 Z"/>
+  <path class="fine" d="M598 130 C633 106 675 87 728 69"/>
+  <g class="cream"><circle cx="611" cy="126" r="1.3"/><circle cx="629" cy="116" r="1.1"/><circle cx="647" cy="108" r="1.7"/><circle cx="671" cy="97" r="1.1"/><circle cx="700" cy="84" r="2.2"/><circle cx="732" cy="68" r="1.4"/></g>
+  <text x="480" y="248" text-anchor="middle" class="cream word">Eyes Closed</text>
+</svg>

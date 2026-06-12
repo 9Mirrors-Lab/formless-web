@@ -26,6 +26,10 @@ function FootLink({
 export function Footer() {
   const { restricted } = useSiteAccess();
   const { getText, getLink } = useContent();
+  const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+  const homeHref = currentPath === '/revised' || currentPath.startsWith('/revised/')
+    ? '/revised'
+    : '/';
 
   const brandClass = 'font-sans font-semibold tracking-[0.2em] uppercase text-xl mb-6 inline-block';
 
@@ -36,7 +40,7 @@ export function Footer() {
           {restricted ? (
             <span className={brandClass}>{getText('footer', 'brand', 'name')}</span>
           ) : (
-            <a href="/" className={brandClass}>
+            <a href={homeHref} className={brandClass}>
               {getText('footer', 'brand', 'name')}
             </a>
           )}

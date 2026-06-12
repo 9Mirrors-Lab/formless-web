@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 430" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed author cut G - quiet luxury</title>
+  <desc id="desc">A minimal luxury Eyes Closed lockup with a slender crescent, single field line, and sparse particles.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}
+      .hair{fill:none;stroke:#9fb5aa;stroke-opacity:.35;stroke-width:.8}
+      .word{font-family:"Cormorant Garamond","Iowan Old Style","Times New Roman",serif;font-size:70px;font-weight:400;letter-spacing:.5px}
+      .tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:7px}
+    </style>
+    <linearGradient id="gLine" x1="0" x2="1">
+      <stop offset="0" stop-color="#9fb5aa" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#f2f0e9" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#9fb5aa" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect class="bg" width="1120" height="430"/>
+  <rect x="250" y="196" width="620" height="1" fill="url(#gLine)"/>
+  <path class="cream" d="M316 148 C432 202 630 202 754 148 C632 188 432 189 316 148 Z"/>
+  <path class="hair" d="M724 160 C762 135 809 116 870 100"/>
+  <circle class="cream" cx="746" cy="148" r="1.5"/><circle class="cream" cx="774" cy="134" r="2.2"/><circle class="sage" cx="812" cy="120" r="1.2"/><circle class="cream" cx="858" cy="102" r="1.7"/><circle class="ember" cx="890" cy="92" r="1.2"/>
+  <text x="560" y="305" text-anchor="middle" class="cream word">Eyes Closed</text>
+  <text x="560" y="344" text-anchor="middle" class="sage tag">PRESENT</text>
+</svg>

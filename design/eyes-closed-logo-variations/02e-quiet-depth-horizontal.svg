@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 300" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed dynamic variation E - quiet depth horizontal</title>
+  <desc id="desc">A horizontal Eyes Closed lockup with a crescent and dynamic particle field beside the wordmark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}.word{font-family:"Cormorant Garamond","Iowan Old Style","Times New Roman",serif;font-size:58px;font-weight:400}.tag{font-family:"Space Mono","Courier New",monospace;font-size:9px;letter-spacing:5px}.dotline{fill:none;stroke-linecap:round;stroke-dasharray:0 7.2}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.18;stroke-width:.5}
+    </style>
+  </defs>
+  <rect class="bg" width="1120" height="300"/>
+  <g transform="translate(54 34) scale(.64)">
+    <path class="cream" d="M218 136 C350 214 560 214 701 136 C563 197 354 198 218 136 Z"/>
+    <path class="fine" d="M660 152 C728 108 812 82 936 62"/>
+    <path class="dotline" d="M600 158 C700 120 810 92 974 64" stroke="#f2f0e9" stroke-opacity=".62" stroke-width="3"/>
+    <path class="dotline" d="M600 180 C730 174 850 170 1010 132" stroke="#9fb5aa" stroke-opacity=".34" stroke-width="2"/>
+    <path class="dotline" d="M650 195 C778 220 874 226 1000 202" stroke="#cc5833" stroke-opacity=".34" stroke-width="1.6"/>
+  </g>
+  <text x="660" y="137" text-anchor="start" class="cream word">Eyes Closed</text>
+  <text x="662" y="172" text-anchor="start" class="sage tag">INNER AWARENESS</text>
+</svg>

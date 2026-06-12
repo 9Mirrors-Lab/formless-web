@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed logo variation 02 - centered orbit lockup</title>
+  <desc id="desc">A centered closed eye logo with orbit paths, particles, and Eyes Closed wordmark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.line{fill:none;stroke:#f2f0e9;stroke-width:1;stroke-opacity:.38}.dash{fill:none;stroke:#f2f0e9;stroke-width:1;stroke-opacity:.35;stroke-dasharray:3 6}.serif{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:72px;font-weight:400}.mono{font-family:"Space Mono","Courier New",monospace;font-size:11px;letter-spacing:6px}
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="420"/>
+  <g transform="translate(0 4)">
+    <ellipse cx="480" cy="145" rx="202" ry="55" class="dash"/>
+    <ellipse cx="480" cy="145" rx="92" ry="26" class="dash" transform="rotate(-11 480 145)"/>
+    <path d="M256 147 C357 69 604 68 704 147" class="line"/>
+    <path d="M256 147 C359 225 601 226 704 147" class="line"/>
+    <path d="M286 151 C389 224 571 223 674 151 C560 193 401 193 286 151 Z" class="cream"/>
+    <g class="line" opacity=".8">
+      <circle cx="480" cy="145" r="10"/><circle cx="480" cy="145" r="20"/><circle cx="480" cy="145" r="32"/><line x1="480" y1="108" x2="480" y2="182"/><line x1="443" y1="145" x2="517" y2="145"/>
+    </g>
+    <g class="cream">
+      <circle cx="324" cy="145" r="3.2"/><circle cx="385" cy="126" r="1.9"/><circle cx="423" cy="158" r="2.3"/><circle cx="542" cy="122" r="2.8"/><circle cx="592" cy="151" r="2"/><circle cx="638" cy="136" r="4"/>
+    </g>
+  </g>
+  <text x="480" y="315" text-anchor="middle" class="cream serif">Eyes Closed</text>
+  <text x="480" y="348" text-anchor="middle" class="sage mono">RETURN TO CENTER</text>
+</svg>

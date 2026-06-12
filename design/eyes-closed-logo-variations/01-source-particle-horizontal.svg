@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed logo variation 01 - refined source particle lockup</title>
+  <desc id="desc">A slim cream crescent with a precise rising particle field above the Eyes Closed wordmark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.26;stroke-width:.7}.serif{font-family:"Cormorant Garamond","Iowan Old Style","Times New Roman",serif;font-size:68px;font-weight:400;letter-spacing:.3px}.tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:5.6px}
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="360"/>
+  <path d="M190 146 C314 223 501 222 632 146 C506 206 318 207 190 146 Z" class="cream"/>
+  <path d="M608 159 C646 130 695 103 760 78" class="fine"/>
+  <g opacity=".95">
+    <circle class="cream" cx="626" cy="150" r="1.7"/><circle class="cream" cx="640" cy="141" r="1.4"/><circle class="cream" cx="654" cy="134" r="2.1"/>
+    <circle class="cream" cx="671" cy="124" r="1.3"/><circle class="cream" cx="688" cy="116" r="2.5"/><circle class="cream" cx="707" cy="103" r="1.4"/>
+    <circle class="cream" cx="730" cy="90" r="3.2"/><circle class="cream" cx="761" cy="75" r="2.1"/>
+    <circle class="cream" cx="664" cy="150" r="1.2"/><circle class="cream" cx="686" cy="141" r="1.1"/><circle class="cream" cx="711" cy="129" r="1.5"/><circle class="cream" cx="740" cy="113" r="1.1"/>
+  </g>
+  <text x="500" y="292" text-anchor="middle" class="cream serif">Eyes Closed</text>
+  <text x="500" y="326" text-anchor="middle" class="sage tag">INNER AWARENESS</text>
+</svg>

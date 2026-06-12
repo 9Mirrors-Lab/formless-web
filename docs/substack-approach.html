@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Substack approach · Eyes Closed</title>
+  <style>
+    :root {
+      --void: #0a0a09;
+      --canvas: #141413;
+      --panel: #1c1c1a;
+      --inset: #222220;
+      --ink: #edebe6;
+      --muted: #a8a7a0;
+      --subtle: #6b6a65;
+      --clay: #d97757;
+      --clay-h: #e8956f;
+      --olive: #8fa876;
+      --violet: #9b8fc4;
+      --line: #2a2a27;
+      --line-hi: #3d3d3a;
+      --serif: ui-serif, Georgia, "Times New Roman", serif;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      max-width: 1180px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 28px 18px 48px 22px;
+      border-right: 1px solid var(--line);
+      font-size: 13px;
+      background: var(--void);
+    }
+
+    nav.toc .label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 14px;
+    }
+
+    nav.toc a {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 5px 0;
+    }
+
+    nav.toc a:hover { color: var(--clay-h); }
+
+    main {
+      padding: 40px 36px 80px;
+      background: var(--void);
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 3px;
+      background: var(--violet);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(34px, 4.8vw, 50px);
+      line-height: 1.06;
+      font-weight: 400;
+      margin-bottom: 10px;
+      max-width: 18ch;
+    }
+
+    h1 em { font-style: italic; color: var(--muted); }
+
+    .lede {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 52ch;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .hub-link {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--clay);
+      text-decoration: none;
+      margin-bottom: 36px;
+    }
+
+    .hub-link:hover { color: var(--clay-h); }
+
+    section {
+      padding: 36px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .section-note {
+      color: var(--subtle);
+      font-size: 14px;
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .status-pill {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--violet);
+      border: 1px solid rgba(155, 143, 196, 0.4);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+
+    .diagram-wrap {
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    .diagram-wrap svg {
+      display: block;
+      width: 100%;
+      min-width: 420px;
+      height: auto;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .role-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 14px 16px;
+    }
+
+    .role-card h4 {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .role-card.website h4 { color: var(--clay); }
+    .role-card.substack h4 { color: var(--violet); }
+    .role-card.book h4 { color: var(--olive); }
+    .role-card.offerings h4 { color: #9ba8c4; }
+
+    .role-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 16px 18px;
+      margin: 16px 0;
+    }
+
+    .panel-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 10px;
+    }
+
+    .open-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .open-list li {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 8px 0;
+      border-top: 1px solid var(--line);
+      line-height: 1.45;
+    }
+
+    .open-list li:first-child { border-top: none; padding-top: 0; }
+
+    @media (max-width: 880px) {
+      .layout { grid-template-columns: 1fr; }
+      nav.toc {
+        position: relative;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        padding: 16px 20px;
+      }
+      nav.toc .label { width: 100%; }
+      nav.toc a { display: inline; padding: 0; }
+      main { padding: 28px 20px 64px; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="toc">
+      <div class="label">Substack · research</div>
+      <a href="formless-hub.html">← Eyes Closed hub</a>
+      <a href="#flow">Audience flow</a>
+      <a href="#roles">Where it fits</a>
+      <a href="#open">Open questions</a>
+    </nav>
+
+    <main>
+      <p class="eyebrow">Eyes Closed · audience channel</p>
+      <h1>Substack <em>approach</em></h1>
+      <p class="lede">Research how Substack could support book development, audience building, and long-term relationship with readers under the Eyes Closed brand.</p>
+      <span class="status-pill">Status · research / not started</span>
+      <a class="hub-link" href="formless-hub.html">Open project hub →</a>
+
+      <section id="flow">
+        <h2>Audience flow</h2>
+        <p class="section-note">View of how this could flow with publishing and launch of the book and site.</p>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 454 232" xmlns="http://www.w3.org/2000/svg" aria-label="Substack audience flow">
+            <defs>
+              <marker id="flow-arrow" markerWidth="4" markerHeight="4" refX="3.5" refY="2" orient="auto">
+                <path d="M0,0 L4,2 L0,4 Z" fill="#4A4944"/>
+              </marker>
+            </defs>
+
+            <!-- row 1 -->
+            <rect x="16" y="10" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="126" y="22" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">01</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="26" y="32">IDEAS / RESEARCH /</tspan>
+              <tspan x="26" dy="9">WRITING</tspan>
+            </text>
+
+            <rect x="168" y="10" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="278" y="22" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">02</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="178" y="32">PUBLISH INSIGHTS +</tspan>
+              <tspan x="178" dy="9">EXCERPTS</tspan>
+            </text>
+            <text x="178" y="56" fill="#6B6A65" font-size="6" font-family="system-ui">Substack</text>
+
+            <rect x="320" y="10" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="430" y="22" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">03</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="330" y="32">BUILD EMAIL</tspan>
+              <tspan x="330" dy="9">SUBSCRIBERS</tspan>
+            </text>
+            <text x="330" y="56" fill="#6B6A65" font-size="6" font-family="system-ui">Audience</text>
+
+            <!-- row 2 -->
+            <rect x="16" y="90" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="126" y="102" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">04</text>
+            <text x="26" y="118" fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">TEST CONCEPTS</text>
+            <text x="26" y="134" fill="#6B6A65" font-size="6" font-family="system-ui">Refine messaging</text>
+
+            <rect x="168" y="90" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="278" y="102" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">05</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="178" y="112">ANTICIPATION DURING</tspan>
+              <tspan x="178" dy="9">BOOK DEV</tspan>
+            </text>
+            <text x="178" y="136" fill="#6B6A65" font-size="6" font-family="system-ui">Pre-launch</text>
+
+            <rect x="320" y="90" width="118" height="52" rx="4" fill="#181816" stroke="#484845" stroke-width="0.5"/>
+            <text x="430" y="102" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">06</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="330" y="112">LAUNCH TO TRUSTED</tspan>
+              <tspan x="330" dy="9">AUDIENCE</tspan>
+            </text>
+            <text x="330" y="136" fill="#6B6A65" font-size="6" font-family="system-ui">Book launch</text>
+
+            <!-- row 3 -->
+            <rect x="16" y="170" width="118" height="52" rx="4" fill="#181816" stroke="#3A3A37" stroke-width="0.5"/>
+            <text x="126" y="182" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">07</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="26" y="192">READER RELATIONSHIP</tspan>
+              <tspan x="26" dy="9">AFTER LAUNCH</tspan>
+            </text>
+            <text x="26" y="216" fill="#6B6A65" font-size="6" font-family="system-ui">Sustain</text>
+
+            <rect x="168" y="170" width="118" height="52" rx="4" fill="#1C1C1A" stroke="#484845" stroke-width="0.5"/>
+            <text x="278" y="182" text-anchor="end" fill="#5A5954" font-family="ui-monospace,monospace" font-size="7">08</text>
+            <text fill="#969590" font-size="6.5" font-family="system-ui" letter-spacing="0.08">
+              <tspan x="178" y="192">EXPAND IMPACT +</tspan>
+              <tspan x="178" dy="9">OPPORTUNITIES</tspan>
+            </text>
+            <text fill="#6B6A65" font-size="6" font-family="system-ui">
+              <tspan x="178" y="214">Books · speaking</tspan>
+              <tspan x="178" dy="7">consulting · community</tspan>
+            </text>
+
+            <!-- connectors -->
+            <line x1="136" y1="36" x2="166" y2="36" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#flow-arrow)"/>
+            <line x1="288" y1="36" x2="318" y2="36" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#flow-arrow)"/>
+            <path d="M 379 62 L 379 74 L 75 74 L 75 90" fill="none" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#flow-arrow)"/>
+            <line x1="136" y1="116" x2="166" y2="116" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#flow-arrow)"/>
+            <line x1="288" y1="116" x2="318" y2="116" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#flow-arrow)"/>
+            <path d="M 379 142 L 379 154 L 75 154 L 75 170" fill="none" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#flow-arrow)"/>
+            <line x1="136" y1="196" x2="166" y2="196" stroke="#4A4944" stroke-width="0.75" stroke-dasharray="2 4" marker-end="url(#flow-arrow)"/>
+          </svg>
+        </div>
+      </section>
+
+      <section id="roles">
+        <h2>Where it fits</h2>
+        <p class="section-note">Substack is not a replacement for the site; it is the ongoing conversation layer.</p>
+
+        <div class="two-col">
+          <div class="role-card website">
+            <h4>Website · Eyes Closed</h4>
+            <p>Stable home: mission, book page, practice, about Soni. Clear doorways when offerings go live.</p>
+          </div>
+          <div class="role-card substack">
+            <h4>Substack · writing channel</h4>
+            <p>Frequency, voice, and subscriber relationship. Essays and excerpts that point back to the site, not duplicate it.</p>
+          </div>
+          <div class="role-card book">
+            <h4>Book · Formless</h4>
+            <p>Long-form artifact; Substack feeds and tests themes before and after print/ebook launch.</p>
+          </div>
+          <div class="role-card offerings">
+            <h4>Offerings · later</h4>
+            <p>Consulting, groups, video, speaking. Substack warms readers; site converts when services are ready.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="open">
+        <h2>Open questions</h2>
+        <p class="section-note">Decisions to make with Soni before committing.</p>
+
+        <div class="panel">
+          <div class="panel-label">Research checklist</div>
+          <ul class="open-list">
+            <li>Eyes Closed vs Soni C. vs <em>Formless</em> as the Substack publication name</li>
+            <li>Free only vs paid tier later; what belongs behind paywall if anything</li>
+            <li>Cadence: weekly, biweekly, or seasonal bursts tied to book milestones</li>
+            <li>What can be excerpted from the manuscript vs net-new writing</li>
+            <li>How Substack links to the website (footer, about, book CTA) without feeling like a funnel</li>
+            <li>Overlap with video framework posts (YouTube + Substack or Substack-first)</li>
+            <li>Launch timing relative to IngramSpark and site rebrand</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

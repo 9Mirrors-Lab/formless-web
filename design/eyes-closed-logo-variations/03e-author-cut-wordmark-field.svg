@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 430" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed author cut E - wordmark field</title>
+  <desc id="desc">A wordmark-led Eyes Closed lockup where the crescent becomes a quiet field between the words.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}
+      .dot{fill:none;stroke-linecap:round;stroke-dasharray:0 8}
+      .word{font-family:"Cormorant Garamond","Iowan Old Style","Times New Roman",serif;font-size:88px;font-weight:400;letter-spacing:.1px}
+      .tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:6px}
+    </style>
+  </defs>
+  <rect class="bg" width="1160" height="430"/>
+  <text x="424" y="234" text-anchor="end" class="cream word">Eyes</text>
+  <text x="736" y="234" text-anchor="start" class="cream word">Closed</text>
+  <g transform="translate(580 176)">
+    <path class="cream" d="M-98 8 C-36 52 48 52 112 8 C47 35 -38 35 -98 8 Z"/>
+    <path class="dot" d="M-80 -16 C-27 -58 63 -56 118 -8" stroke="#f2f0e9" stroke-opacity=".42" stroke-width="2.3"/>
+    <path class="dot" d="M-56 35 C12 19 76 22 142 48" stroke="#9fb5aa" stroke-opacity=".24" stroke-width="1.6"/>
+    <circle class="cream" cx="-38" cy="-30" r="1.5"/><circle class="cream" cx="12" cy="-43" r="2.5"/><circle class="sage" cx="62" cy="-36" r="1.4"/><circle class="ember" cx="104" cy="-16" r="1.5"/>
+  </g>
+  <text x="580" y="305" text-anchor="middle" class="sage tag">BEGIN WITH A REFLECTION</text>
+</svg>

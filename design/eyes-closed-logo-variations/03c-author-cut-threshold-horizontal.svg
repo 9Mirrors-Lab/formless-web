@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 340" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed author cut C - threshold horizontal</title>
+  <desc id="desc">A horizontal identity lockup with a portal-like crescent icon and Eyes Closed wordmark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}
+      .line{fill:none;stroke:#9fb5aa;stroke-opacity:.22;stroke-width:1}
+      .dot{fill:none;stroke-linecap:round;stroke-dasharray:0 7.5}
+      .word{font-family:"Optima","Avenir Next","Helvetica Neue",Arial,sans-serif;font-size:52px;font-weight:400;letter-spacing:2.8px}
+      .tag{font-family:"Space Mono","Courier New",monospace;font-size:9px;letter-spacing:5px}
+    </style>
+  </defs>
+  <rect class="bg" width="1180" height="340"/>
+  <g transform="translate(96 40)">
+    <rect x="0" y="0" width="242" height="174" rx="86" class="line"/>
+    <path class="cream" d="M26 94 C85 137 174 137 228 94 C172 122 82 122 26 94 Z"/>
+    <path class="dot" d="M48 66 C102 25 185 28 232 66" stroke="#f2f0e9" stroke-opacity=".54" stroke-width="2.5"/>
+    <path class="dot" d="M68 108 C132 96 192 98 254 118" stroke="#9fb5aa" stroke-opacity=".34" stroke-width="1.7"/>
+    <circle class="cream" cx="72" cy="75" r="2"/><circle class="cream" cx="126" cy="59" r="2.8"/><circle class="sage" cx="184" cy="64" r="1.6"/><circle class="ember" cx="224" cy="77" r="1.4"/>
+  </g>
+  <text x="430" y="145" text-anchor="start" class="cream word">EYES CLOSED</text>
+  <text x="433" y="184" text-anchor="start" class="sage tag">INNER AWARENESS / QUIET SIGNAL</text>
+</svg>

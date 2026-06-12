@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed author cut F - void bloom</title>
+  <desc id="desc">An asymmetrical Eyes Closed lockup with a bloom of particles emerging from the closed-eye mark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}.moss{fill:#2e4036}
+      .dot{fill:none;stroke-linecap:round;stroke-dasharray:0 7}
+      .word{font-family:"Didot","Bodoni 72","Baskerville","Times New Roman",serif;font-size:72px;font-weight:400;letter-spacing:1px}
+      .tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:6px}
+    </style>
+    <linearGradient id="fFade" x1="0" x2="1">
+      <stop offset="0" stop-color="#050806" stop-opacity="0"/>
+      <stop offset=".48" stop-color="#9fb5aa" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#f2f0e9" stop-opacity=".05"/>
+    </linearGradient>
+  </defs>
+  <rect class="bg" width="1120" height="520"/>
+  <rect x="0" y="84" width="1120" height="220" fill="url(#fFade)"/>
+  <g transform="translate(-40 0)">
+    <path class="cream" d="M248 202 C382 280 590 279 728 202 C592 261 382 262 248 202 Z"/>
+    <path class="dot" d="M610 190 C744 82 925 36 1160 48" stroke="#f2f0e9" stroke-opacity=".6" stroke-width="2.4"/>
+    <path class="dot" d="M602 205 C760 142 915 122 1160 144" stroke="#9fb5aa" stroke-opacity=".38" stroke-width="3"/>
+    <path class="dot" d="M610 224 C770 229 904 245 1135 224" stroke="#f2f0e9" stroke-opacity=".28" stroke-width="2.2"/>
+    <path class="dot" d="M630 246 C780 294 930 310 1084 290" stroke="#cc5833" stroke-opacity=".42" stroke-width="1.8"/>
+    <circle class="cream" cx="695" cy="178" r="2.4"/><circle class="cream" cx="744" cy="153" r="1.4"/><circle class="cream" cx="806" cy="127" r="3.2"/><circle class="sage" cx="878" cy="105" r="1.5"/><circle class="ember" cx="986" cy="82" r="1.8"/>
+    <circle class="cream" cx="748" cy="219" r="1.3"/><circle class="sage" cx="840" cy="227" r="2"/><circle class="ember" cx="968" cy="244" r="1.4"/>
+  </g>
+  <text x="192" y="390" text-anchor="start" class="cream word">Eyes Closed</text>
+  <text x="198" y="429" text-anchor="start" class="sage tag">INNER AWARENESS</text>
+</svg>

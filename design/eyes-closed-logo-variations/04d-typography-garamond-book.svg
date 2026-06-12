@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed 04D - Garamond book typography</title>
+  <desc id="desc">The selected cream crescent and particle mark with a smaller bookish Garamond-style wordmark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}.line{fill:none;stroke:#f2f0e9;stroke-opacity:.2;stroke-width:.8}.dotline{fill:none;stroke-linecap:round;stroke-dasharray:0 7.5}.serif{font-family:"Adobe Garamond Pro","EB Garamond","Garamond","Times New Roman",serif;font-size:60px;font-weight:400;letter-spacing:.8px}.mono{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:6.3px}
+    </style>
+    <linearGradient id="arc04d" x1="0" x2="1">
+      <stop offset="0" stop-color="#f2f0e9" stop-opacity=".86"/><stop offset=".18" stop-color="#f2f0e9" stop-opacity=".98"/><stop offset=".68" stop-color="#f2f0e9" stop-opacity=".96"/><stop offset="1" stop-color="#f2f0e9" stop-opacity=".72"/>
+    </linearGradient>
+  </defs>
+  <rect class="bg" width="960" height="360"/>
+  <path d="M206 137 C316 222 504 221 614 139 C500 195 322 195 206 137 Z" fill="url(#arc04d)"/>
+  <path d="M589 158 C626 127 677 98 751 63" class="line"/>
+  <path d="M588 159 C630 134 690 105 768 73" class="dotline" stroke="#f2f0e9" stroke-opacity=".7" stroke-width="2.4"/>
+  <path d="M594 169 C648 160 704 143 786 105" class="dotline" stroke="#9fb5aa" stroke-opacity=".34" stroke-width="1.55"/>
+  <path d="M605 178 C662 182 728 174 796 145" class="dotline" stroke="#f2f0e9" stroke-opacity=".22" stroke-width="1.25"/>
+  <path d="M621 151 C668 119 704 97 749 82" class="dotline" stroke="#cc5833" stroke-opacity=".42" stroke-width="1.25"/>
+  <g opacity=".96">
+    <circle class="cream" cx="617" cy="147" r="1.5"/><circle class="cream" cx="631" cy="138" r="1.8"/><circle class="ember" cx="644" cy="130" r="1.4"/><circle class="cream" cx="659" cy="121" r="2.5"/><circle class="sage" cx="674" cy="113" r="1.4"/><circle class="cream" cx="692" cy="102" r="2.1"/><circle class="cream" cx="713" cy="91" r="1.5"/><circle class="ember" cx="733" cy="80" r="2.4"/><circle class="cream" cx="759" cy="64" r="2"/><circle class="cream" cx="650" cy="151" r="1.1"/><circle class="cream" cx="672" cy="142" r="1.2"/><circle class="cream" cx="699" cy="130" r="1.4"/><circle class="cream" cx="726" cy="116" r="1.1"/><circle class="sage" cx="683" cy="158" r="1"/><circle class="cream" cx="720" cy="151" r="1.2"/><circle class="ember" cx="770" cy="139" r="1.1"/>
+  </g>
+  <text x="410" y="284" text-anchor="middle" class="cream serif">Eyes Closed</text>
+  <text x="410" y="316" text-anchor="middle" class="sage mono">HIGH FREQUENCY CENTERNESS</text>
+</svg>

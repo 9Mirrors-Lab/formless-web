@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed dynamic variation C - breath wave sans</title>
+  <desc id="desc">A crescent eyelid with a deep breath-like dotted wave field and humanist sans lockup.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}.word{font-family:"Optima","Avenir Next","Helvetica Neue",Arial,sans-serif;font-size:48px;font-weight:400;letter-spacing:2.4px}.tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:5.8px}.dotline{fill:none;stroke-linecap:round;stroke-dasharray:0 7.5}
+    </style>
+  </defs>
+  <rect class="bg" width="1100" height="420"/>
+  <g>
+    <path class="cream" d="M264 140 C392 205 585 205 716 140 C589 187 390 188 264 140 Z"/>
+    <path class="dotline" d="M330 134 C468 98 580 103 721 138 S905 196 1000 134" stroke="#f2f0e9" stroke-opacity=".62" stroke-width="2.7"/>
+    <path class="dotline" d="M332 116 C481 61 633 70 778 117 S942 157 1040 103" stroke="#9fb5aa" stroke-opacity=".36" stroke-width="2"/>
+    <path class="dotline" d="M352 162 C504 158 645 177 800 190 S947 188 1030 157" stroke="#f2f0e9" stroke-opacity=".23" stroke-width="1.4"/>
+    <path class="dotline" d="M582 178 C702 202 806 223 984 210" stroke="#cc5833" stroke-opacity=".36" stroke-width="1.6"/>
+    <g><circle class="cream" cx="690" cy="134" r="2.8"/><circle class="cream" cx="740" cy="150" r="1.5"/><circle class="sage" cx="802" cy="168" r="1.8"/><circle class="cream" cx="884" cy="180" r="1.2"/><circle class="ember" cx="949" cy="207" r="1.5"/></g>
+  </g>
+  <text x="550" y="306" text-anchor="middle" class="cream word">EYES CLOSED</text>
+  <text x="550" y="341" text-anchor="middle" class="sage tag">INNER AWARENESS</text>
+</svg>

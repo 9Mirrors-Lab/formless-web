@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed variation 04A - refined frequency flow</title>
+  <desc id="desc">A cream crescent with a tighter particle flow coming from the right tip and a centered Eyes Closed lockup.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}.guide{fill:none;stroke:#f2f0e9;stroke-opacity:.18;stroke-width:.7}.dotline{fill:none;stroke-linecap:round;stroke-dasharray:0 6.8}.serif{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:66px;font-weight:400}.mono{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:6.3px}
+    </style>
+    <linearGradient id="arc04a" x1="0" x2="1">
+      <stop offset="0" stop-color="#f2f0e9" stop-opacity=".68"/>
+      <stop offset=".12" stop-color="#f2f0e9" stop-opacity=".98"/>
+      <stop offset=".78" stop-color="#f2f0e9" stop-opacity=".94"/>
+      <stop offset="1" stop-color="#f2f0e9" stop-opacity=".52"/>
+    </linearGradient>
+  </defs>
+  <rect class="bg" width="960" height="360"/>
+  <path d="M212 138 C325 207 502 207 618 140 C505 189 324 190 212 138 Z" fill="url(#arc04a)"/>
+  <path d="M592 159 C635 125 690 98 764 75" class="guide"/>
+  <path d="M594 158 C642 131 696 107 776 82" class="dotline" stroke="#f2f0e9" stroke-opacity=".72" stroke-width="2.2"/>
+  <path d="M600 170 C658 161 713 146 790 112" class="dotline" stroke="#9fb5aa" stroke-opacity=".32" stroke-width="1.5"/>
+  <path d="M608 143 C653 112 699 92 752 80" class="dotline" stroke="#cc5833" stroke-opacity=".34" stroke-width="1.1"/>
+  <g>
+    <circle class="cream" cx="614" cy="149" r="1.2"/><circle class="cream" cx="632" cy="138" r="1.8"/><circle class="cream" cx="654" cy="126" r="2.4"/><circle class="sage" cx="676" cy="116" r="1.2"/><circle class="cream" cx="704" cy="101" r="2"/><circle class="ember" cx="735" cy="87" r="1.8"/><circle class="cream" cx="765" cy="74" r="1.5"/>
+    <circle class="cream" cx="654" cy="151" r="1"/><circle class="cream" cx="686" cy="143" r="1.2"/><circle class="sage" cx="724" cy="130" r="1"/><circle class="cream" cx="758" cy="114" r="1.1"/>
+  </g>
+  <text x="414" y="288" text-anchor="middle" class="cream serif">Eyes Closed</text>
+  <text x="414" y="319" text-anchor="middle" class="sage mono">HIGH FREQUENCY CENTERNESS</text>
+</svg>

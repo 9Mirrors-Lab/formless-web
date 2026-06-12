@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed source particle variation D - humanist sans</title>
+  <desc id="desc">A thin source particle mark with a calm humanist sans wordmark.</desc>
+  <defs><style>.bg{fill:#050806}.cream{fill:#f2f0e9}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.27;stroke-width:.6}.word{font-family:"Optima","Avenir Next","Helvetica Neue",Arial,sans-serif;font-size:50px;font-weight:400;letter-spacing:2.8px}</style></defs>
+  <rect class="bg" width="960" height="320"/>
+  <path class="cream" d="M210 126 C321 194 505 194 622 126 C509 178 324 179 210 126 Z"/>
+  <path class="fine" d="M604 140 C643 112 691 89 754 68"/>
+  <g class="cream"><circle cx="619" cy="134" r="1.5"/><circle cx="636" cy="124" r="1.2"/><circle cx="657" cy="114" r="2"/><circle cx="681" cy="102" r="1.2"/><circle cx="710" cy="89" r="2.5"/><circle cx="758" cy="67" r="1.8"/></g>
+  <text x="480" y="258" text-anchor="middle" class="cream word">EYES CLOSED</text>
+</svg>

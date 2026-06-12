@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 260" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed logo variation 06 - minimal wordmark lockup</title>
+  <desc id="desc">A minimal Eyes Closed wordmark with a small crescent signal held between the words.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.serif{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:72px;font-weight:400}.mono{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:6px}
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="260"/>
+  <text x="408" y="137" text-anchor="end" class="cream serif">Eyes</text>
+  <text x="552" y="137" text-anchor="start" class="cream serif">Closed</text>
+  <g transform="translate(480 116)">
+    <path d="M-45 -5 C-15 22 29 22 59 -5 C27 11 -13 11 -45 -5 Z" class="cream"/>
+    <circle cx="66" cy="-12" r="2.2" class="cream"/>
+    <circle cx="76" cy="-19" r="1.6" class="cream"/>
+    <circle cx="88" cy="-28" r="1.2" class="cream"/>
+  </g>
+  <text x="480" y="185" text-anchor="middle" class="sage mono">QUIET SPACE FOR INNER AWARENESS</text>
+</svg>

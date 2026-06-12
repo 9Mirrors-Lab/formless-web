@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed source particle variation E - titlecase sans</title>
+  <desc id="desc">A source particle mark with a soft titlecase sans-serif wordmark.</desc>
+  <defs><style>.bg{fill:#050806}.cream{fill:#f2f0e9}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.25;stroke-width:.55}.word{font-family:"Avenir Next","Neue Haas Grotesk Text","Helvetica Neue",Arial,sans-serif;font-size:54px;font-weight:300;letter-spacing:.4px}</style></defs>
+  <rect class="bg" width="960" height="320"/>
+  <path class="cream" d="M218 124 C331 190 496 190 614 124 C502 173 331 174 218 124 Z"/>
+  <path class="fine" d="M596 138 C632 111 678 89 738 68"/>
+  <g class="cream"><circle cx="612" cy="132" r="1.4"/><circle cx="631" cy="120" r="1.6"/><circle cx="654" cy="110" r="1.2"/><circle cx="682" cy="98" r="2.1"/><circle cx="714" cy="83" r="1.3"/><circle cx="741" cy="68" r="2.5"/></g>
+  <text x="480" y="258" text-anchor="middle" class="cream word">Eyes Closed</text>
+</svg>

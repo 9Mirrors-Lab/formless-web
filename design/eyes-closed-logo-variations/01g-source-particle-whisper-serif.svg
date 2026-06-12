@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed source particle variation G - whisper serif</title>
+  <desc id="desc">An extra thin tapered crescent with sparse particles and a quiet serif wordmark.</desc>
+  <defs><style>.bg{fill:#050806}.cream{fill:#f2f0e9}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.24;stroke-width:.55}.word{font-family:"Cormorant Garamond","Iowan Old Style","Times New Roman",serif;font-size:62px;font-weight:400;letter-spacing:.4px}</style></defs>
+  <rect class="bg" width="960" height="300"/>
+  <path class="cream" d="M230 119 C341 168 489 168 602 119 C493 154 338 154 230 119 Z"/>
+  <path class="fine" d="M590 130 C628 105 674 84 738 64"/>
+  <g class="cream"><circle cx="608" cy="125" r="1.1"/><circle cx="628" cy="114" r="1.4"/><circle cx="653" cy="103" r="1"/><circle cx="682" cy="91" r="1.9"/><circle cx="715" cy="76" r="1.2"/><circle cx="741" cy="63" r="1.8"/></g>
+  <text x="480" y="245" text-anchor="middle" class="cream word">Eyes Closed</text>
+</svg>

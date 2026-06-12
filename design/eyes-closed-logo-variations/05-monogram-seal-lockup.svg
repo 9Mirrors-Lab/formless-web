@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 420" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed logo variation 05 - compact seal lockup</title>
+  <desc id="desc">A compact rounded seal with the crescent and centered particle field above the Eyes Closed name.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.line{fill:none;stroke:#f2f0e9;stroke-opacity:.42;stroke-width:1}.quiet{fill:none;stroke:#9fb5aa;stroke-opacity:.24;stroke-width:1}.serif{font-family:"Cormorant Garamond","Times New Roman",serif;font-weight:400}.mono{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:6px}
+    </style>
+  </defs>
+  <rect class="bg" width="820" height="420"/>
+  <g transform="translate(410 142)">
+    <rect x="-92" y="-92" width="184" height="184" rx="34" class="line"/>
+    <circle r="58" class="quiet"/>
+    <circle r="31" class="quiet"/>
+    <path d="M-58 17 C-20 47 40 47 78 17 C39 35 -19 35 -58 17 Z" class="cream"/>
+    <path d="M-62 -12 C-20 -45 42 -45 82 -12" class="quiet"/>
+    <g class="cream">
+      <circle cx="-28" cy="-22" r="2.3"/>
+      <circle cx="-11" cy="-31" r="1.5"/>
+      <circle cx="8" cy="-36" r="2.1"/>
+      <circle cx="29" cy="-31" r="1.4"/>
+      <circle cx="48" cy="-21" r="2.6"/>
+    </g>
+    <line x1="-36" y1="55" x2="36" y2="55" stroke="#9fb5aa" stroke-width="2" stroke-opacity=".7"/>
+  </g>
+  <text x="410" y="306" text-anchor="middle" class="cream serif" font-size="66">Eyes Closed</text>
+  <text x="410" y="337" text-anchor="middle" class="sage mono">ANCHOR / AWARENESS</text>
+</svg>

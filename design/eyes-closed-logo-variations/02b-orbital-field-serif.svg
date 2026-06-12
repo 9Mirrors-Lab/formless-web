@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 450" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed dynamic variation B - orbital field serif</title>
+  <desc id="desc">A crescent eyelid inside a dimensional dotted orbital field with a serif wordmark and tagline.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.ember{fill:#cc5833}.word{font-family:"Cormorant Garamond","Baskerville","Times New Roman",serif;font-size:68px;font-weight:400}.tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:5.8px}.dotline{fill:none;stroke-linecap:round;stroke-dasharray:0 8}.orbit{fill:none;stroke:#9fb5aa;stroke-opacity:.18;stroke-width:.8}
+    </style>
+  </defs>
+  <rect class="bg" width="1100" height="450"/>
+  <g transform="translate(0 6)">
+    <ellipse class="orbit" cx="550" cy="156" rx="292" ry="75" transform="rotate(-4 550 156)"/>
+    <ellipse class="orbit" cx="610" cy="150" rx="245" ry="54" transform="rotate(-15 610 150)"/>
+    <path class="cream" d="M276 154 C410 226 603 226 737 154 C606 205 407 206 276 154 Z"/>
+    <path class="dotline" d="M360 119 C505 42 745 36 930 117" stroke="#9fb5aa" stroke-opacity=".44" stroke-width="2.2"/>
+    <path class="dotline" d="M330 167 C486 118 730 93 936 144" stroke="#f2f0e9" stroke-opacity=".52" stroke-width="2.8"/>
+    <path class="dotline" d="M408 194 C574 173 759 160 966 196" stroke="#f2f0e9" stroke-opacity=".22" stroke-width="1.5"/>
+    <path class="dotline" d="M778 111 C834 81 891 67 958 59" stroke="#cc5833" stroke-opacity=".5" stroke-width="1.6"/>
+    <g><circle class="cream" cx="350" cy="154" r="2"/><circle class="cream" cx="425" cy="133" r="1.2"/><circle class="sage" cx="504" cy="120" r="1.4"/><circle class="cream" cx="634" cy="111" r="2.8"/><circle class="cream" cx="731" cy="121" r="1.5"/><circle class="ember" cx="887" cy="86" r="1.8"/></g>
+  </g>
+  <text x="550" y="332" text-anchor="middle" class="cream word">Eyes Closed</text>
+  <text x="550" y="367" text-anchor="middle" class="sage tag">INNER AWARENESS</text>
+</svg>

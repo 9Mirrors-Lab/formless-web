@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed source particle variation B - high contrast serif</title>
+  <desc id="desc">A refined source particle mark with a high-contrast editorial serif wordmark.</desc>
+  <defs><style>.bg{fill:#050806}.cream{fill:#f2f0e9}.fine{fill:none;stroke:#f2f0e9;stroke-opacity:.24;stroke-width:.55}.word{font-family:"Didot","Bodoni 72","Baskerville","Times New Roman",serif;font-size:64px;font-weight:400;letter-spacing:1.2px}</style></defs>
+  <rect class="bg" width="960" height="320"/>
+  <path class="cream" d="M222 121 C335 185 489 185 608 121 C500 168 329 169 222 121 Z"/>
+  <path class="fine" d="M588 135 C628 107 684 83 760 60"/>
+  <g class="cream"><circle cx="606" cy="130" r="1.1"/><circle cx="625" cy="118" r="1.5"/><circle cx="648" cy="106" r="1.1"/><circle cx="674" cy="95" r="1.8"/><circle cx="704" cy="82" r="1.2"/><circle cx="737" cy="70" r="2.4"/><circle cx="768" cy="58" r="1.6"/></g>
+  <text x="480" y="258" text-anchor="middle" class="cream word">Eyes Closed</text>
+</svg>

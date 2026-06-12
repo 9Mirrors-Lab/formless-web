@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formless website feedback</title>
+  <style>
+    :root {
+      --void: #0A0A09;
+      --canvas: #141413;
+      --panel: #1C1C1A;
+      --ink: #EDEBE6;
+      --muted: #A8A7A0;
+      --subtle: #6B6A65;
+      --clay: #D97757;
+      --clay-h: #E8956F;
+      --olive: #8FA876;
+      --rose: #C97A7A;
+      --line: #2A2A27;
+      --line-hi: #3D3D3A;
+      --serif: ui-serif, Georgia, "Times New Roman", serif;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--void);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 48px 24px 120px;
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: var(--clay);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4.8vw, 52px);
+      line-height: 1.06;
+      letter-spacing: -0.018em;
+      font-weight: 400;
+      margin-bottom: 20px;
+    }
+
+    h1 em { font-style: italic; color: var(--clay); }
+
+    .tldr {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--clay);
+      padding: 20px 24px;
+      margin-bottom: 40px;
+      border-radius: 2px;
+    }
+
+    .tldr strong { color: var(--ink); font-weight: 600; }
+    .tldr p { color: var(--muted); margin-top: 8px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .stat {
+      background: var(--canvas);
+      border: 1px solid var(--line);
+      padding: 16px;
+      border-radius: 2px;
+    }
+
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 28px;
+      color: var(--clay);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--subtle);
+      margin-top: 6px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1.5px solid var(--line);
+    }
+
+    .toolbar label {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--subtle);
+    }
+
+    .filter-btn {
+      background: var(--canvas);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .filter-btn:hover { border-color: var(--line-hi); color: var(--ink); }
+    .filter-btn.active { border-color: var(--clay); color: var(--clay); }
+
+    .search {
+      flex: 1;
+      min-width: 200px;
+      background: var(--canvas);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 8px 14px;
+      font-family: var(--sans);
+      font-size: 14px;
+      border-radius: 2px;
+    }
+
+    .search:focus { outline: none; border-color: var(--clay); }
+
+    .section-head {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      padding: 32px 0 16px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 0;
+    }
+
+    .comment-row {
+      display: grid;
+      grid-template-columns: 48px 100px 1fr;
+      gap: 16px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .comment-row { grid-template-columns: 1fr; }
+      .comment-meta-col { display: flex; gap: 12px; align-items: center; }
+    }
+
+    .comment-num {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--subtle);
+      padding-top: 4px;
+    }
+
+    .thumb {
+      width: 100px;
+      height: 72px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      cursor: pointer;
+      background: var(--panel);
+    }
+
+    .thumb:hover { border-color: var(--clay); }
+
+    .comment-body { min-width: 0; }
+
+    .comment-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .badge.nav { border-color: #4A6080; color: #8BA4C4; }
+    .badge.hero { border-color: #6B5040; color: var(--clay); }
+    .badge.reflection { border-color: #506050; color: var(--olive); }
+    .badge.work { border-color: #605060; color: #C4A0C4; }
+    .badge.meta { border-color: var(--line-hi); color: var(--subtle); font-style: italic; }
+
+    .author { font-size: 13px; color: var(--muted); }
+    .date { font-size: 12px; color: var(--subtle); font-family: var(--mono); }
+
+    .proposed {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      border-radius: 2px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .current {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-left: 12px;
+      border-left: 2px solid var(--line);
+    }
+
+    .current strong { color: var(--subtle); font-weight: 500; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+
+    .row-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 12px;
+    }
+
+    .status-btn {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      background: var(--canvas);
+      color: var(--subtle);
+      cursor: pointer;
+      border-radius: 2px;
+      min-width: 88px;
+    }
+
+    .status-btn[data-state="approve"] { border-color: var(--olive); color: var(--olive); background: rgba(143,168,118,0.08); }
+    .status-btn[data-state="reject"] { border-color: var(--rose); color: var(--rose); background: rgba(201,122,122,0.08); }
+    .status-btn[data-state="defer"] { border-color: var(--clay); color: var(--clay); background: rgba(217,119,87,0.08); }
+
+    .priority select {
+      background: var(--canvas);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 2px;
+    }
+
+    .pastel-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--subtle);
+      text-decoration: none;
+    }
+
+    .pastel-link:hover { color: var(--clay); }
+
+    .summary-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--canvas);
+      border-top: 1px solid var(--line-hi);
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .summary-text {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .summary-text span { color: var(--clay); }
+
+    .primary {
+      background: var(--clay);
+      color: var(--void);
+      border: none;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 24px;
+      cursor: pointer;
+      border-radius: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    .primary:hover { background: var(--clay-h); }
+    .primary.copied { background: var(--olive); }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin: 16px 0 32px;
+    }
+
+    .theme-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 14px;
+      border-radius: 2px;
+      font-size: 13px;
+    }
+
+    .theme-card h3 {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--clay);
+      margin-bottom: 8px;
+    }
+
+    .theme-card ul { list-style: none; color: var(--muted); }
+    .theme-card li { padding: 3px 0; }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: pointer;
+    }
+
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 90vh; border: 1px solid var(--line-hi); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Website feedback · Pastel export 2026-05-20 · <a href="../formless-hub.html" style="color:var(--clay);text-decoration:none">← project hub</a></div>
+    <h1>Formless website <em>feedback</em></h1>
+
+    <div class="tldr">
+      <strong>31 active comments</strong> from Ryan Riley and Soni Cottman on formless-web.vercel.app.
+      <p>Soni's feedback is a full copy pass: rename "The Work" → "The Practice", introduce "Eyes Closed" as the service brand, refresh hero and reflection language, and rewrite work-page category copy. Ryan left one unresolved note ("change this") on the homepage hero. Triaging below exports an implementation prompt for the content migration.</p>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="theme-grid">
+      <div class="theme-card">
+        <h3>Navigation renames</h3>
+        <ul>
+          <li>The Work → The Practice</li>
+          <li>Science → The Science of Spirituality (or Spirituality &amp; Science)</li>
+          <li>Connect → maybe replace Stay Close</li>
+        </ul>
+      </div>
+      <div class="theme-card">
+        <h3>Brand layering</h3>
+        <ul>
+          <li>Eyes Closed = organization / site brand</li>
+          <li>Formless = book under Eyes Closed</li>
+          <li>The Practice = work area under the org</li>
+        </ul>
+      </div>
+      <div class="theme-card">
+        <h3>Work page themes (side note #28)</h3>
+        <ul>
+          <li>Awareness &amp; The Ego</li>
+          <li>Resistance &amp; Surrender (Allowing)</li>
+          <li>Forgiveness is Freedom (Clarity?)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <label>Filter</label>
+      <button class="filter-btn active" data-filter="all">All (31)</button>
+      <button class="filter-btn" data-filter="home">Home</button>
+      <button class="filter-btn" data-filter="reflection">Reflection</button>
+      <button class="filter-btn" data-filter="work">The Practice</button>
+      <button class="filter-btn" data-filter="nav">Nav / IA</button>
+      <button class="filter-btn" data-filter="unresolved">Needs context</button>
+      <input type="search" class="search" id="search" placeholder="Search proposed copy…">
+    </div>
+
+    <div id="comments"></div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-text" id="liveSummary">0 approved · 0 deferred · 0 rejected · 31 pending</div>
+    <button class="primary" id="copyBtn">Copy as implementation prompt</button>
+  </div>
+
+  <div class="lightbox" id="lightbox"><img id="lightboxImg" alt="Pastel screenshot"></div>
+
+  <script>
+    const COMMENTS = [
+      { id: 1, author: "Ryan Riley", date: "2026-05-04", page: "home", area: "hero", tag: "hero", tagLabel: "Hero", current: "There is another / way to live.", proposed: "change this.", note: "Vague — open Pastel screenshot to see pinned element. Likely hero headline or lede.", unresolved: true, screenshot: "https://user-assets.usepastel.com/screenshot/muN1koOZzkl3fI5H.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11518735/" },
+      { id: 2, author: "Soni Cottman", date: "2026-05-09", page: "home", area: "nav", tag: "nav", tagLabel: "Nav", current: "The Work", proposed: "The Practice", note: "Nav + footer explore link. Matches content-arch guide \"Eyes Closed\" services framing.", screenshot: "https://user-assets.usepastel.com/screenshot/jsoSZVxcxjIxfTN2.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11562006/" },
+      { id: 3, author: "Soni Cottman", date: "2026-05-09", page: "home", area: "nav", tag: "nav", tagLabel: "Nav / brand", current: "(not in nav today)", proposed: "Eyes Closed", note: "Introduce Eyes Closed as service brand in nav or hero eyebrow.", screenshot: "https://user-assets.usepastel.com/screenshot/S1bQkjQ3714G3V2E.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11562009/" },
+      { id: 4, author: "Soni Cottman", date: "2026-05-09", page: "home", area: "brand", tag: "hero", tagLabel: "Brand", current: "Formless (nav brand)", proposed: "Formless", note: "Book title — nav should be Eyes Closed (org). Formless belongs on /book, not as site name.", screenshot: "https://user-assets.usepastel.com/screenshot/jxrWHWP4cu7F0A6K.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11562010/" },
+      { id: 5, author: "Soni Cottman", date: "2026-05-13", page: "home", area: "nav", tag: "nav", tagLabel: "Nav", current: "Science", proposed: "The Science of Spirituality\nOR\nSpirituality & Science", note: "Pick one label for /science route.", screenshot: "https://user-assets.usepastel.com/screenshot/rXsh7VuT7GK8r8sj.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595639/" },
+      { id: 6, author: "Soni Cottman", date: "2026-05-13", page: "home", area: "footer", tag: "nav", tagLabel: "Footer", current: "Connect (heading) / Stay Close (link)", proposed: "Maybe \"Connect\"", note: "Footer connect section — align heading + link language.", screenshot: "https://user-assets.usepastel.com/screenshot/MuiLtVd4VTnFakqH.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595641/" },
+      { id: 7, author: "Soni Cottman", date: "2026-05-13", page: "home", area: "hero", tag: "hero", tagLabel: "Hero headline", current: "There is another / way to live.", proposed: "Remembering Who You Are Beyond The Mind", note: "Major hero pivot — longer, more spiritual-direct.", screenshot: "https://user-assets.usepastel.com/screenshot/UOuHrt78QwSUP6Ar.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595717/" },
+      { id: 8, author: "Soni Cottman", date: "2026-05-13", page: "home", area: "hero", tag: "hero", tagLabel: "Hero lede", current: "Stop. Pause. Go within. Notice the voice…", proposed: "The world teaches you to look outward for fulfillment. Eyes Closed points you inward.", note: "Replaces hero lede; introduces Eyes Closed in body copy.", screenshot: "https://user-assets.usepastel.com/screenshot/mHtFuPARUQG3xzLG.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595722/" },
+      { id: 9, author: "Soni Cottman", date: "2026-05-13", page: "home", area: "hero", tag: "hero", tagLabel: "Supporting line", current: "(none — or curtain subtitle)", proposed: "Peace has never left you, it is your natural state.", note: "New supporting line — placement TBD (hero or recognition section).", screenshot: "https://user-assets.usepastel.com/screenshot/KifX0wxKtVOuk8Ci.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595737/" },
+      { id: 10, author: "Soni Cottman", date: "2026-05-13", page: "reflection", area: "cta", tag: "reflection", tagLabel: "CTA", current: "Begin with a reflection", proposed: "A moment to go within\nOR\nA moment to reflect?", note: "Hero CTA copy — Soni left as open choice.", screenshot: "https://user-assets.usepastel.com/screenshot/dyFMmBk6ARb3J1bp.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595745/" },
+      { id: 11, author: "Soni Cottman", date: "2026-05-13", page: "reflection", area: "curtain", tag: "reflection", tagLabel: "Curtain panels", current: "THE / VOICE", proposed: "The Mind\nOR\nTHOU GHTS\nOR\nBEL IEFS", note: "Split-type curtain — three conceptual options.", screenshot: "https://user-assets.usepastel.com/screenshot/wT4mbsiUF2b7oczc.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595751/" },
+      { id: 12, author: "Soni Cottman", date: "2026-05-13", page: "reflection", area: "curtain", tag: "reflection", tagLabel: "Curtain body", current: "There is the voice in your head… You are not the voice.", proposed: "Freedom begins the moment you separate yourself from your thoughts and simply observe the mind", note: "Reframe section supporting copy.", screenshot: "https://user-assets.usepastel.com/screenshot/78MQZRJ3CabJw2IW.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595767/" },
+      { id: 13, author: "Soni Cottman", date: "2026-05-13", page: "reflection", area: "cta", tag: "reflection", tagLabel: "Section label", current: "(none)", proposed: "EYES CLOSED", note: "Possible eyebrow or CTA label in reflection block.", screenshot: "https://user-assets.usepastel.com/screenshot/t9ft4f8GLMzSNRpj.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595770/" },
+      { id: 14, author: "Soni Cottman", date: "2026-05-13", page: "reflection", area: "invitation", tag: "reflection", tagLabel: "Invitation", current: "(none on reflection)", proposed: "An invitation to go within and meet yourself beyond the identities and stories", note: "Repeated on work page (#27) — likely shared Eyes Closed tagline.", screenshot: "https://user-assets.usepastel.com/screenshot/DoyPQSLwV4IQym1i.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595791/" },
+      { id: 15, author: "Soni Cottman", date: "2026-05-13", page: "reflection", area: "insight", tag: "reflection", tagLabel: "Insight", current: "If you can hear the voice, who is listening?", proposed: "Behind every thought is the awareness that sees it. That awareness is what you are, untouched, unharmed by any experience of life.", note: "Core teaching copy — may replace curtain headline or subtitle.", screenshot: "https://user-assets.usepastel.com/screenshot/eGBmsqOHTYiKQYUD.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595858/" },
+      { id: 16, author: "Soni Cottman", date: "2026-05-13", page: "work", area: "header", tag: "work", tagLabel: "Page eyebrow", current: "The Work", proposed: "The Practice", note: "work.header.eyebrow + route label consistency.", screenshot: "https://user-assets.usepastel.com/screenshot/lLNNAEYrUmeaK3Nz.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595861/" },
+      { id: 17, author: "Soni Cottman", date: "2026-05-13", page: "work", area: "header", tag: "work", tagLabel: "Page lede", current: "The situation may change. The subject may change…", proposed: "Beneath every inner struggle is unconscious identification with thought Learn to observe to the mind instead of becoming lost within it.", note: "Typo in source: \"observe to\" → likely \"observe the mind\".", screenshot: "https://user-assets.usepastel.com/screenshot/MYyHBJnU8WPldWZy.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595876/" },
+      { id: 18, author: "Soni Cottman", date: "2026-05-13", page: "work", area: "accordion", tag: "work", tagLabel: "Accordion intro", current: "The subject changes. / The pattern remains.", proposed: "Your life circumstances are constantly changing. However, the deep rooted internal patterns of the mind repeat themselves until they are seen", note: "work.accordion_intro title replacement.", screenshot: "https://user-assets.usepastel.com/screenshot/Aj5iCEHZjr48wX9b.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595902/" },
+      { id: 19, author: "Soni Cottman", date: "2026-05-13", page: "work", area: "accordion", tag: "work", tagLabel: "Accordion eyebrow", current: "The pattern repeats", proposed: "Outer circumstances change", note: "work.accordion_intro eyebrow.", screenshot: "https://user-assets.usepastel.com/screenshot/ZSDrDZvWQsa4RKCk.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11595909/" },
+      { id: 20, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "categories", tag: "work", tagLabel: "Relationships", current: "Every reaction… mirror… partner, child, parent", proposed: "Every reaction in a relationship is a mirror of something unresolved within you. Your partner, your children, your parents or extended family. Each one reveals unconscious patterns, thoughts, and beliefs you have carried from the past into the present moment.", note: "work.categories.relationships detail — richer, more explicit.", screenshot: "https://user-assets.usepastel.com/screenshot/0VMj5ir3JITUzTOL.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604786/" },
+      { id: 21, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "categories", tag: "work", tagLabel: "Career title", current: "Career & Money", proposed: "Career & Financial Wealth?", note: "Category title — question mark suggests Soni is unsure.", screenshot: "https://user-assets.usepastel.com/screenshot/ivALhtD0b5PTDUqw.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604787/" },
+      { id: 22, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "categories", tag: "work", tagLabel: "Career insight", current: "When work becomes identity, losing it feels like dying.", proposed: "When your job becomes a part of your identity, losing it can feel like losing yourself.", note: "Softer tone than current copy.", screenshot: "https://user-assets.usepastel.com/screenshot/md236hioFyodKYLY.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604792/" },
+      { id: 23, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "categories", tag: "work", tagLabel: "Career detail", current: "The fear around money and career is rarely about survival…", proposed: "The fear around career and finances stems from survival. It is tied to the story the mind has created about who you are, your worth, and what happens if it all disappears.", note: "Reverses current \"rarely about survival\" framing — intentional?", screenshot: "https://user-assets.usepastel.com/screenshot/Rmg2zpkmLRKRriHt.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604797/" },
+      { id: 24, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "categories", tag: "work", tagLabel: "Body detail", current: "Chronic tension, exhaustion, and pain…", proposed: "The body memorizes what the mind repeatedly lives in.\n\nStress, chronic tension, exhaustion, and emotional pain become conditioned patterns within the body until they are brought into awareness.", note: "work.categories.body detail rewrite.", screenshot: "https://user-assets.usepastel.com/screenshot/zodwbgciX82f9pU8.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604804/" },
+      { id: 25, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "categories", tag: "work", tagLabel: "Family detail", current: "Family dynamics installed the original software…", proposed: "Family dynamics shape many of the beliefs, fears, and emotional patterns carried into adulthood. Freedom begins not through blame or resistance, but through awareness.", note: "Less tech metaphor, more direct.", screenshot: "https://user-assets.usepastel.com/screenshot/p2CHpQHNoE9Agkr2.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604807/" },
+      { id: 26, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "cta", tag: "work", tagLabel: "Section CTA", current: "(none)", proposed: "EYES CLOSED", note: "Work page closing CTA — ties to Eyes Closed brand.", screenshot: "https://user-assets.usepastel.com/screenshot/ikGp4r2ppRxQGblG.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604809/" },
+      { id: 27, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "invitation", tag: "work", tagLabel: "Invitation", current: "(none)", proposed: "An invitation to go within and meet yourself beyond the identities and stories", note: "Duplicate of #14 — use once as shared tagline.", screenshot: "https://user-assets.usepastel.com/screenshot/AyFbqNJlFYdhyYJp.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604811/" },
+      { id: 28, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "themes", tag: "meta", tagLabel: "Side note", current: "book themes: Awareness, Presence, Peace, Freedom", proposed: "Side note:\nAwareness, & The Ego\nResistance & Surrender (Allowing)\nForgiveness is Freedom (Clarity?)", note: "Future theme pillars for work or book — not direct swap.", screenshot: "https://user-assets.usepastel.com/screenshot/AMm8B2jRn37RzJ7z.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604823/" },
+      { id: 29, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "reframe", tag: "work", tagLabel: "Reframe line 1", current: "There is a voice in the head.", proposed: "You are not your thoughts or beliefs", note: "work.reframe heading split.", screenshot: "https://user-assets.usepastel.com/screenshot/CB5G4xHPquQ3ZkUg.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604826/" },
+      { id: 30, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "reframe", tag: "work", tagLabel: "Reframe line 2", current: "Who is listening?", proposed: "You are the one that observes them, you are awareness?", note: "Question mark in source — confirm punctuation.", screenshot: "https://user-assets.usepastel.com/screenshot/WlKFYkSlsGXt9v2u.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604827/" },
+      { id: 31, author: "Soni Cottman", date: "2026-05-14", page: "work", area: "reframe", tag: "work", tagLabel: "Reframe body", current: "If you can hear the voice, you are not the voice…", proposed: "The mind creates stories based on the past, and projects fear into the future. Beneath every inner struggle is the identification with thought. The practice is not to fight those thoughts, but to become aware of them. When you begin to recognize these patterns, something deeper than the mind begins to emerge.", note: "work.reframe.body — longest single replacement.", screenshot: "https://user-assets.usepastel.com/screenshot/OQdKsxRcYAexpqLC.jpg", pastel: "https://usepastel.com/link/okj0r6y3/comment/11604853/" }
+    ];
+
+    const state = {};
+    COMMENTS.forEach(c => {
+      state[c.id] = { status: '', priority: 'normal' };
+    });
+
+    let activeFilter = 'all';
+
+    function renderStats() {
+      const byPage = { home: 0, reflection: 0, work: 0, nav: 0 };
+      COMMENTS.forEach(c => {
+        if (c.tag === 'nav') byPage.nav++;
+        else if (c.page === 'home') byPage.home++;
+        else if (c.page === 'reflection') byPage.reflection++;
+        else if (c.page === 'work') byPage.work++;
+      });
+      document.getElementById('stats').innerHTML = `
+        <div class="stat"><div class="stat-num">31</div><div class="stat-label">Total comments</div></div>
+        <div class="stat"><div class="stat-num">${byPage.home}</div><div class="stat-label">Homepage</div></div>
+        <div class="stat"><div class="stat-num">${byPage.reflection}</div><div class="stat-label">Reflection</div></div>
+        <div class="stat"><div class="stat-num">${byPage.work}</div><div class="stat-label">The Practice</div></div>
+        <div class="stat"><div class="stat-num">1</div><div class="stat-label">Unresolved (Ryan)</div></div>
+      `;
+    }
+
+    function matchesFilter(c) {
+      if (activeFilter === 'all') return true;
+      if (activeFilter === 'nav') return c.tag === 'nav';
+      if (activeFilter === 'unresolved') return c.unresolved;
+      if (activeFilter === 'home') return c.page === 'home' && c.tag !== 'nav';
+      return c.page === activeFilter;
+    }
+
+    function renderComments() {
+      const q = document.getElementById('search').value.toLowerCase();
+      const container = document.getElementById('comments');
+      container.innerHTML = '';
+
+      const filtered = COMMENTS.filter(c => {
+        if (!matchesFilter(c)) return false;
+        if (!q) return true;
+        const hay = (c.proposed + c.current + c.area + c.note).toLowerCase();
+        return hay.includes(q);
+      });
+
+      const groups = [
+        { key: 'home', label: 'Homepage' },
+        { key: 'reflection', label: 'Reflection (#reflection)' },
+        { key: 'work', label: 'The Practice (/work)' },
+        { key: 'nav', label: 'Navigation & footer' },
+        { key: 'meta', label: 'Meta / future themes' }
+      ];
+
+      groups.forEach(g => {
+        const items = filtered.filter(c => {
+          if (g.key === 'nav') return c.tag === 'nav';
+          if (g.key === 'meta') return c.tag === 'meta';
+          return c.page === g.key && c.tag !== 'nav' && c.tag !== 'meta';
+        });
+        if (!items.length) return;
+
+        const head = document.createElement('h2');
+        head.className = 'section-head';
+        head.textContent = g.label + ' (' + items.length + ')';
+        container.appendChild(head);
+
+        items.forEach(c => {
+          const s = state[c.id];
+          const row = document.createElement('div');
+          row.className = 'comment-row';
+          row.dataset.id = c.id;
+          row.innerHTML = `
+            <div class="comment-meta-col">
+              <div class="comment-num">#${c.id}</div>
+              <img class="thumb" src="${c.screenshot}" alt="Screenshot for comment ${c.id}" loading="lazy">
+            </div>
+            <div></div>
+            <div class="comment-body">
+              <div class="comment-top">
+                <span class="badge ${c.tag}">${c.tagLabel}</span>
+                <span class="author">${c.author}</span>
+                <span class="date">${c.date}</span>
+                <a class="pastel-link" href="${c.pastel}" target="_blank" rel="noopener">Pastel ↗</a>
+              </div>
+              <div class="current"><strong>Current</strong>${escapeHtml(c.current)}</div>
+              <div class="proposed">${escapeHtml(c.proposed)}</div>
+              <p style="font-size:13px;color:var(--subtle);margin-bottom:8px">${escapeHtml(c.note)}</p>
+              <div class="row-controls">
+                <button class="status-btn" data-id="${c.id}" data-state="${s.status}">${statusLabel(s.status)}</button>
+                <div class="priority">
+                  <select data-id="${c.id}" class="priority-select">
+                    <option value="high" ${s.priority==='high'?'selected':''}>Priority: high</option>
+                    <option value="normal" ${s.priority==='normal'?'selected':''}>Priority: normal</option>
+                    <option value="low" ${s.priority==='low'?'selected':''}>Priority: low</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      });
+
+      bindRowEvents();
+      updateSummary();
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function statusLabel(st) {
+      if (st === 'approve') return '✓ Approve';
+      if (st === 'reject') return '✗ Reject';
+      if (st === 'defer') return '◷ Defer';
+      return '○ Pending';
+    }
+
+    function cycleStatus(id) {
+      const order = ['', 'approve', 'defer', 'reject', ''];
+      const cur = state[id].status;
+      const idx = order.indexOf(cur);
+      state[id].status = order[(idx + 1) % order.length];
+      renderComments();
+    }
+
+    function bindRowEvents() {
+      document.querySelectorAll('.status-btn').forEach(btn => {
+        btn.addEventListener('click', () => cycleStatus(Number(btn.dataset.id)));
+      });
+      document.querySelectorAll('.priority-select').forEach(sel => {
+        sel.addEventListener('change', () => {
+          state[Number(sel.dataset.id)].priority = sel.value;
+          updateSummary();
+        });
+      });
+      document.querySelectorAll('.thumb').forEach(img => {
+        img.addEventListener('click', () => {
+          document.getElementById('lightboxImg').src = img.src;
+          document.getElementById('lightbox').classList.add('open');
+        });
+      });
+    }
+
+    function updateSummary() {
+      let a = 0, d = 0, r = 0, p = 0;
+      COMMENTS.forEach(c => {
+        const st = state[c.id].status;
+        if (st === 'approve') a++;
+        else if (st === 'defer') d++;
+        else if (st === 'reject') r++;
+        else p++;
+      });
+      document.getElementById('liveSummary').innerHTML =
+        `<span>${a}</span> approved · <span>${d}</span> deferred · <span>${r}</span> rejected · ${p} pending`;
+    }
+
+    function buildExport() {
+      const approved = COMMENTS.filter(c => state[c.id].status === 'approve');
+      const deferred = COMMENTS.filter(c => state[c.id].status === 'defer');
+      const rejected = COMMENTS.filter(c => state[c.id].status === 'reject');
+
+      let out = `# Formless website copy changes — triage export\n`;
+      out += `Source: docs/notes/pastel-comments-okj0r6y3-exported-2026-05-20.csv\n`;
+      out += `Generated: ${new Date().toISOString().slice(0,10)}\n\n`;
+
+      out += `## Summary\n`;
+      out += `- Approved: ${approved.length}\n`;
+      out += `- Deferred: ${deferred.length}\n`;
+      out += `- Rejected: ${rejected.length}\n`;
+      out += `- Pending: ${COMMENTS.length - approved.length - deferred.length - rejected.length}\n\n`;
+
+      out += `## Cross-cutting decisions needed\n`;
+      out += `1. Confirm IA: "The Work" → "The Practice" (nav, footer, /work eyebrow)\n`;
+      out += `2. Pick science nav label: "The Science of Spirituality" vs "Spirituality & Science"\n`;
+      out += `3. Pick hero CTA: "A moment to go within" vs "A moment to reflect"\n`;
+      out += `4. Pick curtain split-type: The Mind / THOUGHTS / BELIEFS\n`;
+      out += `5. Resolve Ryan #1 "change this" via Pastel screenshot\n`;
+      out += `6. Brand hierarchy: Eyes Closed = org/site, Formless = book only\n\n`;
+
+      if (approved.length) {
+        out += `## Approved changes (implement in content migration)\n\n`;
+        approved.forEach(c => {
+          out += `### #${c.id} — ${c.tagLabel} (${c.page}${c.area ? ' / ' + c.area : ''})\n`;
+          out += `- **Current:** ${c.current.replace(/\n/g, ' ')}\n`;
+          out += `- **New:** ${c.proposed.replace(/\n/g, ' ')}\n`;
+          out += `- **CMS keys:** infer from seed \`supabase/migrations/20260504000001_seed_content.sql\`\n`;
+          out += `- **Pastel:** ${c.pastel}\n\n`;
+        });
+      }
+
+      if (deferred.length) {
+        out += `## Deferred (needs Soni/Ryan decision)\n\n`;
+        deferred.forEach(c => {
+          out += `- #${c.id}: ${c.proposed.split('\n')[0].slice(0, 80)}…\n`;
+        });
+        out += `\n`;
+      }
+
+      if (rejected.length) {
+        out += `## Rejected (keep current copy)\n\n`;
+        rejected.forEach(c => {
+          out += `- #${c.id}: keep "${c.current.slice(0, 60)}…"\n`;
+        });
+        out += `\n`;
+      }
+
+      const pending = COMMENTS.filter(c => !state[c.id].status);
+      if (pending.length) {
+        out += `## Still pending review\n\n`;
+        pending.forEach(c => {
+          out += `- #${c.id} [${c.tagLabel}]: ${c.proposed.split('\n')[0].slice(0, 70)}\n`;
+        });
+      }
+
+      out += `\n## Implementation hint\n`;
+      out += `Update \`public.content\` rows via new Supabase migration or admin CMS. Key files: seed migration, \`useContent\` consumers on Home/Work/Science pages.\n`;
+
+      return out;
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderComments();
+      });
+    });
+
+    document.getElementById('search').addEventListener('input', renderComments);
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const btn = document.getElementById('copyBtn');
+      navigator.clipboard.writeText(buildExport()).then(() => {
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy as implementation prompt';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+
+    document.getElementById('lightbox').addEventListener('click', () => {
+      document.getElementById('lightbox').classList.remove('open');
+    });
+
+    renderStats();
+    renderComments();
+  </script>
+</body>
+</html>

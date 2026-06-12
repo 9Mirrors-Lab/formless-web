@@ -2,6 +2,9 @@ import { useContent } from '@/context/ContentContext';
 
 export function Navbar() {
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+  const homeHref = currentPath === '/revised' || currentPath.startsWith('/revised/')
+    ? '/revised'
+    : '/';
   const { getText, getLink, ordered } = useContent();
 
   const brand = getText('nav', 'brand', 'name');
@@ -12,9 +15,9 @@ export function Navbar() {
     <nav
       className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl rounded-full transition-all duration-700 flex items-center justify-between px-6 md:px-8 py-4 bg-white/72 backdrop-blur-lg border border-charcoal/10 shadow-sm`}
     >
-      <a href="/" className="flex items-center gap-3 text-charcoal">
+      <a href={homeHref} className="flex items-center gap-3 text-charcoal">
         <div className="w-5 h-5 md:w-6 md:h-6 rounded-full border border-charcoal/35" />
-        <span className="font-sans font-semibold tracking-[0.3em] uppercase text-xs md:text-sm">
+        <span className="whitespace-nowrap font-sans font-semibold tracking-[0.3em] uppercase text-xs md:text-sm">
           {brand}
         </span>
       </a>

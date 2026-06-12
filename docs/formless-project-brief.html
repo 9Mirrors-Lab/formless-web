@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>Formless — project brief (gathering)</title>
+  <style>
+    /* html-it: warm charcoal, dark only */
+    :root {
+      --void: #0a0a09;
+      --canvas: #141413;
+      --panel: #1c1c1a;
+      --inset: #222220;
+      --ink: #edebe6;
+      --muted: #a8a7a0;
+      --subtle: #6b6a65;
+      --clay: #d97757;
+      --clay-h: #e8956f;
+      --clay-d: #b85c3e;
+      --olive: #8fa876;
+      --line: #2a2a27;
+      --line-hi: #3d3d3a;
+      --serif: ui-serif, Georgia, "Times New Roman", serif;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    html { color-scheme: dark; }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--void);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      max-width: 1180px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 32px 20px 48px 24px;
+      border-right: 1.5px solid var(--line);
+      font-size: 13px;
+      background: var(--canvas);
+    }
+
+    nav.toc .label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 16px;
+    }
+
+    nav.toc a {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 0;
+      border-bottom: 1px solid transparent;
+    }
+
+    nav.toc a:hover { color: var(--clay-h); }
+    nav.toc a.active { color: var(--clay); font-weight: 600; }
+    nav.toc .sub { padding-left: 12px; font-size: 12px; }
+
+    main {
+      padding: 48px 40px 80px;
+      background: var(--canvas);
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 3px;
+      background: var(--clay);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(38px, 5.4vw, 56px);
+      line-height: 1.06;
+      letter-spacing: -0.018em;
+      font-weight: 400;
+      margin: 0 0 24px;
+      max-width: 18ch;
+    }
+
+    h1 em { font-style: italic; }
+
+    .meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--subtle);
+      margin-bottom: 40px;
+    }
+
+    .meta code {
+      background: var(--inset);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--muted);
+    }
+
+    .tldr {
+      background: var(--panel);
+      border-left: 4px solid var(--clay);
+      padding: 20px 24px;
+      margin-bottom: 48px;
+    }
+
+    .tldr-label {
+      display: block;
+      margin-bottom: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+    }
+
+    .tldr p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .tldr p strong { color: var(--ink); font-weight: 600; }
+
+    .hub-link {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--clay);
+      text-decoration: none;
+      margin-bottom: 28px;
+    }
+
+    .hub-link:hover { color: var(--clay-h); }
+
+    section {
+      padding-bottom: 48px;
+      margin-bottom: 48px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-note {
+      color: var(--subtle);
+      font-size: 14px;
+      margin: -8px 0 20px;
+      line-height: 1.45;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 16px 18px;
+      margin: 16px 0;
+    }
+
+    .panel-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 10px;
+    }
+
+    .insight-quote {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-family: var(--serif);
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .theme-card {
+      background: var(--inset);
+      border: 1px solid var(--line-hi);
+      border-radius: 4px;
+      padding: 12px 14px;
+    }
+
+    .theme-card h4 {
+      margin: 0 0 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--clay);
+      font-weight: 500;
+    }
+
+    .theme-card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .pillar-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 14px;
+    }
+
+    .pillar-card .pillar-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 6px;
+    }
+
+    .pillar-card h4 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .pillar-card ul {
+      margin: 0;
+      padding-left: 1em;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .pillar-card li { margin-bottom: 5px; }
+
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 10px 0 4px;
+    }
+
+    .chip {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--inset);
+      border: 1px solid var(--line-hi);
+      padding: 5px 9px;
+      border-radius: 3px;
+      line-height: 1.2;
+    }
+
+    .chip-group {
+      margin-bottom: 14px;
+    }
+
+    .chip-group:last-child { margin-bottom: 0; }
+
+    .chip-group-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 6px;
+    }
+
+    .mini-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 0;
+      margin: 12px 0;
+    }
+
+    .mini-flow .step {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--inset);
+      border: 1px solid var(--line-hi);
+      padding: 5px 9px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .mini-flow .step strong { color: var(--ink); font-weight: 600; }
+
+    .mini-flow .arrow {
+      width: 16px;
+      text-align: center;
+      color: var(--subtle);
+      font-size: 11px;
+    }
+
+    .card .card-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card.book .card-label { color: var(--olive); }
+    .card.website .card-label { color: var(--clay); }
+    .card.content .card-label { color: #9BA8C4; }
+
+    .seek-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .seek-item {
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--inset);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 10px 12px;
+      line-height: 1.4;
+    }
+
+    .table-panel {
+      overflow-x: auto;
+      margin: 16px 0;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--panel);
+    }
+
+    .table-panel table { margin: 0; }
+
+    .table-panel th,
+    .table-panel td { border-bottom-color: var(--line); }
+
+    .table-panel tr:last-child td { border-bottom: none; }
+
+    .dev-notes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .dev-note {
+      background: var(--inset);
+      border: 1px solid var(--line-hi);
+      border-radius: 4px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .dev-note strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    section:last-child { border-bottom: none; }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 400;
+      margin: 0 0 20px;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--muted);
+    }
+
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 20px 0 8px;
+    }
+
+    blockquote {
+      margin: 20px 0;
+      padding: 16px 24px;
+      border-left: 3px solid var(--clay-d);
+      font-family: var(--serif);
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    ul, ol { padding-left: 1.25em; margin: 0 0 16px; }
+    li { margin-bottom: 8px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      margin: 16px 0 24px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    tr:hover td { background: var(--inset); }
+
+    th {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--subtle);
+      font-weight: 500;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 24px;
+    }
+
+    .pill {
+      font-size: 13px;
+      padding: 6px 12px;
+      background: var(--inset);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+    }
+
+    .callout {
+      background: var(--panel);
+      padding: 16px 20px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 15px;
+      border: 1px solid var(--line);
+    }
+
+    .callout.warn { border-left: 3px solid var(--clay); }
+    .callout.ok { border-left: 3px solid var(--olive); }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px;
+      border-radius: 4px;
+    }
+
+    .card h4 { margin-top: 0; font-size: 14px; color: var(--ink); }
+    .card p { margin: 0; font-size: 14px; color: var(--subtle); }
+
+    a { color: var(--clay-h); }
+    a:hover { color: var(--clay); }
+
+    .export-bar {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1.5px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 20px;
+    }
+
+    .export-bar p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--subtle);
+      flex: 1;
+      min-width: 200px;
+    }
+
+    #copyBtn {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      background: var(--clay);
+      color: var(--void);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    #copyBtn:hover { filter: brightness(1.1); }
+    #copyBtn.copied { background: var(--olive); }
+
+    .sources {
+      font-size: 14px;
+      color: var(--subtle);
+    }
+
+    .sources code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--inset);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 880px) {
+      .layout { grid-template-columns: 1fr; }
+      nav.toc {
+        position: relative;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1.5px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        padding: 20px 24px;
+      }
+      nav.toc .label { width: 100%; }
+      nav.toc a { display: inline; padding: 0; }
+      nav.toc .sub { padding-left: 0; }
+      main { padding: 32px 24px 64px; }
+      .three-col, .pillar-grid, .two-col, .seek-grid, .dev-notes { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="toc" aria-label="Table of contents">
+      <div class="label">Project brief</div>
+      <a href="formless-hub.html">← Eyes Closed hub</a>
+      <a href="#content-arch">Content architecture</a>
+      <a class="sub" href="#pillars">Content pillars</a>
+      <a class="sub" href="#services">Services</a>
+      <a href="#website-roadmap">Website roadmap</a>
+      <a class="sub" href="#website-core">Site core</a>
+      <a class="sub" href="#resources">PDFs &amp; resources</a>
+      <a href="#publishing">Book publishing</a>
+      <a class="sub" href="#channels">Channels</a>
+      <a class="sub" href="#ingram">IngramSpark</a>
+      <a class="sub" href="#roles">Vendor roles</a>
+      <a href="#first-steps">First steps</a>
+      <a href="#sources">Sources</a>
+    </nav>
+
+    <main>
+      <p class="eyebrow">Eyes Closed · project brief</p>
+      <h1>Project brief — <em>gathering</em></h1>
+      <p class="meta">Updated May 2026 · Cross-linked from <code>formless-hub.html</code></p>
+      <a class="hub-link" href="formless-hub.html">Open live project hub →</a>
+
+      <section id="content-arch">
+        <h2>Website content architecture</h2>
+        <p class="section-note">How the site is organized and what it should say.</p>
+
+        <div class="panel" id="foundation">
+          <div class="panel-label">Foundation · Eyes Closed</div>
+          <p style="margin:0 0 12px;font-size:14px;color:var(--muted)">The org brand for services: a space people enter once they resonate with <em>Formless</em>.</p>
+          <p style="margin:0 0 12px;font-size:14px;color:var(--muted)"><strong style="color:var(--ink)">Mission:</strong> A space to see beyond the mind, navigate awareness in daily life, and identify unconscious patterns.</p>
+          <blockquote class="insight-quote">You are not the voice in your head. You are not your thoughts.</blockquote>
+        </div>
+
+        <div class="two-col">
+          <div class="theme-card">
+            <h4>From seeking to seeing</h4>
+            <p>From lack to recognizing wholeness already within.</p>
+          </div>
+          <div class="theme-card">
+            <h4>The formless essence</h4>
+            <p>Mostly space at a subatomic level; we are awareness in which form appears.</p>
+          </div>
+        </div>
+
+        <div class="callout warn">
+          <strong>Framing guardrail:</strong> Point people back to what already exists within them. Avoid healer or savior positioning; keep Eyes Closed grounded in humility and presence.
+        </div>
+
+        <h3 id="pillars">Content pillars</h3>
+        <div class="pillar-grid">
+          <div class="pillar-card">
+            <div class="pillar-num">I · Why</div>
+            <h4>The personal prison</h4>
+            <ul>
+              <li>Illusion of lack</li>
+              <li>Unseen patterns</li>
+              <li>Cost of resistance</li>
+            </ul>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-num">II · How</div>
+            <h4>The shift to awareness</h4>
+            <ul>
+              <li>Power of noticing</li>
+              <li>Dissolving the ego</li>
+              <li>Role of stillness</li>
+            </ul>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-num">III · Daily life</div>
+            <h4>Awareness in application</h4>
+            <ul>
+              <li>Conscious relationships</li>
+              <li>Work and purpose</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 id="services">Service doorways</h3>
+        <p class="section-note">See <a href="formless-hub.html#offerings-direction">hub · offerings direction</a> for latest naming from Soni.</p>
+
+        <div class="panel">
+          <div class="panel-label">Name options · pick / combine</div>
+          <div class="chip-grid">
+            <span class="chip">Inner alignment guidance</span>
+            <span class="chip">Guide for self discovery</span>
+            <span class="chip">Inner Clarity Consulting</span>
+          </div>
+          <p style="margin:10px 0 0;font-size:12px;color:var(--muted)"><em style="color:rgba(201,162,39,0.88);font-style:normal">Return to inner guidance with Soni C.</em> · positioning line</p>
+        </div>
+
+        <div class="table-panel">
+          <table>
+            <thead>
+              <tr><th>Format</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1:1 · consulting</td><td>Personal inner guidance</td></tr>
+              <tr><td>Large group sessions</td><td>Author / speaker format</td></tr>
+              <tr><td>Video · speaking</td><td>7-step framework below</td></tr>
+              <tr><td>Free resources</td><td>PDFs and prompts when ready</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-label">Video framework</div>
+          <div class="mini-flow">
+            <span class="step"><strong>Hook</strong></span>
+            <span class="arrow">→</span>
+            <span class="step"><strong>Awareness</strong></span>
+            <span class="arrow">→</span>
+            <span class="step"><strong>Acceptance</strong></span>
+            <span class="arrow">→</span>
+            <span class="step"><strong>Investigation</strong></span>
+            <span class="arrow">→</span>
+            <span class="step"><strong>Letting go</strong></span>
+            <span class="arrow">→</span>
+            <span class="step"><strong>Reflection</strong></span>
+            <span class="arrow">→</span>
+            <span class="step"><strong>Stillness</strong></span>
+          </div>
+          <p style="margin:8px 0 0;font-size:12px;color:var(--subtle);line-height:1.45">Content angle: build from the relationship view — <em>How long have you been in a relationship?</em></p>
+        </div>
+
+        <div class="dev-notes">
+          <div class="dev-note">
+            <strong>Soni · story section</strong>
+            Personal awakening story (bathroom, Dr. Joe Dispenza) as the About page entry.
+          </div>
+          <div class="dev-note">
+            <strong>Visual strategy</strong>
+            Nature imagery from Chapter 7: trees, sky, stillness. Calm, grounded UI.
+          </div>
+        </div>
+      </section>
+
+      <section id="website-roadmap">
+        <h2>Website roadmap</h2>
+        <p class="section-note">Strategic tone and what to build first.</p>
+
+        <h3>What readers seek after the book</h3>
+        <div class="seek-grid">
+          <div class="seek-item">Someone who understands what they are experiencing</div>
+          <div class="seek-item">Guidance navigating awareness in daily life</div>
+          <div class="seek-item">Help seeing unconscious patterns</div>
+          <div class="seek-item">Reassurance they are not alone or “crazy”</div>
+          <div class="seek-item" style="grid-column:1/-1">Practical ways to remain present</div>
+        </div>
+
+        <h3 id="website-core">Website core</h3>
+        <div class="pill-row">
+          <span class="pill">Story / mission</span>
+          <span class="pill">What Eyes Closed is</span>
+          <span class="pill">Inner guidance · consulting</span>
+          <span class="pill">Large group sessions</span>
+          <span class="pill">Video · speaking</span>
+          <span class="pill">Contact</span>
+          <span class="pill">Free resources</span>
+        </div>
+
+        <div class="panel">
+          <div class="panel-label">1:1 · consulting approach</div>
+          <p style="margin:0 0 10px;font-size:14px;color:var(--muted)">Tools for observation, not steps for fixing yourself.</p>
+          <div class="chip-grid">
+            <span class="chip">Reflection prompts</span>
+            <span class="chip">Awareness exercises</span>
+            <span class="chip">Journaling questions</span>
+            <span class="chip">Guided meditations</span>
+            <span class="chip">Nervous-system grounding</span>
+            <span class="chip">Pattern-noticing PDFs</span>
+          </div>
+        </div>
+
+        <h3 id="resources">PDF &amp; handout ideas</h3>
+        <div class="panel">
+          <div class="chip-group">
+            <div class="chip-group-label">Beginner awareness</div>
+            <div class="chip-grid">
+              <span class="chip">You Are Not Your Thoughts</span>
+              <span class="chip">Observing the Mind</span>
+              <span class="chip">Returning to the Present</span>
+              <span class="chip">Common Ego Patterns</span>
+              <span class="chip">Awareness in Relationships</span>
+              <span class="chip">The Memorized Body</span>
+              <span class="chip">Suffering &amp; Resistance</span>
+              <span class="chip">Questions in Stillness</span>
+            </div>
+          </div>
+          <div class="chip-group">
+            <div class="chip-group-label">Guided practices</div>
+            <div class="chip-grid">
+              <span class="chip">5-min grounding</span>
+              <span class="chip">Observing thought</span>
+              <span class="chip">Body scan</span>
+              <span class="chip">Conscious breathing</span>
+              <span class="chip">Nature presence</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="section-note" style="margin-top:16px">Later, no pressure: group circles, retreats, corporate talks, courses.</p>
+      </section>
+
+      <section id="publishing">
+        <h2>Book publishing roadmap</h2>
+        <p class="section-note">Print and ebook path, separate from the marketing site.</p>
+
+        <h3 id="channels">Distribution channels</h3>
+        <div class="table-panel">
+          <table>
+            <thead>
+              <tr><th>Channel</th><th>Formats</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>IngramSpark</strong></td>
+                <td>Print, ebook</td>
+                <td>Primary setup: PDFs, proofs, metadata, wide distribution. <a href="https://myaccount.ingramspark.com/">Portal</a></td>
+              </tr>
+              <tr>
+                <td><strong>Amazon</strong></td>
+                <td>Kindle, KDP print</td>
+                <td>Major retail; KDP and/or via IngramSpark — TBD</td>
+              </tr>
+              <tr>
+                <td><strong>Audible</strong></td>
+                <td>Audiobook</td>
+                <td>Separate track via <a href="https://www.acx.com/">ACX</a>; likely phase 2</td>
+              </tr>
+              <tr>
+                <td><strong>Substack</strong></td>
+                <td>Essays, email</td>
+                <td>Research: excerpts during book dev, subscriber list, post-launch relationship. <a href="substack-approach.html">Approach doc</a></td>
+              </tr>
+              <tr>
+                <td>Other retailers</td>
+                <td>Ebook, print</td>
+                <td>Often via IngramSpark (Apple Books, Kobo, B&amp;N)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="ingram">IngramSpark prerequisites</h3>
+        <div class="chip-grid" style="margin:12px 0">
+          <span class="chip">ISBN</span>
+          <span class="chip">Interior PDF</span>
+          <span class="chip">Cover PDF</span>
+          <span class="chip">Metadata</span>
+          <span class="chip">Pricing</span>
+          <span class="chip">Proof approval</span>
+          <span class="chip">Distribution config</span>
+        </div>
+
+        <h3 id="roles">Vendor &amp; role map</h3>
+        <div class="table-panel">
+          <table>
+            <thead>
+              <tr><th>Function</th><th>What they do</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Developmental editor</td><td>Structure, flow, clarity, pacing</td></tr>
+              <tr><td>Copy editor</td><td>Grammar, syntax, consistency</td></tr>
+              <tr><td>Proofreader</td><td>Final typo pass</td></tr>
+              <tr><td>Book designer</td><td>Professional interior layout</td></tr>
+              <tr><td>Cover designer</td><td>Front, spine, back</td></tr>
+              <tr><td>Typesetter</td><td>Print-ready files</td></tr>
+              <tr><td>Publishing coordinator</td><td>Timelines, files, vendors</td></tr>
+              <tr><td>Metadata specialist</td><td>Title, categories, keywords</td></tr>
+              <tr><td>Marketing strategist</td><td>Launch, ARC, campaigns</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="first-steps">
+        <h2>Consolidated first steps</h2>
+        <div class="three-col">
+          <div class="card website">
+            <div class="card-label">Website</div>
+            <p>Core pages live. About with Soni’s story. Service framing. Booking when ready. 2–3 free resources. First videos.</p>
+          </div>
+          <div class="card content">
+            <div class="card-label">Content</div>
+            <p>Map pillars to nav. Insight hook above the fold. Nature-led visual system.</p>
+          </div>
+          <div class="card book">
+            <div class="card-label">Book</div>
+            <p>Complete edit and design. IngramSpark when PDFs and ISBN exist. Decide Amazon / Audible strategy.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="sources" class="sources">
+        <h2>Source files</h2>
+        <p>This page mirrors and cross-links the markdown sources in the delivery repo:</p>
+        <ul>
+          <li><code>docs/website-content-arch-guide.md</code></li>
+          <li><code>docs/roadmap-website-notes.md</code></li>
+          <li><code>docs/publishing-roadmap-notes.md</code></li>
+          <li><code>docs/publishing-channels.md</code></li>
+          <li><code>docs/substack-approach.html</code></li>
+        </ul>
+        <p>Coordination: <code>/Volumes/Fulcrum/projects/proj-001-formless-web/</code> · Delivery: <code>formless-web</code> on Vercel</p>
+      </section>
+
+      <div class="export-bar">
+        <p>Export a short markdown outline for agent handoff.</p>
+        <button type="button" id="copyBtn">Copy as markdown</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const tocLinks = document.querySelectorAll('nav.toc a[href^="#"]');
+    const sections = [...tocLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        tocLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => observer.observe(s));
+
+    function buildExport() {
+      return [
+        '# Formless project brief',
+        '',
+        '## Source files',
+        '- docs/website-content-arch-guide.md',
+        '- docs/roadmap-website-notes.md',
+        '- docs/publishing-roadmap-notes.md',
+        '- docs/publishing-channels.md',
+        '- docs/substack-approach.html',
+        '',
+        'Full brief: docs/formless-project-brief.html',
+      ].join('\n');
+    }
+
+    const copyBtn = document.getElementById('copyBtn');
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(buildExport()).then(() => {
+        copyBtn.textContent = '✓ Copied';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy as markdown';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

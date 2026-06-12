@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-labelledby="title desc">
+  <title id="title">Eyes Closed author cut A - orbit surge</title>
+  <desc id="desc">A closed-eye crescent set inside dimensional orbital particle currents with the Eyes Closed wordmark.</desc>
+  <defs>
+    <style>
+      .bg{fill:#050806}.cream{fill:#f2f0e9}.sage{fill:#9fb5aa}.moss{fill:#2e4036}.ember{fill:#cc5833}
+      .orbit{fill:none;stroke-linecap:round;stroke-dasharray:0 9}
+      .ghost{fill:none;stroke:#9fb5aa;stroke-opacity:.16;stroke-width:.75}
+      .word{font-family:"Cormorant Garamond","Iowan Old Style","Times New Roman",serif;font-size:76px;font-weight:400;letter-spacing:.2px}
+      .tag{font-family:"Space Mono","Courier New",monospace;font-size:10px;letter-spacing:6.8px}
+    </style>
+    <radialGradient id="aGlow" cx="49%" cy="40%" r="48%">
+      <stop offset="0" stop-color="#f2f0e9" stop-opacity=".18"/>
+      <stop offset=".42" stop-color="#9fb5aa" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#050806" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect class="bg" width="1120" height="520"/>
+  <ellipse cx="562" cy="190" rx="330" ry="126" fill="url(#aGlow)"/>
+  <g transform="translate(0 8)">
+    <ellipse class="ghost" cx="560" cy="176" rx="322" ry="86" transform="rotate(-10 560 176)"/>
+    <ellipse class="ghost" cx="598" cy="170" rx="268" ry="58" transform="rotate(-23 598 170)"/>
+    <path class="orbit" d="M270 166 C398 68 673 48 925 128" stroke="#9fb5aa" stroke-opacity=".42" stroke-width="2.6"/>
+    <path class="orbit" d="M255 188 C406 126 680 102 954 160" stroke="#f2f0e9" stroke-opacity=".7" stroke-width="3.4"/>
+    <path class="orbit" d="M336 212 C514 194 737 188 1002 220" stroke="#f2f0e9" stroke-opacity=".25" stroke-width="1.9"/>
+    <path class="orbit" d="M585 136 C701 76 811 47 988 40" stroke="#cc5833" stroke-opacity=".48" stroke-width="1.6"/>
+    <path class="cream" d="M285 176 C420 257 640 256 790 176 C642 238 423 239 285 176 Z"/>
+    <g>
+      <circle class="cream" cx="318" cy="178" r="2.4"/><circle class="cream" cx="390" cy="153" r="1.3"/><circle class="sage" cx="472" cy="137" r="1.7"/><circle class="cream" cx="565" cy="126" r="3"/>
+      <circle class="cream" cx="667" cy="127" r="1.7"/><circle class="cream" cx="766" cy="142" r="3.4"/><circle class="sage" cx="842" cy="155" r="1.5"/><circle class="ember" cx="930" cy="75" r="1.8"/>
+      <circle class="cream" cx="736" cy="195" r="1.4"/><circle class="cream" cx="805" cy="197" r="2.4"/><circle class="sage" cx="902" cy="208" r="1.4"/>
+    </g>
+  </g>
+  <text x="560" y="390" text-anchor="middle" class="cream word">Eyes Closed</text>
+  <text x="560" y="430" text-anchor="middle" class="sage tag">THE STILL POINT</text>
+</svg>
