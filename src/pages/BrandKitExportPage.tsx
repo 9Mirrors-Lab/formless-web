@@ -39,13 +39,11 @@ const EXPORT_GROUPS: ExportGroup[] = [
     id: "ec-publishing",
     name: "EC Publishing Logo",
     sizes: [
-      { id: "large", name: "Large (2048px)", width: 2048, height: 1168, safeZoneType: "none", padding: 0 },
-      { id: "medium", name: "Medium (1024px)", width: 1024, height: 584, safeZoneType: "none", padding: 0 },
-      { id: "small", name: "Small (512px)", width: 512, height: 292, safeZoneType: "none", padding: 0 },
+      { id: "svg", name: "Download SVG", width: 1401, height: 799, safeZoneType: "none", padding: 0 },
     ],
     themes: [
-      { id: "white-trans", name: "White Logo (Transparent)", bgColor: "transparent", logo: ecPublishingWhiteSrc },
-      { id: "black-trans", name: "Black Logo (Transparent)", bgColor: "transparent", logo: ecPublishingBlackSrc },
+      { id: "white-trans", name: "White Logo", bgColor: "transparent", logo: ecPublishingWhiteSrc },
+      { id: "black-trans", name: "Black Logo", bgColor: "transparent", logo: ecPublishingBlackSrc },
     ]
   },
   {
@@ -220,6 +218,18 @@ export default function BrandKitExportPage() {
       const zip = new JSZip();
 
       for (const group of EXPORT_GROUPS) {
+        if (group.id === "ec-publishing") {
+          const folder = zip.folder(group.name);
+          if (!folder) continue;
+          
+          const whiteSvgBlob = await fetch(ecPublishingWhiteSrc).then(r => r.blob());
+          folder.file('eyes-closed-publishing-white.svg', whiteSvgBlob);
+          
+          const blackSvgBlob = await fetch(ecPublishingBlackSrc).then(r => r.blob());
+          folder.file('eyes-closed-publishing-black.svg', blackSvgBlob);
+          continue;
+        }
+
         if (group.id === "qr") {
           const folder = zip.folder(group.name);
           if (!folder) continue;
@@ -263,6 +273,14 @@ export default function BrandKitExportPage() {
   };
 
   const handleDownload = () => {
+    if (activeGroup.id === "ec-publishing") {
+      const link = document.createElement('a');
+      link.download = `eyes-closed-publishing-${activeTheme.id}.svg`;
+      link.href = activeTheme.logo;
+      link.click();
+      return;
+    }
+
     if (activeGroup.id === "qr") {
       const link = document.createElement('a');
       link.download = `eyes-closed-qr-code.${activeSize.id}`;
