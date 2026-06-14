@@ -1,20 +1,29 @@
 "use client"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { MeshGradient, PulsingBorder } from "@paper-design/shaders-react"
 import { motion } from "framer-motion"
 
-export function Hero() {
+export default function ShaderShowcase() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isActive, setIsActive] = useState(false)
 
-  // Fixed particle anchors keep hover motion stable across renders.
-  const PARTICLE_ANCHORS = [
-    { left: 35, top: 41, xShift: -5 },
-    { left: 68, top: 28, xShift: 8 },
-    { left: 44, top: 62, xShift: -2 },
-    { left: 71, top: 55, xShift: 5 },
-    { left: 31, top: 73, xShift: -8 },
-    { left: 56, top: 38, xShift: 3 },
-  ];
+  useEffect(() => {
+    const handleMouseEnter = () => setIsActive(true)
+    const handleMouseLeave = () => setIsActive(false)
+
+    const container = containerRef.current
+    if (container) {
+      container.addEventListener("mouseenter", handleMouseEnter)
+      container.addEventListener("mouseleave", handleMouseLeave)
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("mouseenter", handleMouseEnter)
+        container.removeEventListener("mouseleave", handleMouseLeave)
+      }
+    }
+  }, [])
 
   return (
     <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
@@ -74,11 +83,14 @@ export function Hero() {
         className="absolute inset-0 w-full h-full"
         colors={["#000000", "#06b6d4", "#0891b2", "#164e63", "#f97316"]}
         speed={0.3}
+        backgroundColor="#000000"
       />
       <MeshGradient
         className="absolute inset-0 w-full h-full opacity-60"
         colors={["#000000", "#ffffff", "#06b6d4", "#f97316"]}
         speed={0.2}
+        wireframe="true"
+        backgroundColor="transparent"
       />
 
       <header className="relative z-20 flex items-center justify-between p-6">
@@ -116,17 +128,17 @@ export function Hero() {
           </motion.svg>
 
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            {PARTICLE_ANCHORS.map((pos, i) => (
+            {[...Array(6)].map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute w-1 h-1 bg-white/60 rounded-full"
                 style={{
-                  left: `${pos.left}%`,
-                  top: `${pos.top}%`,
+                  left: `${20 + Math.random() * 60}%`,
+                  top: `${20 + Math.random() * 60}%`,
                 }}
                 animate={{
                   y: [-10, -20, -10],
-                  x: [0, pos.xShift, 0],
+                  x: [0, Math.random() * 20 - 10, 0],
                   opacity: [0, 1, 0],
                   scale: [0, 1, 0],
                 }}
@@ -267,7 +279,7 @@ export function Hero() {
             thickness={0.1}
             softness={0.2}
             intensity={5}
-            spots={5}
+            spotsPerColor={5}
             spotSize={0.1}
             pulse={0.1}
             smoke={0.5}
