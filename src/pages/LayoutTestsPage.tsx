@@ -33,15 +33,15 @@ const practiceCards = [
   },
 ];
 
-const changeNotes = [
-  'Formless becomes the book title; Eyes Closed becomes the site and organization brand.',
-  'The Work becomes The Practice across nav, page heading, and footer language.',
-  'Science is presented as Spirituality & Science for a shorter navigation label.',
-  'The hero moves from abstract invitation into clearer spiritual language.',
-  'The Practice copy becomes warmer, longer, and more relational.',
+const layoutNotes = [
+  'Playground only: layout, type scale, and section rhythm experiments.',
+  'Does not affect / or /revised until changes are promoted deliberately.',
+  'Started from client feedback direction: Eyes Closed brand, The Practice, Spirituality & Science.',
+  'Use this page to try dark-first heroes, clay CTAs, and new section grids.',
+  'Live copy and IA for review live on /revised routes.',
 ];
 
-function RevisionNav() {
+function LayoutTestsNav() {
   return (
     <nav className="fixed left-1/2 top-5 z-50 flex w-[94%] max-w-6xl -translate-x-1/2 items-center justify-between rounded-full border border-cream/12 bg-[#070806]/82 px-5 py-3 text-cream shadow-2xl shadow-black/25 backdrop-blur-xl md:px-7">
       <a href="#top" className="flex items-center gap-3">
@@ -60,10 +60,10 @@ function RevisionNav() {
         ))}
       </div>
       <a
-        href="#connect"
+        href="#notes"
         className="rounded-full bg-cream px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-charcoal transition-transform hover:scale-105"
       >
-        Review
+        Notes
       </a>
     </nav>
   );
@@ -77,10 +77,11 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-export default function ClientFeedbackRevisionPage() {
+/** Layout playground: experimental sections, not wired to CMS or /revised. */
+export default function LayoutTestsPage() {
   return (
     <div id="top" className="min-h-screen bg-[#080907] text-cream selection:bg-clay/40">
-      <RevisionNav />
+      <LayoutTestsNav />
 
       <main>
         <section className="relative min-h-[100dvh] overflow-hidden px-6 pb-20 pt-36 md:px-16 lg:px-24">
@@ -90,36 +91,37 @@ export default function ClientFeedbackRevisionPage() {
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#080907] to-transparent" />
           </div>
 
-          <div className="relative z-10 mx-auto grid max-w-7xl gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-            <div className="max-w-4xl pt-12 md:pt-24">
-              <SectionLabel>Remembering Who You Are Beyond The Mind</SectionLabel>
-              <h1 className="font-serif text-6xl italic leading-[0.98] tracking-normal text-cream md:text-8xl lg:text-[8.5rem]">
-                Peace has never left you, it is your natural state.
-              </h1>
-              <p className="mt-9 max-w-2xl text-lg leading-relaxed text-cream/66 md:text-xl">
-                The world teaches you to look outward for fulfillment. Eyes Closed points
-                you inward.
-              </p>
-              <p className="mt-5 max-w-xl font-serif text-2xl italic leading-snug text-clay md:text-3xl">
-                Peace has never left you, it is your natural state.
-              </p>
-              <div className="mt-10 flex flex-wrap gap-3">
-                <a
-                  href="#reflection"
-                  className="rounded-full bg-clay px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-transform hover:scale-105"
-                >
-                  A moment to go within
-                </a>
-                <a
-                  href="#practice"
-                  className="rounded-full border border-cream/18 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cream/78 transition-colors hover:border-cream/45 hover:text-cream"
-                >
-                  The Practice
-                </a>
-              </div>
-            </div>
+          <div className="relative z-10 mx-auto max-w-7xl pt-12 md:pt-24">
+            <SectionLabel>Layout test · Hero</SectionLabel>
+            <h1 className="font-serif text-[clamp(2.75rem,5.8vw,6.5rem)] italic leading-[1.05] tracking-normal text-cream">
+              <span className="block sm:whitespace-nowrap">Peace has never left you,</span>
+              <span className="block sm:whitespace-nowrap">it is your natural</span>
+              <span className="block sm:whitespace-nowrap">state.</span>
+            </h1>
 
-            <aside className="border-l border-cream/12 pl-7">
+            <div className="mt-12 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+              <div className="max-w-2xl">
+                <p className="text-lg leading-relaxed text-cream/66 md:text-xl">
+                  The world teaches you to look outward for fulfillment. Eyes Closed points
+                  you inward.
+                </p>
+                <div className="mt-10 flex flex-wrap gap-3">
+                  <a
+                    href="#reflection"
+                    className="rounded-full bg-clay px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-transform hover:scale-105"
+                  >
+                    A moment to go within
+                  </a>
+                  <a
+                    href="#practice"
+                    className="rounded-full border border-cream/18 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cream/78 transition-colors hover:border-cream/45 hover:text-cream"
+                  >
+                    The Practice
+                  </a>
+                </div>
+              </div>
+
+              <aside className="border-l border-cream/12 pl-7 lg:pb-2">
               <p className="font-mono text-xs uppercase tracking-[0.24em] text-cream/36">
                 Brand hierarchy
               </p>
@@ -138,7 +140,8 @@ export default function ClientFeedbackRevisionPage() {
                   </p>
                 </div>
               </div>
-            </aside>
+              </aside>
+            </div>
           </div>
         </section>
 
@@ -149,7 +152,7 @@ export default function ClientFeedbackRevisionPage() {
           <div className="absolute right-[-12rem] top-[-8rem] h-[32rem] w-[32rem] rounded-full bg-moss/10 blur-[100px]" />
           <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <div>
-              <SectionLabel>Eyes Closed</SectionLabel>
+              <SectionLabel>Layout test · Reflection</SectionLabel>
               <h2 className="font-serif text-5xl italic leading-tight md:text-7xl">
                 An invitation to go within and meet yourself beyond the identities
                 and stories.
@@ -175,15 +178,14 @@ export default function ClientFeedbackRevisionPage() {
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
               <div>
-                <SectionLabel>The Practice</SectionLabel>
+                <SectionLabel>Layout test · The Practice</SectionLabel>
                 <h2 className="font-serif text-5xl italic leading-tight md:text-7xl">
                   Observe the mind instead of becoming lost within it.
                 </h2>
               </div>
               <div className="pt-2">
                 <p className="text-xl leading-relaxed text-cream/66">
-                  Beneath every inner struggle is unconscious identification with
-                  thought. Learn to observe the mind instead of becoming lost within it.
+                  Beneath every inner struggle is unconscious identification with thought.
                 </p>
                 <p className="mt-8 border-t border-cream/10 pt-8 font-serif text-3xl italic leading-snug text-clay">
                   Your life circumstances are constantly changing. However, the
@@ -217,7 +219,7 @@ export default function ClientFeedbackRevisionPage() {
         <section className="bg-[#11130f] px-6 py-28 md:px-16 lg:px-24">
           <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
             <div>
-              <SectionLabel>Reframe</SectionLabel>
+              <SectionLabel>Layout test · Reframe</SectionLabel>
               <h2 className="font-serif text-5xl italic leading-tight md:text-7xl">
                 You are not your thoughts or beliefs.
               </h2>
@@ -240,54 +242,56 @@ export default function ClientFeedbackRevisionPage() {
           className="grid gap-0 bg-cream text-charcoal md:grid-cols-[0.9fr_1.1fr]"
         >
           <div className="px-6 py-24 md:px-16 lg:px-24">
-            <SectionLabel>Spirituality & Science</SectionLabel>
+            <SectionLabel>Layout test · Spirituality & Science</SectionLabel>
             <h2 className="font-serif text-5xl italic leading-tight md:text-7xl">
               A quiet bridge between inner experience and what the body remembers.
             </h2>
           </div>
           <div className="border-t border-charcoal/10 px-6 py-24 md:border-l md:border-t-0 md:px-16 lg:px-24">
             <p className="max-w-2xl text-lg leading-8 text-charcoal/64">
-              This revision keeps the science page as a supporting bridge, but updates
-              the navigation language so the spiritual frame is visible before the
-              visitor enters the page.
+              Split-panel science layout for testing rhythm and copy balance on a
+              cream band between dark sections.
             </p>
           </div>
         </section>
 
-        <section
-          id="book"
-          className="px-6 py-24 md:px-16 lg:px-24"
-        >
+        <section id="book" className="px-6 py-24 md:px-16 lg:px-24">
           <div className="mx-auto max-w-7xl border-y border-cream/12 py-16">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-cream/36">
-              Book page
+              Layout test · Book
             </p>
             <div className="mt-8 grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-end">
               <h2 className="font-serif text-6xl italic text-cream md:text-8xl">
                 Formless
               </h2>
               <p className="max-w-2xl text-lg leading-8 text-cream/60">
-                In the revised hierarchy, Formless stays important, but it stops
-                carrying the whole site brand. It becomes the first book and teaching
-                doorway inside Eyes Closed.
+                Book remains the teaching doorway inside Eyes Closed. This block
+                tests oversized serif title against supporting copy.
               </p>
             </div>
           </div>
         </section>
 
-        <section id="connect" className="px-6 pb-20 pt-8 md:px-16 lg:px-24">
+        <section id="notes" className="px-6 pb-20 pt-8 md:px-16 lg:px-24">
           <div className="mx-auto max-w-7xl rounded-[2rem] bg-clay px-7 py-12 text-cream md:px-12">
             <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
               <div>
                 <p className="font-mono text-xs uppercase tracking-[0.24em] text-cream/64">
-                  Applied feedback
+                  /layout-tests
                 </p>
                 <h2 className="mt-5 font-serif text-4xl italic md:text-6xl">
-                  Revision preview, not the live site.
+                  Design playground. Not the live site.
                 </h2>
+                <p className="mt-5 max-w-md text-sm leading-relaxed text-cream/75">
+                  Approved copy and IA ship on{' '}
+                  <a href="/revised" className="underline decoration-cream/40 underline-offset-4">
+                    /revised
+                  </a>
+                  . Promote layout wins from here when ready.
+                </p>
               </div>
               <ul className="grid gap-4 text-sm leading-7 text-cream/80 md:grid-cols-2">
-                {changeNotes.map((note) => (
+                {layoutNotes.map((note) => (
                   <li key={note} className="border-t border-cream/24 pt-4">
                     {note}
                   </li>

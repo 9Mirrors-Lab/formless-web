@@ -1105,3 +1105,93 @@
 .cinematic-ease {
   transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+.shader-css-fallback__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(88px);
+  opacity: 0.62;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.shader-css-fallback__blob-a {
+  top: -8%;
+  left: -6%;
+  width: 52vmax;
+  height: 52vmax;
+  animation: shader-css-blob-a 11s ease-in-out infinite;
+}
+
+.shader-css-fallback__blob-b {
+  right: -10%;
+  bottom: -12%;
+  width: 48vmax;
+  height: 48vmax;
+  opacity: 0.5;
+  animation: shader-css-blob-b 13s ease-in-out infinite;
+}
+
+.shader-css-fallback__blob-c {
+  top: 18%;
+  right: 8%;
+  width: 38vmax;
+  height: 38vmax;
+  opacity: 0.42;
+  mix-blend-mode: soft-light;
+  animation: shader-css-blob-c 9s ease-in-out infinite;
+}
+
+.shader-css-fallback__blob-d {
+  bottom: 8%;
+  left: 18%;
+  width: 34vmax;
+  height: 34vmax;
+  opacity: 0.38;
+  mix-blend-mode: soft-light;
+  animation: shader-css-blob-d 15s ease-in-out infinite;
+}
+
+@keyframes shader-css-blob-a {
+  0%,
+  100% {
+    transform: translate3d(-6%, -4%, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(16%, 12%, 0) scale(1.18);
+  }
+}
+
+@keyframes shader-css-blob-b {
+  0%,
+  100% {
+    transform: translate3d(8%, 6%, 0) scale(1.05);
+  }
+
+  50% {
+    transform: translate3d(-18%, -14%, 0) scale(1.22);
+  }
+}
+
+@keyframes shader-css-blob-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-14%, 10%, 0) scale(1.14);
+  }
+}
+
+@keyframes shader-css-blob-d {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+  }
+
+  50% {
+    transform: translate3d(12%, -16%, 0) scale(1.12);
+  }
+}

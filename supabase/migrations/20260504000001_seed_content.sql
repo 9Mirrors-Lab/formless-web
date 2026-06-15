@@ -63,6 +63,11 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('book', 'header', 'title', '{"text": "The book is a doorway into the recognition."}', 'text', 0),
 ('book', 'header', 'lede', '{"text": "Not a method. Not a program. A quiet invitation to stop and see what is already here: the awareness behind every thought, every feeling, every story."}', 'text', 0),
 ('book', 'header', 'cta_excerpt', '{"text": "Read an excerpt", "href": "#"}', 'link', 0),
+('book', 'header', 'notify_heading', '{"text": "Sign up to be notified when the book releases."}', 'text', 0),
+('book', 'header', 'notify_cta', '{"text": "Notify me"}', 'text', 0),
+('book', 'header', 'notify_fine_print', '{"text": "One email on release day. Unsubscribe anytime."}', 'text', 0),
+('book', 'header', 'notify_success', '{"text": "You''re on the list."}', 'text', 0),
+('book', 'header', 'notify_error', '{"text": "Enter a valid email, or try again in a moment."}', 'text', 0),
 ('book', 'cover', 'title', '{"text": "Formless"}', 'text', 0),
 
 ('book', 'quotes', 'quote_0', '{"text": "You do not have to rearrange your entire life to begin."}', 'text', 0),

@@ -17,13 +17,20 @@ import AboutPage from './pages/AboutPage';
 import ColorsPage from './pages/ColorsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
-import ClientFeedbackRevisionPage from './pages/ClientFeedbackRevisionPage';
+import LayoutTestsPage from './pages/LayoutTestsPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
 
 const publicSiteRestricted = isPublicSiteRestricted();
+
+function LegacyLayoutTestsRedirect() {
+  useLayoutEffect(() => {
+    window.location.replace('/layout-tests');
+  }, []);
+  return null;
+}
 
 function NormalizeToRoot({ path }: { path: string }) {
   useLayoutEffect(() => {
@@ -58,7 +65,7 @@ export function Root({ path }: { path: string }) {
     path === '/eyes-closed-logo-options' ||
     path === '/design/eyes-closed-logo-variations/04-options.html';
   const isBrandKitExport = path === '/brand-kit-export';
-  const isClientFeedbackRevision = path === '/client-feedback-revision';
+  const isLayoutTests = path === '/layout-tests';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -76,7 +83,7 @@ export function Root({ path }: { path: string }) {
   if (isColors) return <ColorsPage />;
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;
-  if (isClientFeedbackRevision) return <ClientFeedbackRevisionPage />;
+  if (isLayoutTests) return <LayoutTestsPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -118,16 +125,15 @@ function AppContentShell({ path }: { path: string }) {
 
 export function PublicShell({ path }: { path: string }) {
   const normalizedPath = path.replace(/\/+$/, '') || '/';
-  const isRevisedSite =
-    normalizedPath === '/revised' || normalizedPath.startsWith('/revised/');
-  const routedPath = isRevisedSite
-    ? normalizedPath.replace(/^\/revised/, '') || '/'
-    : normalizedPath;
+
+  if (normalizedPath === '/client-feedback-revision') {
+    return <LegacyLayoutTestsRedirect />;
+  }
 
   return (
     <SiteAccessProvider value={{ restricted: publicSiteRestricted }}>
-      <ContentProvider transformTree={isRevisedSite ? applyClientFeedbackRevision : undefined}>
-        <AppContentShell path={routedPath} />
+      <ContentProvider transformTree={applyClientFeedbackRevision}>
+        <AppContentShell path={normalizedPath} />
       </ContentProvider>
     </SiteAccessProvider>
   );

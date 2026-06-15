@@ -302,8 +302,8 @@ export default function SciencePage() {
         />
 
         {/* Hero */}
-        <section className="relative z-10 w-full pt-52 pb-24 px-6 md:px-[72px] overflow-hidden">
-          <div className="max-w-[1240px] mx-auto grid md:grid-cols-[1.4fr_1fr] gap-16 items-end">
+        <section className="relative z-10 w-full pt-44 pb-24 px-6 md:px-16 lg:px-24 overflow-hidden">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-[1.4fr_1fr] gap-16 items-end">
             <div className="sci-hero-text">
               <span className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#ECE9DD]/70 mb-7 block">
                 {getText('science', 'header', 'eyebrow') || 'A quiet bridge'}
@@ -358,36 +358,31 @@ export default function SciencePage() {
               </div>
 
               {/* Pillar text */}
-              <div
-                className="sci-pillar-text relative z-10 px-6"
-                style={{
-                  maxWidth: 560,
-                  ...(artRight
-                    ? { marginLeft: 'max(72px, calc((100vw - 1240px) / 2 + 72px))' }
-                    : {
-                        marginLeft: 'auto',
-                        marginRight: 'max(72px, calc((100vw - 1240px) / 2 + 72px))',
-                      }),
-                }}
-              >
-                <div
-                  className="sci-num font-mono font-medium text-[#ECE9DD] leading-[0.9] mb-2 select-none"
-                  style={{ fontSize: 110, letterSpacing: '-0.04em', opacity: 0 }}
-                >
-                  0{i + 1}
+              <div className="relative z-10 w-full px-6 md:px-16 lg:px-24">
+                <div className="max-w-6xl mx-auto">
+                  <div
+                    className={`sci-pillar-text max-w-[560px] ${artRight ? '' : 'ml-auto'}`}
+                  >
+                    <div
+                      className="sci-num font-mono font-medium text-[#ECE9DD] leading-[0.9] mb-2 select-none"
+                      style={{ fontSize: 110, letterSpacing: '-0.04em', opacity: 0 }}
+                    >
+                      0{i + 1}
+                    </div>
+
+                    <div className="font-mono text-[11px] tracking-[0.20em] uppercase text-[#ECE9DD]/62 mb-6">
+                      {pillar.label}
+                    </div>
+
+                    <p className="font-serif italic text-[#CC5833] text-[clamp(20px,2.2vw,24px)] leading-[1.38] mb-6">
+                      {pillar.hook}
+                    </p>
+
+                    <p className="font-sans text-[15px] leading-[1.72] text-[#ECE9DD]/70">
+                      {pillar.body}
+                    </p>
+                  </div>
                 </div>
-
-                <div className="font-mono text-[11px] tracking-[0.20em] uppercase text-[#ECE9DD]/62 mb-6">
-                  {pillar.label}
-                </div>
-
-                <p className="font-serif italic text-[#CC5833] text-[clamp(20px,2.2vw,24px)] leading-[1.38] mb-6">
-                  {pillar.hook}
-                </p>
-
-                <p className="font-sans text-[15px] leading-[1.72] text-[#ECE9DD]/70">
-                  {pillar.body}
-                </p>
               </div>
             </section>
           );
@@ -396,7 +391,7 @@ export default function SciencePage() {
         <div className="w-full border-t border-[#ECE9DD]/10" />
 
         {/* Closing band */}
-        <section className="relative z-10 w-full px-6 md:px-[72px] py-36 text-center overflow-hidden">
+        <section className="relative z-10 w-full px-6 md:px-16 lg:px-24 py-36 text-center overflow-hidden">
           <div
             className="pointer-events-none absolute inset-0"
             style={{

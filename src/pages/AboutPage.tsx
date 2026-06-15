@@ -17,42 +17,16 @@ function futureFromContent(api: ContentApi): FutureItem[] {
 
 
 
-const PHOTOS = [
-  '/assets/Soni-shot1.png',
-  '/assets/Soni-shot2.png',
-  '/assets/Soni-shot3.png',
-  '/assets/Soni-shot4.png',
-  '/assets/Soni-shot5.png',
-  '/assets/Soni-shot6.png'
-];
+const PORTRAIT_PHOTO = '/assets/Soni-shot4.png';
 
-function PhotoSwitcher({ activeIndex, onChange }: { activeIndex: number, onChange: (i: number) => void }) {
-  return (
-    <div className="absolute top-28 -left-28 flex flex-col gap-3 z-20">
-      {PHOTOS.map((_, idx) => (
-        <button
-          key={idx}
-          onClick={() => onChange(idx)}
-          className={`text-[10px] uppercase tracking-widest font-mono text-left transition-colors whitespace-nowrap ${
-            activeIndex === idx ? 'text-clay' : 'text-cream/40 hover:text-cream'
-          }`}
-        >
-          Photo {idx + 1}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function Layout1({ content, futureItems, activePhotoIndex, setActivePhotoIndex }: any) {
+function Layout1({ content, futureItems }: { content: ContentApi; futureItems: FutureItem[] }) {
   const { getText } = content;
   return (
     <section className="layout is-active">
       <header className="l1-hero">
         <div className="l1-grid">
           <div className="l1-portrait relative">
-            <PhotoSwitcher activeIndex={activePhotoIndex} onChange={setActivePhotoIndex} />
-            <div className="frame"><img src={PHOTOS[activePhotoIndex]} alt="Portrait of Sonika Cottman" /></div>
+            <div className="frame"><img src={PORTRAIT_PHOTO} alt="Portrait of Sonika Cottman" /></div>
             <div className="tag">
               <span className="caption">The Author</span>
               <span className="name">Sonika Cottman</span>
@@ -89,7 +63,15 @@ function Layout1({ content, futureItems, activePhotoIndex, setActivePhotoIndex }
   );
 }
 
-function Layout4({ content, futureItems, emailLink, activePhotoIndex, setActivePhotoIndex }: any) {
+function Layout4({
+  content,
+  futureItems,
+  emailLink,
+}: {
+  content: ContentApi;
+  futureItems: FutureItem[];
+  emailLink: { href: string };
+}) {
   const { getText } = content;
   return (
     <section className="layout is-active">
@@ -98,8 +80,7 @@ function Layout4({ content, futureItems, emailLink, activePhotoIndex, setActiveP
           <span className="eyebrow">The Author <span className="dot">●</span></span>
           <div className="name">Sonika<br />Cottman</div>
           <div className="frame relative">
-            <PhotoSwitcher activeIndex={activePhotoIndex} onChange={setActivePhotoIndex} />
-            <img src={PHOTOS[activePhotoIndex]} alt="Portrait of Sonika Cottman" />
+            <img src={PORTRAIT_PHOTO} alt="Portrait of Sonika Cottman" />
           </div>
           <div className="meta">
             <div className="row"><span>Field</span><span>Inner awareness</span></div>
@@ -138,7 +119,6 @@ function Layout4({ content, futureItems, emailLink, activePhotoIndex, setActiveP
 
 export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4 } = {}) {
   const [layout, setLayout] = useState<1 | 4>(defaultLayout);
-  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const content = useContent();
   const { getLink } = content;
   const futureItems = futureFromContent(content);
@@ -151,8 +131,6 @@ export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4
           <Layout1 
             content={content} 
             futureItems={futureItems} 
-            activePhotoIndex={activePhotoIndex}
-            setActivePhotoIndex={setActivePhotoIndex}
           />
         )}
         
@@ -161,8 +139,6 @@ export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4
             content={content} 
             futureItems={futureItems} 
             emailLink={emailLink} 
-            activePhotoIndex={activePhotoIndex}
-            setActivePhotoIndex={setActivePhotoIndex}
           />
         )}
 

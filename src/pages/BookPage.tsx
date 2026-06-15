@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageLayout } from '../components/PageLayout';
 import { ParticleButton } from '../components/ParticleButton';
+import { BookReleaseNotifyForm } from '../components/BookReleaseNotifyForm';
 import { useContent, type ContentApi } from '@/context/ContentContext';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,10 +31,13 @@ export default function BookPage() {
   const themes = themesFromContent(content);
   const quotes = ordered('book', 'quotes').map(textFromEntry);
 
-  const excerpt = getLink('book', 'header', 'cta_excerpt');
   const ctaWork = getLink('book', 'closing', 'cta_work');
   const ctaScience = getLink('book', 'closing', 'cta_science');
-  const coverTitle = getText('book', 'cover', 'title');
+  const notifyHeading = getText('book', 'header', 'notify_heading');
+  const notifyCta = getText('book', 'header', 'notify_cta');
+  const notifyFinePrint = getText('book', 'header', 'notify_fine_print');
+  const notifySuccess = getText('book', 'header', 'notify_success');
+  const notifyError = getText('book', 'header', 'notify_error');
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -60,8 +64,8 @@ export default function BookPage() {
         { clipPath: 'inset(0 0% 0 0)', duration: 1.2, ease: 'power3.inOut', delay: 0.2 },
       );
       gsap.fromTo(
-        '.book-cover-visual',
-        { x: 80, opacity: 0 },
+        '.book-notify-panel',
+        { x: 40, opacity: 0 },
         { x: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.5 },
       );
       gsap.fromTo(
@@ -97,40 +101,37 @@ export default function BookPage() {
       <div ref={pageRef}>
         <section
           ref={headerRef}
-          className="relative w-full px-6 md:px-16 lg:px-24 pt-52 pb-16 overflow-hidden"
+          className="relative w-full px-6 md:px-16 lg:px-24 pt-40 pb-16 overflow-hidden"
         >
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="sci-blob-1 absolute top-[10%] left-[15%] w-[500px] h-[500px] rounded-full bg-moss/10 blur-[120px] will-change-transform" />
             <div className="sci-blob-2 absolute bottom-[5%] right-[10%] w-[400px] h-[400px] rounded-full bg-clay/6 blur-[100px] will-change-transform" />
           </div>
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-10">
-            <div>
-            <span className="font-mono text-xs tracking-[0.3em] uppercase text-charcoal/40 mb-6 block">
-              {getText('book', 'header', 'eyebrow')}
-            </span>
-            <h1 className="book-title font-serif italic text-5xl md:text-7xl text-charcoal leading-[1.08] mb-8">
-              {getText('book', 'header', 'title')}
-            </h1>
-            <p className="text-charcoal/60 font-sans text-lg max-w-md leading-relaxed mb-8">
-              {getText('book', 'header', 'lede')}
-            </p>
-            <ParticleButton href={excerpt.href}>{excerpt.text}</ParticleButton>
-            </div>
-            <div className="book-cover-visual flex items-center justify-center">
-            <div className="relative w-full max-w-sm aspect-[3/4] rounded-lg overflow-hidden shadow-2xl shadow-black/40">
-              <div className="absolute inset-0 bg-[#17120e] flex flex-col justify-center gap-4 p-10">
-                <span className="block h-[1px] w-full bg-[#cfc7ae]/20" />
-                <span className="block h-[1px] w-[78%] bg-[#cfc7ae]/20" />
-                <span className="block h-[1px] w-[58%] bg-[#cfc7ae]/20" />
-                <span className="block h-[1px] w-full bg-[#cfc7ae]/15" />
-                <span className="block h-[1px] w-[85%] bg-[#cfc7ae]/15" />
-                <span className="block h-[1px] w-[42%] bg-[#cfc7ae]/15" />
-                <div className="mt-8">
-                  <p className="font-serif italic text-[#cfc7ae]/60 text-sm">{coverTitle}</p>
-                </div>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-full border border-cream/15 bg-cream/5">
+                <span className="w-1.5 h-1.5 rounded-full bg-cream/50 animate-pulse" />
+                <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-cream/50">Arriving September 1, 2026</span>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-br from-moss/5 to-transparent pointer-events-none" />
+              <span className="font-mono text-xs tracking-[0.3em] uppercase text-cream/30 mb-6 block">
+                {getText('book', 'header', 'eyebrow')}
+              </span>
+              <h1 className="book-title font-serif italic text-5xl md:text-7xl text-cream leading-[1.08] mb-8">
+                {getText('book', 'header', 'title')}
+              </h1>
+              <p className="text-cream/55 font-sans text-xl max-w-lg leading-relaxed">
+                {getText('book', 'header', 'lede')}
+              </p>
             </div>
+
+            <div className="book-notify-panel w-full max-w-md md:max-w-none md:justify-self-end">
+              <BookReleaseNotifyForm
+                intro={notifyHeading || 'Sign up to be notified when the book releases.'}
+                ctaLabel={notifyCta}
+                finePrint={notifyFinePrint}
+                successTitle={notifySuccess || "You're on the list."}
+                errorMessage={notifyError}
+              />
             </div>
           </div>
         </section>

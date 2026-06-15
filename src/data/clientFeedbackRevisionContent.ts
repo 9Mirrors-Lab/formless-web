@@ -49,14 +49,6 @@ function setEntry(
   target.ordered = target.ordered.map((entry) => (entry.key === key ? nextEntry : entry));
 }
 
-function reviseHref(href: string) {
-  if (href === '/') return '/revised';
-  if (href === '/revised' || href.startsWith('/revised/')) return href;
-  if (href.startsWith('/')) return `/revised${href}`;
-  if (href.startsWith('#')) return `/revised${href}`;
-  return href;
-}
-
 function setText(tree: ContentTree, page: string, section: string, key: string, text: string) {
   setEntry(tree, page, section, key, { text });
 }
@@ -86,17 +78,10 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   const revised = cloneTree(tree);
 
   setText(revised, 'nav', 'brand', 'name', 'Eyes Closed');
-  setLink(revised, 'nav', 'links', 'work', 'The Practice', '/revised/work');
-  setLink(revised, 'nav', 'links', 'book', 'Formless', '/revised/book');
-  setLink(
-    revised,
-    'nav',
-    'links',
-    'science',
-    'Spirituality & Science',
-    '/revised/science',
-  );
-  setLink(revised, 'nav', 'cta', 'about', 'About', '/revised/about');
+  setLink(revised, 'nav', 'links', 'work', 'The Practice', '/work');
+  setLink(revised, 'nav', 'links', 'book', 'Formless', '/book');
+  setLink(revised, 'nav', 'links', 'science', 'Spirituality & Science', '/science');
+  setLink(revised, 'nav', 'cta', 'about', 'About', '/about');
 
   setText(revised, 'footer', 'brand', 'name', 'Eyes Closed');
   setText(
@@ -106,11 +91,11 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'tagline',
     'An invitation to go within and meet yourself beyond the identities and stories.',
   );
-  setLink(revised, 'footer', 'explore', 'work', 'The Practice', '/revised/work');
-  setLink(revised, 'footer', 'explore', 'book', 'Formless', '/revised/book');
-  setLink(revised, 'footer', 'explore', 'science', 'Spirituality & Science', '/revised/science');
-  setLink(revised, 'footer', 'connect', 'about', 'About', '/revised/about');
-  setLink(revised, 'footer', 'connect', 'stay_close', 'Connect', '/revised/about#stay-close');
+  setLink(revised, 'footer', 'explore', 'work', 'The Practice', '/work');
+  setLink(revised, 'footer', 'explore', 'book', 'Formless', '/book');
+  setLink(revised, 'footer', 'explore', 'science', 'Spirituality & Science', '/science');
+  setLink(revised, 'footer', 'connect', 'about', 'About', '/about');
+  setLink(revised, 'footer', 'connect', 'stay_close', 'Connect', '/about#stay-close');
   setText(revised, 'footer', 'legal', 'copyright', '© 2026 Eyes Closed. All rights reserved.');
 
   setText(revised, 'home', 'hero', 'eyebrow', 'PEACE IS YOUR NATURAL STATE.');
@@ -151,7 +136,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'work',
     'header',
     'lede',
-    'Beneath every inner struggle is unconscious identification with thought. Learn to observe the mind instead of becoming lost within it.',
+    'Beneath every inner struggle is unconscious identification with thought.',
   );
   setText(revised, 'work', 'accordion_intro', 'eyebrow', 'The Pattern Repeats');
   setText(revised, 'work', 'accordion_intro', 'title_line1', 'Outer circumstances change.');
@@ -172,7 +157,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'body',
     'The mind creates stories based on the past, and projects fear into the future. Beneath every inner struggle is the identification with thought. The practice is not to fight those thoughts, but to become aware of them. When you begin to recognize these patterns, something deeper than the mind begins to emerge.',
   );
-  setLink(revised, 'work', 'reframe', 'cta_book', 'Explore Formless', '/revised/book');
+  setLink(revised, 'work', 'reframe', 'cta_book', 'Explore Formless', '/book');
 
   setListItem(revised, 'work', 'categories', 'relationships', {
     id: 'relationships',
@@ -211,22 +196,48 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
       'Family dynamics shape many of the beliefs, fears, and emotional patterns carried into adulthood.',
   });
 
-  setLink(revised, 'book', 'closing', 'cta_work', 'Explore The Practice', '/revised/work');
-  setLink(revised, 'book', 'closing', 'cta_science', 'Read Spirituality & Science', '/revised/science');
-  setLink(revised, 'science', 'closing', 'cta_work', 'Explore The Practice', '/revised/work');
-  setLink(revised, 'science', 'closing', 'cta_book', 'Read Formless', '/revised/book');
+  setText(revised, 'book', 'header', 'eyebrow', 'The Manuscript');
+  setText(
+    revised,
+    'book',
+    'header',
+    'lede',
+    'There is a voice in your head that has been telling you who you are for as long as you can remember. Formless is about what exists beneath it.',
+  );
+  setText(
+    revised,
+    'book',
+    'header',
+    'notify_heading',
+    'Sign up to be notified when the book releases.',
+  );
+  setText(revised, 'book', 'header', 'notify_cta', 'Notify me');
+  setText(
+    revised,
+    'book',
+    'header',
+    'notify_fine_print',
+    'One email on release day. No drip sequence. Unsubscribe anytime.',
+  );
+  setText(
+    revised,
+    'book',
+    'header',
+    'notify_success',
+    "You're on the list.",
+  );
+  setText(
+    revised,
+    'book',
+    'header',
+    'notify_error',
+    'Enter a valid email, or try again in a moment.',
+  );
 
-  for (const page of Object.values(revised.pages)) {
-    for (const section of Object.values(page)) {
-      for (const entry of section.ordered) {
-        const href = entry.value.href;
-        if (typeof href === 'string') {
-          entry.value.href = reviseHref(href);
-          section.byKey[entry.key] = entry;
-        }
-      }
-    }
-  }
+  setLink(revised, 'book', 'closing', 'cta_work', 'Explore The Practice', '/work');
+  setLink(revised, 'book', 'closing', 'cta_science', 'Read Spirituality & Science', '/science');
+  setLink(revised, 'science', 'closing', 'cta_work', 'Explore The Practice', '/work');
+  setLink(revised, 'science', 'closing', 'cta_book', 'Read Formless', '/book');
 
   return revised;
 }

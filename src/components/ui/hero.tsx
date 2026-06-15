@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { MeshGradient, PulsingBorder } from "@paper-design/shaders-react";
 import { Sun, Trees } from "lucide-react";
@@ -69,7 +69,6 @@ const PARTICLE_ANCHORS = [
 
 function themeCssVars(p: ThemePalette): CSSProperties {
   return {
-    backgroundColor: p.baseBg,
     ["--fl-f1" as string]: p.formless.f1,
     ["--fl-f2" as string]: p.formless.f2,
     ["--fl-f3" as string]: p.formless.f3,
@@ -79,17 +78,98 @@ function themeCssVars(p: ThemePalette): CSSProperties {
   };
 }
 
+function probeWebGL2Support(): boolean {
+  if (typeof document === "undefined") {
+    return false;
+  }
+
+  const canvas = document.createElement("canvas");
+  return Boolean(canvas.getContext("webgl2"));
+}
+
+const SHADER_BACKDROP_STYLE: CSSProperties = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  zIndex: 1,
+  pointerEvents: "none",
+};
+
+function ShaderCssFallback({ p }: { p: ThemePalette }) {
+  return (
+    <div
+      className="shader-css-fallback fixed inset-0 z-[1] pointer-events-none overflow-hidden"
+      aria-hidden
+    >
+      <div
+        className="shader-css-fallback__blob shader-css-fallback__blob-a"
+        style={{ backgroundColor: p.meshPrimary[3] }}
+      />
+      <div
+        className="shader-css-fallback__blob shader-css-fallback__blob-b"
+        style={{ backgroundColor: p.meshPrimary[4] }}
+      />
+      <div
+        className="shader-css-fallback__blob shader-css-fallback__blob-c"
+        style={{ backgroundColor: p.meshOverlay[2] }}
+      />
+      <div
+        className="shader-css-fallback__blob shader-css-fallback__blob-d"
+        style={{ backgroundColor: p.meshOverlay[3] }}
+      />
+    </div>
+  );
+}
+
 export default function ShaderShowcase() {
   const [theme, setTheme] = useState<ShaderThemeId>("forest");
+  const [webgl2Supported, setWebgl2Supported] = useState<boolean | null>(null);
   const p = PALETTES[theme];
 
   const beautifulGradient = `linear-gradient(135deg, ${p.beautiful[0]} 0%, ${p.beautiful[1]} 32%, ${p.beautiful[2]} 68%, ${p.beautiful[3]} 100%)`;
 
+  useEffect(() => {
+    setWebgl2Supported(probeWebGL2Support());
+  }, []);
+
   return (
     <div
-      className="min-h-screen relative overflow-hidden transition-[background-color] duration-700"
+      className="min-h-screen relative overflow-hidden"
       style={themeCssVars(p)}
     >
+      <div
+        aria-hidden
+        className="fixed inset-0 z-0 pointer-events-none transition-colors duration-700"
+        style={{ backgroundColor: p.baseBg }}
+      />
+
+      {webgl2Supported === false ? (
+        <ShaderCssFallback p={p} />
+      ) : webgl2Supported === true ? (
+        <>
+          <MeshGradient
+            key={`mesh-a-${theme}`}
+            className="transition-opacity duration-700"
+            style={SHADER_BACKDROP_STYLE}
+            colors={[...p.meshPrimary]}
+            speed={theme === "forest" ? 0.22 : 0.26}
+            distortion={theme === "forest" ? 0.88 : 0.82}
+            swirl={theme === "forest" ? 0.12 : 0.18}
+          />
+          <MeshGradient
+            key={`mesh-b-${theme}`}
+            className="opacity-45 mix-blend-soft-light transition-opacity duration-700"
+            style={SHADER_BACKDROP_STYLE}
+            colors={[...p.meshOverlay]}
+            speed={theme === "forest" ? 0.15 : 0.2}
+            distortion={theme === "forest" ? 0.75 : 0.8}
+            swirl={theme === "forest" ? 0.28 : 0.32}
+            grainOverlay={0.08}
+          />
+        </>
+      ) : null}
       <svg className="absolute inset-0 w-0 h-0" aria-hidden>
         <defs>
           <filter id="glass-effect" x="-50%" y="-50%" width="200%" height="200%">
@@ -116,24 +196,6 @@ export default function ShaderShowcase() {
           </filter>
         </defs>
       </svg>
-
-      <MeshGradient
-        key={`mesh-a-${theme}`}
-        className="absolute inset-0 w-full h-full transition-opacity duration-700"
-        colors={[...p.meshPrimary]}
-        speed={theme === "forest" ? 0.22 : 0.26}
-        distortion={theme === "forest" ? 0.88 : 0.82}
-        swirl={theme === "forest" ? 0.12 : 0.18}
-      />
-      <MeshGradient
-        key={`mesh-b-${theme}`}
-        className="absolute inset-0 w-full h-full opacity-45 mix-blend-soft-light transition-opacity duration-700"
-        colors={[...p.meshOverlay]}
-        speed={theme === "forest" ? 0.15 : 0.2}
-        distortion={theme === "forest" ? 0.75 : 0.8}
-        swirl={theme === "forest" ? 0.28 : 0.32}
-        grainOverlay={0.08}
-      />
 
       <header className="relative z-20 flex flex-wrap items-center justify-between gap-3 p-6">
         <motion.a
@@ -360,29 +422,46 @@ export default function ShaderShowcase() {
 
       <div className="absolute bottom-8 right-8 z-30">
         <div className="relative w-20 h-20 flex items-center justify-center">
-          <PulsingBorder
-            key={`pulse-${theme}`}
-            colors={[...p.pulse]}
-            colorBack="#00000000"
-            speed={1.5}
-            roundness={1}
-            thickness={0.1}
-            softness={0.2}
-            intensity={1}
-            spots={4}
-            spotSize={0.1}
-            pulse={0.1}
-            smoke={0.5}
-            smokeSize={0.6}
-            scale={0.65}
-            rotation={0}
-            bloom={0.25}
-            style={{
-              width: "60px",
-              height: "60px",
-              borderRadius: "50%",
-            }}
-          />
+          {webgl2Supported ? (
+            <PulsingBorder
+              key={`pulse-${theme}`}
+              colors={[...p.pulse]}
+              colorBack="#00000000"
+              speed={1.5}
+              roundness={1}
+              thickness={0.1}
+              softness={0.2}
+              intensity={1}
+              spots={4}
+              spotSize={0.1}
+              pulse={0.1}
+              smoke={0.5}
+              smokeSize={0.6}
+              scale={0.65}
+              rotation={0}
+              bloom={0.25}
+              style={{
+                width: "60px",
+                height: "60px",
+                borderRadius: "50%",
+              }}
+            />
+          ) : (
+            <motion.div
+              aria-hidden
+              className="rounded-full"
+              style={{
+                width: "60px",
+                height: "60px",
+                background: `conic-gradient(from 0deg, ${p.pulse.join(", ")}, ${p.pulse[0]})`,
+              }}
+              animate={{ rotate: 360, scale: [1, 1.06, 1] }}
+              transition={{
+                rotate: { duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
+                scale: { duration: 2.4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+              }}
+            />
+          )}
 
           <motion.svg
             className="absolute inset-0 w-full h-full"
