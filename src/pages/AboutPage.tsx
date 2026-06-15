@@ -17,7 +17,7 @@ function futureFromContent(api: ContentApi): FutureItem[] {
 
 
 
-const PORTRAIT_PHOTO = '/assets/Soni-shot4.png';
+const PORTRAIT_PHOTO = '/assets/Soni-shot1.png';
 
 function Layout1({ content, futureItems }: { content: ContentApi; futureItems: FutureItem[] }) {
   const { getText } = content;
