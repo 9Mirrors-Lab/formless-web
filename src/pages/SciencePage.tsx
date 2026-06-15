@@ -302,7 +302,7 @@ export default function SciencePage() {
         />
 
         {/* Hero */}
-        <section className="relative z-10 w-full pt-44 pb-24 px-6 md:px-[72px] overflow-hidden">
+        <section className="relative z-10 w-full pt-52 pb-24 px-6 md:px-[72px] overflow-hidden">
           <div className="max-w-[1240px] mx-auto grid md:grid-cols-[1.4fr_1fr] gap-16 items-end">
             <div className="sci-hero-text">
               <span className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#ECE9DD]/70 mb-7 block">

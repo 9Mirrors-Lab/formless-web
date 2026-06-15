@@ -75,7 +75,7 @@ export default function WorkPage() {
       <div ref={pageRef}>
         <section
           ref={headerRef}
-          className="relative w-full px-6 md:px-16 lg:px-24 pt-40 pb-20 overflow-hidden"
+          className="relative w-full px-6 md:px-16 lg:px-24 pt-52 pb-20 overflow-hidden"
         >
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="sci-blob-1 absolute top-[10%] left-[15%] w-[500px] h-[500px] rounded-full bg-moss/10 blur-[120px] will-change-transform" />

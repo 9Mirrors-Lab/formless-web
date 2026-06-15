@@ -3,7 +3,7 @@ import { PageLayout } from './components/PageLayout';
 
 function App() {
   return (
-    <PageLayout>
+    <PageLayout navOnDark>
       <HomePageContent />
     </PageLayout>
   );
