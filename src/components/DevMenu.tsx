@@ -3,12 +3,8 @@ import { Layers, X, ChevronRight } from 'lucide-react';
 
 export const DevMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDevelopment] = useState(true);
 
-  // In a real app, you'd check process.env.NODE_ENV or similar
-  // For now, we'll just render it always, but user can hide it
-  
-  if (!isDevelopment) return null;
+  if (!import.meta.env.DEV) return null;
 
   const devPages = [
     { name: '── Site Pages ──', path: '' },
@@ -22,34 +18,40 @@ export const DevMenu = () => {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end">
       {isOpen ? (
-        <div className="bg-charcoal/95 backdrop-blur-md text-cream p-5 rounded-xl shadow-2xl border border-cream/10 mb-4 w-64 transform transition-all origin-bottom-right">
-          <div className="flex justify-between items-center mb-4 border-b border-cream/10 pb-3">
-            <h3 className="font-bold uppercase tracking-widest text-xs text-cream/70 flex items-center gap-2">
-              <Layers size={14} />
+        <div className="mb-4 w-64 origin-bottom-right transform rounded-xl border border-cream/10 bg-charcoal p-5 text-cream shadow-2xl transition-all">
+          <div className="mb-4 flex items-center justify-between border-b border-cream/10 pb-3">
+            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-cream/70">
+              <Layers size={14} aria-hidden />
               Dev Navigation
             </h3>
-            <button 
+            <button
+              type="button"
               onClick={() => setIsOpen(false)}
-              className="text-cream/50 hover:text-cream transition-colors"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream/50 transition-colors hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
+              aria-label="Close development navigation"
             >
-              <X size={16} />
+              <X size={16} aria-hidden />
             </button>
           </div>
           <ul className="flex flex-col gap-1">
             {devPages.map((page, idx) => (
               <li key={page.path || `sep-${idx}`}>
                 {page.path ? (
-                  <a 
-                    href={page.path} 
-                    className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-cream/5 text-sm text-cream/90 hover:text-moss transition-all group"
+                  <a
+                    href={page.path}
+                    className="group flex items-center justify-between rounded-md px-3 py-2 text-sm text-cream/90 transition-all hover:bg-cream/5 hover:text-moss focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
                   >
                     {page.name}
-                    <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ChevronRight
+                      size={14}
+                      className="opacity-0 transition-opacity group-hover:opacity-100"
+                      aria-hidden
+                    />
                   </a>
                 ) : (
-                  <span className="block py-2 px-3 text-[10px] font-mono text-cream/30 tracking-widest uppercase mt-2">
+                  <span className="mt-2 block px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream/40">
                     {page.name.replace(/─/g, '').trim()}
                   </span>
                 )}
@@ -58,16 +60,17 @@ export const DevMenu = () => {
           </ul>
         </div>
       ) : null}
-      
-      {!isOpen && (
+
+      {!isOpen ? (
         <button
+          type="button"
           onClick={() => setIsOpen(true)}
-          className="bg-charcoal text-cream p-3 rounded-full shadow-lg border border-cream/10 hover:bg-moss hover:text-charcoal hover:scale-105 transition-all flex items-center justify-center group"
-          title="Development Pages"
+          className="group flex min-h-11 min-w-11 items-center justify-center rounded-full border border-cream/10 bg-charcoal p-3 text-cream shadow-lg transition-all hover:bg-moss hover:text-charcoal motion-safe:hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
+          aria-label="Open development navigation"
         >
-          <Layers size={20} className="group-hover:rotate-12 transition-transform" />
+          <Layers size={20} className="transition-transform group-hover:rotate-12 motion-reduce:group-hover:rotate-0" aria-hidden />
         </button>
-      )}
+      ) : null}
     </div>
   );
 };

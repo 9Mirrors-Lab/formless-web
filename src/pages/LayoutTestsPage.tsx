@@ -1,3 +1,6 @@
+import { Menu, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 const navItems = [
   { label: 'The Practice', href: '#practice' },
   { label: 'Formless', href: '#book' },
@@ -42,30 +45,124 @@ const layoutNotes = [
 ];
 
 function LayoutTestsNav() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen]);
+
+  const closeMobile = () => setMobileOpen(false);
+
   return (
-    <nav className="fixed left-1/2 top-5 z-50 flex w-[94%] max-w-6xl -translate-x-1/2 items-center justify-between rounded-full border border-cream/12 bg-[#070806]/82 px-5 py-3 text-cream shadow-2xl shadow-black/25 backdrop-blur-xl md:px-7">
-      <a href="#top" className="flex items-center gap-3">
-        <span className="relative h-6 w-6 rounded-full border border-clay/70">
-          <span className="absolute left-1/2 top-1/2 h-px w-3 -translate-x-1/2 -translate-y-1/2 bg-clay" />
-        </span>
-        <span className="font-sans text-xs font-semibold uppercase tracking-[0.32em]">
-          Eyes Closed
-        </span>
-      </a>
-      <div className="hidden items-center gap-7 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream/68 lg:flex">
-        {navItems.map((item) => (
-          <a key={item.href} href={item.href} className="transition-colors hover:text-clay">
-            {item.label}
-          </a>
-        ))}
-      </div>
-      <a
-        href="#notes"
-        className="rounded-full bg-cream px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-charcoal transition-transform hover:scale-105"
+    <>
+      <nav
+        aria-label="Layout test navigation"
+        className="fixed left-1/2 top-5 z-50 flex w-[94%] max-w-6xl -translate-x-1/2 items-center justify-between rounded-full border border-cream/12 bg-[#070806]/92 px-5 py-3 text-cream shadow-2xl shadow-black/25 md:px-7"
       >
-        Notes
-      </a>
-    </nav>
+        <a
+          href="#top"
+          className="inline-flex min-h-11 items-center gap-3 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80"
+        >
+          <span className="relative h-6 w-6 rounded-full border border-clay/70" aria-hidden>
+            <span className="absolute left-1/2 top-1/2 h-px w-3 -translate-x-1/2 -translate-y-1/2 bg-clay" />
+          </span>
+          <span className="font-sans text-xs font-semibold uppercase tracking-[0.32em]">
+            Eyes Closed
+          </span>
+        </a>
+        <div className="hidden items-center gap-7 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream/68 lg:flex">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-clay focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href="#notes"
+            className="inline-flex min-h-11 items-center rounded-full bg-cream px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-charcoal transition-transform motion-safe:hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80 lg:hidden"
+          >
+            Notes
+          </a>
+          <button
+            type="button"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream transition-colors hover:bg-cream/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80 lg:hidden"
+            onClick={() => setMobileOpen(true)}
+            aria-expanded={mobileOpen}
+            aria-controls="layout-tests-nav-panel"
+            aria-label="Open layout test menu"
+          >
+            <Menu className="h-5 w-5" aria-hidden />
+          </button>
+          <a
+            href="#notes"
+            className="hidden min-h-11 items-center rounded-full bg-cream px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-charcoal transition-transform motion-safe:hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80 lg:inline-flex"
+          >
+            Notes
+          </a>
+        </div>
+      </nav>
+
+      {mobileOpen ? (
+        <div
+          className="fixed inset-0 z-[60] flex items-end justify-center bg-charcoal/80 lg:hidden"
+          role="presentation"
+          onClick={closeMobile}
+        >
+          <div
+            id="layout-tests-nav-panel"
+            className="max-h-[85vh] w-full overflow-y-auto rounded-t-3xl border border-cream/10 bg-[#070806] p-6 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Layout test menu"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <p className="font-serif text-xl italic text-cream">Eyes Closed</p>
+              <button
+                type="button"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream/70 transition-colors hover:bg-cream/10 hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80"
+                onClick={closeMobile}
+                aria-label="Close layout test menu"
+              >
+                <X className="h-5 w-5" aria-hidden />
+              </button>
+            </div>
+            <ul className="flex flex-col gap-1 text-sm font-semibold uppercase tracking-[0.18em]">
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    onClick={closeMobile}
+                    className="inline-flex min-h-11 w-full items-center rounded-lg px-3 text-cream/75 transition-colors hover:bg-cream/5 hover:text-clay focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+              <li className="mt-4">
+                <a
+                  href="#notes"
+                  onClick={closeMobile}
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-cream px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-charcoal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80"
+                >
+                  Notes
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -121,7 +218,7 @@ export default function LayoutTestsPage() {
                 </div>
               </div>
 
-              <aside className="border-l border-cream/12 pl-7 lg:pb-2">
+              <aside className="border-t border-cream/12 pt-7 lg:border-l lg:border-t-0 lg:pl-7 lg:pb-2">
               <p className="font-mono text-xs uppercase tracking-[0.24em] text-cream/36">
                 Brand hierarchy
               </p>

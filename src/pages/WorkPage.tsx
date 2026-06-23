@@ -74,7 +74,7 @@ export default function WorkPage() {
       <div ref={pageRef}>
         <section
           ref={headerRef}
-          className="relative w-full px-6 md:px-16 lg:px-24 pt-40 pb-20 overflow-hidden"
+          className="site-page-header relative w-full overflow-hidden px-6 pb-20 md:px-16 lg:px-24"
         >
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="sci-blob-1 absolute top-[10%] left-[15%] w-[500px] h-[500px] rounded-full bg-moss/10 blur-[120px] will-change-transform" />
@@ -144,49 +144,112 @@ export default function WorkPage() {
 function AccordionSlider({ items }: { items: AccordionItem[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const toggleItem = (id: string) => {
+    setActiveId((current) => (current === id ? null : id));
+  };
+
   return (
-    <div className="flex flex-col md:flex-row gap-2 h-[500px] md:h-[550px]">
-      {items.map((item) => {
-        const isActive = activeId === item.id;
-        return (
-          <div
-            key={item.id}
-            className="accordion-panel relative overflow-hidden rounded-2xl cursor-pointer transition-[flex] duration-[600ms] ease-[cubic-bezier(.16,1,.3,1)]"
-            style={{ flex: isActive ? 5 : 1 }}
-            onMouseEnter={() => setActiveId(item.id)}
-            onMouseLeave={() => setActiveId(null)}
-          >
+    <>
+      <div className="flex flex-col gap-3 md:hidden">
+        {items.map((item) => {
+          const isActive = activeId === item.id;
+          return (
             <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out"
-              style={{
-                backgroundImage: `url("${item.image}")`,
-                transform: isActive ? 'scale(1.05)' : 'scale(1)',
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-charcoal/10" />
-
-            <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">
-              <h3 className="font-sans font-bold text-cream text-xl md:text-2xl transition-all duration-500">
-                {item.title}
-              </h3>
-
+              key={item.id}
+              className="overflow-hidden rounded-2xl border border-cream/10 bg-charcoal/40"
+            >
+              <button
+                type="button"
+                className="flex min-h-11 w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                aria-expanded={isActive}
+                onClick={() => toggleItem(item.id)}
+              >
+                <span className="font-sans text-base font-bold text-cream">{item.title}</span>
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-cream/45">
+                  {isActive ? 'Close' : 'Open'}
+                </span>
+              </button>
               <div
-                className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
-                  isActive ? 'max-h-[200px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
+                className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
+                  isActive ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                 }`}
               >
-                <p className="font-serif italic text-cream/90 text-lg md:text-xl mb-3">
-                  {item.insight}
-                </p>
-                <p className="font-sans text-cream/50 text-sm leading-relaxed max-w-sm">
-                  {item.detail}
-                </p>
+                <div className="overflow-hidden">
+                  <div className="relative min-h-[12rem] overflow-hidden border-t border-cream/10">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url("${item.image}")` }}
+                      aria-hidden
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal/95 via-charcoal/55 to-charcoal/20" />
+                    <div className="relative z-10 px-5 pb-5 pt-24">
+                      <p className="font-serif text-lg italic text-cream/90">{item.insight}</p>
+                      <p className="mt-3 font-sans text-sm leading-relaxed text-cream/55">
+                        {item.detail}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+
+      <div className="hidden h-[550px] gap-2 md:flex">
+        {items.map((item) => {
+          const isActive = activeId === item.id;
+          return (
+            <div
+              key={item.id}
+              className="accordion-panel relative cursor-pointer overflow-hidden rounded-2xl transition-[flex] duration-[600ms] ease-[cubic-bezier(.16,1,.3,1)]"
+              style={{ flex: isActive ? 5 : 1 }}
+              onMouseEnter={() => setActiveId(item.id)}
+              onMouseLeave={() => setActiveId(null)}
+              onFocus={() => setActiveId(item.id)}
+              onBlur={() => setActiveId(null)}
+              tabIndex={0}
+              role="button"
+              aria-expanded={isActive}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveId(isActive ? null : item.id);
+                }
+              }}
+            >
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out"
+                style={{
+                  backgroundImage: `url("${item.image}")`,
+                  transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-charcoal/10" />
+
+              <div className="relative z-10 flex h-full flex-col justify-end p-6 md:p-8">
+                <h3 className="font-sans text-xl font-bold text-cream transition-all duration-500 md:text-2xl">
+                  {item.title}
+                </h3>
+
+                <div
+                  className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
+                    isActive ? 'mt-4 max-h-[200px] opacity-100' : 'mt-0 max-h-0 opacity-0'
+                  }`}
+                >
+                  <p className="mb-3 font-serif text-lg italic text-cream/90 md:text-xl">
+                    {item.insight}
+                  </p>
+                  <p className="max-w-sm font-sans text-sm leading-relaxed text-cream/50">
+                    {item.detail}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 

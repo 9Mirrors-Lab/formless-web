@@ -105,9 +105,9 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-cream/10 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-cream/30 uppercase tracking-widest">
+      <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-cream/10 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-cream/50 uppercase tracking-widest">
         <span>{getText('footer', 'legal', 'copyright')}</span>
-        <div className="flex gap-6">
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-end">
           <FootLink
             restricted={restricted}
             href={getLink('footer', 'legal', 'privacy').href}

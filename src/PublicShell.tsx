@@ -19,7 +19,7 @@ import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
-import { DevMenu } from './components/DevMenu';
+// import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
 
@@ -118,7 +118,7 @@ function AppContentShell({ path }: { path: string }) {
   return (
     <>
       {publicSiteRestricted ? <RestrictedPublicHome path={path} /> : <Root path={path} />}
-      <DevMenu />
+      {/* <DevMenu /> */}
     </>
   );
 }

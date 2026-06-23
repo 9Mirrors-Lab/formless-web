@@ -1,9 +1,19 @@
 import { useState } from 'react';
 import { PageLayout } from '../components/PageLayout';
+import { StayCloseNotifyForm } from '../components/StayCloseNotifyForm';
+import { textFromEntry } from '@/lib/content';
 import { useContent, type ContentApi } from '@/context/ContentContext';
 import './AboutPage.css';
 
 type FutureItem = { title: string; desc: string };
+
+function heroBodyParagraphs(content: ContentApi): { key: string; text: string }[] {
+  return content
+    .ordered('about', 'hero')
+    .filter((entry) => entry.key.startsWith('body_para') && entry.type === 'text')
+    .map((entry) => ({ key: entry.key, text: textFromEntry(entry) }))
+    .filter((entry) => entry.text);
+}
 
 function futureFromContent(api: ContentApi): FutureItem[] {
   return api.listItems('about', 'future').flatMap((entry) => {
@@ -19,8 +29,17 @@ function futureFromContent(api: ContentApi): FutureItem[] {
 
 const PORTRAIT_PHOTO = '/assets/Soni-shot1.png';
 
-function Layout1({ content, futureItems }: { content: ContentApi; futureItems: FutureItem[] }) {
+function Layout1({
+  content,
+  futureItems,
+  bodyParagraphs,
+}: {
+  content: ContentApi;
+  futureItems: FutureItem[];
+  bodyParagraphs: { key: string; text: string }[];
+}) {
   const { getText } = content;
+  const eyebrow = getText('about', 'hero', 'eyebrow');
   return (
     <section className="layout is-active">
       <header className="l1-hero">
@@ -28,16 +47,17 @@ function Layout1({ content, futureItems }: { content: ContentApi; futureItems: F
           <div className="l1-portrait relative">
             <div className="frame"><img src={PORTRAIT_PHOTO} alt="Portrait of Sonika Cottman" /></div>
             <div className="tag">
-              <span className="caption">The Author</span>
+              <span className="caption">{eyebrow}</span>
               <span className="name">Sonika Cottman</span>
             </div>
           </div>
           <div className="l1-copy">
-            <span className="eyebrow">The Author <span className="dot">●</span></span>
+            <span className="eyebrow">{eyebrow} <span className="dot">●</span></span>
             <h1>{getText('about', 'hero', 'title')}</h1>
             <div className="body-copy measure">
-              <p>{getText('about', 'hero', 'body_para1')}</p>
-              <p>{getText('about', 'hero', 'body_para2')}</p>
+              {bodyParagraphs.map((paragraph) => (
+                <p key={paragraph.key}>{paragraph.text}</p>
+              ))}
             </div>
             <div className="l1-sign"><span className="line"></span><span>Begin with a reflection.</span></div>
           </div>
@@ -67,17 +87,20 @@ function Layout4({
   content,
   futureItems,
   emailLink,
+  bodyParagraphs,
 }: {
   content: ContentApi;
   futureItems: FutureItem[];
   emailLink: { href: string };
+  bodyParagraphs: { key: string; text: string }[];
 }) {
   const { getText } = content;
+  const eyebrow = getText('about', 'hero', 'eyebrow');
   return (
     <section className="layout is-active">
       <div className="l4-wrap">
         <aside className="l4-aside">
-          <span className="eyebrow">The Author <span className="dot">●</span></span>
+          <span className="eyebrow">{eyebrow} <span className="dot">●</span></span>
           <div className="name">Sonika<br />Cottman</div>
           <div className="frame relative">
             <img src={PORTRAIT_PHOTO} alt="Portrait of Sonika Cottman" />
@@ -92,12 +115,10 @@ function Layout4({
 
         <main className="l4-main">
           <h1>{getText('about', 'hero', 'title')}</h1>
-          <p className="l4-pull">You are not the voice in the head. Peace does not depend on outer circumstances arranging themselves.</p>
           <div className="l4-cols">
-            <p>{getText('about', 'hero', 'body_para1')}</p>
-            <p>{getText('about', 'hero', 'body_para2')}</p>
-            <p>That foundation is the recognition that you are not the voice in the head, and that peace does not depend on outer circumstances arranging themselves.</p>
-            <p>The writing continues. The teaching unfolds. This is a studio for a work in progress, not a storefront.</p>
+            {bodyParagraphs.map((paragraph) => (
+              <p key={paragraph.key}>{paragraph.text}</p>
+            ))}
           </div>
 
           <section className="l4-future">
@@ -117,30 +138,63 @@ function Layout4({
   );
 }
 
+function StayCloseSection({ content }: { content: ContentApi }) {
+  const { getText, getLink } = content;
+  const emailLink = getLink('about', 'stay_close', 'email_link');
+
+  return (
+    <section className="stay" id="stay-close">
+      <svg className="orbit-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <ellipse cx="600" cy="200" rx="240" ry="90" fill="none" stroke="#9fb5aa" strokeWidth="1" opacity=".4" />
+        <ellipse cx="600" cy="200" rx="150" ry="150" fill="none" stroke="#d46544" strokeWidth="1" opacity=".4" />
+        <circle cx="600" cy="200" r="46" fill="none" stroke="#9fb5aa" strokeWidth="1" opacity=".55" />
+      </svg>
+      <div className="stay-inner">
+        <span className="eyebrow">{getText('about', 'stay_close', 'eyebrow')}</span>
+        <h2>{getText('about', 'stay_close', 'title')}</h2>
+        <p className="lede">{getText('about', 'stay_close', 'lede')}</p>
+        <StayCloseNotifyForm
+          emailPlaceholder={getText('about', 'stay_close', 'email_placeholder')}
+          submitLabel={getText('about', 'stay_close', 'submit')}
+          finePrint={getText('about', 'stay_close', 'fine_print')}
+          successTitle={getText('about', 'stay_close', 'form_success')}
+          errorMessage={getText('about', 'stay_close', 'form_error')}
+          emailLink={emailLink}
+        />
+      </div>
+    </section>
+  );
+}
+
 export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4 } = {}) {
   const [layout, setLayout] = useState<1 | 4>(defaultLayout);
   const content = useContent();
   const { getLink } = content;
   const futureItems = futureFromContent(content);
+  const bodyParagraphs = heroBodyParagraphs(content);
   const emailLink = getLink('about', 'stay_close', 'email_link');
 
   return (
     <PageLayout briefSpectrum>
       <div id="about-page-scope">
         {layout === 1 && (
-          <Layout1 
-            content={content} 
-            futureItems={futureItems} 
+          <Layout1
+            content={content}
+            futureItems={futureItems}
+            bodyParagraphs={bodyParagraphs}
           />
         )}
         
         {layout === 4 && (
-          <Layout4 
-            content={content} 
-            futureItems={futureItems} 
-            emailLink={emailLink} 
+          <Layout4
+            content={content}
+            futureItems={futureItems}
+            emailLink={emailLink}
+            bodyParagraphs={bodyParagraphs}
           />
         )}
+
+        <StayCloseSection content={content} />
 
         <div className="switcher" role="tablist" aria-label="About page layout">
           <button 

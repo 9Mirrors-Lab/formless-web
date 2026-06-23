@@ -302,7 +302,7 @@ export default function SciencePage() {
         />
 
         {/* Hero */}
-        <section className="relative z-10 w-full pt-44 pb-24 px-6 md:px-16 lg:px-24 overflow-hidden">
+        <section className="site-page-header relative z-10 w-full overflow-hidden px-6 pb-24 md:px-16 lg:px-24">
           <div className="max-w-6xl mx-auto grid md:grid-cols-[1.4fr_1fr] gap-16 items-end">
             <div className="sci-hero-text">
               <span className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#ECE9DD]/70 mb-7 block">
@@ -343,16 +343,9 @@ export default function SciencePage() {
             <section
               key={i}
               className="sci-pillar relative w-full overflow-hidden"
-              style={{ minHeight: 720, padding: '120px 0 80px' }}
             >
-              {/* Orbit art — bleeds off edge; annotations are inside the SVG */}
               <div
-                className="sci-orbit pointer-events-none absolute inset-y-0"
-                style={{
-                  width: '78%',
-                  opacity: 0.95,
-                  ...(artRight ? { right: '-18%' } : { left: '-18%' }),
-                }}
+                className={`sci-orbit pointer-events-none absolute ${artRight ? 'sci-orbit--right' : 'sci-orbit--left'}`}
               >
                 <Orbit />
               </div>

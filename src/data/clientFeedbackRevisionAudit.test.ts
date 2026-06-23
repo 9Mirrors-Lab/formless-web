@@ -240,12 +240,13 @@ describe('client feedback revision gaps', () => {
 
   it('book page uses pre-release copy and notify form content', () => {
     expect(getText(tree, 'book', 'header', 'lede')).toContain('voice in your head');
-    expect(getText(tree, 'book', 'header', 'notify_heading')).toContain('Sign up to be notified');
+    expect(getText(tree, 'book', 'header', 'notify_heading')).toContain('Join the waitlist');
     expect(getText(tree, 'book', 'header', 'notify_cta')).toBe('Notify me');
     expect(getText(tree, 'science', 'header', 'title')).toContain('bridge for the part of you');
   });
 
   it('about page copy is untouched in revision transform', () => {
-    expect(getText(tree, 'about', 'hero', 'body_para2')).toContain('Formless is the beginning');
+    expect(getText(tree, 'about', 'hero', 'title')).toBe('About the Author');
+    expect(getText(tree, 'about', 'hero', 'body_para1')).toContain('Awareness Guide');
   });
 });

@@ -20,37 +20,82 @@ export function CurtainReveal() {
   };
 
   useLayoutEffect(() => {
+    const left = leftRef.current;
+    const right = rightRef.current;
+    const container = containerRef.current;
+    if (!left || !right || !container) return;
+
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          scrub: 1,
-        },
+      gsap.set([left, right], { xPercent: 0, x: 0 });
+
+      const buildTimeline = (
+        start: string | (() => string),
+        end: string | (() => string),
+      ) => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+            start,
+            end,
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        tl.fromTo(
+          left,
+          { xPercent: 0 },
+          { xPercent: -100, ease: 'none', force3D: true },
+          0,
+        ).fromTo(
+          right,
+          { xPercent: 0 },
+          { xPercent: 100, ease: 'none', force3D: true },
+          0,
+        );
+      };
+
+      const mm = gsap.matchMedia();
+
+      // Begin when the curtain enters the viewport; finish at page end.
+      mm.add('(max-width: 767px)', () => {
+        buildTimeline(
+          () => {
+            const ratio = container.offsetTop / window.innerHeight;
+            const pct = Math.round(Math.min(0.95, Math.max(0.5, ratio)) * 100);
+            return `top ${pct}%`;
+          },
+          'max',
+        );
       });
 
-      tl.to(leftRef.current, { xPercent: -100, ease: 'none' }, 0).to(
-        rightRef.current,
-        { xPercent: 100, ease: 'none' },
-        0,
-      );
-    }, containerRef);
-    return () => ctx.revert();
+      mm.add('(min-width: 768px)', () => {
+        buildTimeline('top 80%', 'bottom 20%');
+      });
+    }, container);
+
+    const refresh = () => ScrollTrigger.refresh();
+    requestAnimationFrame(refresh);
+    window.addEventListener('load', refresh);
+
+    return () => {
+      window.removeEventListener('load', refresh);
+      ctx.revert();
+    };
   }, []);
 
   return (
     <section
       ref={containerRef}
-      className="relative h-[50vh] min-h-[400px] w-full overflow-hidden bg-charcoal"
+      className="curtain-reveal relative w-full overflow-hidden bg-charcoal"
     >
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 bg-charcoal">
-        <h2 className="font-serif italic text-4xl md:text-6xl lg:text-[5rem] text-cream leading-[1.1] mb-8 max-w-4xl">
+        <h2 className="font-serif italic text-3xl leading-[1.1] text-cream mb-4 max-w-4xl md:mb-8 md:text-6xl lg:text-[5rem]">
           {t('home', 'curtain', 'headline_line1')}
           <br />
           {t('home', 'curtain', 'headline_line2')}
         </h2>
-        <p className="font-sans text-lg md:text-xl text-cream/70 max-w-2xl leading-relaxed">
+        <p className="max-w-2xl font-sans text-base leading-relaxed text-cream/70 md:text-lg lg:text-xl">
           {t('home', 'curtain', 'subtitle')}
         </p>
       </div>

@@ -26,7 +26,7 @@ export function WayfindingRail({
       <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-cream/65">
         Jump to
       </p>
-      <ol className="mt-4 space-y-6 border-l border-white/15 pl-4">
+      <ol className="mt-4 space-y-6">
         {phases.map((phase) => (
           <li key={phase.id}>
             <p className="font-medium text-cream/95">
@@ -40,7 +40,7 @@ export function WayfindingRail({
                   <li key={sub.id}>
                     <a
                       href={`#${sub.hash}`}
-                      className={`group flex items-start gap-2 rounded-md py-0.5 pl-1 transition-colors ${
+                      className={`group flex min-h-11 items-start gap-2 rounded-md py-1 pl-1 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70 ${
                         active
                           ? "text-clay"
                           : "text-cream/60 hover:text-cream"

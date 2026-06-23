@@ -48,10 +48,10 @@ export function PageLayout({
   }, []);
 
   const outerSurface = briefSpectrum
-    ? 'relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#080a09] font-sans antialiased'
+    ? 'site-shell relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#080a09] font-sans antialiased'
     : dark
-      ? 'relative w-full min-h-screen overflow-x-hidden bg-charcoal text-cream'
-      : 'relative w-full min-h-screen overflow-x-hidden bg-cream text-charcoal font-sans selection:bg-moss selection:text-cream';
+      ? 'site-shell relative w-full min-h-screen overflow-x-hidden bg-charcoal text-cream'
+      : 'site-shell relative w-full min-h-screen overflow-x-hidden bg-cream text-charcoal font-sans selection:bg-moss selection:text-cream';
 
   const noiseClass = briefSpectrum ? 'noise-overlay-dark' : 'noise-overlay';
 
@@ -62,8 +62,16 @@ export function PageLayout({
   return (
     <div ref={pageRef} className={outerSurface}>
       <div className={noiseClass} aria-hidden />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-cream focus:px-4 focus:py-2 focus:text-sm focus:text-charcoal focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       {!hideNav ? <Navbar /> : null}
-      <main className={mainClass}>{children}</main>
+      <main id="main-content" className={mainClass} tabIndex={-1}>
+        {children}
+      </main>
       <Footer />
     </div>
   );

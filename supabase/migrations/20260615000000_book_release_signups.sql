@@ -20,7 +20,7 @@ INSERT INTO public.content (page, section, key, value, type, "order")
 VALUES
   ('book', 'header', 'notify_heading', '{"text": "Sign up to be notified when the book releases."}', 'text', 0),
   ('book', 'header', 'notify_cta', '{"text": "Notify me"}', 'text', 0),
-  ('book', 'header', 'notify_fine_print', '{"text": "One email on release day. Unsubscribe anytime."}', 'text', 0),
+  ('book', 'header', 'notify_fine_print', '{"text": "Arriving September 1, 2026. Be first to know when the book is available."}', 'text', 0),
   ('book', 'header', 'notify_success', '{"text": "You''re on the list."}', 'text', 0),
   ('book', 'header', 'notify_error', '{"text": "Enter a valid email, or try again in a moment."}', 'text', 0)
 ON CONFLICT (page, section, key) DO UPDATE

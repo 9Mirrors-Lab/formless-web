@@ -282,7 +282,7 @@
   .noise-overlay {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 20;
     pointer-events: none;
     background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     opacity: 0.05;
@@ -293,15 +293,242 @@
   .noise-overlay-dark {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 20;
     pointer-events: none;
     background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     opacity: 0.12;
     mix-blend-mode: soft-light;
   }
 
+  /*
+   * Home hero: mobile-first layout.
+   * Phone: copy-led height + reframed focal point (less road below).
+   * Tablet+: full viewport, bottom-anchored copy.
+   */
+  .home-hero {
+    --hero-focal-x: 50%;
+    --hero-focal-y: 46%;
+    --hero-gutter: clamp(1.5rem, 4.5vw, 6rem);
+    --hero-stage-max: 72rem;
+    --hero-copy-max: 40rem;
+    --hero-copy-anchor: 34rem;
+    --hero-pad-bottom: clamp(2rem, 4vh, 2.5rem);
+    --hero-pad-top: clamp(5.5rem, 22vh, 32vh);
+  }
+
+  .home-hero__image {
+    object-fit: cover;
+    object-position: var(--hero-focal-x) var(--hero-focal-y);
+  }
+
+  .home-hero__overlay-multiply {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      #1a1a1a 0%,
+      rgba(46, 64, 54, 0.6) 42%,
+      rgba(26, 26, 26, 0.3) 100%
+    );
+    mix-blend-mode: multiply;
+  }
+
+  .home-hero__overlay-vignette {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 55%);
+  }
+
+  .home-hero__overlay-readability {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(26, 26, 26, 0.55) 0%,
+      rgba(26, 26, 26, 0.2) 38%,
+      transparent 68%
+    );
+  }
+
+  .home-hero__stage {
+    display: grid;
+    align-content: start;
+    padding-top: var(--hero-pad-top);
+    padding-bottom: var(--hero-pad-bottom);
+    padding-inline: var(--hero-gutter);
+    min-height: clamp(34rem, 68dvh, 40rem);
+  }
+
+  @media (min-width: 768px) {
+    .home-hero {
+      --hero-focal-y: 38%;
+      --hero-pad-bottom: clamp(5rem, 9vh, 8rem);
+      --hero-pad-top: 0;
+      height: 100dvh;
+    }
+
+    .home-hero__stage {
+      height: 100%;
+      min-height: unset;
+      align-content: end;
+    }
+  }
+
+  @media (min-width: 768px) and (min-aspect-ratio: 21 / 9) {
+    .home-hero__image {
+      object-position: var(--hero-focal-x) 32%;
+    }
+  }
+
+  .home-hero__container {
+    width: min(100%, var(--hero-stage-max));
+    margin-inline: auto;
+  }
+
+  @media (min-width: 1280px) {
+    .home-hero__container {
+      margin-inline: unset;
+      margin-left: max(var(--hero-gutter), calc(50% - var(--hero-copy-anchor)));
+      margin-right: auto;
+    }
+  }
+
+  @media (min-width: 1920px) {
+    .home-hero {
+      --hero-copy-anchor: 36rem;
+    }
+  }
+
+  .home-hero__copy {
+    max-width: min(var(--hero-copy-max), 100%);
+  }
+
+  /*
+   * Home page only: lift hero copy without affecting inner/support page headers.
+   * Keeps copy below the fixed nav while moving it up from the default bottom anchor.
+   */
+  .home-hero--elevated-copy {
+    --hero-home-copy-lift: 0;
+    --hero-pad-top: clamp(5.25rem, 13.2vh, 19.2vh);
+  }
+
+  .home-hero--elevated-copy .home-hero__copy {
+    transform: translateY(calc(-1 * var(--hero-home-copy-lift)));
+  }
+
+  @media (min-width: 768px) {
+    .home-hero--elevated-copy {
+      --hero-home-copy-lift: clamp(10rem, 20vh, 15rem);
+      --hero-pad-top: 0;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .home-hero--elevated-copy {
+      --hero-home-copy-lift: clamp(11rem, 22vh, 17rem);
+    }
+  }
+
+  .home-hero__headline {
+    font-size: clamp(2.75rem, 2.15vw + 1.65rem, 6.5rem);
+    text-wrap: balance;
+  }
+
+  .home-hero__headline-secondary {
+    padding-inline-start: 0.14em;
+  }
+
+  .home-hero__lede {
+    font-size: clamp(1rem, 0.3vw + 0.88rem, 1.125rem);
+    max-width: min(32rem, 100%);
+  }
+
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Curtain reveal: shorter cream panels on phone; desktop keeps original scale. */
+  .curtain-reveal {
+    height: clamp(14rem, 32dvh, 18.5rem);
+  }
+
+  @media (min-width: 768px) {
+    .curtain-reveal {
+      height: 50vh;
+      min-height: 25rem;
+    }
+  }
+
+  /*
+   * Layer scale: noise 20 · page 10 · nav 40 · mobile nav/dev chrome 100 · skip link 100 (focus)
+   * Nav clearance token: inherited by inner-page headers (Practice, Formless, Science).
+   */
+  .site-shell {
+    --site-nav-height: 8rem;
+  }
+
+  @media (min-width: 768px) {
+    .site-shell {
+      --site-nav-height: 8.25rem;
+    }
+  }
+
+  .site-nav {
+    --site-nav-height: 8rem;
+  }
+
+  @media (min-width: 768px) {
+    .site-nav {
+      --site-nav-height: 8.25rem;
+    }
+  }
+
+  .site-page-header {
+    padding-top: calc(var(--site-nav-height) + 2rem);
+  }
+
+  @media (min-width: 768px) {
+    .site-page-header {
+      padding-top: calc(var(--site-nav-height) + 2.5rem);
+    }
+  }
+
+  .sci-pillar {
+    min-height: auto;
+    padding: 4.5rem 0 3.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .sci-pillar {
+      min-height: 720px;
+      padding: 7.5rem 0 5rem;
+    }
+  }
+
+  .sci-orbit {
+    width: 100%;
+    opacity: 0.35;
+    inset: auto 0 0 0;
+    height: 52%;
+  }
+
+  @media (min-width: 768px) {
+    .sci-orbit {
+      inset: 0 auto;
+      width: 78%;
+      height: auto;
+      opacity: 0.95;
+    }
+
+    .sci-orbit--right {
+      right: -18%;
+      left: auto;
+    }
+
+    .sci-orbit--left {
+      left: -18%;
+      right: auto;
+    }
   }
 
   /* Base #080a09: fade radials to rgba(8,10,9,0) not `transparent` to avoid gray banding rings */

@@ -63,9 +63,12 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('book', 'header', 'title', '{"text": "The book is a doorway into the recognition."}', 'text', 0),
 ('book', 'header', 'lede', '{"text": "Not a method. Not a program. A quiet invitation to stop and see what is already here: the awareness behind every thought, every feeling, every story."}', 'text', 0),
 ('book', 'header', 'cta_excerpt', '{"text": "Read an excerpt", "href": "#"}', 'link', 0),
-('book', 'header', 'notify_heading', '{"text": "Sign up to be notified when the book releases."}', 'text', 0),
+('book', 'header', 'notify_heading', '{"text": "Join the waitlist and be the first to know when the book is here."}', 'text', 0),
 ('book', 'header', 'notify_cta', '{"text": "Notify me"}', 'text', 0),
-('book', 'header', 'notify_fine_print', '{"text": "One email on release day. Unsubscribe anytime."}', 'text', 0),
+('book', 'header', 'notify_fine_print', '{"text": "Releasing September 1"}', 'text', 0),
+('book', 'header', 'notify_meta_release', '{"text": "Releasing September 1"}', 'text', 0),
+('book', 'header', 'notify_meta_updates', '{"text": "Launch updates"}', 'text', 0),
+('book', 'header', 'notify_meta_privacy', '{"text": "No spam. Unsubscribe anytime."}', 'text', 0),
 ('book', 'header', 'notify_success', '{"text": "You''re on the list."}', 'text', 0),
 ('book', 'header', 'notify_error', '{"text": "Enter a valid email, or try again in a moment."}', 'text', 0),
 ('book', 'cover', 'title', '{"text": "Formless"}', 'text', 0),
@@ -103,10 +106,14 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 
 -- about
 ('about', 'hero', 'image', $c${"src": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&h=1000&fit=crop&q=80", "alt": "Mountain above clouds"}$c$::jsonb, 'image', 0),
-('about', 'hero', 'eyebrow', '{"text": "The Author"}', 'text', 0),
-('about', 'hero', 'title', '{"text": "A living teaching, still unfolding."}', 'text', 0),
-('about', 'hero', 'body_para1', '{"text": "This work did not begin as a theory. It began as a breaking point: the moment when the old way of living stopped working entirely, and something quieter took its place."}', 'text', 0),
-('about', 'hero', 'body_para2', '{"text": "Formless is the beginning of something larger: a book, future talks, retreats, community, and deeper teachings that all stem from one foundation. That foundation is the recognition that you are not the voice in the head, and that peace does not depend on outer circumstances arranging themselves perfectly."}', 'text', 0),
+('about', 'hero', 'eyebrow', '{"text": "The Story"}', 'text', 1),
+('about', 'hero', 'title', '{"text": "About the Author"}', 'text', 2),
+('about', 'hero', 'body_para1', $c${"text": "Sonika Cottman is an Awareness Guide, author, and founder of Eyes Closed, a platform devoted to helping people reconnect with who they are beyond the mind."}$c$::jsonb, 'text', 3),
+('about', 'hero', 'body_para2', $c${"text": "Born in Winnipeg, Canada, to immigrant parents from Punjab, India, Sonika is the youngest of three. At the age of twenty, she moved to Las Vegas, Nevada, where she has lived ever since. Over the past twenty years, she has built a successful career in Human Resources, spending the last thirteen years in the technology industry helping people and organizations navigate growth, change, and transformation."}$c$::jsonb, 'text', 4),
+('about', 'hero', 'body_para3', $c${"text": "For much of her life, achievement, success, and external milestones shaped the direction of her path. In 2023, however, a profound shift in awareness changed the way she viewed herself, her relationships, her work, and life itself. What once drove her no longer held the same meaning. The pursuit of external success gradually gave way to a deeper desire for peace, freedom, and understanding."}$c$::jsonb, 'text', 5),
+('about', 'hero', 'body_para4', $c${"text": "That transformation led to the creation of Eyes Closed and inspired her first book, Formless."}$c$::jsonb, 'text', 6),
+('about', 'hero', 'body_para5', $c${"text": "Today, Sonika shares what she continues to discover through writing, speaking, and creating content centered on awareness, presence, and inner transformation. Her work is grounded in a simple message: lasting peace is not found outside of us, but through recognizing who we truly are beyond our thoughts, emotions, and conditioned identities."}$c$::jsonb, 'text', 7),
+('about', 'hero', 'body_para6', $c${"text": "When she isn't writing or creating, Sonika enjoys spending time with her two children, taking walks in nature with her partner Ryan and their two dogs, listening to handpan music, meditating, and exploring the intersection of science, spirituality, and human potential."}$c$::jsonb, 'text', 8),
 
 ('about', 'future_intro', 'eyebrow', '{"text": "What is unfolding"}', 'text', 0),
 ('about', 'future_intro', 'title', '{"text": "The beginning of something larger."}', 'text', 0),
@@ -123,6 +130,7 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('about', 'stay_close', 'submit', '{"text": "Stay close"}', 'text', 0),
 ('about', 'stay_close', 'fine_print', '{"text": "No spam. Unsubscribe anytime."}', 'text', 0),
 ('about', 'stay_close', 'form_success', '{"text": "Thank you. We will be in touch."}', 'text', 0),
+('about', 'stay_close', 'form_error', '{"text": "Enter a valid email, or try again in a moment."}', 'text', 0),
 ('about', 'stay_close', 'email_link', '{"text": "hello@formless.co", "href": "mailto:hello@formless.co"}', 'link', 0)
 
 ON CONFLICT (page, section, key) DO UPDATE SET

@@ -209,16 +209,10 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'book',
     'header',
     'notify_heading',
-    'Sign up to be notified when the book releases.',
+    'Join the waitlist and be the first to know when the book is here.',
   );
   setText(revised, 'book', 'header', 'notify_cta', 'Notify me');
-  setText(
-    revised,
-    'book',
-    'header',
-    'notify_fine_print',
-    'One email on release day. No drip sequence. Unsubscribe anytime.',
-  );
+  setText(revised, 'book', 'header', 'notify_fine_print', 'Releasing September 1');
   setText(
     revised,
     'book',

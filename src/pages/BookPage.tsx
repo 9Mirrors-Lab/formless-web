@@ -33,9 +33,10 @@ export default function BookPage() {
 
   const ctaWork = getLink('book', 'closing', 'cta_work');
   const ctaScience = getLink('book', 'closing', 'cta_science');
-  const notifyHeading = getText('book', 'header', 'notify_heading');
+  const notifySubhead = getText('book', 'header', 'notify_heading');
   const notifyCta = getText('book', 'header', 'notify_cta');
-  const notifyFinePrint = getText('book', 'header', 'notify_fine_print');
+  const notifyMetaRelease = getText('book', 'header', 'notify_meta_release');
+  const notifyMetaUpdates = getText('book', 'header', 'notify_meta_updates');
   const notifySuccess = getText('book', 'header', 'notify_success');
   const notifyError = getText('book', 'header', 'notify_error');
 
@@ -101,7 +102,7 @@ export default function BookPage() {
       <div ref={pageRef}>
         <section
           ref={headerRef}
-          className="relative w-full px-6 md:px-16 lg:px-24 pt-40 pb-16 overflow-hidden"
+          className="site-page-header relative w-full overflow-hidden px-6 pb-16 md:px-16 lg:px-24"
         >
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="sci-blob-1 absolute top-[10%] left-[15%] w-[500px] h-[500px] rounded-full bg-moss/10 blur-[120px] will-change-transform" />
@@ -126,9 +127,10 @@ export default function BookPage() {
 
             <div className="book-notify-panel w-full max-w-md md:max-w-none md:justify-self-end">
               <BookReleaseNotifyForm
-                intro={notifyHeading || 'Sign up to be notified when the book releases.'}
+                subheadline={notifySubhead}
                 ctaLabel={notifyCta}
-                finePrint={notifyFinePrint}
+                metaRelease={notifyMetaRelease}
+                metaUpdates={notifyMetaUpdates}
                 successTitle={notifySuccess || "You're on the list."}
                 errorMessage={notifyError}
               />

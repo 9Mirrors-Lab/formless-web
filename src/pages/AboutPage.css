@@ -44,7 +44,7 @@
   font-style: italic;
 }
 #about-page-scope .measure {
-  max-width: 34rem;
+  max-width: 42rem;
 }
 #about-page-scope .body-copy p {
   font-size: 1.075rem;
@@ -159,6 +159,52 @@
 #about-page-scope .stay .signoff a:hover {
   color: var(--fg);
 }
+#about-page-scope .stay-success {
+  max-width: 30rem;
+  margin: 0 auto;
+}
+#about-page-scope .stay-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: rgba(159, 181, 170, .18);
+  color: var(--moss-soft);
+  margin-bottom: 1.25rem;
+}
+#about-page-scope .stay-success-icon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+#about-page-scope .stay-success-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  line-height: 1.2;
+  color: var(--fg);
+  margin-bottom: .75rem;
+}
+#about-page-scope .stay-success-body {
+  color: rgba(242, 240, 233, .62);
+  font-size: .98rem;
+  line-height: 1.65;
+  margin-bottom: .5rem;
+}
+#about-page-scope .stay-success-email {
+  color: rgba(242, 240, 233, .88);
+}
+#about-page-scope .stay-error {
+  color: #e8a48a;
+  font-size: .88rem;
+  margin-top: .85rem;
+}
+#about-page-scope .stay button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
 
 /* layout hosts */
 #about-page-scope .layout {
@@ -191,12 +237,12 @@
   padding: clamp(8rem, 14vw, 12rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem);
 }
 #about-page-scope .l1-grid {
-  max-width: 78rem;
+  max-width: 84rem;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 0.75fr 1.25fr;
+  grid-template-columns: 0.7fr 1.3fr;
   gap: clamp(2.5rem, 6vw, 6rem);
-  align-items: center;
+  align-items: start;
 }
 #about-page-scope .l1-portrait {
   position: relative;
@@ -332,7 +378,7 @@
    LAYOUT 04 — MAGAZINE / STICKY SIDEBAR
    ============================================================ */
 #about-page-scope .l4-wrap {
-  max-width: 80rem;
+  max-width: 88rem;
   margin: 0 auto;
   padding: clamp(8rem, 12vw, 10rem) clamp(1.25rem, 5vw, 4rem) 0;
   display: grid;
@@ -427,7 +473,7 @@
 }
 #about-page-scope .l4-cols {
   column-count: 2;
-  column-gap: 2.6rem;
+  column-gap: 3rem;
 }
 #about-page-scope .l4-cols p {
   font-size: 1rem;
