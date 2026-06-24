@@ -129,7 +129,7 @@ function BrandLogo({ name, className = '' }: { name: string; className?: string 
       alt={name}
       width={1929}
       height={865}
-      className={`h-[5.75rem] w-auto translate-y-1 md:h-[5.27rem] ${className}`}
+      className={`h-[5.75rem] w-auto translate-y-1 pb-[30px] md:h-[5.27rem] md:pb-0 ${className}`}
     />
   );
 }

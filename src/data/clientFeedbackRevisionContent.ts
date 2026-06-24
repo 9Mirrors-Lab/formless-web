@@ -123,15 +123,15 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'home',
     'curtain',
     'headline_line1',
-    'Freedom begins the moment you observe the mind',
+    'Freedom begins the moment you',
   );
-  setText(revised, 'home', 'curtain', 'headline_line2', '');
+  setText(revised, 'home', 'curtain', 'headline_line2', 'observe the mind');
   setText(
     revised,
     'home',
     'curtain',
     'subtitle',
-    'Behind every thought is the awareness that sees it. That awareness is what you are, untouched and unharmed by any experience of life.',
+    'Behind every thought is the awareness that sees it.\nThat awareness is what you are, untouched\nand unharmed by any experience of life.',
   );
   setText(revised, 'home', 'curtain', 'panel_left', 'THE');
   setText(revised, 'home', 'curtain', 'panel_right', 'MIND');

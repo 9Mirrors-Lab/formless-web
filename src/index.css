@@ -436,7 +436,13 @@
   }
 
   .home-hero__headline-secondary {
-    padding-inline-start: 0.14em;
+    padding-inline-start: 0;
+  }
+
+  @media (min-width: 768px) {
+    .home-hero__headline-secondary {
+      padding-inline-start: 0.14em;
+    }
   }
 
   .home-hero__lede {

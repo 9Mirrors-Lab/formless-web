@@ -99,7 +99,7 @@ export function CurtainReveal() {
             </>
           ) : null}
         </h2>
-        <p className="max-w-2xl font-sans text-base leading-relaxed text-cream/70 md:text-lg lg:text-xl">
+        <p className="max-w-2xl whitespace-pre-line font-sans text-sm leading-relaxed text-cream/70 md:text-lg lg:text-xl">
           {t('home', 'curtain', 'subtitle')}
         </p>
       </div>

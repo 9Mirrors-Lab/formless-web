@@ -132,9 +132,9 @@ describe('client feedback revision audit (/revised)', () => {
 
   it('#12 curtain body uses freedom / observe the mind copy', () => {
     expect(getText(tree, 'home', 'curtain', 'headline_line1')).toBe(
-      'Freedom begins the moment you observe the mind',
+      'Freedom begins the moment you',
     );
-    expect(getText(tree, 'home', 'curtain', 'headline_line2')).toBe('');
+    expect(getText(tree, 'home', 'curtain', 'headline_line2')).toBe('observe the mind');
   });
 
   it('#15 curtain subtitle uses awareness insight copy', () => {

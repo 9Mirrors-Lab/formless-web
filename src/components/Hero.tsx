@@ -71,7 +71,7 @@ export function Hero({ showCta = true }: { showCta?: boolean }) {
       <div className="home-hero__stage relative z-10">
         <div className="hero-content home-hero__container">
           <div className="home-hero__copy flex flex-col gap-2">
-            <span className="hero-elem mb-4 block font-mono text-[clamp(0.65rem,0.2vw+0.6rem,0.875rem)] uppercase tracking-[0.3em] text-cream/60">
+            <span className="hero-elem mb-0 block font-mono text-[clamp(0.65rem,0.2vw+0.6rem,0.875rem)] uppercase tracking-[0.3em] text-cream/60 md:mb-4">
               {cx('eyebrow')}
             </span>
             <h1 className="home-hero__headline font-serif font-light italic leading-[1.08] tracking-tight text-cream">
