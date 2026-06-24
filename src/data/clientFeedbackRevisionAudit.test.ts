@@ -117,8 +117,8 @@ describe('client feedback revision audit (/revised)', () => {
     expect(getText(tree, 'home', 'hero', 'lede')).toContain('Eyes Closed points you inward');
   });
 
-  it('#9 peace supporting line appears in hero eyebrow (adapted)', () => {
-    expect(getText(tree, 'home', 'hero', 'eyebrow')).toMatch(/peace is your natural state/i);
+  it('#9 invitation appears in hero eyebrow', () => {
+    expect(getText(tree, 'home', 'hero', 'eyebrow')).toBe('An Invitation to go within.');
   });
 
   it('#10 hero CTA uses A moment to go within', () => {

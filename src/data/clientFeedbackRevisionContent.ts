@@ -98,7 +98,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   setLink(revised, 'footer', 'connect', 'stay_close', 'Connect', '/about#stay-close');
   setText(revised, 'footer', 'legal', 'copyright', '© 2026 Eyes Closed. All rights reserved.');
 
-  setText(revised, 'home', 'hero', 'eyebrow', 'PEACE IS YOUR NATURAL STATE.');
+  setText(revised, 'home', 'hero', 'eyebrow', 'An Invitation to go within.');
   setText(revised, 'home', 'hero', 'headline_primary', 'Remembering Who You Are');
   setText(revised, 'home', 'hero', 'headline_secondary', 'Beyond The Mind');
   setText(
