@@ -118,7 +118,7 @@ describe('client feedback revision audit (/revised)', () => {
   });
 
   it('#9 invitation appears in hero eyebrow', () => {
-    expect(getText(tree, 'home', 'hero', 'eyebrow')).toBe('An Invitation to go within.');
+    expect(getText(tree, 'home', 'hero', 'eyebrow')).toBe('An Invitation to go within');
   });
 
   it('#10 hero CTA uses A moment to go within', () => {
@@ -131,10 +131,10 @@ describe('client feedback revision audit (/revised)', () => {
   });
 
   it('#12 curtain body uses freedom / observe the mind copy', () => {
-    expect(getText(tree, 'home', 'curtain', 'headline_line1')).toContain(
-      'Freedom begins the moment you separate yourself from your thoughts',
+    expect(getText(tree, 'home', 'curtain', 'headline_line1')).toBe(
+      'Freedom begins the moment you observe the mind',
     );
-    expect(getText(tree, 'home', 'curtain', 'headline_line2')).toContain('observe the mind');
+    expect(getText(tree, 'home', 'curtain', 'headline_line2')).toBe('');
   });
 
   it('#15 curtain subtitle uses awareness insight copy', () => {

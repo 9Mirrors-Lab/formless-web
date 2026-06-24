@@ -68,7 +68,7 @@ export function About() {
           </p>
 
           <a
-            href="mailto:hello@formless.co"
+            href="mailto:hello@eyesclosed.love"
             className="mt-4 inline-flex items-center gap-3 text-moss font-sans text-sm uppercase tracking-widest font-medium hover:text-clay transition-colors duration-500 group w-fit"
           >
             Get in touch

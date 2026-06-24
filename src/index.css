@@ -353,7 +353,7 @@
   .home-hero__stage {
     display: grid;
     align-content: start;
-    padding-top: var(--hero-pad-top);
+    padding-top: 123px;
     padding-bottom: var(--hero-pad-bottom);
     padding-inline: var(--hero-gutter);
     min-height: clamp(34rem, 68dvh, 40rem);
@@ -371,6 +371,7 @@
       height: 100%;
       min-height: unset;
       align-content: end;
+      padding-top: var(--hero-pad-top);
     }
   }
 
@@ -409,7 +410,7 @@
    */
   .home-hero--elevated-copy {
     --hero-home-copy-lift: 0;
-    --hero-pad-top: clamp(5.25rem, 13.2vh, 19.2vh);
+    --hero-pad-top: 123px;
   }
 
   .home-hero--elevated-copy .home-hero__copy {

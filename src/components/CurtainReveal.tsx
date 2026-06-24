@@ -92,8 +92,12 @@ export function CurtainReveal() {
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 bg-charcoal">
         <h2 className="font-serif italic text-3xl leading-[1.1] text-cream mb-4 max-w-4xl md:mb-8 md:text-6xl lg:text-[5rem]">
           {t('home', 'curtain', 'headline_line1')}
-          <br />
-          {t('home', 'curtain', 'headline_line2')}
+          {t('home', 'curtain', 'headline_line2') ? (
+            <>
+              <br />
+              {t('home', 'curtain', 'headline_line2')}
+            </>
+          ) : null}
         </h2>
         <p className="max-w-2xl font-sans text-base leading-relaxed text-cream/70 md:text-lg lg:text-xl">
           {t('home', 'curtain', 'subtitle')}

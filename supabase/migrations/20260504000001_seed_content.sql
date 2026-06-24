@@ -19,7 +19,7 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('footer', 'explore', 'science', '{"text": "The Science", "href": "/science"}', 'link', 2),
 ('footer', 'connect', 'about', '{"text": "About", "href": "/about"}', 'link', 0),
 ('footer', 'connect', 'stay_close', '{"text": "Stay Close", "href": "/about#stay-close"}', 'link', 1),
-('footer', 'connect', 'contact', '{"text": "Contact", "href": "mailto:hello@formless.co"}', 'link', 2),
+('footer', 'connect', 'contact', '{"text": "Contact", "href": "mailto:hello@eyesclosed.love"}', 'link', 2),
 ('footer', 'legal', 'copyright', '{"text": "© 2026 Formless. All rights reserved."}', 'text', 0),
 ('footer', 'legal', 'privacy', '{"text": "Privacy", "href": "#"}', 'link', 0),
 ('footer', 'legal', 'terms', '{"text": "Terms", "href": "#"}', 'link', 1),
@@ -131,7 +131,7 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('about', 'stay_close', 'fine_print', '{"text": "No spam. Unsubscribe anytime."}', 'text', 0),
 ('about', 'stay_close', 'form_success', '{"text": "Thank you. We will be in touch."}', 'text', 0),
 ('about', 'stay_close', 'form_error', '{"text": "Enter a valid email, or try again in a moment."}', 'text', 0),
-('about', 'stay_close', 'email_link', '{"text": "hello@formless.co", "href": "mailto:hello@formless.co"}', 'link', 0)
+('about', 'stay_close', 'email_link', '{"text": "hello@eyesclosed.love", "href": "mailto:hello@eyesclosed.love"}', 'link', 0)
 
 ON CONFLICT (page, section, key) DO UPDATE SET
   value = EXCLUDED.value,

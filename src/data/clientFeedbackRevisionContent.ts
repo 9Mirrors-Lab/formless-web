@@ -96,9 +96,17 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   setLink(revised, 'footer', 'explore', 'science', 'Spirituality & Science', '/science');
   setLink(revised, 'footer', 'connect', 'about', 'About', '/about');
   setLink(revised, 'footer', 'connect', 'stay_close', 'Connect', '/about#stay-close');
+  setLink(
+    revised,
+    'footer',
+    'connect',
+    'contact',
+    'Contact',
+    'mailto:hello@eyesclosed.love',
+  );
   setText(revised, 'footer', 'legal', 'copyright', '© 2026 Eyes Closed. All rights reserved.');
 
-  setText(revised, 'home', 'hero', 'eyebrow', 'An Invitation to go within.');
+  setText(revised, 'home', 'hero', 'eyebrow', 'An Invitation to go within');
   setText(revised, 'home', 'hero', 'headline_primary', 'Remembering Who You Are');
   setText(revised, 'home', 'hero', 'headline_secondary', 'Beyond The Mind');
   setText(
@@ -115,9 +123,9 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'home',
     'curtain',
     'headline_line1',
-    'Freedom begins the moment you separate yourself from your thoughts',
+    'Freedom begins the moment you observe the mind',
   );
-  setText(revised, 'home', 'curtain', 'headline_line2', 'and simply observe the mind');
+  setText(revised, 'home', 'curtain', 'headline_line2', '');
   setText(
     revised,
     'home',
@@ -232,6 +240,15 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   setLink(revised, 'book', 'closing', 'cta_science', 'Read Spirituality & Science', '/science');
   setLink(revised, 'science', 'closing', 'cta_work', 'Explore The Practice', '/work');
   setLink(revised, 'science', 'closing', 'cta_book', 'Read Formless', '/book');
+
+  setLink(
+    revised,
+    'about',
+    'stay_close',
+    'email_link',
+    'hello@eyesclosed.love',
+    'mailto:hello@eyesclosed.love',
+  );
 
   return revised;
 }
