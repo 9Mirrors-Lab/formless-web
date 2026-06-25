@@ -19,7 +19,6 @@ import ColorsPage from './pages/ColorsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
-import PatternMirrorPage from './pages/PatternMirrorPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
