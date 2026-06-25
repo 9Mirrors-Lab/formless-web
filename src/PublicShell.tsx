@@ -6,6 +6,7 @@ import App from './App';
 import DesignSystem from './DesignSystem';
 import DesignFrameworkPage from './pages/DesignFrameworkPage';
 import ShaderPage from './pages/ShaderPage';
+import BackgroundsPage from './pages/BackgroundsPage';
 import BriefPage from './pages/BriefPage';
 import BriefPage2 from './pages/BriefPage2';
 import MoodboardPage from './pages/MoodboardPage';
@@ -18,12 +19,22 @@ import ColorsPage from './pages/ColorsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
+import PatternMirrorPage from './pages/PatternMirrorPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
 
 const publicSiteRestricted = isPublicSiteRestricted();
+
+function BackgroundsLegacyRedirect() {
+  useLayoutEffect(() => {
+    const url = new URL(window.location.href);
+    url.pathname = '/backgrounds';
+    window.location.replace(`${url.pathname}${url.search}${url.hash}`);
+  }, []);
+  return null;
+}
 
 function LegacyLayoutTestsRedirect() {
   useLayoutEffect(() => {
@@ -72,6 +83,7 @@ export function Root({ path }: { path: string }) {
   const isMoodboard = path === '/moodboard';
   const isDesignSystem = path === '/design-system';
   const isShader = path === '/shader';
+  const isBackgrounds = path === '/backgrounds' || path === '/shaderEC';
   const isDesignFramework = path === '/design-framework';
   const isIcons = path === '/icons';
 
@@ -90,6 +102,12 @@ export function Root({ path }: { path: string }) {
   if (isMoodboard) return <MoodboardPage />;
   if (isDesignSystem) return <DesignSystem />;
   if (isShader) return <ShaderPage />;
+  if (isBackgrounds) {
+    if (path === '/shaderEC') {
+      return <BackgroundsLegacyRedirect />;
+    }
+    return <BackgroundsPage />;
+  }
   if (isDesignFramework) return <DesignFrameworkPage />;
   if (isIcons) return <IconsPage />;
   return <App />;

@@ -123,9 +123,9 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'home',
     'curtain',
     'headline_line1',
-    'Freedom begins the moment you',
+    'Freedom begins the moment',
   );
-  setText(revised, 'home', 'curtain', 'headline_line2', 'observe the mind');
+  setText(revised, 'home', 'curtain', 'headline_line2', 'you observe the mind');
   setText(
     revised,
     'home',

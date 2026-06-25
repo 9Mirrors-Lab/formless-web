@@ -3,11 +3,29 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useContent } from '@/context/ContentContext';
 import { useSiteAccess } from '@/context/SiteAccessContext';
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { BackgroundPicker } from '@/components/shader/BackgroundPicker';
+import { useBackgroundSelection } from '@/components/shader/BackgroundSelectionContext';
 import logoWhiteSrc from '../../design/eyes-closed-logo-variations/Final-logos/09a-white-ec-notagline.svg';
 
 const linkFocus =
-  'rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80';
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80';
+
+type NavLinkPosition = 'first' | 'middle' | 'last';
+
+function navLinkRadius(position: NavLinkPosition): string {
+  switch (position) {
+    case 'first':
+      return 'rounded-l-full rounded-r-lg';
+    case 'last':
+      return 'rounded-l-lg rounded-r-full';
+    case 'middle':
+      return 'rounded-full';
+    default: {
+      const _exhaustive: never = position;
+      return _exhaustive;
+    }
+  }
+}
 
 type NavLinkItem = {
   key: string;
@@ -28,12 +46,14 @@ function NavTextLink({
   text,
   isActive,
   onNavigate,
+  position = 'middle',
   className = '',
 }: {
   href: string;
   text: string;
   isActive: boolean;
   onNavigate?: () => void;
+  position?: NavLinkPosition;
   className?: string;
 }) {
   return (
@@ -41,17 +61,13 @@ function NavTextLink({
       href={href}
       aria-current={isActive ? 'page' : undefined}
       onClick={onNavigate}
-      className={`relative inline-flex min-h-11 min-w-11 items-center justify-center px-2 transition-colors ${linkFocus} ${
-        isActive ? 'text-cream' : 'text-cream/75 hover:text-cream/90'
+      className={`inline-flex items-center px-4 py-2 text-[10px] font-medium uppercase tracking-wider opacity-100 transition-all duration-300 lg:px-5 lg:text-[11px] ${navLinkRadius(position)} ${linkFocus} ${
+        isActive
+          ? 'bg-white/10 text-white'
+          : 'text-white/55 hover:bg-white/5 hover:text-white/85'
       } ${className}`}
     >
       {text}
-      <span
-        className={`pointer-events-none absolute bottom-1 left-2 right-2 h-px rounded-full ${
-          isActive ? 'bg-cream/90 opacity-100' : 'bg-transparent opacity-0'
-        }`}
-        aria-hidden
-      />
     </a>
   );
 }
@@ -77,45 +93,6 @@ function MobileNavLink({
           ? 'bg-cream/10 text-cream'
           : 'text-cream hover:bg-cream/5 hover:text-cream'
       }`}
-    >
-      {text}
-    </a>
-  );
-}
-
-function AboutCtaLink({
-  href,
-  text,
-  isActive,
-  reducedMotion,
-  onNavigate,
-  className = '',
-  fullWidth = false,
-}: {
-  href: string;
-  text: string;
-  isActive: boolean;
-  reducedMotion: boolean;
-  onNavigate?: () => void;
-  className?: string;
-  fullWidth?: boolean;
-}) {
-  const motionClass = reducedMotion
-    ? ''
-    : 'motion-safe:hover:scale-105 motion-safe:active:scale-95';
-
-  return (
-    <a
-      href={href}
-      aria-current={isActive ? 'page' : undefined}
-      onClick={onNavigate}
-      className={`inline-flex min-h-11 items-center justify-center rounded-full px-5 py-2.5 font-semibold tracking-wider transition-colors duration-300 ${linkFocus} ${motionClass} ${
-        fullWidth ? 'w-full' : ''
-      } ${
-        isActive
-          ? 'bg-moss text-white ring-2 ring-moss/30'
-          : 'bg-moss text-white hover:bg-moss/90 hover:shadow-md'
-      } ${className}`}
     >
       {text}
     </a>
@@ -162,7 +139,6 @@ type MobileNavPanelProps = {
   navLinks: NavLinkItem[];
   aboutCta: { text: string; href: string };
   aboutIsActive: boolean;
-  reducedMotion: boolean;
   onClose: () => void;
 };
 
@@ -171,7 +147,6 @@ function MobileNavPanel({
   navLinks,
   aboutCta,
   aboutIsActive,
-  reducedMotion,
   onClose,
 }: MobileNavPanelProps) {
   return createPortal(
@@ -212,14 +187,12 @@ function MobileNavPanel({
               />
             </li>
           ))}
-          <li className="mt-4">
-            <AboutCtaLink
+          <li>
+            <MobileNavLink
               href={aboutCta.href}
               text={aboutCta.text}
               isActive={aboutIsActive}
-              reducedMotion={reducedMotion}
               onNavigate={onClose}
-              fullWidth
             />
           </li>
         </ul>
@@ -233,7 +206,6 @@ export function Navbar() {
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const { restricted } = useSiteAccess();
   const { getText, getLink, ordered } = useContent();
-  const reducedMotion = usePrefersReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const homeHref = resolveHomeHref(currentPath);
@@ -272,6 +244,15 @@ export function Navbar() {
 
   const closeMobile = () => setMobileOpen(false);
 
+  const backgroundSelection = useBackgroundSelection();
+  const backgroundPicker = backgroundSelection ? (
+    <BackgroundPicker
+      placement="nav"
+      value={backgroundSelection.value}
+      onChange={backgroundSelection.onChange}
+    />
+  ) : null;
+
   return (
     <>
       <header className="site-nav fixed inset-x-0 top-0 z-40">
@@ -292,35 +273,46 @@ export function Navbar() {
           )}
 
           {!restricted ? (
-            <div className="hidden items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] [text-shadow:0_1px_3px_rgba(26,26,26,0.45)] md:flex lg:gap-3 lg:text-[11px]">
-              {navLinks.map((link) => (
+            <div className="hidden items-center gap-3 md:flex">
+              <div
+                className="flex items-stretch gap-1 rounded-full border border-white/15 bg-black/25 p-1 shadow-inner backdrop-blur-md lg:gap-1.5 lg:p-1.5"
+                role="group"
+                aria-label="Main navigation"
+              >
+                {navLinks.map((link, index) => (
+                  <NavTextLink
+                    key={link.key}
+                    href={link.href}
+                    text={link.text}
+                    isActive={link.isActive}
+                    position={index === 0 ? 'first' : 'middle'}
+                  />
+                ))}
                 <NavTextLink
-                  key={link.key}
-                  href={link.href}
-                  text={link.text}
-                  isActive={link.isActive}
+                  href={aboutCta.href}
+                  text={aboutCta.text}
+                  isActive={aboutIsActive}
+                  position="last"
                 />
-              ))}
-              <AboutCtaLink
-                href={aboutCta.href}
-                text={aboutCta.text}
-                isActive={aboutIsActive}
-                reducedMotion={reducedMotion}
-              />
+              </div>
+              {backgroundPicker}
             </div>
           ) : null}
 
           {!restricted ? (
-            <button
-              type="button"
-              className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream transition-colors hover:bg-cream/10 md:hidden ${linkFocus}`}
-              onClick={() => setMobileOpen(true)}
-              aria-expanded={mobileOpen}
-              aria-controls="site-nav-mobile-panel"
-              aria-label="Open main menu"
-            >
-              <Menu className="h-5 w-5" aria-hidden />
-            </button>
+            <div className="flex items-center gap-2 md:hidden">
+              {backgroundPicker}
+              <button
+                type="button"
+                className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream transition-colors hover:bg-cream/10 ${linkFocus}`}
+                onClick={() => setMobileOpen(true)}
+                aria-expanded={mobileOpen}
+                aria-controls="site-nav-mobile-panel"
+                aria-label="Open main menu"
+              >
+                <Menu className="h-5 w-5" aria-hidden />
+              </button>
+            </div>
           ) : null}
         </nav>
       </header>
@@ -331,7 +323,6 @@ export function Navbar() {
           navLinks={navLinks}
           aboutCta={aboutCta}
           aboutIsActive={aboutIsActive}
-          reducedMotion={reducedMotion}
           onClose={closeMobile}
         />
       ) : null}

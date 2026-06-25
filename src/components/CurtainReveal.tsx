@@ -95,7 +95,9 @@ export function CurtainReveal() {
           {t('home', 'curtain', 'headline_line2') ? (
             <>
               <br />
-              {t('home', 'curtain', 'headline_line2')}
+              <span className="whitespace-nowrap">
+                {t('home', 'curtain', 'headline_line2')}
+              </span>
             </>
           ) : null}
         </h2>
