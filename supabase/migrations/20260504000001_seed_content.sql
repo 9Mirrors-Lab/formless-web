@@ -30,7 +30,7 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('home', 'hero', 'headline_secondary', '{"text": "way to live."}', 'text', 0),
 ('home', 'hero', 'lede', '{"text": "Stop. Pause. Go within. Notice the voice in the head. Notice the story it is telling. If you can hear it, who is listening?"}', 'text', 0),
 ('home', 'hero', 'cta_reflection', '{"text": "Begin with a reflection", "href": "#reflection"}', 'link', 0),
-('home', 'hero', 'background_image', '{"src": "https://images.unsplash.com/photo-1470115636492-6d2b56f9146d?w=1920&q=80"}', 'image', 0),
+('home', 'hero', 'background_image', '{"src": "/backgrounds/desert-dusk.jpg"}', 'image', 0),
 
 -- home curtain
 ('home', 'curtain', 'headline_line1', '{"text": "If you can hear the voice,"}', 'text', 0),
@@ -113,7 +113,7 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('about', 'hero', 'body_para3', $c${"text": "For much of her life, achievement, success, and external milestones shaped the direction of her path. In 2023, however, a profound shift in awareness changed the way she viewed herself, her relationships, her work, and life itself. What once drove her no longer held the same meaning. The pursuit of external success gradually gave way to a deeper desire for peace, freedom, and understanding."}$c$::jsonb, 'text', 5),
 ('about', 'hero', 'body_para4', $c${"text": "That transformation led to the creation of Eyes Closed and inspired her first book, Formless."}$c$::jsonb, 'text', 6),
 ('about', 'hero', 'body_para5', $c${"text": "Today, Sonika shares what she continues to discover through writing, speaking, and creating content centered on awareness, presence, and inner transformation. Her work is grounded in a simple message: lasting peace is not found outside of us, but through recognizing who we truly are beyond our thoughts, emotions, and conditioned identities."}$c$::jsonb, 'text', 7),
-('about', 'hero', 'body_para6', $c${"text": "When she isn't writing or creating, Sonika enjoys spending time with her two children, taking walks in nature with her partner Ryan and their two dogs, listening to handpan music, meditating, and exploring the intersection of science, spirituality, and human potential."}$c$::jsonb, 'text', 8),
+('about', 'hero', 'body_para6', $c${"text": "When she isn't writing or creating, Sonika enjoys spending time with her two children, taking walks in nature with her partner and their two dogs, listening to handpan music, meditating, and exploring the intersection of science, spirituality, and human potential."}$c$::jsonb, 'text', 8),
 
 ('about', 'future_intro', 'eyebrow', '{"text": "What is unfolding"}', 'text', 0),
 ('about', 'future_intro', 'title', '{"text": "The beginning of something larger."}', 'text', 0),

@@ -64,6 +64,17 @@ function setLink(
   setEntry(tree, page, section, key, { text, href });
 }
 
+function setImage(
+  tree: ContentTree,
+  page: string,
+  section: string,
+  key: string,
+  src: string,
+  alt = '',
+) {
+  setEntry(tree, page, section, key, { src, alt });
+}
+
 function setListItem(
   tree: ContentTree,
   page: string,
@@ -117,6 +128,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'The world teaches you to look outward for fulfillment.\nEyes Closed points you inward.',
   );
   setLink(revised, 'home', 'hero', 'cta_reflection', 'A moment to go within', '#reflection');
+  setImage(revised, 'home', 'hero', 'background_image', '/backgrounds/desert-dusk.jpg');
 
   setText(
     revised,
@@ -248,6 +260,20 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'email_link',
     'hello@eyesclosed.love',
     'mailto:hello@eyesclosed.love',
+  );
+  setText(
+    revised,
+    'about',
+    'hero',
+    'body_para2',
+    'Born in Winnipeg, Canada, to immigrant parents from Punjab, India, Sonika is the youngest of three. Raised in a bilingual household, she learned to speak Punjabi from an early age and has a basic understanding of Hindi. At the age of twenty, she moved to Las Vegas, Nevada, where she has lived ever since. Over the past twenty years, she has built a successful career in Human Resources, spending the last thirteen years in the technology industry helping people and organizations navigate growth, change, and transformation.',
+  );
+  setText(
+    revised,
+    'about',
+    'hero',
+    'body_para6',
+    "When she isn't writing or creating, Sonika enjoys spending time with her two children, taking walks in nature with her partner and their two dogs, listening to handpan music, meditating, and exploring the intersection of science, spirituality, and human potential.",
   );
 
   return revised;

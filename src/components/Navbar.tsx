@@ -106,7 +106,7 @@ function BrandLogo({ name, className = '' }: { name: string; className?: string 
       alt={name}
       width={1929}
       height={865}
-      className={`h-[5.75rem] w-auto translate-y-1 pb-[30px] md:h-[5.27rem] md:pb-0 ${className}`}
+      className={`h-[6.9rem] w-auto translate-y-1 pb-[30px] md:h-[6.324rem] md:pb-0 ${className}`}
     />
   );
 }
@@ -165,7 +165,7 @@ function MobileNavPanel({
         aria-label="Main menu"
       >
         <div className="mb-6 flex items-center justify-between">
-          <BrandLogo name={brandName} className="!h-[4.8rem]" />
+          <BrandLogo name={brandName} className="!h-[5.76rem]" />
           <button
             type="button"
             className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream/70 transition-colors hover:bg-cream/10 hover:text-cream ${linkFocus}`}

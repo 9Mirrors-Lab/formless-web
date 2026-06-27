@@ -19,6 +19,7 @@ import ColorsPage from './pages/ColorsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
+import PatternMirrorPage from './pages/PatternMirrorPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
@@ -76,6 +77,7 @@ export function Root({ path }: { path: string }) {
     path === '/design/eyes-closed-logo-variations/04-options.html';
   const isBrandKitExport = path === '/brand-kit-export';
   const isLayoutTests = path === '/layout-tests';
+  const isPatternMirror = path === '/pattern-mirror';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -95,6 +97,7 @@ export function Root({ path }: { path: string }) {
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;
   if (isLayoutTests) return <LayoutTestsPage />;
+  if (isPatternMirror) return <PatternMirrorPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
