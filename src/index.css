@@ -490,6 +490,21 @@
     }
   }
 
+  /*
+   * Support pages: match nav gutters to site-page-header (px-6 / md:16 / lg:24
+   * + max-w-6xl) so the logo lines up with eyebrow and headline copy below.
+   * Home keeps the wider max-w-7xl bar.
+   */
+  .site-nav__bar--align-content .site-nav__brand {
+    margin-inline-start: -1.65rem;
+  }
+
+  @media (min-width: 768px) {
+    .site-nav__bar--align-content .site-nav__brand {
+      margin-inline-start: -1.45rem;
+    }
+  }
+
   .site-page-header {
     padding-top: calc(var(--site-nav-height) + 2rem);
   }

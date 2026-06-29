@@ -12,19 +12,8 @@ const linkFocus =
 
 type NavLinkPosition = 'first' | 'middle' | 'last';
 
-function navLinkRadius(position: NavLinkPosition): string {
-  switch (position) {
-    case 'first':
-      return 'rounded-l-full rounded-r-lg';
-    case 'last':
-      return 'rounded-l-lg rounded-r-full';
-    case 'middle':
-      return 'rounded-full';
-    default: {
-      const _exhaustive: never = position;
-      return _exhaustive;
-    }
-  }
+function navLinkRadius(_position: NavLinkPosition): string {
+  return 'rounded-full';
 }
 
 type NavLinkItem = {
@@ -39,6 +28,10 @@ function resolveHomeHref(currentPath: string): string {
     return '/revised';
   }
   return '/';
+}
+
+function isHomePath(currentPath: string): boolean {
+  return currentPath === '/' || currentPath === '/revised';
 }
 
 function NavTextLink({
@@ -209,6 +202,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const homeHref = resolveHomeHref(currentPath);
+  const alignWithPageContent = !isHomePath(currentPath);
   const brandName = getText('nav', 'brand', 'name');
   const linkEntries = ordered('nav', 'links').filter((e) => e.type === 'link');
   const aboutCta = getLink('nav', 'cta', 'about');
@@ -262,14 +256,29 @@ export function Navbar() {
         />
         <nav
           aria-label="Main"
-          className="site-nav__bar relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 md:px-16 md:py-6 lg:px-24"
+          className={
+            alignWithPageContent
+              ? 'site-nav__shell relative px-6 py-4 md:px-16 md:py-6 lg:px-24'
+              : 'site-nav__shell relative px-5 py-4 md:px-16 md:py-6 lg:px-24'
+          }
         >
+          <div
+            className={`site-nav__bar relative flex items-center justify-between gap-4 ${
+              alignWithPageContent ? 'site-nav__bar--align-content mx-auto max-w-6xl' : 'mx-auto max-w-7xl'
+            }`}
+          >
           {restricted ? (
-            <span className="inline-flex min-h-11 items-center">
+            <span
+              className={`inline-flex min-h-11 items-center${alignWithPageContent ? ' site-nav__brand' : ''}`}
+            >
               <BrandLogo name={brandName} />
             </span>
           ) : (
-            <BrandLink href={homeHref} name={brandName} />
+            <BrandLink
+              href={homeHref}
+              name={brandName}
+              className={alignWithPageContent ? 'site-nav__brand' : ''}
+            />
           )}
 
           {!restricted ? (
@@ -314,6 +323,7 @@ export function Navbar() {
               </button>
             </div>
           ) : null}
+          </div>
         </nav>
       </header>
 

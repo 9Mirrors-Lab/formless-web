@@ -21,8 +21,8 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('footer', 'connect', 'stay_close', '{"text": "Stay Close", "href": "/about#stay-close"}', 'link', 1),
 ('footer', 'connect', 'contact', '{"text": "Contact", "href": "mailto:hello@eyesclosed.love"}', 'link', 2),
 ('footer', 'legal', 'copyright', '{"text": "© 2026 Formless. All rights reserved."}', 'text', 0),
-('footer', 'legal', 'privacy', '{"text": "Privacy", "href": "#"}', 'link', 0),
-('footer', 'legal', 'terms', '{"text": "Terms", "href": "#"}', 'link', 1),
+('footer', 'legal', 'privacy', '{"text": "Privacy", "href": "/privacy"}', 'link', 0),
+('footer', 'legal', 'terms', '{"text": "Terms", "href": "/terms"}', 'link', 1),
 
 -- home hero
 ('home', 'hero', 'eyebrow', '{"text": "For anyone who has had enough"}', 'text', 0),

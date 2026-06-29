@@ -143,6 +143,8 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'mailto:hello@eyesclosed.love',
   );
   setText(revised, 'footer', 'legal', 'copyright', '© 2026 Eyes Closed. All rights reserved.');
+  setLink(revised, 'footer', 'legal', 'privacy', 'Privacy', '/privacy');
+  setLink(revised, 'footer', 'legal', 'terms', 'Terms', '/terms');
 
   setText(revised, 'home', 'hero', 'eyebrow', 'An Invitation to go within');
   setText(revised, 'home', 'hero', 'headline_primary', 'Remembering Who You Are');

@@ -20,6 +20,8 @@ import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
 import PatternMirrorPage from './pages/PatternMirrorPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
@@ -78,6 +80,8 @@ export function Root({ path }: { path: string }) {
   const isBrandKitExport = path === '/brand-kit-export';
   const isLayoutTests = path === '/layout-tests';
   const isPatternMirror = path === '/pattern-mirror';
+  const isPrivacy = path === '/privacy';
+  const isTerms = path === '/terms';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -98,6 +102,8 @@ export function Root({ path }: { path: string }) {
   if (isBrandKitExport) return <BrandKitExportPage />;
   if (isLayoutTests) return <LayoutTestsPage />;
   if (isPatternMirror) return <PatternMirrorPage />;
+  if (isPrivacy) return <PrivacyPage />;
+  if (isTerms) return <TermsPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;

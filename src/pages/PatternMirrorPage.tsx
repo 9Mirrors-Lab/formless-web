@@ -19,49 +19,49 @@ const PATTERNS: PatternEntry[] = [
     label: 'email',
     situation: 'One email can shift the entire day.',
     mechanism:
-      'The mind reads a subject line as a verdict — on your worth, your standing, your safety. Before you have fully processed the words, a feeling has already arrived: tension, urgency, dread, or defensive anger. The email did not create the feeling. It triggered what was already there, waiting.',
+      'The mind reads a subject line as a verdict on your worth, your standing, and your safety. Before you have fully processed the words, a feeling has already arrived: tension, urgency, dread, or defensive anger. The email did not create the feeling. It triggered what was already there, waiting.',
   },
   {
     id: 'boss',
     label: 'boss',
     situation: 'A word from a manager and the afternoon belongs to that moment.',
     mechanism:
-      'The reaction moves faster than thought. A tone of voice, a brief reply, a silence where approval was expected — and the nervous system responds as if safety itself is threatened. The boss did not cause this. They activated a belief that was already running.',
+      'The reaction moves faster than thought. A tone of voice, a brief reply, a silence where approval was expected, and the nervous system responds as if safety itself is threatened. The boss did not cause this. They activated a belief that was already running.',
   },
   {
     id: 'money',
     label: 'money',
     situation: 'The number in the account creates the feeling of safety or fear.',
     mechanism:
-      'When the number drops, a threat arrives — not from outside but from the interpretation inside. The mind has linked a bank balance to survival, to worth, to the right to exist without anxiety. The number is information. The fear is a story told on top of it.',
+      'When the number drops, a threat arrives. Not from outside, but from the interpretation inside. The mind has linked a bank balance to survival, to worth, to the right to exist without anxiety. The number is information. The fear is a story told on top of it.',
   },
   {
     id: 'partner',
     label: 'partner',
     situation: 'A tone. A silence. A look. The relationship becomes the weather.',
     mechanism:
-      'The reaction arrives before the words are processed. Something in their voice activates something old in you — a need for reassurance, a fear of abandonment, a wound that has never fully closed. The partner did not create it. They touched it.',
+      'The reaction arrives before the words are processed. Something in their voice activates something old in you: a need for reassurance, a fear of abandonment, a wound that has never fully closed. The partner did not create it. They touched it.',
   },
   {
     id: 'body',
     label: 'body',
     situation: 'Something in the body creates urgency, shame, or fear.',
     mechanism:
-      'The mind layers a story onto a sensation. The sensation passes; the story lingers — building a future from a present moment, running toward diagnosis before the evidence exists. The body communicates. The mind narrates. They are not the same.',
+      'The mind layers a story onto a sensation. The sensation passes; the story lingers, building a future from a present moment and running toward diagnosis before the evidence exists. The body communicates. The mind narrates. They are not the same.',
   },
   {
     id: 'family',
     label: 'family',
     situation: 'Every visit pulls you back into who you were.',
     mechanism:
-      'Old programming runs deeper than memory. The body knows its role before the mind has agreed to play it. Decades of conditioning does not dissolve when you leave the house. It waits. Proximity reactivates it — precisely, reliably, every time.',
+      'Old programming runs deeper than memory. The body knows its role before the mind has agreed to play it. Decades of conditioning does not dissolve when you leave the house. It waits. Proximity reactivates it, precisely and reliably, every time.',
   },
   {
     id: 'career',
     label: 'career',
     situation: 'The work becomes the measure of the self.',
     mechanism:
-      'The identity needs constant proof. A promotion, a comparison, a project ignored — each feeds or threatens the story of who you are. Without achievement, the question surfaces beneath the surface: if this is taken away, who am I?',
+      'The identity needs constant proof. A promotion, a comparison, a project ignored. Each feeds or threatens the story of who you are. Without achievement, the question surfaces beneath the surface: if this is taken away, who am I?',
   },
   {
     id: 'health',
@@ -75,7 +75,7 @@ const PATTERNS: PatternEntry[] = [
     label: 'child',
     situation: "A child's choices become evidence of your failures.",
     mechanism:
-      'The child becomes a mirror held at an uncomfortable angle. Their struggles feel like proof of your inadequacy as a parent, a person, a guide. The love is real. But the fear beneath the love — the fear of failing them, of being seen as failing — that is the pattern running.',
+      'The child becomes a mirror held at an uncomfortable angle. Their struggles feel like proof of your inadequacy as a parent, a person, a guide. The love is real. But the fear beneath the love, the fear of failing them or being seen as failing, that is the pattern running.',
   },
 ];
 
@@ -263,7 +263,7 @@ export default function PatternMirrorPage() {
               </h1>
               <p className="pm-lede mt-10 text-charcoal/60 font-sans text-lg md:text-xl max-w-2xl leading-relaxed">
                 Look closely at what disturbs your peace. Whether it arrives through an email, a
-                relationship, a bank account, or a body sensation — the mechanism beneath is
+                relationship, a bank account, or a body sensation, the mechanism beneath is
                 always the same.
               </p>
             </div>
@@ -359,8 +359,8 @@ export default function PatternMirrorPage() {
                   You are the one who sees it.
                 </p>
                 <p className="font-sans text-base text-cream/50 max-w-md leading-relaxed mb-10">
-                  Separation begins the moment you notice the voice — not believe it. This is the
-                  doorway Formless points to.
+                  Separation begins the moment you notice the voice rather than believe it. This
+                  is the doorway Formless points to.
                 </p>
                 <ParticleButton href="/book">Explore the book</ParticleButton>
               </div>
