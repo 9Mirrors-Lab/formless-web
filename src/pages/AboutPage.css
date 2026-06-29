@@ -186,15 +186,6 @@
   color: var(--fg);
   margin-bottom: .75rem;
 }
-#about-page-scope .stay-success-body {
-  color: rgba(242, 240, 233, .62);
-  font-size: .98rem;
-  line-height: 1.65;
-  margin-bottom: .5rem;
-}
-#about-page-scope .stay-success-email {
-  color: rgba(242, 240, 233, .88);
-}
 #about-page-scope .stay-error {
   color: #e8a48a;
   font-size: .88rem;

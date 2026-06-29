@@ -8,7 +8,6 @@ type StayCloseNotifyFormProps = {
   submitLabel: string;
   finePrint: string;
   successTitle: string;
-  successBody?: string;
   errorMessage: string;
   emailLink: { href: string; text: string };
 };
@@ -22,12 +21,10 @@ export function StayCloseNotifyForm({
   submitLabel,
   finePrint,
   successTitle,
-  successBody = 'We will send reflections and notes when there is something worth sharing.',
   errorMessage,
   emailLink,
 }: StayCloseNotifyFormProps) {
   const [email, setEmail] = useState('');
-  const [submittedEmail, setSubmittedEmail] = useState('');
   const [status, setStatus] = useState<FormStatus>('idle');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -51,14 +48,12 @@ export function StayCloseNotifyForm({
 
       if (error) {
         if (error.code === '23505') {
-          setSubmittedEmail(normalizedEmail);
           setStatus('success');
           return;
         }
         throw error;
       }
 
-      setSubmittedEmail(normalizedEmail);
       setStatus('success');
       setEmail('');
     } catch {
@@ -75,10 +70,6 @@ export function StayCloseNotifyForm({
           </svg>
         </div>
         <p className="stay-success-title">{successTitle}</p>
-        <p className="stay-success-body">
-          {successBody}{' '}
-          <span className="stay-success-email">{submittedEmail}</span>
-        </p>
         <p className="fine">{finePrint}</p>
         <div className="signoff">
           <a href={emailLink.href}>{emailLink.text}</a>

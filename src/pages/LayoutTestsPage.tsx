@@ -231,7 +231,7 @@ export default function LayoutTestsPage() {
                 </div>
                 <div className="h-px bg-cream/10" />
                 <div>
-                  <p className="font-serif text-4xl italic text-cream/80">Formless</p>
+                  <p className="font-serif text-4xl text-cream/80">Formless</p>
                   <p className="mt-2 text-sm leading-relaxed text-cream/50">
                     Book title and teaching foundation under the Eyes Closed brand.
                   </p>
@@ -358,7 +358,7 @@ export default function LayoutTestsPage() {
               Layout test · Book
             </p>
             <div className="mt-8 grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-end">
-              <h2 className="font-serif text-6xl italic text-cream md:text-8xl">
+              <h2 className="font-serif text-6xl text-cream md:text-8xl">
                 Formless
               </h2>
               <p className="max-w-2xl text-lg leading-8 text-cream/60">

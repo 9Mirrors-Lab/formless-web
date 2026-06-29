@@ -1,0 +1,146 @@
+{
+  "fileKey": "mA96W2OGNZzOO8zmlmjTpE",
+  "fileUrl": "https://www.figma.com/design/mA96W2OGNZzOO8zmlmjTpE",
+  "handoffDoc": "design/figma/CAPTURE-HANDOFF.md",
+  "lastUpdated": "2026-06-23",
+  "base": "http://localhost:5173",
+  "captures": [
+    {
+      "route": "/",
+      "page": "Home",
+      "label": "Desktop",
+      "width": 1440,
+      "height": 900,
+      "captureId": "52dd1e4f-f585-476b-a520-8951de6956e0",
+      "status": "completed",
+      "figmaNodeId": "1:2"
+    },
+    {
+      "route": "/",
+      "page": "Home",
+      "label": "Tablet",
+      "width": 768,
+      "height": 1024,
+      "captureId": "cfa93469-8642-4534-b6db-07797d84cf2b",
+      "status": "completed",
+      "figmaNodeId": "2:2"
+    },
+    {
+      "route": "/",
+      "page": "Home",
+      "label": "Mobile",
+      "width": 390,
+      "height": 844,
+      "captureId": "a50b94f1-a246-45b5-a9db-fb6738ead5d9",
+      "status": "completed",
+      "figmaNodeId": "3:2"
+    },
+    {
+      "route": "/work",
+      "page": "Work",
+      "label": "Desktop",
+      "width": 1440,
+      "height": 900,
+      "captureId": "dee338bd-1bc4-4873-8845-16aa48d0b261",
+      "status": "completed",
+      "figmaNodeId": "4:2"
+    },
+    {
+      "route": "/work",
+      "page": "Work",
+      "label": "Tablet",
+      "width": 768,
+      "height": 1024,
+      "captureId": "1e8b5054-b094-483b-aa60-7699b771e458",
+      "status": "completed",
+      "figmaNodeId": "5:2"
+    },
+    {
+      "route": "/work",
+      "page": "Work",
+      "label": "Mobile",
+      "width": 390,
+      "height": 844,
+      "captureId": "b4bb06b4-57b9-4d41-bfb8-2d725b90962c",
+      "status": "submitted_poll_pending"
+    },
+    {
+      "route": "/book",
+      "page": "Book",
+      "label": "Desktop",
+      "width": 1440,
+      "height": 900,
+      "captureId": "3a05e169-b934-446b-bb64-5de5675b0ae1",
+      "status": "submitted_poll_pending"
+    },
+    {
+      "route": "/book",
+      "page": "Book",
+      "label": "Tablet",
+      "width": 768,
+      "height": 1024,
+      "captureId": "07e513e6-a709-492d-acb9-d079b4cf8672",
+      "status": "submitted_poll_pending"
+    },
+    {
+      "route": "/book",
+      "page": "Book",
+      "label": "Mobile",
+      "width": 390,
+      "height": 844,
+      "captureId": "5fe6b25c-ae0a-42ae-859f-87376c921d7e",
+      "status": "submitted_poll_pending"
+    },
+    {
+      "route": "/science",
+      "page": "Science",
+      "label": "Desktop",
+      "width": 1440,
+      "height": 900,
+      "captureId": "2c0ea43e-2a7b-4a61-8983-d973dc0f602f",
+      "status": "submitted_poll_pending"
+    }
+  ],
+  "pending": [
+    {
+      "route": "/science",
+      "page": "Science",
+      "label": "Tablet",
+      "width": 768,
+      "height": 1024,
+      "status": "needs_capture_id"
+    },
+    {
+      "route": "/science",
+      "page": "Science",
+      "label": "Mobile",
+      "width": 390,
+      "height": 844,
+      "status": "needs_capture_id"
+    },
+    {
+      "route": "/about",
+      "page": "About",
+      "label": "Desktop",
+      "width": 1440,
+      "height": 900,
+      "status": "needs_capture_id"
+    },
+    {
+      "route": "/about",
+      "page": "About",
+      "label": "Tablet",
+      "width": 768,
+      "height": 1024,
+      "status": "needs_capture_id"
+    },
+    {
+      "route": "/about",
+      "page": "About",
+      "label": "Mobile",
+      "width": 390,
+      "height": 844,
+      "status": "needs_capture_id"
+    }
+  ]
+}

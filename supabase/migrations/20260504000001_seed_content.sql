@@ -47,6 +47,7 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('work', 'accordion_intro', 'eyebrow', '{"text": "The pattern repeats"}', 'text', 0),
 ('work', 'accordion_intro', 'title_line1', '{"text": "The subject changes."}', 'text', 0),
 ('work', 'accordion_intro', 'title_line2', '{"text": "The pattern remains."}', 'text', 0),
+('work', 'accordion_intro', 'lede', '{"text": "Four places in life where suffering often appears"}', 'text', 0),
 ('work', 'reframe', 'eyebrow', '{"text": "The central insight"}', 'text', 0),
 ('work', 'reframe', 'heading', '{"text": "There is a voice in the head."}', 'text', 0),
 ('work', 'reframe', 'emphasis', '{"text": "Who is listening?"}', 'text', 0),
@@ -59,9 +60,9 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('work', 'categories', 'family', $c${"id": "family", "title": "Family & Origins", "image": "https://images.unsplash.com/photo-1511497584788-876760111969?w=800&h=1000&fit=crop&q=80", "insight": "The oldest patterns are the hardest to see.", "detail": "Family dynamics installed the original software. Seeing the pattern is the beginning of freedom from it, not by fighting, but by noticing."}$c$::jsonb, 'list_item', 3),
 
 -- book
-('book', 'header', 'eyebrow', '{"text": "The Manuscript"}', 'text', 0),
-('book', 'header', 'title', '{"text": "The book is a doorway into the recognition."}', 'text', 0),
-('book', 'header', 'lede', '{"text": "Not a method. Not a program. A quiet invitation to stop and see what is already here: the awareness behind every thought, every feeling, every story."}', 'text', 0),
+('book', 'header', 'eyebrow', '{"text": "The Book"}', 'text', 0),
+('book', 'header', 'title', '{"text": "The book is a doorway into the recognition of who you truly are."}', 'text', 0),
+('book', 'header', 'lede', '{"text": "You are not your thoughts or emotions. Formless takes you within to discover what exists beyond them."}', 'text', 0),
 ('book', 'header', 'cta_excerpt', '{"text": "Read an excerpt", "href": "#"}', 'link', 0),
 ('book', 'header', 'notify_heading', '{"text": "Join the waitlist and be the first to know when the book is here."}', 'text', 0),
 ('book', 'header', 'notify_cta', '{"text": "Notify me"}', 'text', 0),
@@ -73,19 +74,19 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('book', 'header', 'notify_error', '{"text": "Enter a valid email, or try again in a moment."}', 'text', 0),
 ('book', 'cover', 'title', '{"text": "Formless"}', 'text', 0),
 
-('book', 'quotes', 'quote_0', '{"text": "You do not have to rearrange your entire life to begin."}', 'text', 0),
-('book', 'quotes', 'quote_1', '{"text": "For one moment, stop. Notice the voice in the head. Notice the story it is telling."}', 'text', 1),
-('book', 'quotes', 'quote_2', '{"text": "If you can hear it, who is listening?"}', 'text', 2),
+('book', 'quotes', 'quote_0', '{"text": "Pause.\\nFor one moment, stop. Be here."}', 'text', 0),
+('book', 'quotes', 'quote_1', '{"text": "Observe.\\nNotice your thoughts, emotions, and the story your mind is telling."}', 'text', 1),
+('book', 'quotes', 'quote_2', '{"text": "Recognize.\\nYou are not what you observe. You are the one observing it."}', 'text', 2),
 
 ('book', 'themes_intro', 'eyebrow', '{"text": "What the book points to"}', 'text', 0),
 ('book', 'themes_intro', 'title', '{"text": "Four recognitions."}', 'text', 0),
 
-('book', 'themes', 'awareness', $c${"label": "Awareness", "title": "Seeing without judgment", "desc": "The book invites you to notice thought without engaging with it, and to become the observer rather than the participant."}$c$::jsonb, 'list_item', 0),
-('book', 'themes', 'presence', $c${"label": "Presence", "title": "Arriving in this moment", "desc": "Not the past. Not the future. The teaching points to what is already here, already available, already at peace."}$c$::jsonb, 'list_item', 1),
-('book', 'themes', 'peace', $c${"label": "Peace", "title": "Not circumstantial", "desc": "Peace does not depend on life arranging itself perfectly. It is the recognition that you are already the space in which life unfolds."}$c$::jsonb, 'list_item', 2),
-('book', 'themes', 'freedom', '{"label": "Freedom", "title": "From the pattern itself", "desc": "Not freedom from life''s difficulties, but freedom from the mind''s compulsive narration about them."}'::jsonb, 'list_item', 3),
+('book', 'themes', 'awareness', $c${"label": "Awareness", "title": "You are not the mind.", "desc": "Learn to observe your thoughts and emotions instead of identifying with them."}$c$::jsonb, 'list_item', 0),
+('book', 'themes', 'presence', $c${"label": "Presence", "title": "You are awareness.", "desc": "Recognize the quiet presence that has always existed beneath every experience."}$c$::jsonb, 'list_item', 1),
+('book', 'themes', 'peace', $c${"label": "Peace", "title": "Peace is acceptance.", "desc": "Freedom begins when resistance ends and life is allowed to unfold as it is."}$c$::jsonb, 'list_item', 2),
+('book', 'themes', 'freedom', $c${"label": "Freedom", "title": "Life changes from within.", "desc": "Bring presence into your relationships, work, and everyday life, supported by insights from both ancient wisdom and modern science."}$c$::jsonb, 'list_item', 3),
 
-('book', 'closing', 'lede', '{"text": "The work begins with a single recognition."}', 'text', 0),
+('book', 'closing', 'lede', '{"text": "The practice begins with a single recognition."}', 'text', 0),
 ('book', 'closing', 'cta_work', '{"text": "Explore the work", "href": "/work"}', 'link', 0),
 ('book', 'closing', 'cta_science', '{"text": "Read the science", "href": "/science"}', 'link', 1),
 
@@ -119,7 +120,7 @@ INSERT INTO public.content (page, section, key, value, type, "order") VALUES
 ('about', 'future_intro', 'title', '{"text": "The beginning of something larger."}', 'text', 0),
 
 ('about', 'future', 'talks', $c${"title": "Talks & Gatherings", "desc": "Intimate spaces where the teaching is shared in person. No stage performance, just presence."}$c$::jsonb, 'list_item', 0),
-('about', 'future', 'retreats', $c${"title": "Retreats", "desc": "Structured days of silence, observation, and gentle guidance. A chance to go deeper without distraction."}$c$::jsonb, 'list_item', 1),
+('about', 'future', 'retreats', $c${"title": "Retreats", "desc": "Days of silence and gentle guidance. A chance to go deeper without distraction."}$c$::jsonb, 'list_item', 1),
 ('about', 'future', 'community', $c${"title": "Community", "desc": "A quiet circle of people walking the same path. Not a platform, but a space for honest recognition."}$c$::jsonb, 'list_item', 2),
 ('about', 'future', 'deeper', $c${"title": "Deeper Teachings", "desc": "Material that goes beyond the book. For those who have begun to see and want to see more clearly."}$c$::jsonb, 'list_item', 3),
 

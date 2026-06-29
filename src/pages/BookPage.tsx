@@ -102,7 +102,7 @@ export default function BookPage() {
       <div ref={pageRef}>
         <section
           ref={headerRef}
-          className="site-page-header relative w-full overflow-hidden px-6 pb-16 md:px-16 lg:px-24"
+          className="site-page-header relative w-full overflow-x-hidden px-6 pb-16 md:px-16 lg:px-24"
         >
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="sci-blob-1 absolute top-[10%] left-[15%] w-[500px] h-[500px] rounded-full bg-moss/10 blur-[120px] will-change-transform" />
@@ -117,7 +117,7 @@ export default function BookPage() {
               <span className="font-mono text-xs tracking-[0.3em] uppercase text-cream/30 mb-6 block">
                 {getText('book', 'header', 'eyebrow')}
               </span>
-              <h1 className="book-title font-serif italic text-5xl md:text-7xl text-cream leading-[1.08] mb-8">
+              <h1 className="book-title font-serif text-5xl md:text-7xl text-cream leading-[1.14] pb-[0.06em] mb-8">
                 {getText('book', 'header', 'title')}
               </h1>
               <p className="text-cream/55 font-sans text-xl max-w-lg leading-relaxed">
@@ -146,7 +146,7 @@ export default function BookPage() {
           {quotes.map((quote, i) => (
             <blockquote
               key={i}
-              className="pull-quote font-serif italic text-2xl md:text-4xl text-charcoal/70 leading-[1.3] border-l-2 border-clay/30 pl-8"
+              className="pull-quote font-serif italic text-2xl md:text-4xl text-charcoal/70 leading-[1.3] border-l-2 border-clay/30 pl-8 whitespace-pre-line"
             >
               {quote}
             </blockquote>
@@ -166,13 +166,17 @@ export default function BookPage() {
             {themes.map((theme) => (
               <div
                 key={theme.label}
-                className="theme-card group p-8 rounded-2xl border border-charcoal/8 bg-white/40 hover:border-moss/30 hover:bg-moss/5 transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)]"
+                className="theme-card group p-8 lg:p-6 xl:p-8 rounded-2xl border border-charcoal/8 bg-white/40 hover:border-moss/30 hover:bg-moss/5 transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)]"
               >
                 <span className="font-mono text-xs tracking-[0.3em] uppercase text-clay font-semibold mb-3 block">
                   {theme.label}
                 </span>
-                <h3 className="font-sans font-bold text-lg text-charcoal mb-3">{theme.title}</h3>
-                <p className="font-sans text-sm text-charcoal/55 leading-relaxed">{theme.desc}</p>
+                <h3 className="font-sans font-bold text-base lg:text-[0.875rem] xl:text-base 2xl:text-lg text-charcoal mb-3 leading-tight">
+                  {theme.title}
+                </h3>
+                <p className="font-sans text-sm text-charcoal/55 leading-relaxed">
+                  {theme.desc}
+                </p>
               </div>
             ))}
           </div>

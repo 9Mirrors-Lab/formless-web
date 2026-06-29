@@ -102,11 +102,16 @@ export default function WorkPage() {
             <span className="font-mono text-xs tracking-[0.3em] uppercase text-charcoal/40 mb-6 block">
               {getText('work', 'accordion_intro', 'eyebrow')}
             </span>
-            <h2 className="font-serif italic text-3xl md:text-5xl text-charcoal/90 mb-12 leading-tight">
-              {getText('work', 'accordion_intro', 'title_line1')}
-              <br />
-              {getText('work', 'accordion_intro', 'title_line2')}
-            </h2>
+            <div className="mb-12">
+              <h2 className="font-serif italic text-3xl md:text-5xl text-charcoal/90 leading-tight">
+                {getText('work', 'accordion_intro', 'title_line1')}
+                <br />
+                {getText('work', 'accordion_intro', 'title_line2')}
+              </h2>
+              <p className="mt-4 max-w-xl font-sans text-lg leading-relaxed text-charcoal/60">
+                {getText('work', 'accordion_intro', 'lede')}
+              </p>
+            </div>
             <AccordionSlider items={categories} />
           </div>
         </section>

@@ -53,7 +53,7 @@ export const COLORS_EXPLORE_ABOUT = {
     },
     {
       title: "Retreats",
-      desc: "Structured days of silence, observation, and gentle guidance.",
+      desc: "Days of silence and gentle guidance. A chance to go deeper without distraction.",
     },
   ] as const,
 } as const;

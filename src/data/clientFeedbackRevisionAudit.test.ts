@@ -162,11 +162,15 @@ describe('client feedback revision audit (/revised)', () => {
   it('#18 accordion intro copy is adapted into two title lines', () => {
     expect(getText(tree, 'work', 'accordion_intro', 'title_line1')).toBe('Outer circumstances change.');
     expect(getText(tree, 'work', 'accordion_intro', 'title_line2')).toBe('The pattern remains.');
+    expect(getText(tree, 'work', 'accordion_intro', 'lede')).toBe(
+      'Four places in life where suffering often appears',
+    );
   });
 
-  it('#20 relationships category uses richer proposed copy', () => {
+  it('#20 relationships category uses proposed copy', () => {
     const item = tree.pages.work.categories.byKey.relationships.value;
-    expect(item.detail).toContain('Your partner, your children, your parents or extended family');
+    expect(item.insight).toContain('Every reaction in a relationship is a mirror');
+    expect(item.detail).toContain('Your partner, children, parents, and family become mirrors');
   });
 
   it('#21 career title becomes Career & Financial Wealth', () => {
@@ -179,22 +183,34 @@ describe('client feedback revision audit (/revised)', () => {
     );
   });
 
+  it('#22 career detail uses proposed wording', () => {
+    expect(String(tree.pages.work.categories.byKey.career.value.detail)).toContain(
+      'your worth depends on what you do',
+    );
+  });
+
   it('#24 body category uses memorizes / conditioned patterns copy', () => {
     expect(tree.pages.work.categories.byKey.body.value.insight).toBe(
       'The body memorizes what the mind repeatedly lives in.',
     );
   });
 
-  it('#25 family category removes software metaphor', () => {
+  it('#24 body category uses proposed detail copy', () => {
+    expect(String(tree.pages.work.categories.byKey.body.value.detail)).toContain(
+      'patterns the body learns to carry',
+    );
+  });
+
+  it('#25 family category uses proposed copy', () => {
     const family = tree.pages.work.categories.byKey.family.value;
-    expect(String(family.detail)).toContain('Family dynamics shape many of the beliefs');
+    expect(String(family.detail)).toContain('Our earliest relationships shape many of the beliefs');
     expect(String(family.detail)).not.toContain('software');
   });
 
   it('#29-31 work reframe block uses proposed teaching copy', () => {
-    expect(getText(tree, 'work', 'reframe', 'heading')).toBe('You are not your thoughts or beliefs.');
+    expect(getText(tree, 'work', 'reframe', 'heading')).toBe('You are not your thoughts or emotions.');
     expect(getText(tree, 'work', 'reframe', 'emphasis')).toContain('You are awareness');
-    expect(getText(tree, 'work', 'reframe', 'body')).toContain('something deeper than the mind begins to emerge');
+    expect(getText(tree, 'work', 'reframe', 'body')).toContain('a different way of living begins');
   });
 
   it('book/science closing CTAs use revised labels', () => {
@@ -204,9 +220,9 @@ describe('client feedback revision audit (/revised)', () => {
     expect(getLink(tree, 'science', 'closing', 'cta_book').text).toBe('Read Formless');
   });
 
-  it('revised routes are prefixed with /revised', () => {
-    expect(getLink(tree, 'nav', 'links', 'work').href).toBe('/revised/work');
-    expect(getLink(tree, 'home', 'hero', 'cta_reflection').href).toBe('/revised#reflection');
+  it('revised routes use production paths', () => {
+    expect(getLink(tree, 'nav', 'links', 'work').href).toBe('/work');
+    expect(getLink(tree, 'home', 'hero', 'cta_reflection').href).toBe('#reflection');
   });
 });
 
@@ -222,8 +238,10 @@ describe('client feedback revision gaps', () => {
     expect(homeKeys).not.toContain('reflection');
   });
 
-  it('#19 accordion eyebrow still says The Pattern Repeats instead of Outer circumstances change', () => {
-    expect(getText(tree, 'work', 'accordion_intro', 'eyebrow')).toBe('The Pattern Repeats');
+  it('#19 accordion eyebrow is The Pattern Repeats Until It Is Seen', () => {
+    expect(getText(tree, 'work', 'accordion_intro', 'eyebrow')).toBe(
+      'The Pattern Repeats Until It Is Seen',
+    );
   });
 
   it('#23 career detail omits stems from survival phrase from feedback', () => {
@@ -239,7 +257,7 @@ describe('client feedback revision gaps', () => {
   });
 
   it('book page uses pre-release copy and notify form content', () => {
-    expect(getText(tree, 'book', 'header', 'lede')).toContain('voice in your head');
+    expect(getText(tree, 'book', 'header', 'lede')).toContain('You are not your thoughts or emotions');
     expect(getText(tree, 'book', 'header', 'notify_heading')).toContain('Join the waitlist');
     expect(getText(tree, 'book', 'header', 'notify_cta')).toBe('Notify me');
     expect(getText(tree, 'science', 'header', 'title')).toContain('bridge for the part of you');

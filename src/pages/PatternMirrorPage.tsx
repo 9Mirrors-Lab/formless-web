@@ -360,8 +360,7 @@ export default function PatternMirrorPage() {
                 </p>
                 <p className="font-sans text-base text-cream/50 max-w-md leading-relaxed mb-10">
                   Separation begins the moment you notice the voice — not believe it. This is the
-                  doorway{' '}
-                  <em className="font-serif italic">Formless</em> points to.
+                  doorway Formless points to.
                 </p>
                 <ParticleButton href="/book">Explore the book</ParticleButton>
               </div>
