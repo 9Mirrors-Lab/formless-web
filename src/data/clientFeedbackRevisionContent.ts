@@ -384,6 +384,13 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     "You are not the mind's\ninterpretation of reality.",
   );
   setText(revised, 'science', 'closing', 'title_line2', 'You are the awareness that sees it.');
+  setListItem(revised, 'science', 'pillars', 'perception', {
+    label: 'Perception',
+    hook:
+      "You don't experience life exactly as it is.\nYou experience life through the lens of memory, conditioning, beliefs, and past experiences.",
+    body:
+      'Your brain constantly filters and interprets information, creating a version of reality based on what it has learned.\n\nAwareness allows you to notice the lens.\n\nWhen you see the lens, you are no longer identified with it.',
+  });
   setListItem(revised, 'science', 'pillars', 'neuroplasticity', {
     label: 'Neuroplasticity',
     hook: 'Your brain is not fixed.',

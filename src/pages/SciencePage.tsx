@@ -24,8 +24,10 @@ function sortPillars(items: Pillar[]): Pillar[] {
 const FALLBACK_PILLARS: Pillar[] = [
   {
     label: 'Perception',
-    hook: 'Your brain is not showing you reality. It is building a prediction of what reality should be.',
-    body: 'Neuroscience reveals that perception is constructed, not received. What you see is filtered through memory, expectation, and conditioning — a model refined over a lifetime.',
+    hook:
+      "You don't experience life exactly as it is.\nYou experience life through the lens of memory, conditioning, beliefs, and past experiences.",
+    body:
+      'Your brain constantly filters and interprets information, creating a version of reality based on what it has learned.\n\nAwareness allows you to notice the lens.\n\nWhen you see the lens, you are no longer identified with it.',
   },
   {
     label: 'Neuroplasticity',
