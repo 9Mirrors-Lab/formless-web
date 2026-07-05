@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="250 200 500 500" role="img" aria-label="Eyes Closed">
+  <rect x="250" y="200" width="500" height="500" fill="#000000"/>
+  <g transform="translate(500 450) scale(0.55) translate(-516 -300)" fill="#FFFFFF" stroke="#FFFFFF">
+    <path d="M26 227.635C290.41 431.952 742.311 429.548 1006.72 232.443C732.696 367.051 304.832 367.051 26 227.635Z" fill="#FFFFFF" stroke="none"/>
+    <path d="M960.931 262.353C1049.87 187.839 1172.46 118.131 1350.34 34" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 10" fill="none"/>
+    <path d="M943.385 269.901C966.059 256.405 990.916 242.424 1017.95 227.984C1111.31 178.133 1230.67 122.825 1376.06 63.1813" stroke="#FFFFFF" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 12" fill="none"/>
+    <g fill="#FFFFFF">
+      <circle cx="1000.63" cy="239.301" r="7"/>
+      <circle cx="1034.28" cy="217.668" r="9"/>
+      <circle cx="1065.53" cy="198.437" r="6.5"/>
+      <circle cx="1101.59" cy="176.804" r="11"/>
+      <circle cx="1137.64" cy="157.575" r="6.5"/>
+      <circle cx="1180.91" cy="131.133" r="9.5"/>
+      <circle cx="1231.39" cy="104.692" r="7"/>
+      <circle cx="1279.46" cy="78.2507" r="11"/>
+      <circle cx="1341.95" cy="39.792" r="9"/>
+    </g>
+  </g>
+</svg>

@@ -39,6 +39,7 @@ function Layout1({
   bodyParagraphs: { key: string; text: string }[];
 }) {
   const { getText } = content;
+  const portraitTag = getText('about', 'hero', 'portrait_tag');
   const eyebrow = getText('about', 'hero', 'eyebrow');
   return (
     <section className="layout is-active">
@@ -47,7 +48,7 @@ function Layout1({
           <div className="l1-portrait relative">
             <div className="frame"><img src={PORTRAIT_PHOTO} alt="Portrait of Sonika Cottman" /></div>
             <div className="tag">
-              <span className="caption">{eyebrow}</span>
+              <span className="caption">{portraitTag}</span>
               <span className="name">Sonika Cottman</span>
             </div>
           </div>

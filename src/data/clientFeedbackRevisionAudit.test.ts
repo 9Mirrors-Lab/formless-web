@@ -265,6 +265,8 @@ describe('client feedback revision gaps', () => {
 
   it('about page copy is untouched in revision transform', () => {
     expect(getText(tree, 'about', 'hero', 'title')).toBe('About the Author');
+    expect(getText(tree, 'about', 'hero', 'eyebrow')).toBe('The Journey');
+    expect(getText(tree, 'about', 'hero', 'portrait_tag')).toBe('The Author');
     expect(getText(tree, 'about', 'hero', 'body_para1')).toContain('Awareness Guide');
   });
 });

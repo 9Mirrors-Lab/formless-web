@@ -82,10 +82,7 @@ export function ShaderHero({ theme = 'forest' }: ShaderHeroProps) {
               {lede}
             </p>
             {ctaEnabled && cta ? (
-              <a
-                href={cta.href}
-                className="shader-hero-elem group mt-6 inline-flex w-fit items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-cream/70 transition-colors duration-500 hover:text-cream"
-              >
+              <span className="shader-hero-elem group mt-6 inline-flex w-fit items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-cream/70 transition-colors duration-500 hover:text-cream">
                 {cta.text}
                 <svg
                   className="h-4 w-4 transform transition-transform duration-500 group-hover:translate-y-1"
@@ -98,7 +95,7 @@ export function ShaderHero({ theme = 'forest' }: ShaderHeroProps) {
                 >
                   <path d="M12 5v14M5 12l7 7 7-7" />
                 </svg>
-              </a>
+              </span>
             ) : null}
           </div>
         </div>

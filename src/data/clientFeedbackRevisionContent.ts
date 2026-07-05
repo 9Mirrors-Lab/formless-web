@@ -112,6 +112,33 @@ function setListItem(
   setEntry(tree, page, section, key, value);
 }
 
+function upsertListItem(
+  tree: ContentTree,
+  page: string,
+  section: string,
+  key: string,
+  value: EntryValue,
+  order = 0,
+) {
+  const target = tree.pages[page]?.[section];
+  if (!target) return;
+
+  if (target.byKey[key]) {
+    setListItem(tree, page, section, key, value);
+    return;
+  }
+
+  const entry: ContentEntry = {
+    key,
+    type: 'list_item',
+    order,
+    value,
+  };
+  target.byKey[key] = entry;
+  target.ordered.push(entry);
+  target.ordered.sort((a, b) => a.order - b.order || a.key.localeCompare(b.key));
+}
+
 export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   const revised = cloneTree(tree);
 
@@ -333,6 +360,58 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   setLink(revised, 'book', 'closing', 'cta_science', 'Read Spirituality & Science', '/science');
   setLink(revised, 'science', 'closing', 'cta_work', 'Explore The Practice', '/work');
   setLink(revised, 'science', 'closing', 'cta_book', 'Read Formless', '/book');
+  setText(revised, 'science', 'header', 'eyebrow', 'Two Languages One Truth');
+  upsertText(
+    revised,
+    'science',
+    'header',
+    'intro',
+    'The deepest truths about who you are do not require belief.',
+    0,
+  );
+  setText(
+    revised,
+    'science',
+    'closing',
+    'eyebrow',
+    'Science points to what the ancient teachings have known.',
+  );
+  setText(
+    revised,
+    'science',
+    'closing',
+    'title_line1',
+    "You are not the mind's\ninterpretation of reality.",
+  );
+  setText(revised, 'science', 'closing', 'title_line2', 'You are the awareness that sees it.');
+  setListItem(revised, 'science', 'pillars', 'neuroplasticity', {
+    label: 'Neuroplasticity',
+    hook: 'Your brain is not fixed.',
+    body:
+      "Every thought you repeatedly believe strengthens neural pathways. Likewise, every moment of awareness weakens them and begins creating new ones.\n\nThe patterns you've lived with for years are not permanent.\n\nChange begins the moment you stop identifying with them.",
+  });
+  setListItem(revised, 'science', 'pillars', 'observation', {
+    label: 'The Body',
+    hook:
+      "Your experiences don't live only in memory.\nYour nervous system and body learn emotional patterns through repetition and memorize them.",
+    keywords: ['Stress', 'Fear', 'Worry', 'Safety', 'Joy', 'Love', 'Presence'],
+    body:
+      'Your body is always listening.\n\nAwareness allows those unconscious patterns to become conscious.',
+  });
+  upsertListItem(
+    revised,
+    'science',
+    'pillars',
+    'consciousness',
+    {
+      label: 'Consciousness',
+      hook:
+        "Science continues asking one of humanity's oldest questions:\nWhat is consciousness?",
+      body:
+        'Some theories suggest consciousness emerges from the brain.\nOthers explore whether consciousness is more fundamental than matter itself.\n\nRegardless of where science eventually lands, your own experience offers something immediate.\n\nThoughts come and go.\nEmotions come and go.\nSensations come and go.\n\nYet something remains aware of all of them.\n\nThat is the place this practice begins.',
+    },
+    3,
+  );
 
   setLink(
     revised,
@@ -342,6 +421,8 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'hello@eyesclosed.love',
     'mailto:hello@eyesclosed.love',
   );
+  setText(revised, 'about', 'hero', 'eyebrow', 'The Journey');
+  upsertText(revised, 'about', 'hero', 'portrait_tag', 'The Author', 1);
   setText(
     revised,
     'about',
