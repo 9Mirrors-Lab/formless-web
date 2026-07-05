@@ -1,5 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { isPublicSiteRestricted } from './config/publicSite';
+import { AuthProvider } from './context/AuthContext';
 import { SiteAccessProvider } from './context/SiteAccessContext';
 import { ContentProvider, useContentStatus } from './context/ContentContext';
 import App from './App';
@@ -22,6 +23,10 @@ import LayoutTestsPage from './pages/LayoutTestsPage';
 import PatternMirrorPage from './pages/PatternMirrorPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
+import { LoginPage } from './pages/LoginPage';
+import { SignupPage } from './pages/SignupPage';
+import { AccountPage } from './pages/AccountPage';
+import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
@@ -82,6 +87,10 @@ export function Root({ path }: { path: string }) {
   const isPatternMirror = path === '/pattern-mirror';
   const isPrivacy = path === '/privacy';
   const isTerms = path === '/terms';
+  const isLogin = path === '/login';
+  const isSignup = path === '/signup';
+  const isAccount = path === '/account';
+  const isAuthCallback = path === '/auth/callback';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -104,6 +113,10 @@ export function Root({ path }: { path: string }) {
   if (isPatternMirror) return <PatternMirrorPage />;
   if (isPrivacy) return <PrivacyPage />;
   if (isTerms) return <TermsPage />;
+  if (isLogin) return <LoginPage />;
+  if (isSignup) return <SignupPage />;
+  if (isAccount) return <AccountPage />;
+  if (isAuthCallback) return <AuthCallbackPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -119,6 +132,15 @@ export function Root({ path }: { path: string }) {
   if (isDesignFramework) return <DesignFrameworkPage />;
   if (isIcons) return <IconsPage />;
   return <App />;
+}
+
+function isAuthPath(path: string): boolean {
+  return (
+    path === '/login' ||
+    path === '/signup' ||
+    path === '/account' ||
+    path === '/auth/callback'
+  );
 }
 
 function AppContentShell({ path }: { path: string }) {
@@ -143,7 +165,11 @@ function AppContentShell({ path }: { path: string }) {
 
   return (
     <>
-      {publicSiteRestricted ? <RestrictedPublicHome path={path} /> : <Root path={path} />}
+      {publicSiteRestricted && !isAuthPath(path) ? (
+        <RestrictedPublicHome path={path} />
+      ) : (
+        <Root path={path} />
+      )}
       {/* <DevMenu /> */}
     </>
   );
@@ -158,9 +184,11 @@ export function PublicShell({ path }: { path: string }) {
 
   return (
     <SiteAccessProvider value={{ restricted: publicSiteRestricted }}>
-      <ContentProvider transformTree={applyClientFeedbackRevision}>
-        <AppContentShell path={normalizedPath} />
-      </ContentProvider>
+      <AuthProvider>
+        <ContentProvider transformTree={applyClientFeedbackRevision}>
+          <AppContentShell path={normalizedPath} />
+        </ContentProvider>
+      </AuthProvider>
     </SiteAccessProvider>
   );
 }

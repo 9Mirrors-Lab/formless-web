@@ -2,6 +2,8 @@ import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useContent } from '@/context/ContentContext';
+import { useAuth } from '@/context/AuthContext';
+import { isMemberAuthNavEnabled } from '@/config/memberAuth';
 import { useSiteAccess } from '@/context/SiteAccessContext';
 import { BackgroundPicker } from '@/components/shader/BackgroundPicker';
 import { useBackgroundSelection } from '@/components/shader/BackgroundSelectionContext';
@@ -58,6 +60,35 @@ function NavTextLink({
         isActive
           ? 'bg-white/10 text-white'
           : 'text-white/55 hover:bg-white/5 hover:text-white/85'
+      } ${className}`}
+    >
+      {text}
+    </a>
+  );
+}
+
+function AccountNavLink({
+  href,
+  text,
+  isActive,
+  onNavigate,
+  className = '',
+}: {
+  href: string;
+  text: string;
+  isActive: boolean;
+  onNavigate?: () => void;
+  className?: string;
+}) {
+  return (
+    <a
+      href={href}
+      aria-current={isActive ? 'page' : undefined}
+      onClick={onNavigate}
+      className={`inline-flex min-h-11 shrink-0 items-center rounded-full border border-white/20 bg-black/20 px-4 py-2 text-[10px] font-medium uppercase tracking-wider backdrop-blur-md transition-all duration-300 lg:px-5 lg:text-[11px] ${linkFocus} ${
+        isActive
+          ? 'border-white/35 bg-white/10 text-white'
+          : 'text-white/70 hover:border-white/30 hover:bg-white/5 hover:text-white'
       } ${className}`}
     >
       {text}
@@ -198,6 +229,7 @@ function MobileNavPanel({
 export function Navbar() {
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const { restricted } = useSiteAccess();
+  const { status: authStatus, user } = useAuth();
   const { getText, getLink, ordered } = useContent();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -219,6 +251,10 @@ export function Navbar() {
   });
 
   const aboutIsActive = currentPath === aboutCta.href;
+  const accountHref = user ? '/account' : '/login';
+  const accountLabel = user ? 'Account' : 'Sign in';
+  const accountIsActive = currentPath === accountHref;
+  const showAccountLink = isMemberAuthNavEnabled() && authStatus !== 'misconfigured';
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -305,12 +341,26 @@ export function Navbar() {
                 />
               </div>
               {backgroundPicker}
+              {showAccountLink ? (
+                <AccountNavLink
+                  href={accountHref}
+                  text={accountLabel}
+                  isActive={accountIsActive}
+                />
+              ) : null}
             </div>
           ) : null}
 
           {!restricted ? (
             <div className="flex items-center gap-2 md:hidden">
               {backgroundPicker}
+              {showAccountLink ? (
+                <AccountNavLink
+                  href={accountHref}
+                  text={accountLabel}
+                  isActive={accountIsActive}
+                />
+              ) : null}
               <button
                 type="button"
                 className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream transition-colors hover:bg-cream/10 ${linkFocus}`}

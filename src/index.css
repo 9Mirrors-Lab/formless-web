@@ -517,13 +517,21 @@
 
   .sci-pillar {
     min-height: auto;
-    padding: 4.5rem 0 3.5rem;
+    padding: 3rem 0 2.25rem;
+  }
+
+  .sci-pillar--tight-next {
+    padding-bottom: 0 !important;
+  }
+
+  .sci-pillar--tight-prev {
+    padding-top: 0 !important;
   }
 
   @media (min-width: 768px) {
     .sci-pillar {
-      min-height: 720px;
-      padding: 7.5rem 0 5rem;
+      min-height: 580px;
+      padding: 4.5rem 0 3rem;
     }
   }
 
