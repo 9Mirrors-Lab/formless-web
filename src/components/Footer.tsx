@@ -124,6 +124,18 @@ export function Footer() {
           </FootLink>
         </div>
       </div>
+
+      <p className="max-w-7xl mx-auto mt-6 text-center font-mono text-[11px] text-cream/30 tracking-wide">
+        Design by{' '}
+        <a
+          href="https://www.9mirrors.xyz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-cream/50 transition-colors"
+        >
+          9mirrors
+        </a>
+      </p>
     </footer>
   );
 }
