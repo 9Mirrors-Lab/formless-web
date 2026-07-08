@@ -28,6 +28,7 @@ import { SignupPage } from './pages/SignupPage';
 import { AccountPage } from './pages/AccountPage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
+import { PostHogPageView } from './components/PostHogPageView';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
@@ -186,6 +187,7 @@ export function PublicShell({ path }: { path: string }) {
     <SiteAccessProvider value={{ restricted: publicSiteRestricted }}>
       <AuthProvider>
         <ContentProvider transformTree={applyClientFeedbackRevision}>
+          <PostHogPageView />
           <AppContentShell path={normalizedPath} />
         </ContentProvider>
       </AuthProvider>
