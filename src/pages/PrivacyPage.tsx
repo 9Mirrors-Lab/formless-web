@@ -11,10 +11,5 @@ export default function PrivacyPage() {
     return <LegalPageFallback />;
   }
 
-  return (
-    <LegalDocumentPage
-      document={document}
-      companion={{ href: '/terms', label: 'Terms of Use' }}
-    />
-  );
+  return <LegalDocumentPage document={document} currentPage="privacy" />;
 }

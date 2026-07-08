@@ -23,6 +23,7 @@ import LayoutTestsPage from './pages/LayoutTestsPage';
 import PatternMirrorPage from './pages/PatternMirrorPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
+import DisclaimerPage from './pages/DisclaimerPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { AccountPage } from './pages/AccountPage';
@@ -89,6 +90,7 @@ export function Root({ path }: { path: string }) {
   const isPatternMirror = path === '/pattern-mirror';
   const isPrivacy = path === '/privacy';
   const isTerms = path === '/terms';
+  const isDisclaimer = path === '/disclaimer';
   const isLogin = path === '/login';
   const isSignup = path === '/signup';
   const isAccount = path === '/account';
@@ -116,6 +118,7 @@ export function Root({ path }: { path: string }) {
   if (isPatternMirror) return <PatternMirrorPage />;
   if (isPrivacy) return <PrivacyPage />;
   if (isTerms) return <TermsPage />;
+  if (isDisclaimer) return <DisclaimerPage />;
   if (isLogin) return <LoginPage />;
   if (isSignup) return <SignupPage />;
   if (isAccount) return <AccountPage />;

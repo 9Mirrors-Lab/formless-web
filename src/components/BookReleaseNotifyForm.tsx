@@ -1,6 +1,11 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { BookOpen, Calendar, Send } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
+import {
+  captureSignupFailed,
+  captureSignupStarted,
+  captureSignupSucceeded,
+} from '@/lib/analytics';
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -80,7 +85,10 @@ export function BookReleaseNotifyForm({
     event.preventDefault();
 
     const trimmed = email.trim();
+    captureSignupStarted('book_page', 'book_release_form');
+
     if (!isValidEmail(trimmed)) {
+      captureSignupFailed('book_page', 'book_release_form', 'invalid_email');
       setStatus('error');
       return;
     }
@@ -97,6 +105,7 @@ export function BookReleaseNotifyForm({
 
       if (error) {
         if (error.code === '23505') {
+          captureSignupSucceeded('book_page', 'book_release_form');
           setSubmittedEmail(normalizedEmail);
           setStatus('success');
           return;
@@ -104,10 +113,12 @@ export function BookReleaseNotifyForm({
         throw error;
       }
 
+      captureSignupSucceeded('book_page', 'book_release_form');
       setSubmittedEmail(normalizedEmail);
       setStatus('success');
       setEmail('');
     } catch {
+      captureSignupFailed('book_page', 'book_release_form', 'server_error');
       setStatus('error');
     }
   }

@@ -172,6 +172,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   setText(revised, 'footer', 'legal', 'copyright', '© 2026 Eyes Closed. All rights reserved.');
   setLink(revised, 'footer', 'legal', 'privacy', 'Privacy', '/privacy');
   setLink(revised, 'footer', 'legal', 'terms', 'Terms', '/terms');
+  setLink(revised, 'footer', 'legal', 'disclaimer', 'Disclaimer', '/disclaimer');
 
   setText(revised, 'home', 'hero', 'eyebrow', 'An Invitation to go within');
   setText(revised, 'home', 'hero', 'headline_primary', 'Remembering Who You Are');

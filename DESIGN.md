@@ -40,6 +40,7 @@ A contemplative digital sanctuary: organic materials (moss, clay, cream, charcoa
 
 - Light mode default: cream canvas, charcoal ink
 - Dark bands: charcoal or `brief-dark` (`#080a09`) with cream text
+- Internal reference pages (`/design-system`, `/icons`): dark immersive `brief-dark` canvas
 - Subtle film grain via `.noise-overlay` on light pages; `.noise-overlay-dark` on dark
 - Nature-derived palette only; no neon, no AI-purple gradients, no synthetic gloss
 
@@ -206,6 +207,7 @@ Current home stack (`HomePageContent`):
 | Scroll scrub | `scrub: 1` on ScrollTrigger | Curtain, fog reveal |
 | Entrance | `power3.inOut`, clip-path reveals | Work page titles |
 | Ambient drift | slow `sine.inOut` yoyo on blurred blobs | Work/science headers |
+| Icon loops | `useIconAnimations` hook (GSAP class targets) | Teaching marks on `/icons`, `/design-system` |
 | Easing token | `.cinematic-ease` → `cubic-bezier(0.16, 1, 0.3, 1)` | Hovers, UI transitions |
 
 **Rules:**
@@ -252,7 +254,10 @@ Moodboard and internal tools may use darker `#050806` grids; public marketing pa
 | Need | File |
 |------|------|
 | CSS tokens | `src/index.css` |
-| Visual token board | `src/DesignSystem.tsx` → `/design-system` |
+| Visual token board | `src/DesignSystem.tsx` → `/design-system` (dark reference) |
+| Icon animation registry | `src/data/iconAnimations.ts` |
+| Icon GSAP hook | `src/hooks/useIconAnimations.ts` |
+| Icon gallery | `src/pages/IconsPage.tsx` → `/icons` |
 | Page shell / theme class | `src/components/PageLayout.tsx` |
 | Primary CTA | `src/components/ParticleButton.tsx` |
 | Home sections | `src/components/Hero.tsx`, `CurtainReveal.tsx` |

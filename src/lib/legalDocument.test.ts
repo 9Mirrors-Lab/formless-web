@@ -37,45 +37,48 @@ function parseSeedValue(rest: string): { value: Record<string, unknown>; remaind
 }
 
 function loadLegalMigrationTree(): ReturnType<typeof buildContentTree> {
-  const seed = readFileSync(
-    fileURLToPath(
-      new URL('../../supabase/migrations/20260629140000_seed_legal_pages.sql', import.meta.url),
-    ),
-    'utf8',
-  );
+  const migrationFiles = [
+    '../../supabase/migrations/20260629140000_seed_legal_pages.sql',
+    '../../supabase/migrations/20260708160000_update_legal_pages_and_disclaimer.sql',
+  ];
 
-  const rows: ContentRow[] = [];
-  const rowStart = /^\('([^']+)',\s*'([^']+)',\s*'([^']+)',\s*/;
+  const rowById = new Map<string, ContentRow>();
 
-  for (const line of seed.split('\n')) {
-    const trimmed = line.trim();
-    const match = trimmed.match(rowStart);
-    if (!match) continue;
+  for (const migrationFile of migrationFiles) {
+    const seed = readFileSync(fileURLToPath(new URL(migrationFile, import.meta.url)), 'utf8');
+    const rowStart = /^\('([^']+)',\s*'([^']+)',\s*'([^']+)',\s*/;
 
-    const [, page, section, key] = match;
-    const afterKey = trimmed.slice(match[0].length);
-    const parsed = parseSeedValue(afterKey);
-    if (!parsed) continue;
+    for (const line of seed.split('\n')) {
+      const trimmed = line.trim();
+      const match = trimmed.match(rowStart);
+      if (!match) continue;
 
-    const tail = parsed.remainder.trim();
-    const tailMatch = tail.match(/^,\s*'([^']+)',\s*(\d+)\),?$/);
-    if (!tailMatch) continue;
+      const [, page, section, key] = match;
+      const afterKey = trimmed.slice(match[0].length);
+      const parsed = parseSeedValue(afterKey);
+      if (!parsed) continue;
 
-    rows.push({
-      id: `${page}.${section}.${key}`,
-      page,
-      section,
-      key,
-      value: parsed.value,
-      type: tailMatch[1],
-      order: Number(tailMatch[2]),
-      is_published: true,
-      created_at: '',
-      updated_at: '',
-    });
+      const tail = parsed.remainder.trim();
+      const tailMatch = tail.match(/^,\s*'([^']+)',\s*(\d+)\),?$/);
+      if (!tailMatch) continue;
+
+      const id = `${page}.${section}.${key}`;
+      rowById.set(id, {
+        id,
+        page,
+        section,
+        key,
+        value: parsed.value,
+        type: tailMatch[1],
+        order: Number(tailMatch[2]),
+        is_published: true,
+        created_at: '',
+        updated_at: '',
+      });
+    }
   }
 
-  return buildContentTree(rows);
+  return buildContentTree([...rowById.values()]);
 }
 
 function contentApiFromTree(tree: ReturnType<typeof buildContentTree>) {
@@ -106,14 +109,29 @@ describe('legalDocumentFromContent', () => {
     const document = legalDocumentFromContent(api, 'privacy');
     expect(document?.title).toBe('Privacy Policy');
     expect(document?.sections.map((section) => section.id)).toContain('information-we-collect');
+    expect(document?.sections.map((section) => section.id)).toContain('cookies');
     expect(document?.sections.map((section) => section.id)).toContain('contact');
     expect(document?.contactEmail).toBe('hello@eyesclosed.love');
+    expect(document?.sections.find((section) => section.id === 'how-we-share')?.paragraphs[0]).toMatch(
+      /trusted third-party service providers/i,
+    );
   });
 
   it('builds the terms of use from Supabase-shaped content', () => {
     const document = legalDocumentFromContent(api, 'terms');
     expect(document?.title).toBe('Terms of Use');
     expect(document?.sections.map((section) => section.id)).toContain('not-advice');
+    expect(document?.sections.map((section) => section.id)).toContain('no-guarantees');
     expect(document?.sections.map((section) => section.id)).toContain('governing-law');
+    expect(
+      document?.sections.find((section) => section.id === 'intellectual-property')?.paragraphs[2],
+    ).toMatch(/ownership rights/i);
+  });
+
+  it('builds the disclaimer from Supabase-shaped content', () => {
+    const document = legalDocumentFromContent(api, 'disclaimer');
+    expect(document?.title).toBe('Disclaimer');
+    expect(document?.sections.map((section) => section.id)).toContain('not-professional-advice');
+    expect(document?.sections.map((section) => section.id)).toContain('use-at-your-own-risk');
   });
 });

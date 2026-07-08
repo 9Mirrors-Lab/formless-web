@@ -7,6 +7,7 @@ import { isMemberAuthNavEnabled } from '@/config/memberAuth';
 import { useSiteAccess } from '@/context/SiteAccessContext';
 import { BackgroundPicker } from '@/components/shader/BackgroundPicker';
 import { useBackgroundSelection } from '@/components/shader/BackgroundSelectionContext';
+import { captureCtaClick } from '@/lib/analytics';
 import logoWhiteSrc from '../../design/eyes-closed-logo-variations/Final-logos/09a-white-ec-notagline.svg';
 
 const linkFocus =
@@ -55,7 +56,10 @@ function NavTextLink({
     <a
       href={href}
       aria-current={isActive ? 'page' : undefined}
-      onClick={onNavigate}
+      onClick={() => {
+        captureCtaClick(text, href, 'navbar');
+        onNavigate?.();
+      }}
       className={`inline-flex items-center px-4 py-2 text-[10px] font-medium uppercase tracking-wider opacity-100 transition-all duration-300 lg:px-5 lg:text-[11px] ${navLinkRadius(position)} ${linkFocus} ${
         isActive
           ? 'bg-white/10 text-white'
@@ -84,7 +88,10 @@ function AccountNavLink({
     <a
       href={href}
       aria-current={isActive ? 'page' : undefined}
-      onClick={onNavigate}
+      onClick={() => {
+        captureCtaClick(text, href, 'navbar_account');
+        onNavigate?.();
+      }}
       className={`inline-flex min-h-11 shrink-0 items-center rounded-full border border-white/20 bg-black/20 px-4 py-2 text-[10px] font-medium uppercase tracking-wider backdrop-blur-md transition-all duration-300 lg:px-5 lg:text-[11px] ${linkFocus} ${
         isActive
           ? 'border-white/35 bg-white/10 text-white'
@@ -111,7 +118,10 @@ function MobileNavLink({
     <a
       href={href}
       aria-current={isActive ? 'page' : undefined}
-      onClick={onNavigate}
+      onClick={() => {
+        captureCtaClick(text, href, 'navbar_mobile');
+        onNavigate();
+      }}
       className={`flex min-h-11 w-full items-center rounded-lg px-4 text-sm font-semibold uppercase tracking-[0.16em] transition-colors ${linkFocus} ${
         isActive
           ? 'bg-cream/10 text-cream'
@@ -149,7 +159,10 @@ function BrandLink({
   return (
     <a
       href={href}
-      onClick={onNavigate}
+      onClick={() => {
+        captureCtaClick(name, href, 'navbar_brand');
+        onNavigate?.();
+      }}
       aria-label={`${name} home`}
       className={`inline-flex min-h-11 shrink-0 items-center transition-opacity hover:opacity-90 ${linkFocus} ${className}`}
     >

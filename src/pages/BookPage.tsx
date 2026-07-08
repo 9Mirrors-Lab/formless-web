@@ -188,8 +188,19 @@ export default function BookPage() {
           {getText('book', 'closing', 'lede')}
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <ParticleButton href={ctaWork.href}>{ctaWork.text}</ParticleButton>
-          <ParticleButton href={ctaScience.href} variant="secondary">
+          <ParticleButton
+            href={ctaWork.href}
+            trackLocation="book_closing"
+            trackLabel={ctaWork.text}
+          >
+            {ctaWork.text}
+          </ParticleButton>
+          <ParticleButton
+            href={ctaScience.href}
+            variant="secondary"
+            trackLocation="book_closing"
+            trackLabel={ctaScience.text}
+          >
             {ctaScience.text}
           </ParticleButton>
         </div>

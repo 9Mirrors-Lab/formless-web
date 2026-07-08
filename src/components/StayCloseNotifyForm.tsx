@@ -1,5 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
+import {
+  captureCtaClick,
+  captureSignupFailed,
+  captureSignupStarted,
+  captureSignupSucceeded,
+} from '@/lib/analytics';
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -31,7 +37,10 @@ export function StayCloseNotifyForm({
     event.preventDefault();
 
     const trimmed = email.trim();
+    captureSignupStarted('about_stay_close', 'about_stay_close_form');
+
     if (!isValidEmail(trimmed)) {
+      captureSignupFailed('about_stay_close', 'about_stay_close_form', 'invalid_email');
       setStatus('error');
       return;
     }
@@ -48,15 +57,18 @@ export function StayCloseNotifyForm({
 
       if (error) {
         if (error.code === '23505') {
+          captureSignupSucceeded('about_stay_close', 'about_stay_close_form');
           setStatus('success');
           return;
         }
         throw error;
       }
 
+      captureSignupSucceeded('about_stay_close', 'about_stay_close_form');
       setStatus('success');
       setEmail('');
     } catch {
+      captureSignupFailed('about_stay_close', 'about_stay_close_form', 'server_error');
       setStatus('error');
     }
   }
@@ -72,7 +84,12 @@ export function StayCloseNotifyForm({
         <p className="stay-success-title">{successTitle}</p>
         <p className="fine">{finePrint}</p>
         <div className="signoff">
-          <a href={emailLink.href}>{emailLink.text}</a>
+          <a
+            href={emailLink.href}
+            onClick={() => captureCtaClick(emailLink.text, emailLink.href, 'about_stay_close_email')}
+          >
+            {emailLink.text}
+          </a>
         </div>
       </div>
     );
@@ -109,7 +126,12 @@ export function StayCloseNotifyForm({
         </p>
       ) : null}
       <div className="signoff">
-        <a href={emailLink.href}>{emailLink.text}</a>
+        <a
+          href={emailLink.href}
+          onClick={() => captureCtaClick(emailLink.text, emailLink.href, 'about_stay_close_email')}
+        >
+          {emailLink.text}
+        </a>
       </div>
     </>
   );

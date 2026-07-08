@@ -1,0 +1,26 @@
+# Eyes Closed
+> Remembering who you are beyond the mind. A quiet invitation to inner awareness, the practice of observing the mind, the book Formless, and the bridge between spirituality and science.
+
+Eyes Closed is a platform founded by Sonika Cottman, an Awareness Guide and author. The site shares teachings on presence, awareness, and inner transformation. The tone is contemplative and unrushed.
+
+Important notes:
+- **Eyes Closed** is the organization and site brand.
+- **Formless** is the book title only (not the site name).
+- **The Practice** (`/work`) is the teaching area.
+- **Spirituality & Science** (`/science`) is the science bridge page.
+- Site content is educational and reflective only; not medical, mental health, or professional advice.
+- Contact: hello@eyesclosed.love
+
+## Pages
+- [Home](https://www.eyesclosed.love/): Invitation to go within; remembering who you are beyond the mind
+- [The Practice](https://www.eyesclosed.love/work): Observing the mind and seeing recurring patterns in relationships, work, body, and family
+- [Formless (the book)](https://www.eyesclosed.love/book): Book overview and waitlist; four recognitions: awareness, presence, peace, freedom
+- [Spirituality & Science](https://www.eyesclosed.love/science): Perception, neuroplasticity, the body, and consciousness as bridges to the teaching
+- [About](https://www.eyesclosed.love/about): Sonika Cottman, the story behind Eyes Closed, and ways to stay in touch
+- [Full site guide](https://www.eyesclosed.love/llms-full.txt): Complete readable copy of public pages for AI systems
+
+## Optional
+- [Privacy Policy](https://www.eyesclosed.love/privacy): How Eyes Closed handles cookies, analytics, email signups, and site usage data
+- [Terms of Use](https://www.eyesclosed.love/terms): Site terms, educational-content limits, and acceptable use
+- [Disclaimer](https://www.eyesclosed.love/disclaimer): Medical, mental health, coaching, and no-guarantees language for site content
+- [Sitemap](https://www.eyesclosed.love/sitemap.xml): Machine-readable list of public URLs

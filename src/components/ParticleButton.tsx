@@ -1,4 +1,5 @@
 import { useRef, useCallback, type ReactNode, type MouseEvent } from 'react';
+import { captureCtaClick } from '@/lib/analytics';
 
 interface ParticleButtonProps {
   children: ReactNode;
@@ -6,6 +7,8 @@ interface ParticleButtonProps {
   href?: string;
   className?: string;
   variant?: 'primary' | 'secondary';
+  trackLocation?: string;
+  trackLabel?: string;
 }
 
 /**
@@ -17,6 +20,8 @@ export function ParticleButton({
   href,
   className = '',
   variant = 'primary',
+  trackLocation,
+  trackLabel,
 }: ParticleButtonProps) {
   const particleContainerRef = useRef<HTMLDivElement>(null);
 
@@ -49,9 +54,12 @@ export function ParticleButton({
   const handleClick = useCallback(
     (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       spawnParticles(e as unknown as MouseEvent);
+      if (href && trackLocation) {
+        captureCtaClick(trackLabel ?? String(children), href, trackLocation);
+      }
       onClick?.();
     },
-    [onClick, spawnParticles]
+    [children, href, onClick, spawnParticles, trackLabel, trackLocation],
   );
 
   const baseClasses = `

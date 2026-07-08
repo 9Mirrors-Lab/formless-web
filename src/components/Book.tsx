@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { captureCtaClick } from '@/lib/analytics';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,7 +64,8 @@ export function Book() {
           </p>
 
           <a
-            href="#"
+            href="/book"
+            onClick={() => captureCtaClick('Explore the book', '/book', 'home_book_section')}
             className="mt-4 inline-flex items-center gap-3 px-8 py-4 rounded-full border border-cream/15 text-cream/80 font-sans text-sm uppercase tracking-widest font-medium hover:bg-cream/5 hover:border-cream/30 transition-all duration-500 w-fit group"
           >
             Explore the book

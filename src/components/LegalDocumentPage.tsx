@@ -1,12 +1,20 @@
 import type { LegalDocument } from '@/lib/legalDocument';
 import { PageLayout } from './PageLayout';
 
+const LEGAL_PAGES = [
+  { id: 'privacy', href: '/privacy', label: 'Privacy Policy' },
+  { id: 'terms', href: '/terms', label: 'Terms of Use' },
+  { id: 'disclaimer', href: '/disclaimer', label: 'Disclaimer' },
+] as const;
+
+type LegalPageId = (typeof LEGAL_PAGES)[number]['id'];
+
 type LegalDocumentPageProps = {
   document: LegalDocument;
-  companion?: { href: string; label: string };
+  currentPage: LegalPageId;
 };
 
-export function LegalDocumentPage({ document, companion }: LegalDocumentPageProps) {
+export function LegalDocumentPage({ document, currentPage }: LegalDocumentPageProps) {
   return (
     <PageLayout briefSpectrum>
       <article className="site-page-header w-full px-6 pb-24 md:px-16 lg:px-24">
@@ -57,18 +65,21 @@ export function LegalDocumentPage({ document, companion }: LegalDocumentPageProp
               </a>
               .
             </p>
-            {companion ? (
-              <p className="mt-3 font-sans text-sm text-cream/55">
-                See also{' '}
-                <a
-                  href={companion.href}
-                  className="text-clay underline-offset-4 transition-colors hover:text-clay/80 hover:underline"
-                >
-                  {companion.label}
-                </a>
-                .
-              </p>
-            ) : null}
+            <p className="mt-3 font-sans text-sm text-cream/55">
+              See also{' '}
+              {LEGAL_PAGES.filter((page) => page.id !== currentPage).map((page, index, pages) => (
+                <span key={page.id}>
+                  <a
+                    href={page.href}
+                    className="text-clay underline-offset-4 transition-colors hover:text-clay/80 hover:underline"
+                  >
+                    {page.label}
+                  </a>
+                  {index < pages.length - 1 ? (index === pages.length - 2 ? ', and ' : ', ') : null}
+                </span>
+              ))}
+              .
+            </p>
           </footer>
         </div>
       </article>

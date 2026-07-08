@@ -1,8 +1,17 @@
 /**
  * Design System Foundations
- * Visual documentation of all design tokens extracted from Tailwind v4 @theme.
- * Captured into Figma as a Foundations page.
+ * Visual documentation of tokens and motion patterns.
+ * Live at /design-system — dark immersive reference (matches /icons, brief-dark pages).
  */
+
+import { useRef } from 'react';
+
+import {
+  ICON_ANIMATION_CATEGORIES,
+  ICON_ANIMATIONS,
+  type IconAnimationCategory,
+} from '@/data/iconAnimations';
+import { useIconAnimations } from '@/hooks/useIconAnimations';
 
 const colors = {
   Brand: [
@@ -10,6 +19,13 @@ const colors = {
     { name: 'Clay', token: 'clay', hex: '#CC5833', textLight: true },
     { name: 'Cream', token: 'cream', hex: '#F2F0E9', textLight: false },
     { name: 'Charcoal', token: 'charcoal', hex: '#1A1A1A', textLight: true },
+  ],
+  'Dark accents': [
+    { name: 'Moss Light', token: 'moss (on dark)', hex: '#9FB5AA', textLight: true },
+    { name: 'Clay Light', token: 'clay (on dark)', hex: '#D46544', textLight: true },
+    { name: 'Brief Dark', token: 'brief-dark', hex: '#080A09', textLight: true },
+    { name: 'Icon Surface', token: 'icon-surface', hex: '#1A2332', textLight: true },
+    { name: 'Chrome Muted', token: 'ce-chrome-muted', hex: '#9A9A94', textLight: true },
   ],
   'Moss Scale': [
     { name: 'Moss 900', token: 'moss-900', hex: '#1A2520', textLight: true },
@@ -25,177 +41,234 @@ const colors = {
     { name: 'Clay 300', token: 'clay-300', hex: '#E07A52', textLight: false },
     { name: 'Clay 100', token: 'clay-100', hex: '#F2C4B0', textLight: false },
   ],
-  Neutral: [
-    { name: 'White', token: 'white', hex: '#FFFFFF', textLight: false },
-    { name: 'Cream', token: 'cream', hex: '#F2F0E9', textLight: false },
-    { name: 'Cream Dark', token: 'cream-dark', hex: '#E8E5DA', textLight: false },
-    { name: 'Charcoal Light', token: 'charcoal-light', hex: '#3A3A3A', textLight: true },
-    { name: 'Charcoal', token: 'charcoal', hex: '#1A1A1A', textLight: true },
-  ],
   Semantic: [
-    { name: 'Background', token: 'bg', hex: '#F2F0E9', textLight: false },
-    { name: 'Surface', token: 'surface', hex: '#FFFFFF', textLight: false },
-    { name: 'Surface Dark', token: 'surface-dark', hex: '#1A1A1A', textLight: true },
-    { name: 'Text Primary', token: 'text-primary', hex: '#1A1A1A', textLight: true },
-    { name: 'Text Muted', token: 'text-muted', hex: '#1A1A1A99', textLight: true },
-    { name: 'Accent', token: 'accent', hex: '#CC5833', textLight: true },
-    { name: 'Accent Alt', token: 'accent-alt', hex: '#2E4036', textLight: true },
+    { name: 'Background (dark)', token: 'brief-dark', hex: '#080A09', textLight: true },
+    { name: 'Background (light)', token: 'bg-cream', hex: '#F2F0E9', textLight: false },
+    { name: 'Surface Dark', token: 'surface-dark', hex: '#1A2332', textLight: true },
+    { name: 'Text Primary', token: 'text-cream', hex: '#F2F0E9', textLight: true },
+    { name: 'Text Muted', token: 'text-cream/65', hex: '#F2F0E9A6', textLight: true },
+    { name: 'Accent Warm', token: 'clay', hex: '#CC5833', textLight: true },
+    { name: 'Accent Ground', token: 'moss', hex: '#2E4036', textLight: true },
   ],
 };
 
-const typeScale = [
-  { label: 'Display / Hero', size: '7.5rem', weight: 700, family: 'Plus Jakarta Sans', tracking: '-0.02em', lineHeight: '1.05' },
-  { label: 'Display LG', size: '6.5rem', weight: 700, family: 'Plus Jakarta Sans', tracking: '-0.02em', lineHeight: '1.05' },
-  { label: 'Display MD', size: '5rem', weight: 700, family: 'Plus Jakarta Sans', tracking: '-0.02em', lineHeight: '1.1' },
-  { label: 'Heading 1', size: '3.75rem', weight: 700, family: 'Plus Jakarta Sans', tracking: '-0.01em', lineHeight: '1.1' },
-  { label: 'Heading 2', size: '3rem', weight: 700, family: 'Plus Jakarta Sans', tracking: '-0.01em', lineHeight: '1.15' },
-  { label: 'Heading 3', size: '2.25rem', weight: 600, family: 'Plus Jakarta Sans', tracking: '0', lineHeight: '1.2' },
-  { label: 'Heading 4', size: '1.5rem', weight: 600, family: 'Plus Jakarta Sans', tracking: '0', lineHeight: '1.3' },
-  { label: 'Body LG', size: '1.25rem', weight: 400, family: 'Plus Jakarta Sans', tracking: '0', lineHeight: '1.6' },
-  { label: 'Body', size: '1rem', weight: 400, family: 'Plus Jakarta Sans', tracking: '0', lineHeight: '1.65' },
-  { label: 'Body SM', size: '0.875rem', weight: 400, family: 'Plus Jakarta Sans', tracking: '0', lineHeight: '1.65' },
-  { label: 'Label', size: '0.75rem', weight: 500, family: 'Plus Jakarta Sans', tracking: '0.1em', lineHeight: '1.5' },
-  { label: 'Caption', size: '0.75rem', weight: 400, family: 'Plus Jakarta Sans', tracking: '0.2em', lineHeight: '1.5' },
+const serifScale = [
+  { label: 'Hero Display', size: '6.5rem', weight: 300, tracking: '0', lineHeight: '1.08', sample: 'A moment to go within' },
+  { label: 'Section Headline', size: '3.75rem', weight: 300, tracking: '0', lineHeight: '1.1', sample: 'Who is listening?' },
+  { label: 'Teaching XL', size: '3rem', weight: 400, tracking: '0', lineHeight: '1.15', sample: 'The bridge between nature and science.' },
+  { label: 'Teaching MD', size: '1.5rem', weight: 400, tracking: '0', lineHeight: '1.4', sample: 'Space between you and the first rush to react.' },
+  { label: 'Serif Body', size: '1.125rem', weight: 400, tracking: '0', lineHeight: '1.6', sample: 'Questions over declarations where teaching.' },
 ];
 
-const serifScale = [
-  { label: 'Serif Display', size: '6.5rem', weight: 300, family: 'Cormorant Garamond', tracking: '0', lineHeight: '1.1', italic: true },
-  { label: 'Serif XL', size: '4rem', weight: 300, family: 'Cormorant Garamond', tracking: '0', lineHeight: '1.2', italic: true },
-  { label: 'Serif LG', size: '3rem', weight: 400, family: 'Cormorant Garamond', tracking: '0', lineHeight: '1.25', italic: true },
-  { label: 'Serif MD', size: '1.5rem', weight: 400, family: 'Cormorant Garamond', tracking: '0', lineHeight: '1.4', italic: true },
-  { label: 'Serif Body', size: '1.125rem', weight: 400, family: 'Cormorant Garamond', tracking: '0', lineHeight: '1.6', italic: true },
+const sansScale = [
+  { label: 'Body LG', size: '1.25rem', weight: 400, tracking: '0', lineHeight: '1.6' },
+  { label: 'Body', size: '1rem', weight: 400, tracking: '0', lineHeight: '1.65' },
+  { label: 'Body SM', size: '0.875rem', weight: 400, tracking: '0', lineHeight: '1.65' },
+  { label: 'Label / CTA', size: '0.875rem', weight: 600, tracking: '0.15em', lineHeight: '1.5' },
+  { label: 'Nav Link', size: '0.875rem', weight: 500, tracking: '0.05em', lineHeight: '1.5' },
 ];
 
 const monoScale = [
-  { label: 'Mono SM', size: '0.75rem', weight: 400, tracking: '0.2em' },
-  { label: 'Mono Base', size: '0.875rem', weight: 400, tracking: '0.1em' },
-  { label: 'Mono LG', size: '1rem', weight: 400, tracking: '0.05em' },
+  { label: 'Eyebrow', size: '0.75rem', weight: 400, tracking: '0.25em', sample: 'EYES CLOSED' },
+  { label: 'Mono SM', size: '0.75rem', weight: 400, tracking: '0.2em', sample: 'SYSTEM.OPERATIONAL' },
+  { label: 'Mono Base', size: '0.875rem', weight: 400, tracking: '0.1em', sample: 'PHASE.01' },
 ];
 
 const spacing = [
-  { token: 'space-1', value: '0.25rem', px: '4px' },
-  { token: 'space-2', value: '0.5rem', px: '8px' },
-  { token: 'space-3', value: '0.75rem', px: '12px' },
   { token: 'space-4', value: '1rem', px: '16px' },
   { token: 'space-6', value: '1.5rem', px: '24px' },
   { token: 'space-8', value: '2rem', px: '32px' },
-  { token: 'space-10', value: '2.5rem', px: '40px' },
   { token: 'space-12', value: '3rem', px: '48px' },
   { token: 'space-16', value: '4rem', px: '64px' },
-  { token: 'space-20', value: '5rem', px: '80px' },
   { token: 'space-24', value: '6rem', px: '96px' },
   { token: 'space-32', value: '8rem', px: '128px' },
 ];
 
 const radii = [
-  { token: 'radius-sm', value: '0.25rem', label: 'SM: 4px', tailwind: 'rounded-sm' },
-  { token: 'radius-md', value: '0.5rem', label: 'MD: 8px', tailwind: 'rounded-md' },
-  { token: 'radius-lg', value: '0.75rem', label: 'LG: 12px', tailwind: 'rounded-lg' },
-  { token: 'radius-xl', value: '1rem', label: 'XL: 16px', tailwind: 'rounded-xl' },
-  { token: 'radius-2xl', value: '1.5rem', label: '2XL: 24px', tailwind: 'rounded-2xl' },
-  { token: 'radius-card', value: '2rem', label: 'Card: 32px', tailwind: 'rounded-[2rem]' },
-  { token: 'radius-card-lg', value: '3rem', label: 'Card LG: 48px', tailwind: 'rounded-[3rem]' },
-  { token: 'radius-section', value: '4rem', label: 'Section: 64px', tailwind: 'rounded-[4rem]' },
-  { token: 'radius-full', value: '9999px', label: 'Full: pill', tailwind: 'rounded-full' },
+  { token: 'rounded-2xl', value: '1.5rem', label: 'Card' },
+  { token: 'rounded-[2rem]', value: '2rem', label: 'Icon tile' },
+  { token: 'rounded-[3rem]', value: '3rem', label: 'Section cap' },
+  { token: 'rounded-full', value: '9999px', label: 'Pill / CTA' },
 ];
 
-const shadows = [
-  { token: 'shadow-sm', css: '0 1px 2px rgba(0,0,0,0.05)', label: 'SM' },
-  { token: 'shadow-md', css: '0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05)', label: 'MD' },
-  { token: 'shadow-lg', css: '0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05)', label: 'LG' },
-  { token: 'shadow-xl', css: '0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04)', label: 'XL' },
-  { token: 'shadow-2xl', css: '0 25px 50px rgba(0,0,0,0.25)', label: '2XL' },
-  { token: 'shadow-moss', css: '0 8px 32px rgba(46,64,54,0.18)', label: 'Moss' },
-  { token: 'shadow-clay', css: '0 8px 24px rgba(204,88,51,0.25)', label: 'Clay' },
+const motionPatterns = [
+  { name: 'Scroll scrub', token: 'scrub: 1', use: 'Curtain reveal, fog-to-clarity' },
+  { name: 'Cinematic ease', token: 'cubic-bezier(0.16, 1, 0.3, 1)', use: 'Hovers, UI transitions' },
+  { name: 'Entrance', token: 'power3.inOut', use: 'Clip-path title reveals' },
+  { name: 'Ambient drift', token: 'sine.inOut yoyo', use: 'Header blobs, icon loops' },
+  { name: 'Icon loops', token: 'GSAP repeat: -1', use: 'Teaching marks on /icons' },
 ];
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: '80px' }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: '16px',
-        marginBottom: '32px', paddingBottom: '16px',
-        borderBottom: '1px solid #1a1a1a14',
-      }}>
-        <span style={{
-          fontFamily: 'ui-monospace, monospace', fontSize: '10px',
-          letterSpacing: '0.2em', textTransform: 'uppercase',
-          color: '#2e4036', fontWeight: 500,
-        }}>Foundations</span>
-        <span style={{ color: '#1a1a1a20', fontSize: '12px' }}>/</span>
-        <h2 style={{
-          fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '22px',
-          fontWeight: 700, color: '#1a1a1a', margin: 0, letterSpacing: '-0.01em',
-        }}>{title}</h2>
+    <section className="mb-20">
+      <div className="mb-8 flex items-center gap-4 border-b border-cream/10 pb-4">
+        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-[#9fb5aa]">
+          Foundations
+        </span>
+        <span className="text-xs text-cream/20">/</span>
+        <h2 className="font-sans text-[22px] font-semibold tracking-tight text-cream">{title}</h2>
       </div>
       {children}
+    </section>
+  );
+}
+
+function IconPreviewCard({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="px-1">
+        <h3 className="font-sans text-sm font-bold uppercase tracking-wide text-cream">{title}</h3>
+        <p className="mt-1 text-[11px] leading-relaxed text-cream/55">{description}</p>
+      </div>
+      <div className="flex h-40 items-center justify-center rounded-[2rem] border border-white/5 bg-[#1a2332] shadow-inner">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function IconShowcase() {
+  return (
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <IconPreviewCard title="The observer" description="Expanding ripple rings (power1.out, 2.5s)">
+        <svg className="h-24 w-24 text-cream" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle className="observer-wave text-[#9fb5aa] opacity-40" cx="50" cy="50" r="10" />
+          <circle className="observer-wave text-[#9fb5aa] opacity-60" cx="50" cy="50" r="10" />
+          <circle className="observer-wave text-[#9fb5aa] opacity-80" cx="50" cy="50" r="10" />
+          <circle cx="50" cy="50" r="6" fill="currentColor" />
+        </svg>
+      </IconPreviewCard>
+
+      <IconPreviewCard title="Linked thoughts" description="Staggered node pulse + link fade">
+        <svg className="h-24 w-24 text-[#9fb5aa]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
+          <line className="neural-link" x1="20" y1="20" x2="50" y2="50" />
+          <line className="neural-link" x1="80" y1="20" x2="50" y2="50" />
+          <line className="neural-link" x1="20" y1="80" x2="50" y2="50" />
+          <line className="neural-link" x1="80" y1="80" x2="50" y2="50" />
+          <circle className="neural-node" cx="50" cy="50" r="8" fill="rgba(204,88,51,0.2)" stroke="currentColor" />
+          <circle className="neural-node" cx="20" cy="20" r="5" fill="currentColor" />
+          <circle className="neural-node" cx="80" cy="20" r="5" fill="currentColor" />
+          <circle className="neural-node" cx="20" cy="80" r="5" fill="currentColor" />
+          <circle className="neural-node" cx="80" cy="80" r="5" fill="currentColor" />
+        </svg>
+      </IconPreviewCard>
+
+      <IconPreviewCard title="The anchor" description="Harmonic pendulum (sine.inOut, 2.8s)">
+        <svg className="h-24 w-24 text-[#9fb5aa]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
+          <g className="anchor-pendulum will-change-transform">
+            <line x1="50" y1="20" x2="50" y2="67" strokeLinecap="round" />
+            <circle cx="50" cy="75" r="8" fill="currentColor" stroke="none" />
+          </g>
+          <circle cx="50" cy="20" r="3" fill="currentColor" stroke="none" />
+        </svg>
+      </IconPreviewCard>
+
+      <IconPreviewCard title="The formless" description="Dissolving rings (power1.out, 4s stagger)">
+        <svg className="h-24 w-24 text-cream" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
+          <circle className="formless-ring" cx="50" cy="50" r="10" />
+          <circle className="formless-ring" cx="50" cy="50" r="10" />
+          <circle className="formless-ring" cx="50" cy="50" r="10" />
+        </svg>
+      </IconPreviewCard>
+    </div>
+  );
+}
+
+function AnimationTable({ category }: { category: IconAnimationCategory }) {
+  const rows = ICON_ANIMATIONS.filter((row) => row.category === category);
+  if (rows.length === 0) return null;
+
+  return (
+    <div className="mb-10 overflow-x-auto">
+      <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">{category}</p>
+      <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+        <thead>
+          <tr className="border-b border-cream/10 text-cream/45">
+            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Icon</th>
+            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Targets</th>
+            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Motion</th>
+            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Duration</th>
+            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Easing</th>
+            <th className="pb-2 font-mono text-[10px] font-normal uppercase tracking-widest">Loop</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.id} className="border-b border-cream/5">
+              <td className="py-3 pr-4 font-medium text-cream">{row.title}</td>
+              <td className="py-3 pr-4 font-mono text-[11px] text-[#9fb5aa]">{row.targets}</td>
+              <td className="py-3 pr-4 text-cream/70">{row.motion}</td>
+              <td className="py-3 pr-4 font-mono text-[11px] text-cream/55">{row.duration}</td>
+              <td className="py-3 pr-4 font-mono text-[11px] text-cream/55">{row.easing}</td>
+              <td className="py-3 font-mono text-[11px] text-cream/55">{row.loop}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
 export default function DesignSystem() {
-  return (
-    <div style={{
-      fontFamily: '"Plus Jakarta Sans", sans-serif',
-      backgroundColor: '#F2F0E9',
-      minHeight: '100vh',
-      padding: '80px 96px',
-      color: '#1a1a1a',
-    }}>
-      {/* Header */}
-      <div style={{ marginBottom: '96px' }}>
-        <span style={{
-          fontFamily: 'ui-monospace, monospace', fontSize: '11px',
-          letterSpacing: '0.25em', textTransform: 'uppercase',
-          color: '#2e4036', display: 'block', marginBottom: '12px',
-        }}>Formless: Design System v1.0</span>
-        <h1 style={{
-          fontSize: '56px', fontWeight: 800, letterSpacing: '-0.03em',
-          color: '#1a1a1a', margin: '0 0 20px',
-          fontFamily: '"Plus Jakarta Sans", sans-serif',
-        }}>Foundations</h1>
-        <p style={{
-          fontSize: '18px', color: '#1a1a1a80', maxWidth: '480px',
-          lineHeight: '1.6', fontWeight: 400,
-        }}>
-          Tokens extracted from Tailwind v4 <code style={{ fontFamily: 'monospace', fontSize: '14px', background: '#1a1a1a0d', padding: '2px 6px', borderRadius: '4px' }}>@theme</code>.
-          Colors · Typography · Spacing · Radius · Shadows.
-        </p>
-      </div>
+  const containerRef = useRef<HTMLDivElement>(null);
+  useIconAnimations(containerRef);
 
-      {/* ── COLOR ───────────────────────────────── */}
+  return (
+    <div
+      ref={containerRef}
+      className="brief-dark min-h-screen px-6 py-20 text-cream selection:bg-clay/30 selection:text-cream sm:px-10 lg:px-24"
+    >
+      <div className="noise-overlay-dark" aria-hidden />
+
+      <header className="relative mb-24 max-w-3xl">
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-clay">Eyes Closed · v2.0</span>
+        <h1 className="mt-4 font-serif text-5xl font-light italic leading-[1.08] text-cream md:text-6xl">
+          Design foundations
+        </h1>
+        <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream/65">
+          Tokens from <code className="rounded bg-cream/5 px-1.5 py-0.5 font-mono text-sm text-cream/80">@theme</code>,
+          motion patterns, and GSAP icon loops. Dark immersive reference; public pages use cream or brief-dark bands.
+          Full icon gallery at{' '}
+          <a href="/icons" className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream">
+            /icons
+          </a>
+          .
+        </p>
+      </header>
+
       <Section title="Color">
         {Object.entries(colors).map(([group, swatches]) => (
-          <div key={group} style={{ marginBottom: '40px' }}>
-            <p style={{
-              fontSize: '11px', fontFamily: 'monospace',
-              letterSpacing: '0.15em', textTransform: 'uppercase',
-              color: '#1a1a1a50', marginBottom: '12px',
-            }}>{group}</p>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              {swatches.map(s => (
-                <div key={s.token} style={{
-                  width: '120px', borderRadius: '12px', overflow: 'hidden',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                  border: s.hex === '#FFFFFF' ? '1px solid #1a1a1a10' : 'none',
-                }}>
-                  <div style={{
-                    height: '72px', backgroundColor: s.hex,
-                    display: 'flex', alignItems: 'flex-end',
-                    padding: '8px',
-                  }}>
-                    <span style={{
-                      fontSize: '9px', fontFamily: 'monospace',
-                      letterSpacing: '0.05em',
-                      color: s.textLight ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
-                    }}>{s.hex}</span>
+          <div key={group} className="mb-10">
+            <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">{group}</p>
+            <div className="flex flex-wrap gap-2.5">
+              {swatches.map((s) => (
+                <div
+                  key={s.token}
+                  className="w-[120px] overflow-hidden rounded-xl border border-cream/10 bg-[#1a2332]"
+                >
+                  <div
+                    className="flex h-[72px] items-end p-2"
+                    style={{ backgroundColor: s.hex }}
+                  >
+                    <span
+                      className="font-mono text-[9px] tracking-wide"
+                      style={{ color: s.textLight ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)' }}
+                    >
+                      {s.hex}
+                    </span>
                   </div>
-                  <div style={{
-                    padding: '8px 10px 10px',
-                    backgroundColor: 'white',
-                  }}>
-                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 600, color: '#1a1a1a' }}>{s.name}</p>
-                    <p style={{ margin: 0, fontSize: '10px', fontFamily: 'monospace', color: '#1a1a1a50', letterSpacing: '0.05em' }}>{s.token}</p>
+                  <div className="px-2.5 py-2">
+                    <p className="text-[11px] font-semibold text-cream">{s.name}</p>
+                    <p className="font-mono text-[10px] tracking-wide text-cream/45">{s.token}</p>
                   </div>
                 </div>
               ))}
@@ -204,164 +277,158 @@ export default function DesignSystem() {
         ))}
       </Section>
 
-      {/* ── TYPOGRAPHY ──────────────────────────── */}
       <Section title="Typography">
-        {/* Sans */}
-        <div style={{ marginBottom: '48px' }}>
-          <p style={{ fontSize: '11px', fontFamily: 'monospace', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#1a1a1a50', marginBottom: '20px' }}>
-            Sans: Plus Jakarta Sans
+        <div className="mb-12">
+          <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">
+            Serif: Cormorant Garamond (display, teaching)
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {typeScale.map((t, i) => (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'baseline', gap: '32px',
-                padding: '16px 0',
-                borderBottom: '1px solid #1a1a1a08',
-              }}>
-                <div style={{ width: '140px', flexShrink: 0 }}>
-                  <p style={{ margin: 0, fontSize: '10px', fontFamily: 'monospace', letterSpacing: '0.1em', color: '#2e4036', textTransform: 'uppercase' }}>{t.label}</p>
-                  <p style={{ margin: '2px 0 0', fontSize: '9px', fontFamily: 'monospace', color: '#1a1a1a40' }}>{t.size} / {t.weight} / {t.lineHeight}</p>
+          <div className="divide-y divide-cream/5">
+            {serifScale.map((t) => (
+              <div key={t.label} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:gap-8">
+                <div className="w-40 shrink-0">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-clay">{t.label}</p>
+                  <p className="mt-0.5 font-mono text-[9px] text-cream/40">
+                    {t.size} / {t.weight} / {t.lineHeight}
+                  </p>
                 </div>
-                <span style={{
-                  fontFamily: `"Plus Jakarta Sans", sans-serif`,
-                  fontSize: t.size,
-                  fontWeight: t.weight,
-                  letterSpacing: t.tracking,
-                  lineHeight: t.lineHeight,
-                  color: '#1a1a1a',
-                  flexShrink: 1,
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  maxWidth: '800px',
-                }}>Formless</span>
+                <span
+                  className="font-serif italic text-cream"
+                  style={{
+                    fontSize: t.size,
+                    fontWeight: t.weight,
+                    letterSpacing: t.tracking,
+                    lineHeight: t.lineHeight,
+                  }}
+                >
+                  {t.sample}
+                </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Serif */}
-        <div style={{ marginBottom: '48px' }}>
-          <p style={{ fontSize: '11px', fontFamily: 'monospace', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#1a1a1a50', marginBottom: '20px' }}>
-            Serif: Cormorant Garamond
+        <div className="mb-12">
+          <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">
+            Sans: Plus Jakarta Sans (UI, body, nav)
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {serifScale.map((t, i) => (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'baseline', gap: '32px',
-                padding: '16px 0',
-                borderBottom: '1px solid #1a1a1a08',
-              }}>
-                <div style={{ width: '140px', flexShrink: 0 }}>
-                  <p style={{ margin: 0, fontSize: '10px', fontFamily: 'monospace', letterSpacing: '0.1em', color: '#cc5833', textTransform: 'uppercase' }}>{t.label}</p>
-                  <p style={{ margin: '2px 0 0', fontSize: '9px', fontFamily: 'monospace', color: '#1a1a1a40' }}>{t.size} / {t.weight}</p>
+          <div className="divide-y divide-cream/5">
+            {sansScale.map((t) => (
+              <div key={t.label} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:gap-8">
+                <div className="w-40 shrink-0">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-[#9fb5aa]">{t.label}</p>
+                  <p className="mt-0.5 font-mono text-[9px] text-cream/40">
+                    {t.size} / {t.weight}
+                  </p>
                 </div>
-                <span style={{
-                  fontFamily: '"Cormorant Garamond", serif',
-                  fontSize: t.size,
-                  fontWeight: t.weight,
-                  letterSpacing: t.tracking,
-                  lineHeight: t.lineHeight,
-                  fontStyle: t.italic ? 'italic' : 'normal',
-                  color: '#1a1a1a',
-                }}>The bridge between nature and science.</span>
+                <span
+                  className="font-sans text-cream"
+                  style={{
+                    fontSize: t.size,
+                    fontWeight: t.weight,
+                    letterSpacing: t.tracking,
+                    lineHeight: t.lineHeight,
+                    textTransform: t.tracking === '0.15em' ? 'uppercase' : undefined,
+                  }}
+                >
+                  Formless teaching copy and interface labels
+                </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Mono */}
         <div>
-          <p style={{ fontSize: '11px', fontFamily: 'monospace', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#1a1a1a50', marginBottom: '20px' }}>
-            Mono: System Monospace
+          <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">
+            Mono: system monospace (eyebrows, metadata)
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {monoScale.map((t, i) => (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'baseline', gap: '32px',
-                padding: '16px 0',
-                borderBottom: '1px solid #1a1a1a08',
-              }}>
-                <div style={{ width: '140px', flexShrink: 0 }}>
-                  <p style={{ margin: 0, fontSize: '10px', fontFamily: 'monospace', letterSpacing: '0.1em', color: '#1a1a1a60', textTransform: 'uppercase' }}>{t.label}</p>
-                  <p style={{ margin: '2px 0 0', fontSize: '9px', fontFamily: 'monospace', color: '#1a1a1a40' }}>{t.size} / tracking {t.tracking}</p>
+          <div className="divide-y divide-cream/5">
+            {monoScale.map((t) => (
+              <div key={t.label} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:gap-8">
+                <div className="w-40 shrink-0">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-cream/60">{t.label}</p>
+                  <p className="mt-0.5 font-mono text-[9px] text-cream/40">tracking {t.tracking}</p>
                 </div>
-                <span style={{
-                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                  fontSize: t.size,
-                  fontWeight: t.weight,
-                  letterSpacing: t.tracking,
-                  color: '#1a1a1a',
-                }}>SYSTEM.OPERATIONAL • PHASE.01</span>
+                <span
+                  className="font-mono uppercase text-cream"
+                  style={{ fontSize: t.size, fontWeight: t.weight, letterSpacing: t.tracking }}
+                >
+                  {t.sample}
+                </span>
               </div>
             ))}
           </div>
         </div>
       </Section>
 
-      {/* ── SPACING ─────────────────────────────── */}
       <Section title="Spacing">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {spacing.map(s => (
-            <div key={s.token} style={{
-              display: 'flex', alignItems: 'center', gap: '20px',
-            }}>
-              <div style={{ width: '100px', flexShrink: 0 }}>
-                <p style={{ margin: 0, fontSize: '10px', fontFamily: 'monospace', color: '#2e4036', letterSpacing: '0.1em' }}>{s.token}</p>
-                <p style={{ margin: '2px 0 0', fontSize: '9px', fontFamily: 'monospace', color: '#1a1a1a40' }}>{s.value} · {s.px}</p>
+        <div className="flex flex-col gap-3">
+          {spacing.map((s) => (
+            <div key={s.token} className="flex items-center gap-5">
+              <div className="w-24 shrink-0">
+                <p className="font-mono text-[10px] tracking-wide text-[#9fb5aa]">{s.token}</p>
+                <p className="mt-0.5 font-mono text-[9px] text-cream/40">
+                  {s.value} · {s.px}
+                </p>
               </div>
-              <div style={{
-                height: '24px',
-                width: s.value,
-                backgroundColor: '#2e4036',
-                borderRadius: '3px',
-                minWidth: '4px',
-                maxWidth: '512px',
-              }} />
-              <span style={{ fontSize: '11px', fontFamily: 'monospace', color: '#1a1a1a40' }}>{s.px}</span>
+              <div
+                className="h-6 min-w-1 max-w-lg rounded-sm bg-[#9fb5aa]"
+                style={{ width: s.value }}
+              />
+              <span className="font-mono text-[11px] text-cream/40">{s.px}</span>
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 text-sm text-cream/55">
+          Section gutters: <code className="text-cream/70">px-6 md:px-16 lg:px-24</code> · vertical rhythm{' '}
+          <code className="text-cream/70">py-16 md:py-24</code> to <code className="text-cream/70">py-32</code>
+        </p>
+      </Section>
+
+      <Section title="Border radius">
+        <div className="flex flex-wrap gap-5">
+          {radii.map((r) => (
+            <div key={r.token} className="flex flex-col items-center gap-2.5">
+              <div
+                className="h-20 w-20 bg-[#9fb5aa]/80"
+                style={{ borderRadius: r.value }}
+              />
+              <div className="text-center">
+                <p className="font-mono text-[10px] tracking-wide text-[#9fb5aa]">{r.token}</p>
+                <p className="mt-0.5 font-mono text-[9px] text-cream/50">{r.label}</p>
+              </div>
             </div>
           ))}
         </div>
       </Section>
 
-      {/* ── BORDER RADIUS ───────────────────────── */}
-      <Section title="Border Radius">
-        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-          {radii.map(r => (
-            <div key={r.token} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-              <div style={{
-                width: r.token === 'radius-full' ? '80px' : '80px',
-                height: '80px',
-                backgroundColor: '#2e4036',
-                borderRadius: r.value,
-                opacity: 0.85,
-              }} />
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ margin: 0, fontSize: '10px', fontFamily: 'monospace', color: '#2e4036', letterSpacing: '0.05em' }}>{r.token}</p>
-                <p style={{ margin: '2px 0 0', fontSize: '9px', fontFamily: 'monospace', color: '#1a1a1a50' }}>{r.value}</p>
-              </div>
+      <Section title="Motion">
+        <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {motionPatterns.map((m) => (
+            <div key={m.name} className="rounded-2xl border border-cream/10 bg-cream/[0.04] p-4">
+              <p className="font-sans text-sm font-semibold text-cream">{m.name}</p>
+              <p className="mt-1 font-mono text-[11px] text-[#9fb5aa]">{m.token}</p>
+              <p className="mt-2 text-xs leading-relaxed text-cream/55">{m.use}</p>
             </div>
           ))}
         </div>
+        <ul className="list-inside list-disc space-y-1 text-sm text-cream/60">
+          <li>Animate transform and opacity in hot paths; honor <code className="text-cream/75">prefers-reduced-motion</code></li>
+          <li>UI transitions: 300–500ms with cinematic ease; scroll teaching moments: 1–2s+</li>
+          <li>No bounce, flash, or arcade-style particle overload</li>
+        </ul>
       </Section>
 
-      {/* ── SHADOWS ─────────────────────────────── */}
-      <Section title="Shadows">
-        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-          {shadows.map(s => (
-            <div key={s.token} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
-              <div style={{
-                width: '112px',
-                height: '80px',
-                backgroundColor: 'white',
-                borderRadius: '16px',
-                boxShadow: s.css,
-              }} />
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ margin: 0, fontSize: '10px', fontFamily: 'monospace', color: '#1a1a1a', letterSpacing: '0.05em' }}>{s.token}</p>
-                <p style={{ margin: '2px 0 0', fontSize: '9px', fontFamily: 'monospace', color: '#1a1a1a50' }}>{s.label}</p>
-              </div>
-            </div>
+      <Section title="Icon animations">
+        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-cream/65">
+          GSAP loops via <code className="text-cream/80">useIconAnimations</code> hook. Each mark uses class-targeted
+          tweens; loops are slow, organic, and respect reduced motion. Preview samples below; full registry in tables.
+        </p>
+
+        <IconShowcase />
+
+        <div className="mt-14">
+          {ICON_ANIMATION_CATEGORIES.map((category) => (
+            <AnimationTable key={category} category={category} />
           ))}
         </div>
       </Section>

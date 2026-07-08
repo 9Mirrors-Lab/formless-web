@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PageLayout } from '../components/PageLayout';
 import { StayCloseNotifyForm } from '../components/StayCloseNotifyForm';
 import { textFromEntry } from '@/lib/content';
+import { captureCtaClick } from '@/lib/analytics';
 import { useContent, type ContentApi } from '@/context/ContentContext';
 import './AboutPage.css';
 
@@ -111,7 +112,13 @@ function Layout4({
             <div className="row"><span>Work</span><span>Formless</span></div>
             <div className="row"><span>Status</span><span>Unfolding</span></div>
           </div>
-          <a href={emailLink.href} className="contact">Get in touch →</a>
+          <a
+            href={emailLink.href}
+            className="contact"
+            onClick={() => captureCtaClick('Get in touch', emailLink.href, 'about_contact')}
+          >
+            Get in touch →
+          </a>
         </aside>
 
         <main className="l4-main">

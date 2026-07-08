@@ -501,10 +501,19 @@ export default function SciencePage() {
               </em>
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5">
-              <ParticleButton href={ctaWork.href || '/work'}>
+              <ParticleButton
+                href={ctaWork.href || '/work'}
+                trackLocation="science_closing"
+                trackLabel={ctaWork.text || 'Work with me'}
+              >
                 {ctaWork.text || 'Work with me'}
               </ParticleButton>
-              <ParticleButton href={ctaBook.href || '/book'} variant="secondary">
+              <ParticleButton
+                href={ctaBook.href || '/book'}
+                variant="secondary"
+                trackLocation="science_closing"
+                trackLabel={ctaBook.text || 'Get the book'}
+              >
                 {ctaBook.text || 'Get the book'}
               </ParticleButton>
             </div>

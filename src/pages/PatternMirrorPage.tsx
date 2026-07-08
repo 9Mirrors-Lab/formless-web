@@ -362,7 +362,9 @@ export default function PatternMirrorPage() {
                   Separation begins the moment you notice the voice rather than believe it. This
                   is the doorway Formless points to.
                 </p>
-                <ParticleButton href="/book">Explore the book</ParticleButton>
+                <ParticleButton href="/book" trackLocation="pattern_mirror" trackLabel="Explore the book">
+                  Explore the book
+                </ParticleButton>
               </div>
 
               <div className="flex items-center justify-center">
