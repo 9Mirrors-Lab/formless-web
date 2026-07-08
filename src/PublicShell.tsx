@@ -27,6 +27,7 @@ import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { AccountPage } from './pages/AccountPage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
+import ClientSiteUpdatesPage from './pages/ClientSiteUpdatesPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 import { PostHogPageView } from './components/PostHogPageView';
 // import { DevMenu } from './components/DevMenu';
@@ -92,6 +93,7 @@ export function Root({ path }: { path: string }) {
   const isSignup = path === '/signup';
   const isAccount = path === '/account';
   const isAuthCallback = path === '/auth/callback';
+  const isClientSiteUpdates = path === '/client/site-updates';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -118,6 +120,7 @@ export function Root({ path }: { path: string }) {
   if (isSignup) return <SignupPage />;
   if (isAccount) return <AccountPage />;
   if (isAuthCallback) return <AuthCallbackPage />;
+  if (isClientSiteUpdates) return <ClientSiteUpdatesPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -140,7 +143,8 @@ function isAuthPath(path: string): boolean {
     path === '/login' ||
     path === '/signup' ||
     path === '/account' ||
-    path === '/auth/callback'
+    path === '/auth/callback' ||
+    path === '/client/site-updates'
   );
 }
 

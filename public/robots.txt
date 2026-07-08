@@ -1,0 +1,32 @@
+# https://www.eyesclosed.love/
+# AI site index (llmstxt.org): /llms.txt
+# Full public copy: /llms-full.txt
+
+User-agent: *
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+Disallow: /login
+Disallow: /signup
+Disallow: /account
+Disallow: /auth/
+Disallow: /client/
+
+Disallow: /design-system
+Disallow: /design-framework
+Disallow: /shader
+Disallow: /backgrounds
+Disallow: /icons
+Disallow: /moodboard
+Disallow: /brief
+Disallow: /brief2
+Disallow: /colors
+Disallow: /eyes-closed-logo-options
+Disallow: /brand-kit-export
+Disallow: /layout-tests
+Disallow: /pattern-mirror
+Disallow: /about-magazine
+Disallow: /client-feedback-revision
+
+Sitemap: https://www.eyesclosed.love/sitemap.xml
