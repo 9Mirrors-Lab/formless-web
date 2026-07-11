@@ -164,10 +164,10 @@ interface CategoryAccent {
 }
 
 const CATEGORY_ACCENTS: CategoryAccent[] = [
-  { gradient: 'linear-gradient(150deg, #2E4036 0%, #1A1A1A 100%)' },
-  { gradient: 'linear-gradient(150deg, #CC5833 0%, #1A1A1A 100%)' },
-  { gradient: 'linear-gradient(150deg, #4a5f4f 0%, #1A1A1A 100%)' },
-  { gradient: 'linear-gradient(150deg, #8a5030 0%, #1A1A1A 100%)' },
+  { gradient: 'linear-gradient(150deg, rgba(46, 64, 54, 0.52) 0%, rgba(26, 26, 26, 0.32) 100%)' },
+  { gradient: 'linear-gradient(150deg, rgba(204, 88, 51, 0.48) 0%, rgba(26, 26, 26, 0.32) 100%)' },
+  { gradient: 'linear-gradient(150deg, rgba(74, 95, 79, 0.5) 0%, rgba(26, 26, 26, 0.32) 100%)' },
+  { gradient: 'linear-gradient(150deg, rgba(138, 80, 48, 0.48) 0%, rgba(26, 26, 26, 0.32) 100%)' },
 ];
 
 const HALFTONE_SIDE_MASK =
@@ -355,7 +355,7 @@ function PracticeVideo({
 }) {
   return (
     <div
-      className={`relative aspect-[16/10] w-full overflow-hidden rounded-3xl shadow-[0_24px_60px_rgba(0,0,0,0.35)] transition-[background] duration-500 ease-out ${className}`.trim()}
+      className={`relative aspect-[16/10] w-full overflow-hidden rounded-3xl border border-cream/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.22)] backdrop-blur-[10px] transition-[background] duration-500 ease-out ${className}`.trim()}
       style={{ background: accent.gradient }}
     >
       <div className="absolute inset-0 flex items-center justify-center">
