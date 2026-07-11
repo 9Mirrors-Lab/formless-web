@@ -300,6 +300,44 @@
     mix-blend-mode: soft-light;
   }
 
+  .noise-overlay-dark-inset {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.12;
+    mix-blend-mode: soft-light;
+  }
+
+  @keyframes work-practice-drift-1 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(-3%, 2.5%) scale(1.05);
+    }
+  }
+
+  @keyframes work-practice-drift-2 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(3%, -2.5%) scale(1.06);
+    }
+  }
+
+  .work-practice-blob-1 {
+    animation: work-practice-drift-1 24s ease-in-out infinite;
+  }
+
+  .work-practice-blob-2 {
+    animation: work-practice-drift-2 30s ease-in-out infinite;
+  }
+
   /*
    * Home hero: mobile-first layout.
    * Phone: copy-led height + reframed focal point (less road below).
@@ -558,6 +596,50 @@
     .sci-orbit--left {
       left: -18%;
       right: auto;
+    }
+  }
+
+  .work-practice-panel-bleed {
+    --work-practice-bleed: 0rem;
+    position: relative;
+  }
+
+  @media (min-width: 768px) {
+    .work-practice-panel-bleed {
+      --work-practice-bleed: 2.75rem;
+      margin-right: calc(-1 * var(--work-practice-bleed));
+      width: calc(100% + var(--work-practice-bleed));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .work-practice-panel-bleed {
+      --work-practice-bleed: 3.5rem;
+    }
+  }
+
+  .work-practice-download-pulse::before,
+  .work-practice-download-pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 1px solid rgba(204, 88, 51, 0.28);
+    animation: work-practice-download-ring 2.8s ease-out infinite;
+  }
+
+  .work-practice-download-pulse::after {
+    animation-delay: 1.4s;
+  }
+
+  @keyframes work-practice-download-ring {
+    0% {
+      transform: scale(0.72);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1.55);
+      opacity: 0;
     }
   }
 

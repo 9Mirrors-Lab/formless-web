@@ -13,6 +13,7 @@ import BriefPage2 from './pages/BriefPage2';
 import MoodboardPage from './pages/MoodboardPage';
 import IconsPage from './pages/IconsPage';
 import WorkPage from './pages/WorkPage';
+import Work2Page from './pages/Work2Page';
 import BookPage from './pages/BookPage';
 import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
@@ -77,6 +78,7 @@ function RestrictedPublicHome({ path }: { path: string }) {
 
 export function Root({ path }: { path: string }) {
   const isWork = path === '/work';
+  const isWork2 = path === '/work2';
   const isBook = path === '/book';
   const isScience = path === '/science';
   const isAbout = path === '/about';
@@ -107,6 +109,7 @@ export function Root({ path }: { path: string }) {
   const isIcons = path === '/icons';
 
   if (isWork) return <WorkPage />;
+  if (isWork2) return <Work2Page />;
   if (isBook) return <BookPage />;
   if (isScience) return <SciencePage />;
   if (isAbout) return <AboutPage />;
