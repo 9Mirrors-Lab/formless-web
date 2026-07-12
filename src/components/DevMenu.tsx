@@ -1,14 +1,25 @@
 import { useState } from 'react';
 import { Layers, X, ChevronRight } from 'lucide-react';
+import { heroLayoutQueryHref, resolveHeroLayoutVariant } from '@/config/featureFlags';
 
 export const DevMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const activeHero = resolveHeroLayoutVariant();
 
   if (!import.meta.env.DEV) return null;
 
   const devPages = [
     { name: '── Site Pages ──', path: '' },
     { name: 'Main Page', path: '/' },
+    { name: '── Hero layout ──', path: '' },
+    {
+      name: activeHero === 'classic' ? 'Hero: classic (active)' : 'Hero: classic',
+      path: heroLayoutQueryHref('classic'),
+    },
+    {
+      name: activeHero === 'layout-test' ? 'Hero: layout test (active)' : 'Hero: layout test',
+      path: heroLayoutQueryHref('layout-test'),
+    },
     { name: '── Dev Pages ──', path: '' },
     { name: 'Layout tests', path: '/layout-tests' },
     { name: 'About (Magazine Layout)', path: '/about-magazine' },

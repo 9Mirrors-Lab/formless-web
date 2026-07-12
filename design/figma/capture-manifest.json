@@ -2,7 +2,7 @@
   "fileKey": "mA96W2OGNZzOO8zmlmjTpE",
   "fileUrl": "https://www.figma.com/design/mA96W2OGNZzOO8zmlmjTpE",
   "handoffDoc": "design/figma/CAPTURE-HANDOFF.md",
-  "lastUpdated": "2026-06-23",
+  "lastUpdated": "2026-07-11",
   "base": "http://localhost:5173",
   "captures": [
     {
@@ -11,9 +11,8 @@
       "label": "Desktop",
       "width": 1440,
       "height": 900,
-      "captureId": "52dd1e4f-f585-476b-a520-8951de6956e0",
-      "status": "completed",
-      "figmaNodeId": "1:2"
+      "captureId": "a33a448e-b448-43f8-be1d-a34f5ac935d0",
+      "status": "submitted_poll_pending"
     },
     {
       "route": "/",
@@ -21,9 +20,8 @@
       "label": "Tablet",
       "width": 768,
       "height": 1024,
-      "captureId": "cfa93469-8642-4534-b6db-07797d84cf2b",
-      "status": "completed",
-      "figmaNodeId": "2:2"
+      "captureId": "d016cd29-5513-4712-b807-ceb0617f8343",
+      "status": "submitted_poll_pending"
     },
     {
       "route": "/",
@@ -31,9 +29,8 @@
       "label": "Mobile",
       "width": 390,
       "height": 844,
-      "captureId": "a50b94f1-a246-45b5-a9db-fb6738ead5d9",
-      "status": "completed",
-      "figmaNodeId": "3:2"
+      "captureId": "51e7c222-f16c-4135-9c3f-a57a773804c6",
+      "status": "submitted_poll_pending"
     },
     {
       "route": "/work",
@@ -41,9 +38,8 @@
       "label": "Desktop",
       "width": 1440,
       "height": 900,
-      "captureId": "dee338bd-1bc4-4873-8845-16aa48d0b261",
-      "status": "completed",
-      "figmaNodeId": "4:2"
+      "captureId": "5b8c4a1b-1cb8-49d2-ad38-da953a7ef37d",
+      "status": "submitted_poll_pending"
     },
     {
       "route": "/work",
@@ -51,9 +47,8 @@
       "label": "Tablet",
       "width": 768,
       "height": 1024,
-      "captureId": "1e8b5054-b094-483b-aa60-7699b771e458",
-      "status": "completed",
-      "figmaNodeId": "5:2"
+      "captureId": "75d2522b-5265-4250-863f-676ff59a54ab",
+      "status": "submitted_poll_pending"
     },
     {
       "route": "/work",
@@ -61,7 +56,7 @@
       "label": "Mobile",
       "width": 390,
       "height": 844,
-      "captureId": "b4bb06b4-57b9-4d41-bfb8-2d725b90962c",
+      "captureId": "f55ed275-e62a-402b-9a8d-c68ab9ca5b2c",
       "status": "submitted_poll_pending"
     },
     {
@@ -70,7 +65,7 @@
       "label": "Desktop",
       "width": 1440,
       "height": 900,
-      "captureId": "3a05e169-b934-446b-bb64-5de5675b0ae1",
+      "captureId": "ce5a5dbb-f191-4373-b396-3995ab426cd0",
       "status": "submitted_poll_pending"
     },
     {
@@ -79,7 +74,7 @@
       "label": "Tablet",
       "width": 768,
       "height": 1024,
-      "captureId": "07e513e6-a709-492d-acb9-d079b4cf8672",
+      "captureId": "73853b3b-0d79-453a-94a4-26ffa4150c4e",
       "status": "submitted_poll_pending"
     },
     {
@@ -88,7 +83,7 @@
       "label": "Mobile",
       "width": 390,
       "height": 844,
-      "captureId": "5fe6b25c-ae0a-42ae-859f-87376c921d7e",
+      "captureId": "6b6ce6e7-1e5d-40e9-9556-9197485feec3",
       "status": "submitted_poll_pending"
     },
     {
@@ -97,7 +92,7 @@
       "label": "Desktop",
       "width": 1440,
       "height": 900,
-      "captureId": "2c0ea43e-2a7b-4a61-8983-d973dc0f602f",
+      "captureId": "00105711-b2d2-4024-bc27-fb7643b71936",
       "status": "submitted_poll_pending"
     }
   ],

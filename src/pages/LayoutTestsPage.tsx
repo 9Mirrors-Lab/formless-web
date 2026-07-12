@@ -1,5 +1,6 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { LayoutTestHeroSection } from '@/components/LayoutTestHeroSection';
 
 const navItems = [
   { label: 'The Practice', href: '#practice' },
@@ -181,66 +182,7 @@ export default function LayoutTestsPage() {
       <LayoutTestsNav />
 
       <main>
-        <section className="relative min-h-[100dvh] overflow-hidden px-6 pb-20 pt-36 md:px-16 lg:px-24">
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -left-24 top-12 h-[34rem] w-[34rem] rounded-full bg-clay/18 blur-[130px]" />
-            <div className="absolute right-0 top-20 h-[30rem] w-[30rem] rounded-full bg-moss/20 blur-[130px]" />
-            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#080907] to-transparent" />
-          </div>
-
-          <div className="relative z-10 mx-auto max-w-7xl pt-12 md:pt-24">
-            <SectionLabel>Layout test · Hero</SectionLabel>
-            <h1 className="font-serif text-[clamp(2.75rem,5.8vw,6.5rem)] italic leading-[1.05] tracking-normal text-cream">
-              <span className="block sm:whitespace-nowrap">Peace has never left you,</span>
-              <span className="block sm:whitespace-nowrap">it is your natural</span>
-              <span className="block sm:whitespace-nowrap">state.</span>
-            </h1>
-
-            <div className="mt-12 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-              <div className="max-w-2xl">
-                <p className="text-lg leading-relaxed text-cream/66 md:text-xl">
-                  The world teaches you to look outward for fulfillment. Eyes Closed points
-                  you inward.
-                </p>
-                <div className="mt-10 flex flex-wrap gap-3">
-                  <a
-                    href="#reflection"
-                    className="rounded-full bg-clay px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-transform hover:scale-105"
-                  >
-                    A moment to go within
-                  </a>
-                  <a
-                    href="#practice"
-                    className="rounded-full border border-cream/18 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cream/78 transition-colors hover:border-cream/45 hover:text-cream"
-                  >
-                    The Practice
-                  </a>
-                </div>
-              </div>
-
-              <aside className="border-t border-cream/12 pt-7 lg:border-l lg:border-t-0 lg:pl-7 lg:pb-2">
-              <p className="font-mono text-xs uppercase tracking-[0.24em] text-cream/36">
-                Brand hierarchy
-              </p>
-              <div className="mt-6 space-y-6">
-                <div>
-                  <p className="font-serif text-4xl italic text-cream">Eyes Closed</p>
-                  <p className="mt-2 text-sm leading-relaxed text-cream/50">
-                    Organization, site brand, mission, practice, future offerings.
-                  </p>
-                </div>
-                <div className="h-px bg-cream/10" />
-                <div>
-                  <p className="font-serif text-4xl text-cream/80">Formless</p>
-                  <p className="mt-2 text-sm leading-relaxed text-cream/50">
-                    Book title and teaching foundation under the Eyes Closed brand.
-                  </p>
-                </div>
-              </div>
-              </aside>
-            </div>
-          </div>
-        </section>
+        <LayoutTestHeroSection />
 
         <section
           id="reflection"

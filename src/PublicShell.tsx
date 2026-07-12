@@ -18,6 +18,7 @@ import BookPage from './pages/BookPage';
 import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
 import ColorsPage from './pages/ColorsPage';
+import FontsPage from './pages/FontsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
@@ -30,7 +31,9 @@ import { SignupPage } from './pages/SignupPage';
 import { AccountPage } from './pages/AccountPage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import ClientSiteUpdatesPage from './pages/ClientSiteUpdatesPage';
+import SiteHubPage from './pages/SiteHubPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
+import { resolveHeroLayoutVariant } from './config/featureFlags';
 import { PostHogPageView } from './components/PostHogPageView';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
@@ -66,10 +69,12 @@ function NormalizeToRoot({ path }: { path: string }) {
 
 /** Same home as `App`; deep URLs become `/` when the site is restricted. */
 function RestrictedPublicHome({ path }: { path: string }) {
+  const heroLayout = resolveHeroLayoutVariant();
+
   return (
     <>
       <NormalizeToRoot path={path} />
-      <PageLayout>
+      <PageLayout dark={heroLayout === 'layout-test'}>
         <HomePageContent />
       </PageLayout>
     </>
@@ -83,6 +88,7 @@ export function Root({ path }: { path: string }) {
   const isScience = path === '/science';
   const isAbout = path === '/about';
   const isColors = path === '/colors';
+  const isFonts = path === '/fonts';
   const isAboutMagazine = path === '/about-magazine';
   const isEyesClosedLogoOptions =
     path === '/eyes-closed-logo-options' ||
@@ -107,6 +113,7 @@ export function Root({ path }: { path: string }) {
   const isBackgrounds = path === '/backgrounds' || path === '/shaderEC';
   const isDesignFramework = path === '/design-framework';
   const isIcons = path === '/icons';
+  const isHub = path === '/hub';
 
   if (isWork) return <WorkPage />;
   if (isWork2) return <Work2Page />;
@@ -115,6 +122,7 @@ export function Root({ path }: { path: string }) {
   if (isAbout) return <AboutPage />;
   if (isAboutMagazine) return <AboutPage defaultLayout={4} />;
   if (isColors) return <ColorsPage />;
+  if (isFonts) return <FontsPage />;
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;
   if (isLayoutTests) return <LayoutTestsPage />;
@@ -141,11 +149,13 @@ export function Root({ path }: { path: string }) {
   }
   if (isDesignFramework) return <DesignFrameworkPage />;
   if (isIcons) return <IconsPage />;
+  if (isHub) return <SiteHubPage />;
   return <App />;
 }
 
-function isAuthPath(path: string): boolean {
+function isUnrestrictedPath(path: string): boolean {
   return (
+    path === '/hub' ||
     path === '/login' ||
     path === '/signup' ||
     path === '/account' ||
@@ -176,7 +186,7 @@ function AppContentShell({ path }: { path: string }) {
 
   return (
     <>
-      {publicSiteRestricted && !isAuthPath(path) ? (
+      {publicSiteRestricted && !isUnrestrictedPath(path) ? (
         <RestrictedPublicHome path={path} />
       ) : (
         <Root path={path} />

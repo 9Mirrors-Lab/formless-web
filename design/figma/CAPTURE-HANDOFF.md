@@ -1,12 +1,12 @@
 # Eyes Closed Design — Figma capture handoff
 
-Last updated: 2026-06-23
+Last updated: 2026-07-11
 
 Use this file to resume the 1:1 live-site capture into Figma. The website source (`formless-web/src`) was **not** modified for this work.
 
 ## Goal
 
-Mirror the **production pages** in Figma as pixel-accurate captures (not hand-drawn layers):
+Mirror the **current dev site** in Figma as pixel-accurate captures (not hand-drawn layers):
 
 | Route | Page |
 |-------|------|
@@ -42,31 +42,28 @@ Old files (ignore for this effort):
 
 **Do not** use `REBUILD_SINGLE_CALL` in `rebuild-website-steps.mjs` — that hand-builds UI and does not match production.
 
-## Progress (session 2026-06-23)
+## Progress (session 2026-07-11 — full refresh)
 
-### Confirmed in Figma (poll returned completed)
+Previous June captures are **outdated**. This session started a full re-capture from current `localhost:5173`.
 
-| Page | Viewport | captureId | Figma node |
-|------|----------|-----------|------------|
-| Home | Desktop | `52dd1e4f-f585-476b-a520-8951de6956e0` | `1:2` |
-| Home | Tablet | `cfa93469-8642-4534-b6db-07797d84cf2b` | `2:2` |
-| Home | Mobile | `a50b94f1-a246-45b5-a9db-fb6738ead5d9` | `3:2` |
-| Work | Desktop | `dee338bd-1bc4-4873-8845-16aa48d0b261` | `4:2` |
-| Work | Tablet | `1e8b5054-b094-483b-aa60-7699b771e458` | `5:2` |
+### Playwright submitted — poll pending (MCP rate limit hit)
 
-### Playwright submitted — poll blocked by MCP rate limit
-
-Playwright reported `captureForDesign` OK for all rows below. Poll with `generate_figma_design` when the limit resets:
+All 10 rows below were submitted successfully (`captureResult.ok: true`). Poll with `generate_figma_design` when the limit resets:
 
 | Page | Viewport | captureId |
 |------|----------|-----------|
-| Work | Mobile | `b4bb06b4-57b9-4d41-bfb8-2d725b90962c` |
-| Book | Desktop | `3a05e169-b934-446b-bb64-5de5675b0ae1` |
-| Book | Tablet | `07e513e6-a709-492d-acb9-d079b4cf8672` |
-| Book | Mobile | `5fe6b25c-ae0a-42ae-859f-87376c921d7e` |
-| Science | Desktop | `2c0ea43e-2a7b-4a61-8983-d973dc0f602f` |
+| Home | Desktop | `a33a448e-b448-43f8-be1d-a34f5ac935d0` |
+| Home | Tablet | `d016cd29-5513-4712-b807-ceb0617f8343` |
+| Home | Mobile | `51e7c222-f16c-4135-9c3f-a57a773804c6` |
+| Work | Desktop | `5b8c4a1b-1cb8-49d2-ad38-da953a7ef37d` |
+| Work | Tablet | `75d2522b-5265-4250-863f-676ff59a54ab` |
+| Work | Mobile | `f55ed275-e62a-402b-9a8d-c68ab9ca5b2c` |
+| Book | Desktop | `ce5a5dbb-f191-4373-b396-3995ab426cd0` |
+| Book | Tablet | `73853b3b-0d79-453a-94a4-26ffa4150c4e` |
+| Book | Mobile | `6b6ce6e7-1e5d-40e9-9556-9197485feec3` |
+| Science | Desktop | `00105711-b2d2-4024-bc27-fb7643b71936` |
 
-### Not started (need new captureIds)
+### Not started (need new captureIds — rate limit blocked)
 
 | Page | Viewport |
 |------|----------|
@@ -77,7 +74,7 @@ Playwright reported `captureForDesign` OK for all rows below. Poll with `generat
 
 When Figma MCP limit has reset:
 
-### Step A — Poll submitted captures (5 MCP calls)
+### Step A — Poll submitted captures (10 MCP calls)
 
 ```text
 generate_figma_design({ fileKey: "mA96W2OGNZzOO8zmlmjTpE", captureId: "<id>" })
@@ -110,7 +107,7 @@ Same as Step A for the five new IDs.
 
 ### Step E — Optional cleanup in Figma
 
-Rename frames to a consistent pattern, e.g. `Home / Desktop — 1440`. No redraw; captures only.
+Delete or archive old June 2026 frames. Rename new frames to a consistent pattern, e.g. `Home / Desktop — 1440 (Jul 2026)`. No redraw; captures only.
 
 ## Repo files
 
@@ -121,13 +118,13 @@ Rename frames to a consistent pattern, e.g. `Home / Desktop — 1440`. No redraw
 | `design/figma/rebuild-website-steps.mjs` | Constants: `FIGMA_FILE_KEY`, `LIVE_ROUTES`, `VIEWPORTS` |
 | `scripts/figma-capture-all-pages.mjs` | Playwright runner |
 | `scripts/figma-capture-viewports.mjs` | Legacy homepage-only script (port 5173) |
-| `.claude/skills/formless-design/SKILL.md` | Design skill — links to capture workflow |
 
 ## Dev server notes
 
 - Vite default port: **5173** (not 5174)
 - Capture script `BASE`: `http://localhost:5173` (override with `BASE=…` env var)
 - Routes come from `formless-web/src/PublicShell.tsx`
+- Playwright is now a devDependency (`npm install` includes it)
 
 ## What went wrong before (avoid)
 
@@ -135,7 +132,8 @@ Rename frames to a consistent pattern, e.g. `Home / Desktop — 1440`. No redraw
 - Mobile frame with only a text note instead of a real capture
 - Wrong dev port (5174) in old capture script
 - Reusing old Figma files after account reset
+- Using outdated June captures when site has changed
 
 ## MCP budget note
 
-Starter plan hit rate limit after ~15 `generate_figma_design` calls in one session (10 ID requests + 5 successful polls). Batch work: poll submitted captures first, then request new IDs, then Playwright, then poll again.
+Starter plan hit rate limit after ~15 `generate_figma_design` calls in one session (10 ID requests + polling blocked). Batch work: poll submitted captures first (10 calls), then request 5 new IDs, then Playwright, then poll again. Consider upgrading Figma plan or waiting for monthly reset if blocked.
