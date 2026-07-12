@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { Layers, X, ChevronRight } from 'lucide-react';
-import { heroLayoutQueryHref, resolveHeroLayoutVariant } from '@/config/featureFlags';
+import { heroBookAsideQueryHref, resolveHeroBookAsideEnabled } from '@/config/featureFlags';
 
 export const DevMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const activeHero = resolveHeroLayoutVariant();
+  const bookAsideEnabled = resolveHeroBookAsideEnabled();
 
   if (!import.meta.env.DEV) return null;
 
   const devPages = [
     { name: '── Site Pages ──', path: '' },
     { name: 'Main Page', path: '/' },
-    { name: '── Hero layout ──', path: '' },
+    { name: '── Hero ──', path: '' },
     {
-      name: activeHero === 'classic' ? 'Hero: classic (active)' : 'Hero: classic',
-      path: heroLayoutQueryHref('classic'),
+      name: bookAsideEnabled ? 'Book aside: on (active)' : 'Book aside: on',
+      path: heroBookAsideQueryHref(true),
     },
     {
-      name: activeHero === 'layout-test' ? 'Hero: layout test (active)' : 'Hero: layout test',
-      path: heroLayoutQueryHref('layout-test'),
+      name: !bookAsideEnabled ? 'Book aside: off (active)' : 'Book aside: off',
+      path: heroBookAsideQueryHref(false),
     },
     { name: '── Dev Pages ──', path: '' },
     { name: 'Layout tests', path: '/layout-tests' },

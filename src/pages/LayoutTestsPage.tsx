@@ -182,7 +182,7 @@ export default function LayoutTestsPage() {
       <LayoutTestsNav />
 
       <main>
-        <LayoutTestHeroSection />
+        <LayoutTestHeroSection showBookAside />
 
         <section
           id="reflection"

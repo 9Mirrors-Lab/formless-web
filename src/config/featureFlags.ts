@@ -1,28 +1,28 @@
-export type HeroLayoutVariant = 'classic' | 'layout-test';
+const HERO_BOOK_ASIDE_QUERY_KEY = 'heroBookAside';
 
-const HERO_LAYOUT_QUERY_KEY = 'hero';
-
-function parseHeroLayoutVariant(value: string | null | undefined): HeroLayoutVariant | null {
-  if (value === 'classic' || value === 'layout-test') return value;
+function parseBooleanFlag(value: string | null | undefined): boolean | null {
+  if (value === '1' || value === 'true') return true;
+  if (value === '0' || value === 'false') return false;
   return null;
 }
 
-/** Resolve hero layout: `?hero=layout-test|classic` overrides `VITE_HERO_LAYOUT`. Default: classic. */
-export function resolveHeroLayoutVariant(search?: string): HeroLayoutVariant {
+/** Optional Formless book aside on home hero. `?heroBookAside=1` or `VITE_HERO_BOOK_ASIDE=true`. Default: off. */
+export function resolveHeroBookAsideEnabled(search?: string): boolean {
   if (typeof window !== 'undefined' || search !== undefined) {
     const params = new URLSearchParams(search ?? window.location.search);
-    const fromQuery = parseHeroLayoutVariant(params.get(HERO_LAYOUT_QUERY_KEY));
-    if (fromQuery) return fromQuery;
+    const fromQuery = parseBooleanFlag(params.get(HERO_BOOK_ASIDE_QUERY_KEY));
+    if (fromQuery !== null) return fromQuery;
   }
 
-  const fromEnv = parseHeroLayoutVariant(import.meta.env.VITE_HERO_LAYOUT);
-  if (fromEnv) return fromEnv;
+  const fromEnv = import.meta.env.VITE_HERO_BOOK_ASIDE;
+  if (fromEnv === 'true' || fromEnv === '1') return true;
+  if (fromEnv === 'false' || fromEnv === '0') return false;
 
-  return 'classic';
+  return false;
 }
 
-export function heroLayoutQueryHref(variant: HeroLayoutVariant): string {
+export function heroBookAsideQueryHref(enabled: boolean): string {
   const url = new URL(window.location.href);
-  url.searchParams.set(HERO_LAYOUT_QUERY_KEY, variant);
+  url.searchParams.set(HERO_BOOK_ASIDE_QUERY_KEY, enabled ? '1' : '0');
   return `${url.pathname}${url.search}${url.hash}`;
 }

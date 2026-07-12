@@ -8,8 +8,8 @@ interface ImportMetaEnv {
   readonly VITE_PUBLIC_POSTHOG_KEY?: string;
   readonly VITE_PUBLIC_POSTHOG_HOST?: string;
   readonly VITE_PUBLIC_POSTHOG_DISABLED?: string;
-  /** `classic` (default) or `layout-test` for home hero lockup. Overridden by `?hero=`. */
-  readonly VITE_HERO_LAYOUT?: string;
+  /** When `true` or `1`, show Formless book aside on home hero. Overridden by `?heroBookAside=`. */
+  readonly VITE_HERO_BOOK_ASIDE?: string;
 }
 
 interface ImportMeta {

@@ -1,5 +1,7 @@
 import { useContent } from '@/context/ContentContext';
 import { useSiteAccess } from '@/context/SiteAccessContext';
+import { resolveHeroBookAsideEnabled } from '@/config/featureFlags';
+import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
 
 function HeroReflectionCta() {
   const { restricted } = useSiteAccess();
@@ -38,10 +40,62 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-/** Shared hero lockup from /layout-tests — same markup on main when `hero=layout-test`. */
-export function LayoutTestHeroSection() {
-  const { getImage } = useContent();
+function HeroBookAside() {
+  return (
+    <aside className="min-w-0 border-t border-cream/12 pt-7 lg:self-center lg:border-l lg:border-t-0 lg:pl-7">
+      <p className="font-serif text-3xl uppercase tracking-[0.12em] text-cream md:text-4xl">
+        Formless
+      </p>
+      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.22em] text-cream/45">
+        Coming September 1, 2026
+      </p>
+      <p className="mt-2 text-sm leading-relaxed text-cream/50 lg:text-[0.9375rem] lg:whitespace-nowrap">
+        An invitation to discover who you are beyond thought
+      </p>
+
+      <div className="mt-6 border-y border-cream/10 py-6">
+        <blockquote
+          cite="/book"
+          className="border-l-2 border-clay/35 pl-5 font-serif text-lg italic leading-relaxed text-cream/72 md:text-xl"
+        >
+          <p>
+            Everything in me stopped. For the first time, I sensed that the voice in my head was not
+            me.
+          </p>
+        </blockquote>
+        <p className="mt-5 pl-5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/40">
+          — Page 12
+        </p>
+      </div>
+
+      <div className="mt-6">
+        <a
+          href="/book"
+          className="inline-flex rounded-full bg-clay px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-transform hover:scale-105"
+        >
+          Join the Waitlist
+        </a>
+      </div>
+    </aside>
+  );
+}
+
+type LayoutTestHeroSectionProps = {
+  /** When set, overrides `?heroBookAside` / env for this instance (e.g. layout playground). */
+  showBookAside?: boolean;
+};
+
+/** Home hero lockup; Formless aside is optional via feature flag. */
+export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionProps) {
+  const { restricted } = useSiteAccess();
+  const { getImage, getText } = useContent();
   const bg = getImage('home', 'hero', 'background_image').src;
+  const bookAsideEnabled = showBookAside ?? resolveHeroBookAsideEnabled();
+
+  const cx = (key: string) => {
+    const raw = getText('home', 'hero', key);
+    return restricted ? stripAnchorsFromCopy(raw) : raw;
+  };
 
   return (
     <section className="home-hero relative min-h-[100dvh] overflow-hidden px-6 pb-20 pt-36 md:px-16 lg:px-24">
@@ -64,56 +118,27 @@ export function LayoutTestHeroSection() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl pt-12 md:pt-24">
-        <SectionLabel>An Invitation to go within</SectionLabel>
+        <SectionLabel>{cx('eyebrow')}</SectionLabel>
         <h1 className="font-serif text-[clamp(2.75rem,5.8vw,6.5rem)] italic leading-[1.05] tracking-normal text-cream">
-          <span className="block sm:whitespace-nowrap">Remembering Who You Are</span>
-          <span className="block sm:whitespace-nowrap">Beyond The Mind</span>
+          <span className="block sm:whitespace-nowrap">{cx('headline_primary')}</span>
+          <span className="block sm:whitespace-nowrap">{cx('headline_secondary')}</span>
         </h1>
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(26rem,1.15fr)] lg:items-start">
+        <div
+          className={
+            bookAsideEnabled
+              ? 'mt-12 grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(26rem,1.15fr)] lg:items-start'
+              : 'mt-12'
+          }
+        >
           <div className="max-w-2xl">
             <p className="whitespace-pre-line text-lg leading-relaxed text-cream/66 md:text-xl">
-              The world teaches you to look outward for fulfillment.{'\n'}
-              Eyes Closed points you inward.
+              {cx('lede')}
             </p>
             <HeroReflectionCta />
           </div>
 
-          <aside className="min-w-0 border-t border-cream/12 pt-7 lg:self-center lg:border-l lg:border-t-0 lg:pl-7">
-            <p className="font-serif text-3xl uppercase tracking-[0.12em] text-cream md:text-4xl">
-              Formless
-            </p>
-            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.22em] text-cream/45">
-              Coming September 1, 2026
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-cream/50 lg:text-[0.9375rem] lg:whitespace-nowrap">
-              An invitation to discover who you are beyond thought
-            </p>
-
-            <div className="mt-6 border-y border-cream/10 py-6">
-              <blockquote
-                cite="/book"
-                className="border-l-2 border-clay/35 pl-5 font-serif text-lg italic leading-relaxed text-cream/72 md:text-xl"
-              >
-                <p>
-                  Everything in me stopped. For the first time, I sensed that the voice in my head
-                  was not me.
-                </p>
-              </blockquote>
-              <p className="mt-5 pl-5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/40">
-                — Page 12
-              </p>
-            </div>
-
-            <div className="mt-6">
-              <a
-                href="/book"
-                className="inline-flex rounded-full bg-clay px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-transform hover:scale-105"
-              >
-                Join the Waitlist
-              </a>
-            </div>
-          </aside>
+          {bookAsideEnabled ? <HeroBookAside /> : null}
         </div>
       </div>
     </section>

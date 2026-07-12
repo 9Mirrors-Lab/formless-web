@@ -33,7 +33,6 @@ import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import ClientSiteUpdatesPage from './pages/ClientSiteUpdatesPage';
 import SiteHubPage from './pages/SiteHubPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
-import { resolveHeroLayoutVariant } from './config/featureFlags';
 import { PostHogPageView } from './components/PostHogPageView';
 // import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
@@ -69,12 +68,10 @@ function NormalizeToRoot({ path }: { path: string }) {
 
 /** Same home as `App`; deep URLs become `/` when the site is restricted. */
 function RestrictedPublicHome({ path }: { path: string }) {
-  const heroLayout = resolveHeroLayoutVariant();
-
   return (
     <>
       <NormalizeToRoot path={path} />
-      <PageLayout dark={heroLayout === 'layout-test'}>
+      <PageLayout dark>
         <HomePageContent />
       </PageLayout>
     </>
