@@ -135,7 +135,6 @@ export function MobileNavShroud({
             className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream/70 transition-colors hover:bg-cream/10 hover:text-cream ${linkFocus}`}
             onClick={handleClose}
             aria-label="Close main menu"
-            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           >
             <X className="h-5 w-5" aria-hidden />
