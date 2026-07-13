@@ -19,7 +19,7 @@ function navLinkRadius(_position: NavLinkPosition): string {
   return 'rounded-full';
 }
 
-type NavLinkItem = {
+export type NavLinkItem = {
   key: string;
   text: string;
   href: string;
@@ -171,7 +171,7 @@ function BrandLink({
   );
 }
 
-type MobileNavPanelProps = {
+export type MobileNavPanelProps = {
   brandName: string;
   navLinks: NavLinkItem[];
   aboutCta: { text: string; href: string };

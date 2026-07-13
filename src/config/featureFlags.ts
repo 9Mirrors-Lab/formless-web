@@ -26,3 +26,19 @@ export function heroBookAsideQueryHref(enabled: boolean): string {
   url.searchParams.set(HERO_BOOK_ASIDE_QUERY_KEY, enabled ? '1' : '0');
   return `${url.pathname}${url.search}${url.hash}`;
 }
+
+const MOBILE_NAV_VARIANT_QUERY_KEY = 'mobileNav';
+
+export type MobileNavVariant = 'default' | 'shroud' | 'bloom';
+
+/** Which mobile nav variant to render. `?mobileNav=shroud|bloom` or `VITE_MOBILE_NAV_VARIANT=shroud|bloom`. Default: 'default'. */
+export function getMobileNavVariant(search?: string): MobileNavVariant {
+  if (typeof window !== 'undefined' || search !== undefined) {
+    const params = new URLSearchParams(search ?? window.location.search);
+    const fromQuery = params.get(MOBILE_NAV_VARIANT_QUERY_KEY);
+    if (fromQuery === 'shroud' || fromQuery === 'bloom') return fromQuery;
+  }
+  const fromEnv = import.meta.env.VITE_MOBILE_NAV_VARIANT;
+  if (fromEnv === 'shroud' || fromEnv === 'bloom') return fromEnv;
+  return 'default';
+}
