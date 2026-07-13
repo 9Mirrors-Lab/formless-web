@@ -9,6 +9,9 @@ import { BackgroundPicker } from '@/components/shader/BackgroundPicker';
 import { useBackgroundSelection } from '@/components/shader/BackgroundSelectionContext';
 import { captureCtaClick } from '@/lib/analytics';
 import logoWhiteSrc from '../../design/eyes-closed-logo-variations/Final-logos/09a-white-ec-notagline.svg';
+import { getMobileNavVariant } from '@/config/featureFlags';
+import { MobileNavShroud } from './MobileNavShroud';
+import { MobileNavBloom } from './MobileNavBloom';
 
 const linkFocus =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/80';
@@ -286,6 +289,7 @@ export function Navbar() {
   }, [mobileOpen]);
 
   const closeMobile = () => setMobileOpen(false);
+  const mobileNavVariant = getMobileNavVariant();
 
   const backgroundSelection = useBackgroundSelection();
   const backgroundPicker = backgroundSelection ? (
@@ -376,7 +380,7 @@ export function Navbar() {
               ) : null}
               <button
                 type="button"
-                className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream transition-colors hover:bg-cream/10 ${linkFocus}`}
+                className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-charcoal/50 backdrop-blur-sm text-cream transition-colors hover:bg-cream/10 ${linkFocus}`}
                 onClick={() => setMobileOpen(true)}
                 aria-expanded={mobileOpen}
                 aria-controls="site-nav-mobile-panel"
@@ -391,13 +395,31 @@ export function Navbar() {
       </header>
 
       {!restricted && mobileOpen ? (
-        <MobileNavPanel
-          brandName={brandName}
-          navLinks={navLinks}
-          aboutCta={aboutCta}
-          aboutIsActive={aboutIsActive}
-          onClose={closeMobile}
-        />
+        mobileNavVariant === 'shroud' ? (
+          <MobileNavShroud
+            brandName={brandName}
+            navLinks={navLinks}
+            aboutCta={aboutCta}
+            aboutIsActive={aboutIsActive}
+            onClose={closeMobile}
+          />
+        ) : mobileNavVariant === 'bloom' ? (
+          <MobileNavBloom
+            brandName={brandName}
+            navLinks={navLinks}
+            aboutCta={aboutCta}
+            aboutIsActive={aboutIsActive}
+            onClose={closeMobile}
+          />
+        ) : (
+          <MobileNavPanel
+            brandName={brandName}
+            navLinks={navLinks}
+            aboutCta={aboutCta}
+            aboutIsActive={aboutIsActive}
+            onClose={closeMobile}
+          />
+        )
       ) : null}
     </>
   );
