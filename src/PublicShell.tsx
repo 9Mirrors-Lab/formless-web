@@ -31,6 +31,8 @@ import { SignupPage } from './pages/SignupPage';
 import { AccountPage } from './pages/AccountPage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import ClientSiteUpdatesPage from './pages/ClientSiteUpdatesPage';
+import ClientDesignReviewPage from './pages/ClientDesignReviewPage';
+import ClientReviewHeroClassicPage from './pages/ClientReviewHeroClassicPage';
 import SiteHubPage from './pages/SiteHubPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 import { PostHogPageView } from './components/PostHogPageView';
@@ -101,6 +103,8 @@ export function Root({ path }: { path: string }) {
   const isAccount = path === '/account';
   const isAuthCallback = path === '/auth/callback';
   const isClientSiteUpdates = path === '/client/site-updates';
+  const isClientDesignReview = path === '/client/review';
+  const isClientReviewHeroClassic = path === '/client/review/hero-classic';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -132,6 +136,8 @@ export function Root({ path }: { path: string }) {
   if (isAccount) return <AccountPage />;
   if (isAuthCallback) return <AuthCallbackPage />;
   if (isClientSiteUpdates) return <ClientSiteUpdatesPage />;
+  if (isClientDesignReview) return <ClientDesignReviewPage />;
+  if (isClientReviewHeroClassic) return <ClientReviewHeroClassicPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -157,7 +163,9 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/signup' ||
     path === '/account' ||
     path === '/auth/callback' ||
-    path === '/client/site-updates'
+    path === '/client/site-updates' ||
+    path === '/client/review' ||
+    path.startsWith('/client/review/')
   );
 }
 

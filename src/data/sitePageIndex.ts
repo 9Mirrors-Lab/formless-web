@@ -43,7 +43,7 @@ export const SITE_PAGE_CATEGORIES: Record<
   },
   client: {
     label: 'Client',
-    description: 'Client-facing review and update views.',
+    description: 'Client-facing design review hub, archived previews, and update views.',
   },
   redirect: {
     label: 'Redirects & aliases',
@@ -294,6 +294,22 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
   },
 
   // — Client —
+  {
+    id: 'client-design-review',
+    title: 'Design review',
+    path: '/client/review',
+    category: 'client',
+    description: 'Client hub for hero variants, layout tests, shaders, brand studies, and briefs.',
+    source: 'src/pages/ClientDesignReviewPage.tsx, src/data/clientDesignReviewIndex.ts',
+  },
+  {
+    id: 'client-review-hero-classic',
+    title: 'Original home hero (archived)',
+    path: '/client/review/hero-classic',
+    category: 'client',
+    description: 'Pre–layout-test hero lockup kept for side-by-side client comparison.',
+    source: 'src/pages/ClientReviewHeroClassicPage.tsx, src/components/Hero.tsx',
+  },
   {
     id: 'client-site-updates',
     title: 'Client site updates',

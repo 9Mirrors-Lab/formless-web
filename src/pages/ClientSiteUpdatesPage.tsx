@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Compass, Leaf, Presentation, Sparkles } from 'lucide-react';
+import { Compass, ExternalLink, Leaf, Layers, Presentation, Sparkles } from 'lucide-react';
 
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -108,6 +108,14 @@ function ClientTabBar({
         <Presentation className="h-4 w-4" aria-hidden />
         SEO walkthrough
       </button>
+      <a
+        href="/client/review"
+        className="inline-flex items-center gap-2 rounded-full border border-charcoal/15 bg-white/60 px-5 py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/70 transition-colors hover:border-charcoal/30 hover:text-charcoal"
+      >
+        <Layers className="h-4 w-4" aria-hidden />
+        Design review
+        <ExternalLink className="h-3.5 w-3.5 opacity-60" aria-hidden />
+      </a>
     </div>
   );
 }
