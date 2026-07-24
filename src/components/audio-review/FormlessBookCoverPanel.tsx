@@ -143,7 +143,7 @@ export function FormlessBookCoverPanel({ chapters }: FormlessBookCoverPanelProps
         </div>
 
         <div
-          className="grid min-w-0 flex-1 grid-cols-[5.75rem_minmax(0,1fr)_2.25rem] items-center gap-x-2 gap-y-1.5"
+          className="flex min-w-0 flex-1 flex-col gap-2.5"
           role="group"
           aria-label="Chapter progress"
         >
@@ -151,38 +151,40 @@ export function FormlessBookCoverPanel({ chapters }: FormlessBookCoverPanelProps
             const filled = counts[row.key];
             const safeTotal = Math.max(summary.total, 1);
             return (
-              <div key={row.key} className="contents">
-                <div className="flex items-center gap-1.5">
+              <div key={row.key} className="min-w-0">
+                <div className="mb-1 flex items-center gap-1.5">
                   <span className="inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center">
                     {audioChapterStatusIcon(PROGRESS_ROW_STATUS[row.tone], 'sm')}
                   </span>
-                  <p className="truncate font-mono text-[9px] uppercase tracking-[0.12em] text-cream/40">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-cream/40">
                     {row.label}
                   </p>
                 </div>
-                <div
-                  className="flex min-w-0 items-center gap-[3px] overflow-hidden px-0.5"
-                  role="img"
-                  aria-label={`${row.label}: ${filled} of ${summary.total}`}
-                >
-                  {Array.from({ length: safeTotal }, (_, index) => {
-                    const on = index < filled;
-                    return (
-                      <span
-                        key={`${row.key}-${index}`}
-                        className={`h-2.5 min-w-0 flex-1 -skew-x-[18deg] border ${
-                          on
-                            ? PROGRESS_ROW_FILL[row.tone]
-                            : 'border-cream/15 bg-transparent'
-                        }`}
-                      />
-                    );
-                  })}
+                <div className="grid grid-cols-[minmax(0,1fr)_2.25rem] items-center gap-x-2">
+                  <div
+                    className="flex min-w-0 items-center gap-[3px] overflow-hidden px-0.5"
+                    role="img"
+                    aria-label={`${row.label}: ${filled} of ${summary.total}`}
+                  >
+                    {Array.from({ length: safeTotal }, (_, index) => {
+                      const on = index < filled;
+                      return (
+                        <span
+                          key={`${row.key}-${index}`}
+                          className={`h-2.5 min-w-0 flex-1 -skew-x-[18deg] border ${
+                            on
+                              ? PROGRESS_ROW_FILL[row.tone]
+                              : 'border-cream/15 bg-transparent'
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                  <p className="text-right font-mono text-[10px] tabular-nums text-cream/45">
+                    <span className="text-cream/75">{filled}</span>
+                    <span className="text-cream/25">/{summary.total}</span>
+                  </p>
                 </div>
-                <p className="text-right font-mono text-[10px] tabular-nums text-cream/45">
-                  <span className="text-cream/75">{filled}</span>
-                  <span className="text-cream/25">/{summary.total}</span>
-                </p>
               </div>
             );
           })}

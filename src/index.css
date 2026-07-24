@@ -289,9 +289,10 @@
     height: 0;
   }
 
-  /* Nudge time labels slightly right of the vertical notch ticks. */
+  /* Keep time labels close to the vertical notch ticks. */
   .audio-compare-scroll [part~='timeline-notch'] {
-    padding-left: 8px;
+    padding-left: 2px;
+    text-indent: 0 !important;
   }
 
   .noise-overlay {
