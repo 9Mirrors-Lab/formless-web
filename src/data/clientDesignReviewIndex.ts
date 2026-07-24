@@ -130,6 +130,26 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/PatternMirrorPage.tsx',
   },
   {
+    id: 'audio-studio',
+    title: 'Audiobook review · Studio',
+    href: '/audio',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Client audio compare mockup: Formless chapters, Original vs Optimized waveforms, T toggle, read-along tray.',
+    source: 'src/pages/AudioStudioMockupPage.tsx',
+  },
+  {
+    id: 'audio-editorial',
+    title: 'Audiobook review · Editorial',
+    href: '/audio/editorial',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Dark editorial listen mockup: book-led sidebar, stacked players, manuscript tray with sentence sync.',
+    source: 'src/pages/AudioEditorialMockupPage.tsx',
+  },
+  {
     id: 'colors',
     title: 'Colors (supporting pages)',
     href: '/colors',
@@ -164,9 +184,10 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     title: 'Iconography & motion',
     href: '/icons',
     section: 'motion-shaders',
-    status: 'reference',
-    description: 'Teaching marks with GSAP loops, light and dark previews.',
-    source: 'src/pages/IconsPage.tsx',
+    status: 'promoted',
+    description:
+      'Approved teaching marks with GSAP loops, light and dark previews. Same set in /design-system foundations.',
+    source: 'src/pages/IconsPage.tsx, src/components/iconography/',
   },
 
   // Brand & identity
@@ -176,7 +197,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     href: '/design-system',
     section: 'brand-identity',
     status: 'reference',
-    description: 'Color, type, motion tokens, and icon animation registry.',
+    description: 'Color, type, motion tokens, and approved teaching-icon registry.',
     source: 'src/DesignSystem.tsx',
   },
   {

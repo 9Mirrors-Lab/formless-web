@@ -1,86 +1,161 @@
-import { useState } from 'react';
-import { Layers, X, ChevronRight } from 'lucide-react';
-import { heroBookAsideQueryHref, resolveHeroBookAsideEnabled } from '@/config/featureFlags';
+import { useMemo, useState } from 'react';
+import { Layers, X } from 'lucide-react';
 
-export const DevMenu = () => {
+import {
+  CLIENT_DESIGN_REVIEW_INDEX,
+  CLIENT_REVIEW_SECTION_ORDER,
+  CLIENT_REVIEW_SECTIONS,
+  CLIENT_REVIEW_STATUS_LABELS,
+  type ClientReviewStatus,
+} from '@/data/clientDesignReviewIndex';
+
+function statusDotClass(status: ClientReviewStatus): string {
+  switch (status) {
+    case 'live':
+      return 'bg-moss';
+    case 'promoted':
+      return 'bg-clay';
+    case 'experiment':
+      return 'bg-cream/50';
+    case 'reference':
+      return 'bg-cream/25';
+    default: {
+      const _exhaustive: never = status;
+      return _exhaustive;
+    }
+  }
+}
+
+function isActiveHref(current: string, href: string): boolean {
+  if (current === href) return true;
+  if (!href.includes('?') && current.startsWith(`${href}?`)) return true;
+  if (href === '/' && (current === '/' || current.startsWith('/?'))) return true;
+  return false;
+}
+
+/** Prefer the leaf file name; keep parent folder when useful. */
+function shortSource(source?: string): string | null {
+  if (!source) return null;
+  const first = source.split(',')[0]?.trim() ?? source;
+  const parts = first.split('/');
+  if (parts.length <= 2) return first;
+  return parts.slice(-2).join('/');
+}
+
+type DevMenuProps = {
+  path: string;
+};
+
+/** Dev-only floating dock: same design links as `/client/review`, always one click away. */
+export const DevMenu = ({ path }: DevMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const bookAsideEnabled = resolveHeroBookAsideEnabled();
+  const search = typeof window !== 'undefined' ? window.location.search : '';
+  const current = `${path}${search}`;
+
+  const bySection = useMemo(
+    () =>
+      CLIENT_REVIEW_SECTION_ORDER.map((section) => ({
+        section,
+        label: CLIENT_REVIEW_SECTIONS[section].label,
+        entries: CLIENT_DESIGN_REVIEW_INDEX.filter((entry) => entry.section === section),
+      })),
+    [],
+  );
 
   if (!import.meta.env.DEV) return null;
 
-  const devPages = [
-    { name: '── Site Pages ──', path: '' },
-    { name: 'Main Page', path: '/' },
-    { name: '── Hero ──', path: '' },
-    {
-      name: bookAsideEnabled ? 'Book aside: on (active)' : 'Book aside: on',
-      path: heroBookAsideQueryHref(true),
-    },
-    {
-      name: !bookAsideEnabled ? 'Book aside: off (active)' : 'Book aside: off',
-      path: heroBookAsideQueryHref(false),
-    },
-    { name: '── Dev Pages ──', path: '' },
-    { name: 'Layout tests', path: '/layout-tests' },
-    { name: 'About (Magazine Layout)', path: '/about-magazine' },
-    { name: 'Brand Export Kit', path: '/brand-kit-export' },
-    { name: 'Eyes Closed logo options', path: '/eyes-closed-logo-options' },
-    { name: 'Icons', path: '/icons' },
-  ];
-
   return (
-    <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end">
+    <div className="fixed left-4 top-4 z-[99999] flex flex-col items-start font-sans">
+      <button
+        type="button"
+        onClick={() => setIsOpen((open) => !open)}
+        className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-cream/20 bg-charcoal px-3.5 py-2 text-sm font-medium text-cream shadow-lg transition-colors hover:border-moss/40 hover:bg-moss hover:text-charcoal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
+        aria-expanded={isOpen}
+        aria-label={isOpen ? 'Close design navigation' : 'Open design navigation'}
+      >
+        <Layers size={16} aria-hidden />
+        Design
+      </button>
+
       {isOpen ? (
-        <div className="mb-4 w-64 origin-bottom-right transform rounded-xl border border-cream/10 bg-charcoal p-5 text-cream shadow-2xl transition-all">
-          <div className="mb-4 flex items-center justify-between border-b border-cream/10 pb-3">
-            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-cream/70">
-              <Layers size={14} aria-hidden />
-              Dev Navigation
-            </h3>
+        <div className="mt-2 max-h-[min(78vh,40rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-xl border border-cream/15 bg-charcoal/95 text-cream shadow-2xl backdrop-blur-md">
+          <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-cream/10 bg-charcoal/95 px-3.5 py-3">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold tracking-wide text-cream">Design routes</p>
+              <p className="mt-0.5 font-mono text-[10px] text-cream/40">
+                here: {current || '/'}
+              </p>
+              <a
+                href="/client/review"
+                className="mt-1 block text-[11px] text-moss transition-colors hover:text-cream"
+              >
+                /client/review
+              </a>
+            </div>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-cream/50 transition-colors hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
-              aria-label="Close development navigation"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
+              aria-label="Close design navigation"
             >
               <X size={16} aria-hidden />
             </button>
           </div>
-          <ul className="flex flex-col gap-1">
-            {devPages.map((page, idx) => (
-              <li key={page.path || `sep-${idx}`}>
-                {page.path ? (
-                  <a
-                    href={page.path}
-                    className="group flex items-center justify-between rounded-md px-3 py-2 text-sm text-cream/90 transition-all hover:bg-cream/5 hover:text-moss focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
-                  >
-                    {page.name}
-                    <ChevronRight
-                      size={14}
-                      className="opacity-0 transition-opacity group-hover:opacity-100"
-                      aria-hidden
-                    />
-                  </a>
-                ) : (
-                  <span className="mt-2 block px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream/40">
-                    {page.name.replace(/─/g, '').trim()}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
 
-      {!isOpen ? (
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          className="group flex min-h-11 min-w-11 items-center justify-center rounded-full border border-cream/10 bg-charcoal p-3 text-cream shadow-lg transition-all hover:bg-moss hover:text-charcoal motion-safe:hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
-          aria-label="Open development navigation"
-        >
-          <Layers size={20} className="transition-transform group-hover:rotate-12 motion-reduce:group-hover:rotate-0" aria-hidden />
-        </button>
+          <nav className="px-2 py-2" aria-label="Design review routes">
+            {bySection.map(({ section, label, entries }) => (
+              <div key={section} className="mb-2">
+                <p className="px-2 pb-1 pt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/35">
+                  {label}
+                </p>
+                <ul className="flex flex-col gap-0.5">
+                  {entries.map((entry) => {
+                    const active = isActiveHref(current, entry.href);
+                    const file = shortSource(entry.source);
+                    return (
+                      <li key={entry.id}>
+                        <a
+                          href={entry.href}
+                          className={`block rounded-lg px-2 py-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80 ${
+                            active
+                              ? 'bg-moss/15 text-moss'
+                              : 'text-cream/90 hover:bg-cream/5 hover:text-cream'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span
+                              className={`h-1.5 w-1.5 shrink-0 rounded-full ${statusDotClass(entry.status)}`}
+                              aria-hidden
+                            />
+                            <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                              {entry.title}
+                            </span>
+                            <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-cream/35">
+                              {CLIENT_REVIEW_STATUS_LABELS[entry.status]}
+                            </span>
+                          </span>
+                          <span className="mt-1 block pl-3.5 font-mono text-[11px] leading-snug text-cream/45">
+                            {entry.href}
+                          </span>
+                          {file ? (
+                            <span className="mt-0.5 block pl-3.5 font-mono text-[10px] leading-snug text-cream/30">
+                              {file}
+                            </span>
+                          ) : null}
+                          {entry.description ? (
+                            <span className="mt-1 block pl-3.5 text-[11px] leading-snug text-cream/40 line-clamp-2">
+                              {entry.description}
+                            </span>
+                          ) : null}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </div>
       ) : null}
     </div>
   );

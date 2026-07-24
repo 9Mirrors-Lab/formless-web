@@ -279,6 +279,21 @@
 }
 
 @layer utilities {
+  /* Audiobook compare: hide native Multitrack scrollbar; custom pan bar is in the footer. */
+  .audio-compare-scroll > div > div {
+    scrollbar-width: none;
+  }
+
+  .audio-compare-scroll > div > div::-webkit-scrollbar {
+    display: none;
+    height: 0;
+  }
+
+  /* Nudge time labels slightly right of the vertical notch ticks. */
+  .audio-compare-scroll [part~='timeline-notch'] {
+    padding-left: 8px;
+  }
+
   .noise-overlay {
     position: fixed;
     inset: 0;

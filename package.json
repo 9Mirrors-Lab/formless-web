@@ -17,6 +17,7 @@
     "@paper-design/shaders-react": "^0.0.72",
     "@supabase/supabase-js": "^2.105.2",
     "@tailwindcss/vite": "^4.2.1",
+    "@wavesurfer/react": "^1.0.12",
     "framer-motion": "^12.38.0",
     "gsap": "^3.14.2",
     "jszip": "^3.10.1",
@@ -24,7 +25,9 @@
     "posthog-js": "^1.398.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tailwindcss": "^4.2.1"
+    "tailwindcss": "^4.2.1",
+    "wavesurfer-multitrack": "^0.4.12",
+    "wavesurfer.js": "^7.12.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -6,6 +6,7 @@
 
 import { useRef } from 'react';
 
+import { TeachingIconGrid, TeachingIconMotionStrip } from '@/components/iconography/TeachingIconGrid';
 import {
   ICON_ANIMATION_CATEGORIES,
   ICON_ANIMATIONS,
@@ -96,7 +97,7 @@ const motionPatterns = [
   { name: 'Cinematic ease', token: 'cubic-bezier(0.16, 1, 0.3, 1)', use: 'Hovers, UI transitions' },
   { name: 'Entrance', token: 'power3.inOut', use: 'Clip-path title reveals' },
   { name: 'Ambient drift', token: 'sine.inOut yoyo', use: 'Header blobs, icon loops' },
-  { name: 'Icon loops', token: 'GSAP repeat: -1', use: 'Teaching marks on /icons' },
+  { name: 'Icon loops', token: 'GSAP repeat: -1', use: 'Approved teaching marks (foundations + /icons)' },
 ];
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -111,75 +112,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       </div>
       {children}
     </section>
-  );
-}
-
-function IconPreviewCard({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="px-1">
-        <h3 className="font-sans text-sm font-bold uppercase tracking-wide text-cream">{title}</h3>
-        <p className="mt-1 text-[11px] leading-relaxed text-cream/55">{description}</p>
-      </div>
-      <div className="flex h-40 items-center justify-center rounded-[2rem] border border-white/5 bg-[#1a2332] shadow-inner">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function IconShowcase() {
-  return (
-    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-      <IconPreviewCard title="The observer" description="Expanding ripple rings (power1.out, 2.5s)">
-        <svg className="h-24 w-24 text-cream" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <circle className="observer-wave text-[#9fb5aa] opacity-40" cx="50" cy="50" r="10" />
-          <circle className="observer-wave text-[#9fb5aa] opacity-60" cx="50" cy="50" r="10" />
-          <circle className="observer-wave text-[#9fb5aa] opacity-80" cx="50" cy="50" r="10" />
-          <circle cx="50" cy="50" r="6" fill="currentColor" />
-        </svg>
-      </IconPreviewCard>
-
-      <IconPreviewCard title="Linked thoughts" description="Staggered node pulse + link fade">
-        <svg className="h-24 w-24 text-[#9fb5aa]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
-          <line className="neural-link" x1="20" y1="20" x2="50" y2="50" />
-          <line className="neural-link" x1="80" y1="20" x2="50" y2="50" />
-          <line className="neural-link" x1="20" y1="80" x2="50" y2="50" />
-          <line className="neural-link" x1="80" y1="80" x2="50" y2="50" />
-          <circle className="neural-node" cx="50" cy="50" r="8" fill="rgba(204,88,51,0.2)" stroke="currentColor" />
-          <circle className="neural-node" cx="20" cy="20" r="5" fill="currentColor" />
-          <circle className="neural-node" cx="80" cy="20" r="5" fill="currentColor" />
-          <circle className="neural-node" cx="20" cy="80" r="5" fill="currentColor" />
-          <circle className="neural-node" cx="80" cy="80" r="5" fill="currentColor" />
-        </svg>
-      </IconPreviewCard>
-
-      <IconPreviewCard title="The anchor" description="Harmonic pendulum (sine.inOut, 2.8s)">
-        <svg className="h-24 w-24 text-[#9fb5aa]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
-          <g className="anchor-pendulum will-change-transform">
-            <line x1="50" y1="20" x2="50" y2="67" strokeLinecap="round" />
-            <circle cx="50" cy="75" r="8" fill="currentColor" stroke="none" />
-          </g>
-          <circle cx="50" cy="20" r="3" fill="currentColor" stroke="none" />
-        </svg>
-      </IconPreviewCard>
-
-      <IconPreviewCard title="The formless" description="Dissolving rings (power1.out, 4s stagger)">
-        <svg className="h-24 w-24 text-cream" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
-          <circle className="formless-ring" cx="50" cy="50" r="10" />
-          <circle className="formless-ring" cx="50" cy="50" r="10" />
-          <circle className="formless-ring" cx="50" cy="50" r="10" />
-        </svg>
-      </IconPreviewCard>
-    </div>
   );
 }
 
@@ -236,8 +168,8 @@ export default function DesignSystem() {
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream/65">
           Tokens from <code className="rounded bg-cream/5 px-1.5 py-0.5 font-mono text-sm text-cream/80">@theme</code>,
-          motion patterns, and GSAP icon loops. Dark immersive reference; public pages use cream or brief-dark bands.
-          Full icon gallery at{' '}
+          motion patterns, and the approved GSAP teaching-icon set. Dark immersive reference; public pages use cream or brief-dark bands.
+          Dual light/dark gallery also at{' '}
           <a href="/icons" className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream">
             /icons
           </a>
@@ -416,15 +348,31 @@ export default function DesignSystem() {
           <li>UI transitions: 300–500ms with cinematic ease; scroll teaching moments: 1–2s+</li>
           <li>No bounce, flash, or arcade-style particle overload</li>
         </ul>
+
+        <div className="mt-12">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">
+            Icon loop samples
+          </p>
+          <p className="mb-6 max-w-2xl text-sm leading-relaxed text-cream/65">
+            Live GSAP loops from the approved teaching set. Same marks as Icon animations below; this strip shows how
+            motion tokens feel on the actual SVGs.
+          </p>
+          <TeachingIconMotionStrip />
+        </div>
       </Section>
 
       <Section title="Icon animations">
         <p className="mb-8 max-w-2xl text-sm leading-relaxed text-cream/65">
-          GSAP loops via <code className="text-cream/80">useIconAnimations</code> hook. Each mark uses class-targeted
-          tweens; loops are slow, organic, and respect reduced motion. Preview samples below; full registry in tables.
+          Approved teaching marks with GSAP loops via <code className="text-cream/80">useIconAnimations</code>. Each
+          mark uses class-targeted tweens; loops are slow, organic, and respect reduced motion. Full set below; dual
+          light/dark gallery at{' '}
+          <a href="/icons" className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream">
+            /icons
+          </a>
+          .
         </p>
 
-        <IconShowcase />
+        <TeachingIconGrid mode="dark" showMotionNotes />
 
         <div className="mt-14">
           {ICON_ANIMATION_CATEGORIES.map((category) => (

@@ -185,7 +185,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     title: 'Design system',
     path: '/design-system',
     category: 'design',
-    description: 'Color, type, motion tokens and icon animation registry.',
+    description: 'Color, type, motion tokens and approved teaching-icon registry.',
     source: 'src/DesignSystem.tsx',
   },
   {
@@ -193,7 +193,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     title: 'Iconography',
     path: '/icons',
     category: 'design',
-    description: 'All teaching marks with GSAP loops, light and dark previews.',
+    description: 'Approved teaching marks with GSAP loops, light and dark previews.',
     source: 'src/pages/IconsPage.tsx',
   },
   {
@@ -267,6 +267,24 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     category: 'design',
     description: 'Pattern mirror teaching visual.',
     source: 'src/pages/PatternMirrorPage.tsx',
+  },
+  {
+    id: 'audio-studio',
+    title: 'Audiobook review · Studio',
+    path: '/audio',
+    category: 'design',
+    description:
+      'Mockup A: dark studio compare for Formless chapter audio (Original vs Optimized, T toggle, read-along).',
+    source: 'src/pages/AudioStudioMockupPage.tsx',
+  },
+  {
+    id: 'audio-editorial',
+    title: 'Audiobook review · Editorial',
+    path: '/audio/editorial',
+    category: 'design',
+    description:
+      'Mockup B: dark editorial listen room with book sidebar, stacked players, and manuscript tray.',
+    source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
     id: 'design-framework',

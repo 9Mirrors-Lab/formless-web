@@ -34,9 +34,11 @@ import ClientSiteUpdatesPage from './pages/ClientSiteUpdatesPage';
 import ClientDesignReviewPage from './pages/ClientDesignReviewPage';
 import ClientReviewHeroClassicPage from './pages/ClientReviewHeroClassicPage';
 import SiteHubPage from './pages/SiteHubPage';
+import AudioStudioMockupPage from './pages/AudioStudioMockupPage';
+import AudioEditorialMockupPage from './pages/AudioEditorialMockupPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 import { PostHogPageView } from './components/PostHogPageView';
-// import { DevMenu } from './components/DevMenu';
+import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
 
@@ -105,6 +107,8 @@ export function Root({ path }: { path: string }) {
   const isClientSiteUpdates = path === '/client/site-updates';
   const isClientDesignReview = path === '/client/review';
   const isClientReviewHeroClassic = path === '/client/review/hero-classic';
+  const isAudioStudio = path === '/audio';
+  const isAudioEditorial = path === '/audio/editorial';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -138,6 +142,8 @@ export function Root({ path }: { path: string }) {
   if (isClientSiteUpdates) return <ClientSiteUpdatesPage />;
   if (isClientDesignReview) return <ClientDesignReviewPage />;
   if (isClientReviewHeroClassic) return <ClientReviewHeroClassicPage />;
+  if (isAudioStudio) return <AudioStudioMockupPage />;
+  if (isAudioEditorial) return <AudioEditorialMockupPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -165,7 +171,9 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/auth/callback' ||
     path === '/client/site-updates' ||
     path === '/client/review' ||
-    path.startsWith('/client/review/')
+    path.startsWith('/client/review/') ||
+    path === '/audio' ||
+    path === '/audio/editorial'
   );
 }
 
@@ -196,7 +204,7 @@ function AppContentShell({ path }: { path: string }) {
       ) : (
         <Root path={path} />
       )}
-      {/* <DevMenu /> */}
+      <DevMenu path={path} />
     </>
   );
 }
