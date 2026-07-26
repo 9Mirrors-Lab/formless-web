@@ -1,19 +1,27 @@
 /**
- * Audio mockup B — Editorial listen
+ * Audio mockup B — Editorial listen + analysis
  *
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
- * audio compare stays spare, not DAW chrome.
- * Content plan: book identity + chapters → chapter meta + stacked players → transport → manuscript tray.
- * Interaction thesis: soft source cross-label; tray slide; active sentence underline.
+ * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
+ * Content plan: book identity + chapters → listen compare OR analysis dashboard → manuscript tray.
+ * Interaction thesis: soft source cross-label; tray slide; active sentence underline;
+ * shared Listen / Companion / Analysis workspace tabs.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 
+import { AudioAnalysisDashboard } from '@/components/audio-review/AudioAnalysisDashboard';
 import {
   AudioCompareMultitrack,
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
+import {
+  AudioWorkspaceNav,
+  editorialViewFromSearch,
+  setEditorialViewInUrl,
+  type EditorialView,
+} from '@/components/audio-review/AudioWorkspaceNav';
 import { audioChapterStatusIcon } from '@/components/audio-review/audioStatusIcons';
 import { FormlessBookCoverPanel } from '@/components/audio-review/FormlessBookCoverPanel';
 import {
@@ -45,14 +53,20 @@ function statusTone(status: AudioChapterStatus): string {
 export default function AudioEditorialMockupPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
   const [volume, setVolume] = useState(0.85);
+  const [mode, setMode] = useState<EditorialView>(() => editorialViewFromSearch());
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
   }, []);
   const review = useAudioReviewMock({ initialChapterId: 1, onSeek });
 
+  const selectView = useCallback((view: EditorialView) => {
+    setMode(view);
+    setEditorialViewInUrl(view);
+  }, []);
+
   return (
     <div className="flex h-[100svh] overflow-hidden bg-[#0a0c0b] font-sans text-cream antialiased">
-      <aside className="flex w-[320px] shrink-0 flex-col border-r border-cream/10 bg-[#101412]">
+      <aside className="hidden w-[300px] shrink-0 flex-col border-r border-cream/10 bg-[#101412] md:flex">
         <FormlessBookCoverPanel chapters={review.chapters} />
 
         <nav className="min-h-0 flex-1 overflow-y-auto px-5 py-2" aria-label="Chapters">
@@ -66,7 +80,10 @@ export default function AudioEditorialMockupPage() {
                 <li key={chapter.id} className="border-b border-cream/[0.06]">
                   <button
                     type="button"
-                    onClick={() => review.selectChapter(chapter.id)}
+                    onClick={() => {
+                      selectView('listen');
+                      review.selectChapter(chapter.id);
+                    }}
                     className="group flex w-full items-baseline gap-2.5 py-3 text-left transition-colors"
                   >
                     <span
@@ -105,41 +122,13 @@ export default function AudioEditorialMockupPage() {
             })}
           </ol>
         </nav>
-
-        <div className="border-t border-cream/10 px-5 py-3">
-          <a
-            href="/audio"
-            className="block font-mono text-[10px] uppercase tracking-[0.18em] text-cream/35 transition-colors hover:text-[#9fb5aa]"
-          >
-            ← Compare studio mockup
-          </a>
-        </div>
       </aside>
 
       <main className="relative flex min-w-0 flex-1 flex-col bg-[#0d100e]">
-        <header className="border-b border-cream/10 px-10 py-8">
-          <div className="flex w-full max-w-[900px] items-end justify-between gap-6">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40">
-                Chapter {formatChapterIndex(review.chapter.id)} · {AUDIO_BOOK.format}
-              </p>
-              <h2 className="mt-2 font-serif text-4xl italic leading-tight text-cream md:text-5xl">
-                {review.chapter.title}
-              </h2>
-              <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-cream/50">
-                <span className="font-mono text-[11px] uppercase tracking-wider">
-                  <span className="text-cream/35">Length</span>{' '}
-                  {formatAudioTime(review.chapter.length)}
-                </span>
-                <span className="h-3 w-px bg-cream/20" aria-hidden="true" />
-                <span
-                  className={`font-mono text-[11px] uppercase tracking-wider ${statusTone(review.chapter.status)}`}
-                >
-                  <span className="text-cream/35">Status</span>{' '}
-                  {audioStatusLabel(review.chapter.status)}
-                </span>
-              </div>
-            </div>
+        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-cream/10 px-5 py-3 md:px-8">
+          <AudioWorkspaceNav active={mode} onSelectView={selectView} />
+
+          {mode === 'listen' ? (
             <button
               type="button"
               onClick={() => review.setReadAlongOpen(true)}
@@ -147,143 +136,175 @@ export default function AudioEditorialMockupPage() {
             >
               Read along
             </button>
-          </div>
-        </header>
-
-        <div className="flex min-h-0 w-full max-w-[900px] flex-1 flex-col px-10 py-8">
-          <p className="mb-6 text-sm leading-relaxed text-cream/45">
-            Listen to the original chapter recording, then the optimized mix. Press{' '}
-            <kbd className="rounded border border-cream/15 bg-cream/5 px-1.5 py-0.5 font-mono text-[11px] text-cream/70">
-              T
-            </kbd>{' '}
-            to flip sources without losing your place.
-          </p>
-
-          <section className="mb-8 border-b border-cream/10 pb-6">
-            <div className="mb-4 flex items-baseline justify-between gap-4">
-              <h3 className="font-serif text-2xl italic text-cream">Compare</h3>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${review.source}-${review.sourceFlash}`}
-                  initial={{ opacity: 0, y: 3 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -3 }}
-                  transition={{ duration: 0.18 }}
-                  className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em]"
-                  aria-live="polite"
-                  aria-label={`Hearing ${review.source}`}
-                >
-                  <span
-                    className={
-                      review.source === 'original' ? 'text-cream' : 'text-cream/30'
-                    }
-                  >
-                    Original
-                  </span>
-                  <span className="text-cream/25" aria-hidden>
-                    ·
-                  </span>
-                  <span
-                    className={
-                      review.source === 'optimized' ? 'text-[#9fb5aa]' : 'text-cream/30'
-                    }
-                  >
-                    Optimized
-                  </span>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            <AudioCompareMultitrack
-              ref={playerRef}
-              originalUrl={review.originalUrl}
-              optimizedUrl={review.optimizedUrl}
-              activeSource={review.source}
-              playing={review.playing}
-              volume={volume}
-              trackHeight={56}
-              loading={review.audioLoading}
-              durationSeconds={review.chapter.length}
-              onSourceChange={review.setSource}
-              onTimeUpdate={review.setCurrentTime}
-              onReady={() => review.setAudioReady(true)}
-              onFinish={() => review.setPlaying(false)}
-            />
-
-            <div className="mt-5 flex gap-4">
-              <div className="w-[88px] shrink-0" aria-hidden />
-              <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-3">
-                <button
-                  type="button"
-                  onClick={() => review.setPlaying(!review.playing)}
-                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-moss text-cream transition-transform hover:scale-[1.03]"
-                  aria-label={review.playing ? 'Pause' : 'Play'}
-                >
-                  {review.playing ? (
-                    <Pause size={18} />
-                  ) : (
-                    <Play size={18} className="ml-0.5" />
-                  )}
-                </button>
-
-                <div className="flex items-center gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => review.seek(0)}
-                    className="rounded-md p-2 text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream"
-                    aria-label="Skip to beginning"
-                  >
-                    <SkipBack size={16} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => review.seek(review.currentTime - 10)}
-                    className="relative rounded-md p-2 text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream"
-                    aria-label="Rewind 10 seconds"
-                  >
-                    <RotateCcw size={16} />
-                    <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-mono text-[8px] font-medium text-cream/70">
-                      10
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => review.seek(review.currentTime + 10)}
-                    className="relative rounded-md p-2 text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream"
-                    aria-label="Forward 10 seconds"
-                  >
-                    <RotateCw size={16} />
-                    <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-mono text-[8px] font-medium text-cream/70">
-                      10
-                    </span>
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Volume2 size={16} className="shrink-0 text-cream/45" aria-hidden />
-                  <input
-                    type="range"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    value={volume}
-                    onChange={(event) => setVolume(Number(event.target.value))}
-                    className="h-1 w-24 cursor-pointer appearance-none rounded-full bg-cream/15 accent-[#9fb5aa]"
-                    aria-label="Volume"
-                  />
-                </div>
-
-                <p className="font-mono text-sm tabular-nums text-cream/65">
-                  {formatAudioTime(review.currentTime)}{' '}
-                  <span className="text-cream/30">/</span>{' '}
-                  {formatAudioTime(review.chapter.length)}
-                </p>
-              </div>
-            </div>
-          </section>
+          ) : null}
         </div>
 
+        {mode === 'analysis' ? (
+          <AudioAnalysisDashboard />
+        ) : (
+          <>
+            <header className="border-b border-cream/10 px-6 py-8 md:px-10">
+              <div className="flex w-full max-w-[900px] items-end justify-between gap-6">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40">
+                    Chapter {formatChapterIndex(review.chapter.id)} · {AUDIO_BOOK.format}
+                  </p>
+                  <h2 className="mt-2 font-serif text-4xl italic leading-tight text-cream md:text-5xl">
+                    {review.chapter.title}
+                  </h2>
+                  <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-cream/50">
+                    <span className="font-mono text-[11px] uppercase tracking-wider">
+                      <span className="text-cream/35">Length</span>{' '}
+                      {formatAudioTime(review.chapter.length)}
+                    </span>
+                    <span className="h-3 w-px bg-cream/20" aria-hidden="true" />
+                    <span
+                      className={`font-mono text-[11px] uppercase tracking-wider ${statusTone(review.chapter.status)}`}
+                    >
+                      <span className="text-cream/35">Status</span>{' '}
+                      {audioStatusLabel(review.chapter.status)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div className="flex min-h-0 w-full max-w-[900px] flex-1 flex-col overflow-y-auto px-6 py-8 md:px-10">
+              <p className="mb-6 text-sm leading-relaxed text-cream/45">
+                Listen to the original chapter recording, then the optimized mix. Press{' '}
+                <kbd className="rounded border border-cream/15 bg-cream/5 px-1.5 py-0.5 font-mono text-[11px] text-cream/70">
+                  T
+                </kbd>{' '}
+                to flip sources without losing your place.
+              </p>
+
+              <section className="mb-8 border-b border-cream/10 pb-6">
+                <div className="mb-4 flex items-baseline justify-between gap-4">
+                  <h3 className="font-serif text-2xl italic text-cream">Compare</h3>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`${review.source}-${review.sourceFlash}`}
+                      initial={{ opacity: 0, y: 3 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -3 }}
+                      transition={{ duration: 0.18 }}
+                      className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em]"
+                      aria-live="polite"
+                      aria-label={`Hearing ${review.source}`}
+                    >
+                      <span
+                        className={
+                          review.source === 'original' ? 'text-cream' : 'text-cream/30'
+                        }
+                      >
+                        Original
+                      </span>
+                      <span className="text-cream/25" aria-hidden>
+                        ·
+                      </span>
+                      <span
+                        className={
+                          review.source === 'optimized' ? 'text-[#9fb5aa]' : 'text-cream/30'
+                        }
+                      >
+                        Optimized
+                      </span>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+                <AudioCompareMultitrack
+                  ref={playerRef}
+                  originalUrl={review.originalUrl}
+                  optimizedUrl={review.optimizedUrl}
+                  activeSource={review.source}
+                  playing={review.playing}
+                  volume={volume}
+                  trackHeight={56}
+                  loading={review.audioLoading}
+                  durationSeconds={review.chapter.length}
+                  onSourceChange={review.setSource}
+                  onTimeUpdate={review.setCurrentTime}
+                  onReady={() => review.setAudioReady(true)}
+                  onFinish={() => review.setPlaying(false)}
+                />
+
+                <div className="mt-5 flex gap-4">
+                  <div className="w-[88px] shrink-0" aria-hidden />
+                  <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-3">
+                    <button
+                      type="button"
+                      onClick={() => review.setPlaying(!review.playing)}
+                      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-moss text-cream transition-transform hover:scale-[1.03]"
+                      aria-label={review.playing ? 'Pause' : 'Play'}
+                    >
+                      {review.playing ? (
+                        <Pause size={18} />
+                      ) : (
+                        <Play size={18} className="ml-0.5" />
+                      )}
+                    </button>
+
+                    <div className="flex items-center gap-0.5">
+                      <button
+                        type="button"
+                        onClick={() => review.seek(0)}
+                        className="rounded-md p-2 text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream"
+                        aria-label="Skip to beginning"
+                      >
+                        <SkipBack size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => review.seek(review.currentTime - 10)}
+                        className="relative rounded-md p-2 text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream"
+                        aria-label="Rewind 10 seconds"
+                      >
+                        <RotateCcw size={16} />
+                        <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-mono text-[8px] font-medium text-cream/70">
+                          10
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => review.seek(review.currentTime + 10)}
+                        className="relative rounded-md p-2 text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream"
+                        aria-label="Forward 10 seconds"
+                      >
+                        <RotateCw size={16} />
+                        <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-mono text-[8px] font-medium text-cream/70">
+                          10
+                        </span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Volume2 size={16} className="shrink-0 text-cream/45" aria-hidden />
+                      <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={volume}
+                        onChange={(event) => setVolume(Number(event.target.value))}
+                        className="h-1 w-24 cursor-pointer appearance-none rounded-full bg-cream/15 accent-[#9fb5aa]"
+                        aria-label="Volume"
+                      />
+                    </div>
+
+                    <p className="font-mono text-sm tabular-nums text-cream/65">
+                      {formatAudioTime(review.currentTime)}{' '}
+                      <span className="text-cream/30">/</span>{' '}
+                      {formatAudioTime(review.chapter.length)}
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </>
+        )}
+
         <AnimatePresence>
-          {review.readAlongOpen ? (
+          {review.readAlongOpen && mode === 'listen' ? (
             <>
               <motion.button
                 type="button"

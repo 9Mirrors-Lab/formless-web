@@ -36,6 +36,7 @@ import ClientReviewHeroClassicPage from './pages/ClientReviewHeroClassicPage';
 import SiteHubPage from './pages/SiteHubPage';
 import AudioStudioMockupPage from './pages/AudioStudioMockupPage';
 import AudioEditorialMockupPage from './pages/AudioEditorialMockupPage';
+import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 import { PostHogPageView } from './components/PostHogPageView';
 import { DevMenu } from './components/DevMenu';
@@ -109,6 +110,7 @@ export function Root({ path }: { path: string }) {
   const isClientReviewHeroClassic = path === '/client/review/hero-classic';
   const isAudioStudio = path === '/audio';
   const isAudioEditorial = path === '/audio/editorial';
+  const isAudioCompanion = path === '/audio/companion';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -144,6 +146,7 @@ export function Root({ path }: { path: string }) {
   if (isClientReviewHeroClassic) return <ClientReviewHeroClassicPage />;
   if (isAudioStudio) return <AudioStudioMockupPage />;
   if (isAudioEditorial) return <AudioEditorialMockupPage />;
+  if (isAudioCompanion) return <AudioCompanionKitPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -173,7 +176,8 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/client/review' ||
     path.startsWith('/client/review/') ||
     path === '/audio' ||
-    path === '/audio/editorial'
+    path === '/audio/editorial' ||
+    path === '/audio/companion'
   );
 }
 

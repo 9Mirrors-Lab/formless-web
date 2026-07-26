@@ -287,6 +287,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
+    id: 'audio-companion',
+    title: 'Audiobook · Companion kit',
+    path: '/audio/companion',
+    category: 'design',
+    description:
+      'Author session kit: room tone, book calibration passage, voice benchmark, complete recording flow.',
+    source: 'src/pages/AudioCompanionKitPage.tsx',
+  },
+  {
     id: 'design-framework',
     title: 'Design framework',
     path: '/design-framework',

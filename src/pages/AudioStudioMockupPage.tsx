@@ -108,7 +108,13 @@ export default function AudioStudioMockupPage() {
           })}
         </nav>
 
-        <div className="border-t border-cream/10 px-4 py-3">
+        <div className="space-y-2 border-t border-cream/10 px-4 py-3">
+          <a
+            href="/audio/companion"
+            className="block font-mono text-[10px] uppercase tracking-[0.18em] text-[#9fb5aa]/80 transition-colors hover:text-[#9fb5aa]"
+          >
+            Companion kit →
+          </a>
           <a
             href="/audio/editorial"
             className="block font-mono text-[10px] uppercase tracking-[0.18em] text-cream/40 transition-colors hover:text-[#9fb5aa]"

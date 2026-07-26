@@ -150,6 +150,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
+    id: 'audio-companion',
+    title: 'Audiobook · Companion kit',
+    href: '/audio/companion',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Author recording ritual: room tone timer, Chapter One calibration passage, post-approval benchmark, full session flow.',
+    source: 'src/pages/AudioCompanionKitPage.tsx',
+  },
+  {
     id: 'colors',
     title: 'Colors (supporting pages)',
     href: '/colors',
