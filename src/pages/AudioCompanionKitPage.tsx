@@ -29,7 +29,7 @@ function formatTimer(totalSeconds: number): string {
 function RoomToneTimer() {
   const reduceMotion = useReducedMotion();
   const duration = ROOM_TONE.durationSeconds;
-  const [remaining, setRemaining] = useState(duration);
+  const [remaining, setRemaining] = useState<number>(duration);
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
   const intervalRef = useRef<number | null>(null);

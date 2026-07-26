@@ -48,13 +48,14 @@ export function AudioWorkspaceNav({
         }`;
 
         if (tab.id !== 'companion' && onSelectView) {
+          const view: EditorialView = tab.id;
           return (
             <button
               key={tab.id}
               type="button"
               role="tab"
               aria-selected={selected}
-              onClick={() => onSelectView(tab.id)}
+              onClick={() => onSelectView(view)}
               className={className}
             >
               {tab.label}
