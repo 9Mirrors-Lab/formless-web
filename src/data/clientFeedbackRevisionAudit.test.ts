@@ -145,7 +145,7 @@ describe('client feedback revision audit (/revised)', () => {
 
   it('#14/#27 invitation tagline is applied in footer brand', () => {
     expect(getText(tree, 'footer', 'brand', 'tagline')).toBe(
-      'An invitation to go within and meet yourself beyond the identities and stories.',
+      'An invitation to go within and meet yourself\nbeyond the identities and stories.',
     );
   });
 

@@ -49,6 +49,16 @@ function setEntry(
   target.ordered = target.ordered.map((entry) => (entry.key === key ? nextEntry : entry));
 }
 
+function ensureSection(tree: ContentTree, page: string, section: string) {
+  if (!tree.pages[page]) {
+    tree.pages[page] = {};
+  }
+  if (!tree.pages[page][section]) {
+    tree.pages[page][section] = { byKey: {}, ordered: [] };
+  }
+  return tree.pages[page][section];
+}
+
 function setText(tree: ContentTree, page: string, section: string, key: string, text: string) {
   setEntry(tree, page, section, key, { text });
 }
@@ -61,8 +71,7 @@ function upsertText(
   text: string,
   order = 0,
 ) {
-  const target = tree.pages[page]?.[section];
-  if (!target) return;
+  const target = ensureSection(tree, page, section);
 
   if (target.byKey[key]) {
     setText(tree, page, section, key, text);
@@ -154,7 +163,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'footer',
     'brand',
     'tagline',
-    'An invitation to go within and meet yourself beyond the identities and stories.',
+    'An invitation to go within and meet yourself\nbeyond the identities and stories.',
   );
   setLink(revised, 'footer', 'explore', 'work', 'The Practice', '/work');
   setLink(revised, 'footer', 'explore', 'book', 'Formless', '/book');
@@ -286,7 +295,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'book',
     'header',
     'title',
-    'The book is a doorway into the recognition of who you truly are.',
+    'The book, Formless is a doorway into the recognition of who you truly are.',
   );
   setText(
     revised,
@@ -300,10 +309,11 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'book',
     'header',
     'notify_heading',
-    'Join the waitlist and be the first to know when the book is here.',
+    'Join the waitlist and be the first to\nknow when the book is here.',
   );
   setText(revised, 'book', 'header', 'notify_cta', 'Notify me');
-  setText(revised, 'book', 'header', 'notify_fine_print', 'Releasing September 1');
+  setText(revised, 'book', 'header', 'notify_fine_print', 'Early look inside');
+  setText(revised, 'book', 'header', 'notify_meta_release', 'Early look inside');
   setText(
     revised,
     'book',
@@ -318,6 +328,9 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'notify_error',
     'Enter a valid email, or try again in a moment.',
   );
+
+  upsertText(revised, 'book', 'availability', 'eyebrow', 'Available on', 0);
+  upsertText(revised, 'book', 'availability', 'title', 'One book. Three ways in.', 1);
 
   setText(revised, 'book', 'quotes', 'quote_0', 'Pause.\nFor one moment, stop. Be here.');
   setText(

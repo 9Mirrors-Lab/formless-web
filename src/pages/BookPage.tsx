@@ -4,7 +4,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageLayout } from '../components/PageLayout';
 import { ParticleButton } from '../components/ParticleButton';
 import { BookReleaseNotifyForm } from '../components/BookReleaseNotifyForm';
+import { BookAvailabilitySection } from '../components/BookAvailabilitySection';
 import { useContent, type ContentApi } from '@/context/ContentContext';
+import { useIconAnimations } from '@/hooks/useIconAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,12 +26,14 @@ function themesFromContent(api: ContentApi): ThemeCard[] {
 export default function BookPage() {
   const pageRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const availabilityRef = useRef<HTMLDivElement>(null);
   const quotesRef = useRef<HTMLDivElement>(null);
   const themesRef = useRef<HTMLDivElement>(null);
   const content = useContent();
   const { getText, getLink, ordered, textFromEntry } = content;
   const themes = themesFromContent(content);
   const quotes = ordered('book', 'quotes').map(textFromEntry);
+  useIconAnimations(pageRef);
 
   const ctaWork = getLink('book', 'closing', 'cta_work');
   const ctaScience = getLink('book', 'closing', 'cta_science');
@@ -39,6 +43,11 @@ export default function BookPage() {
   const notifyMetaUpdates = getText('book', 'header', 'notify_meta_updates');
   const notifySuccess = getText('book', 'header', 'notify_success');
   const notifyError = getText('book', 'header', 'notify_error');
+  const headerTitle = getText('book', 'header', 'title');
+  const headerTitleMatch = headerTitle.match(/^(The book,\s*Formless)\s*(.*)$/i);
+  const availabilityEyebrow = getText('book', 'availability', 'eyebrow') || 'Available on';
+  const availabilityTitle =
+    getText('book', 'availability', 'title') || 'One book. Three ways in.';
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -68,6 +77,22 @@ export default function BookPage() {
         '.book-notify-panel',
         { x: 40, opacity: 0 },
         { x: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.5 },
+      );
+      gsap.fromTo(
+        '.availability-platform',
+        { y: 36, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: availabilityRef.current,
+            start: 'top 75%',
+            once: true,
+          },
+        },
       );
       gsap.fromTo(
         '.pull-quote',
@@ -110,22 +135,27 @@ export default function BookPage() {
           </div>
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-full border border-cream/15 bg-cream/5">
-                <span className="w-1.5 h-1.5 rounded-full bg-cream/50 animate-pulse" />
-                <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-cream/50">Arriving September 1, 2026</span>
-              </div>
               <span className="font-mono text-xs tracking-[0.3em] uppercase text-cream/30 mb-6 block">
                 {getText('book', 'header', 'eyebrow')}
               </span>
               <h1 className="book-title font-serif text-5xl md:text-7xl text-cream leading-[1.14] pb-[0.06em] mb-8">
-                {getText('book', 'header', 'title')}
+                {headerTitleMatch ? (
+                  <>
+                    <span className="whitespace-nowrap">
+                      {headerTitleMatch[1].replace(/\s+/g, ' ')}
+                    </span>
+                    {headerTitleMatch[2] ? ` ${headerTitleMatch[2]}` : null}
+                  </>
+                ) : (
+                  headerTitle
+                )}
               </h1>
               <p className="text-cream/55 font-sans text-xl max-w-lg leading-relaxed">
                 {getText('book', 'header', 'lede')}
               </p>
             </div>
 
-            <div className="book-notify-panel w-full max-w-md md:max-w-none md:justify-self-end">
+            <div className="book-notify-panel w-full max-w-md md:justify-self-end">
               <BookReleaseNotifyForm
                 subheadline={notifySubhead}
                 ctaLabel={notifyCta}
@@ -137,6 +167,13 @@ export default function BookPage() {
             </div>
           </div>
         </section>
+
+      <div ref={availabilityRef}>
+        <BookAvailabilitySection
+          eyebrow={availabilityEyebrow}
+          title={availabilityTitle}
+        />
+      </div>
 
       <section
         ref={quotesRef}

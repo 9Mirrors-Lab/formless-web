@@ -11,16 +11,28 @@ function hasScopeTargets(root: HTMLElement, selector: string): boolean {
   return scopeTargets(root, selector).length > 0;
 }
 
+export type UseIconAnimationsOptions = {
+  /**
+   * Design reference surfaces (/icons, /design-system) pass true so reviewers
+   * can still see the loops when the OS has Reduce Motion enabled.
+   */
+  ignoreReducedMotion?: boolean;
+};
+
 /**
  * GSAP loops for site iconography. Shared by /icons and /design-system.
  * Only animates selectors that exist inside the provided scope element.
  */
-export function useIconAnimations(scope: React.RefObject<HTMLElement | null>) {
+export function useIconAnimations(
+  scope: React.RefObject<HTMLElement | null>,
+  options: UseIconAnimationsOptions = {},
+) {
   const reducedMotion = usePrefersReducedMotion();
+  const { ignoreReducedMotion = false } = options;
 
   useLayoutEffect(() => {
     const root = scope.current;
-    if (!root || reducedMotion) return;
+    if (!root || (reducedMotion && !ignoreReducedMotion)) return;
 
     const ctx = gsap.context(() => {
       const $ = (selector: string) => scopeTargets(root, selector);
@@ -445,19 +457,22 @@ export function useIconAnimations(scope: React.RefObject<HTMLElement | null>) {
       }
 
       if (hasScopeTargets(root, '.horizon-ring')) {
-        gsap.fromTo(
-          $('.horizon-ring'),
-          { scale: 0.1, opacity: 0 },
-          {
-            keyframes: [
-              { opacity: 0.8, scale: 5, duration: 1, ease: 'power1.out' },
-              { opacity: 0, scale: 25, duration: 3, ease: 'power2.in' },
-            ],
-            repeat: -1,
-            stagger: 4 / 12,
-            transformOrigin: '50% 50%',
-          },
-        );
+        const rings = $('.horizon-ring');
+        rings.forEach((ring, i) => {
+          gsap.fromTo(
+            ring,
+            { scale: 0.15, opacity: 0, transformOrigin: '50% 50%' },
+            {
+              keyframes: [
+                { opacity: 0.85, scale: 4, duration: 1, ease: 'power1.out' },
+                { opacity: 0, scale: 22, duration: 3, ease: 'power2.in' },
+              ],
+              repeat: -1,
+              delay: (i * 4) / rings.length,
+              transformOrigin: '50% 50%',
+            },
+          );
+        });
       }
 
       if (hasScopeTargets(root, '.tangle-arm')) {
@@ -482,5 +497,5 @@ export function useIconAnimations(scope: React.RefObject<HTMLElement | null>) {
     }, root);
 
     return () => ctx.revert();
-  }, [scope, reducedMotion]);
+  }, [scope, reducedMotion, ignoreReducedMotion]);
 }

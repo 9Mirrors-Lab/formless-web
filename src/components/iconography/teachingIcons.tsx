@@ -100,11 +100,11 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
             <line x1="50" y1="20" x2="50" y2="50" />
             <line x1="24" y1="65" x2="50" y2="50" />
             <line x1="76" y1="65" x2="50" y2="50" />
-            <circle className="molecule-atom" cx="50" cy="20" r="6" fill="currentColor" />
+            <circle className="molecule-atom" cx="50" cy="20" r="4" fill="currentColor" />
             <circle className="molecule-atom" cx="76" cy="35" r="4" fill="currentColor" />
-            <circle className="molecule-atom" cx="76" cy="65" r="6" fill="currentColor" />
+            <circle className="molecule-atom" cx="76" cy="65" r="4" fill="currentColor" />
             <circle className="molecule-atom" cx="50" cy="80" r="4" fill="currentColor" />
-            <circle className="molecule-atom" cx="24" cy="65" r="6" fill="currentColor" />
+            <circle className="molecule-atom" cx="24" cy="65" r="4" fill="currentColor" />
             <circle className="molecule-atom" cx="24" cy="35" r="4" fill="currentColor" />
             <circle className="molecule-atom" cx="50" cy="50" r="8" fill="rgba(204,88,51,0.3)" />
           </g>
@@ -408,10 +408,11 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
       render: ({ theme }: { theme: IconTheme }) => {
         const primaryText = theme === 'dark' ? 'text-cream' : 'text-charcoal';
         return (
-          <svg className={`w-24 h-24 ${primaryText}`} viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
-            <circle className="formless-ring" cx="50" cy="50" r="10" />
-            <circle className="formless-ring" cx="50" cy="50" r="10" />
-            <circle className="formless-ring" cx="50" cy="50" r="10" />
+          <svg className={`w-24 h-24 ${primaryText}`} viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle className="formless-core" cx="50" cy="50" r="4.5" fill="currentColor" stroke="none" />
+            <circle className="formless-ring" cx="50" cy="50" r="14" />
+            <circle className="formless-ring" cx="50" cy="50" r="14" />
+            <circle className="formless-ring" cx="50" cy="50" r="14" />
           </svg>
         );
       }
