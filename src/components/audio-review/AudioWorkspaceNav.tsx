@@ -1,6 +1,7 @@
 /**
  * Shared workspace tabs for editorial listen/analysis and the companion kit.
  * Order: Listen · Companion · Analysis
+ * Companion opens as a slide-out tray when onOpenCompanion is provided.
  */
 
 export type AudioWorkspaceTab = 'listen' | 'companion' | 'analysis';
@@ -13,7 +14,7 @@ const TABS: ReadonlyArray<{
   href: string;
 }> = [
   { id: 'listen', label: 'Listen', href: '/audio/editorial?view=listen' },
-  { id: 'companion', label: 'Companion', href: '/audio/companion' },
+  { id: 'companion', label: 'Companion', href: '/audio/editorial?companion=1' },
   { id: 'analysis', label: 'Analysis', href: '/audio/editorial?view=analysis' },
 ];
 
@@ -23,15 +24,19 @@ type AudioWorkspaceNavProps = {
   label?: string;
   /**
    * When set, Listen/Analysis switch in place (no full reload).
-   * Companion always navigates via href.
    */
   onSelectView?: (view: EditorialView) => void;
+  /**
+   * When set, Companion opens the recording tray instead of navigating away.
+   */
+  onOpenCompanion?: () => void;
 };
 
 export function AudioWorkspaceNav({
   active,
   label = 'Audio workspace',
   onSelectView,
+  onOpenCompanion,
 }: AudioWorkspaceNavProps) {
   return (
     <div
@@ -46,6 +51,21 @@ export function AudioWorkspaceNav({
             ? 'bg-moss text-cream'
             : 'text-cream/45 hover:text-cream/80'
         }`;
+
+        if (tab.id === 'companion' && onOpenCompanion) {
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              onClick={onOpenCompanion}
+              className={className}
+            >
+              {tab.label}
+            </button>
+          );
+        }
 
         if (tab.id !== 'companion' && onSelectView) {
           const view: EditorialView = tab.id;
@@ -88,8 +108,25 @@ export function editorialViewFromSearch(
   return 'listen';
 }
 
+export function companionOpenFromSearch(
+  search: string = typeof window !== 'undefined' ? window.location.search : '',
+): boolean {
+  return new URLSearchParams(search).get('companion') === '1';
+}
+
 export function setEditorialViewInUrl(view: EditorialView): void {
   const url = new URL(window.location.href);
   url.searchParams.set('view', view);
+  url.searchParams.delete('companion');
+  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
+export function setCompanionOpenInUrl(open: boolean): void {
+  const url = new URL(window.location.href);
+  if (open) {
+    url.searchParams.set('companion', '1');
+  } else {
+    url.searchParams.delete('companion');
+  }
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
 }

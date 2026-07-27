@@ -46,10 +46,16 @@ export const CALIBRATION = {
   consistencyNote:
     "If Chapter 7's calibration sounds like Chapter 1's calibration, the audiobook will feel much more consistent.",
   chapterLabel: 'Chapter One · The Feeling of Wholeness',
-  /** ~200 words from Chapter One for session calibration. */
-  bookPassage: `Chapter 1. The Feeling of Wholeness.
-
-You've made it in life. You have the house, the family, the career, the steady routine that signals success. The life you once imagined has mostly unfolded. And yet, a familiar emptiness lingers. A quiet unease. A sense of not feeling whole, not having arrived. No matter what you achieve, something in you keeps wanting more. If it's not this house, maybe a bigger one will finally make you happy. If it's not this relationship, perhaps the next one will bring you back to life. Maybe it's a new job. A different city. A fresh start. Then you think everything will feel right. Your mind convinces you that fulfillment is just one change away. That if the outer picture can be changed, the inner emptiness will disappear. Yet, no matter how many times you rearrange the furniture of your life, the quiet ache returns, reminding you that what you seek cannot be found in the next thing, the next place, or the next person. You begin to question it. How can you have accomplished so much and still feel like something is missing?`,
+  /** Chapter One opening, broken for voice reading. */
+  bookPassageParagraphs: [
+    'Chapter 1. The Feeling of Wholeness.',
+    "You've made it in life. You have the house, the family, the career, the steady routine that signals success. The life you once imagined has mostly unfolded.",
+    'And yet, a familiar emptiness lingers. A quiet unease. A sense of not feeling whole, not having arrived. No matter what you achieve, something in you keeps wanting more.',
+    "If it's not this house, maybe a bigger one will finally make you happy. If it's not this relationship, perhaps the next one will bring you back to life. Maybe it's a new job. A different city. A fresh start. Then you think everything will feel right.",
+    'Your mind convinces you that fulfillment is just one change away. That if the outer picture can be changed, the inner emptiness will disappear.',
+    'Yet, no matter how many times you rearrange the furniture of your life, the quiet ache returns, reminding you that what you seek cannot be found in the next thing, the next place, or the next person.',
+    'You begin to question it. How can you have accomplished so much and still feel like something is missing?',
+  ],
   fallbackTitle: 'Fallback paragraph',
   fallbackLede:
     'Use only if the book passage is not yet locked. It exercises quiet speech, louder words, numbers, pacing, questions, short pauses, and transitions.',
@@ -95,23 +101,73 @@ export const AFTER_APPROVAL = {
   ],
 } as const;
 
+/** Provided filenames — author uses these exact names, not their own. */
+export const SESSION_FILES = {
+  projectName: 'Formless-First-Test.aup3',
+  exportName: 'Formless-First-Test.wav',
+} as const;
+
 export const SESSION_FLOW = {
   index: '04',
-  name: 'Full session',
-  headline: 'The complete session',
+  name: 'Session flow',
+  headline: 'How this first test runs',
+  lede: 'Room tone, then the calibration passage only. Do not continue into a full chapter yet.',
   steps: [
-    { id: 'template', label: 'Open template' },
-    { id: 'save-as', label: 'Save as chapter' },
+    { id: 'template', label: 'Open the Audacity template' },
+    {
+      id: 'save-as',
+      label: 'Save Project → Save Project As…',
+      note: SESSION_FILES.projectName,
+    },
     { id: 'record', label: 'Press record' },
     { id: 'room', label: '30 seconds of silence', note: 'Room tone' },
-    { id: 'calibrate', label: 'Read the calibration paragraph', note: 'Always the same passage' },
-    { id: 'chapter', label: "Continue into today's chapter" },
+    {
+      id: 'calibrate',
+      label: 'Read the calibration passage',
+      note: 'Stop after the passage',
+    },
     { id: 'stop', label: 'Stop recording' },
-    { id: 'save', label: 'Save' },
+    {
+      id: 'export',
+      label: 'File → Export → Export as WAV',
+      note: `${SESSION_FILES.exportName} · Mono · 44.1 kHz · 16-bit PCM`,
+    },
+    {
+      id: 'upload',
+      label: 'Upload the WAV below',
+      note: 'Then send',
+    },
   ],
 } as const;
 
-export type CompanionSectionId = 'room' | 'calibration' | 'benchmark' | 'session';
+/** File requirements for the initial companion test (room tone + narrative). */
+export const UPLOAD_SPEC = {
+  index: '05',
+  name: 'Send take',
+  headline: 'Send this file.',
+  lede: 'One take file. Room tone at the start, then the calibration passage. We use it to check the room and your voice before chapter work.',
+  format: 'WAV or M4A',
+  bitDepth: '16-bit PCM',
+  sampleRate: '44.1 kHz',
+  channels: 'Mono',
+  fileName: SESSION_FILES.exportName,
+  structure: [
+    { label: '0–30 seconds', detail: 'Silent room tone' },
+    { label: 'After 30 seconds', detail: 'Calibration passage only' },
+  ],
+  exportSteps: [
+    'File → Export → Export as WAV',
+    `Save as ${SESSION_FILES.exportName}`,
+    'WAV (Microsoft) signed 16-bit PCM',
+    'Mono, 44.1 kHz',
+    'Do not normalize or add effects before sending',
+  ],
+  maxSizeLabel: '100 MB max',
+  /** Extensions only. MIME tokens in accept gray out files in macOS Finder. */
+  acceptAttr: '.wav,.wave,.m4a',
+} as const;
+
+export type CompanionSectionId = 'room' | 'calibration' | 'send';
 
 export const COMPANION_SECTIONS: Array<{
   id: CompanionSectionId;
@@ -119,7 +175,6 @@ export const COMPANION_SECTIONS: Array<{
   href: string;
 }> = [
   { id: 'room', label: 'Room tone', href: '#room-tone' },
-  { id: 'calibration', label: 'Calibration', href: '#calibration' },
-  { id: 'benchmark', label: 'After approval', href: '#benchmark' },
-  { id: 'session', label: 'Full session', href: '#session' },
+  { id: 'calibration', label: 'Read', href: '#calibration' },
+  { id: 'send', label: 'Send', href: '#send' },
 ];

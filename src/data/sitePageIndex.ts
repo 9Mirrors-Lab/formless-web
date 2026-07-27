@@ -289,11 +289,20 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
   {
     id: 'audio-companion',
     title: 'Audiobook · Companion kit',
-    path: '/audio/companion',
+    path: '/audio/editorial?companion=1',
     category: 'design',
     description:
-      'Author session kit: room tone, book calibration passage, voice benchmark, complete recording flow.',
-    source: 'src/pages/AudioCompanionKitPage.tsx',
+      'Author recording tray on editorial: room tone, book calibration passage, voice benchmark, complete session flow.',
+    source: 'src/components/audio-review/AudioCompanionTray.tsx',
+  },
+  {
+    id: 'audio-send-take',
+    title: 'Audiobook · Send take',
+    path: '/audio/send-take',
+    category: 'design',
+    description:
+      'Mobile-first upload page for room tone + calibration takes, with live size and percent status.',
+    source: 'src/pages/AudioSendTakePage.tsx',
   },
   {
     id: 'design-framework',

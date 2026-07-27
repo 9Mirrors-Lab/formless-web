@@ -3,23 +3,28 @@
  *
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
  * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
- * Content plan: book identity + chapters → listen compare OR analysis dashboard → manuscript tray.
+ * Content plan: book identity + chapters → listen compare OR analysis dashboard → manuscript tray /
+ * companion recording tray.
  * Interaction thesis: soft source cross-label; tray slide; active sentence underline;
- * shared Listen / Companion / Analysis workspace tabs.
+ * shared Listen / Companion / Analysis workspace tabs (Companion opens a right-edge tray).
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 
 import { AudioAnalysisDashboard } from '@/components/audio-review/AudioAnalysisDashboard';
+import { AudioCompanionTray } from '@/components/audio-review/AudioCompanionTray';
 import {
   AudioCompareMultitrack,
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
 import {
   AudioWorkspaceNav,
+  companionOpenFromSearch,
   editorialViewFromSearch,
+  setCompanionOpenInUrl,
   setEditorialViewInUrl,
+  type AudioWorkspaceTab,
   type EditorialView,
 } from '@/components/audio-review/AudioWorkspaceNav';
 import { audioChapterStatusIcon } from '@/components/audio-review/audioStatusIcons';
@@ -54,15 +59,31 @@ export default function AudioEditorialMockupPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
   const [volume, setVolume] = useState(0.85);
   const [mode, setMode] = useState<EditorialView>(() => editorialViewFromSearch());
+  const [companionOpen, setCompanionOpen] = useState(() => companionOpenFromSearch());
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
   }, []);
   const review = useAudioReviewMock({ initialChapterId: 1, onSeek });
 
   const selectView = useCallback((view: EditorialView) => {
+    setCompanionOpen(false);
+    setCompanionOpenInUrl(false);
     setMode(view);
     setEditorialViewInUrl(view);
   }, []);
+
+  const openCompanion = useCallback(() => {
+    review.setReadAlongOpen(false);
+    setCompanionOpen(true);
+    setCompanionOpenInUrl(true);
+  }, [review.setReadAlongOpen]);
+
+  const closeCompanion = useCallback(() => {
+    setCompanionOpen(false);
+    setCompanionOpenInUrl(false);
+  }, []);
+
+  const activeTab: AudioWorkspaceTab = companionOpen ? 'companion' : mode;
 
   return (
     <div className="flex h-[100svh] overflow-hidden bg-[#0a0c0b] font-sans text-cream antialiased">
@@ -126,12 +147,19 @@ export default function AudioEditorialMockupPage() {
 
       <main className="relative flex min-w-0 flex-1 flex-col bg-[#0d100e]">
         <div className="flex shrink-0 items-center justify-between gap-4 border-b border-cream/10 px-5 py-3 md:px-8">
-          <AudioWorkspaceNav active={mode} onSelectView={selectView} />
+          <AudioWorkspaceNav
+            active={activeTab}
+            onSelectView={selectView}
+            onOpenCompanion={openCompanion}
+          />
 
-          {mode === 'listen' ? (
+          {mode === 'listen' && !companionOpen ? (
             <button
               type="button"
-              onClick={() => review.setReadAlongOpen(true)}
+              onClick={() => {
+                closeCompanion();
+                review.setReadAlongOpen(true);
+              }}
               className="shrink-0 border border-cream/15 bg-transparent px-4 py-2.5 text-sm text-cream transition-colors hover:border-[#9fb5aa]/50 hover:bg-moss hover:text-cream"
             >
               Read along
@@ -304,7 +332,7 @@ export default function AudioEditorialMockupPage() {
         )}
 
         <AnimatePresence>
-          {review.readAlongOpen && mode === 'listen' ? (
+          {review.readAlongOpen && mode === 'listen' && !companionOpen ? (
             <>
               <motion.button
                 type="button"
@@ -372,6 +400,8 @@ export default function AudioEditorialMockupPage() {
             </>
           ) : null}
         </AnimatePresence>
+
+        <AudioCompanionTray open={companionOpen} onClose={closeCompanion} />
       </main>
     </div>
   );

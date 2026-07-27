@@ -152,12 +152,22 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
   {
     id: 'audio-companion',
     title: 'Audiobook · Companion kit',
-    href: '/audio/companion',
+    href: '/audio/editorial?companion=1',
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Author recording ritual: room tone timer, Chapter One calibration passage, post-approval benchmark, full session flow.',
-    source: 'src/pages/AudioCompanionKitPage.tsx',
+      'Author recording tray: room tone rules, Chapter One calibration passage, post-approval benchmark, full session flow.',
+    source: 'src/components/audio-review/AudioCompanionTray.tsx',
+  },
+  {
+    id: 'audio-send-take',
+    title: 'Audiobook · Send take',
+    href: '/audio/send-take',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Phone-first send page: choose WAV/M4A, animated upload status, live bytes and percent.',
+    source: 'src/pages/AudioSendTakePage.tsx',
   },
   {
     id: 'colors',
