@@ -19,8 +19,11 @@ import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
 import ColorsPage from './pages/ColorsPage';
 import FontsPage from './pages/FontsPage';
+import ComponentsPage from './pages/ComponentsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
+import BrandPage from './pages/BrandPage';
+import SpeakerSheetPage from './pages/SpeakerSheetPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
 import PatternMirrorPage from './pages/PatternMirrorPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -92,11 +95,14 @@ export function Root({ path }: { path: string }) {
   const isAbout = path === '/about';
   const isColors = path === '/colors';
   const isFonts = path === '/fonts';
+  const isComponents = path === '/components';
   const isAboutMagazine = path === '/about-magazine';
   const isEyesClosedLogoOptions =
     path === '/eyes-closed-logo-options' ||
     path === '/design/eyes-closed-logo-variations/04-options.html';
   const isBrandKitExport = path === '/brand-kit-export';
+  const isBrand = path === '/brand';
+  const isSpeakerSheet = path === '/speaker-sheet';
   const isLayoutTests = path === '/layout-tests';
   const isPatternMirror = path === '/pattern-mirror';
   const isPrivacy = path === '/privacy';
@@ -132,8 +138,11 @@ export function Root({ path }: { path: string }) {
   if (isAboutMagazine) return <AboutPage defaultLayout={4} />;
   if (isColors) return <ColorsPage />;
   if (isFonts) return <FontsPage />;
+  if (isComponents) return <ComponentsPage />;
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;
+  if (isBrand) return <BrandPage />;
+  if (isSpeakerSheet) return <SpeakerSheetPage />;
   if (isLayoutTests) return <LayoutTestsPage />;
   if (isPatternMirror) return <PatternMirrorPage />;
   if (isPrivacy) return <PrivacyPage />;
@@ -187,6 +196,16 @@ function isUnrestrictedPath(path: string): boolean {
 
 function AppContentShell({ path }: { path: string }) {
   const { status, errorMessage } = useContentStatus();
+
+  // Send-take is a handset utility with no CMS copy; never block on content fetch.
+  if (path === '/audio/send-take') {
+    return (
+      <>
+        <Root path={path} />
+        <DevMenu path={path} />
+      </>
+    );
+  }
 
   if (status === 'loading') {
     return (

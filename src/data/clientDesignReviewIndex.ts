@@ -62,25 +62,6 @@ const SECTION_ORDER: ClientReviewSectionId[] = [
 export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
   // Hero & home
   {
-    id: 'hero-classic',
-    title: 'Original home hero',
-    href: '/client/review/hero-classic',
-    section: 'hero-home',
-    status: 'reference',
-    description:
-      'Pre–layout-test hero: single-column serif lockup, GSAP entrance and scroll fade, desert photo background. No Formless book panel.',
-    source: 'src/components/Hero.tsx',
-  },
-  {
-    id: 'hero-current',
-    title: 'Current live home',
-    href: '/',
-    section: 'hero-home',
-    status: 'live',
-    description: 'What visitors see today: updated lockup and type scale. Book aside off by default.',
-    source: 'src/components/LayoutTestHeroSection.tsx',
-  },
-  {
     id: 'hero-book-aside',
     title: 'Home with Formless panel',
     href: '/?heroBookAside=1',
@@ -130,16 +111,6 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/PatternMirrorPage.tsx',
   },
   {
-    id: 'audio-studio',
-    title: 'Audiobook review · Studio',
-    href: '/audio',
-    section: 'layout-pages',
-    status: 'experiment',
-    description:
-      'Client audio compare mockup: Formless chapters, Original vs Optimized waveforms, T toggle, read-along tray.',
-    source: 'src/pages/AudioStudioMockupPage.tsx',
-  },
-  {
     id: 'audio-editorial',
     title: 'Audiobook review · Editorial',
     href: '/audio/editorial',
@@ -150,16 +121,6 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
-    id: 'audio-companion',
-    title: 'Audiobook · Companion kit',
-    href: '/audio/editorial?companion=1',
-    section: 'layout-pages',
-    status: 'experiment',
-    description:
-      'Author recording tray: room tone rules, Chapter One calibration passage, post-approval benchmark, full session flow.',
-    source: 'src/components/audio-review/AudioCompanionTray.tsx',
-  },
-  {
     id: 'audio-send-take',
     title: 'Audiobook · Send take',
     href: '/audio/send-take',
@@ -168,15 +129,6 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     description:
       'Phone-first send page: choose WAV/M4A, animated upload status, live bytes and percent.',
     source: 'src/pages/AudioSendTakePage.tsx',
-  },
-  {
-    id: 'colors',
-    title: 'Colors (supporting pages)',
-    href: '/colors',
-    section: 'layout-pages',
-    status: 'experiment',
-    description: 'Dark theme explorations for work, book, science, and about.',
-    source: 'src/pages/ColorsPage.tsx',
   },
 
   // Motion & shaders
@@ -212,6 +164,24 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
 
   // Brand & identity
   {
+    id: 'brand',
+    title: 'Brand page',
+    href: '/brand',
+    section: 'brand-identity',
+    status: 'experiment',
+    description: 'Brand studio landing with coming-soon placeholder.',
+    source: 'src/pages/BrandPage.tsx',
+  },
+  {
+    id: 'speaker-sheet',
+    title: 'Speaker sheet',
+    href: '/speaker-sheet',
+    section: 'brand-identity',
+    status: 'experiment',
+    description: 'Speaker one-sheet concepts A/B/C with full-size preview.',
+    source: 'src/pages/SpeakerSheetPage.tsx',
+  },
+  {
     id: 'design-system',
     title: 'Design system',
     href: '/design-system',
@@ -219,6 +189,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     status: 'reference',
     description: 'Color, type, motion tokens, and approved teaching-icon registry.',
     source: 'src/DesignSystem.tsx',
+  },
+  {
+    id: 'components',
+    title: 'Components (callouts)',
+    href: '/components',
+    section: 'brand-identity',
+    status: 'promoted',
+    description:
+      'Status callout variants and anti-patterns. Editorial rule is live on /book; pills reserved for nav/controls.',
+    source: 'src/pages/ComponentsPage.tsx, src/components/ui/Callout.tsx',
   },
   {
     id: 'fonts',

@@ -3,6 +3,7 @@ import { isPostHogConfigured } from '@/lib/posthog';
 /** Routes used for design, review, or internal tooling; excluded from analytics. */
 export const INTERNAL_ANALYTICS_PATH_PREFIXES = [
   '/design-system',
+  '/components',
   '/icons',
   '/brief',
   '/brief2',
@@ -14,6 +15,8 @@ export const INTERNAL_ANALYTICS_PATH_PREFIXES = [
   '/design-framework',
   '/layout-tests',
   '/brand-kit-export',
+  '/brand',
+  '/speaker-sheet',
   '/eyes-closed-logo-options',
   '/pattern-mirror',
   '/about-magazine',

@@ -181,12 +181,37 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
 
   // — Design & experiments —
   {
+    id: 'brand',
+    title: 'Brand',
+    path: '/brand',
+    category: 'design',
+    description: 'Brand studio landing. Placeholder until brand content is ready.',
+    source: 'src/pages/BrandPage.tsx',
+  },
+  {
+    id: 'speaker-sheet',
+    title: 'Speaker sheet',
+    path: '/speaker-sheet',
+    category: 'design',
+    description: 'Speaker one-sheet layout concepts A/B/C for venue and booking use.',
+    source: 'src/pages/SpeakerSheetPage.tsx',
+  },
+  {
     id: 'design-system',
     title: 'Design system',
     path: '/design-system',
     category: 'design',
-    description: 'Color, type, motion tokens and approved teaching-icon registry.',
-    source: 'src/DesignSystem.tsx',
+    description:
+      'Color, type, motion tokens, and teaching icons with stable ids for TeachingIconMark / Callout use.',
+    source: 'src/DesignSystem.tsx, src/components/iconography/teachingIcons.tsx',
+  },
+  {
+    id: 'components',
+    title: 'Components',
+    path: '/components',
+    category: 'design',
+    description: 'Visual component options: status callouts and related site patterns.',
+    source: 'src/pages/ComponentsPage.tsx, src/components/ui/Callout.tsx',
   },
   {
     id: 'icons',
