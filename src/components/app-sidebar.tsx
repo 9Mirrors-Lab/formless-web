@@ -9,6 +9,7 @@ import { Menu, X } from "lucide-react";
 export type BrandNavId =
   | "brand"
   | "speaker-sheet"
+  | "logo-options"
   | "client-review"
   | "design-system";
 
@@ -36,12 +37,19 @@ const NAV_GROUPS: NavGroup[] = [
         href: "/speaker-sheet",
         description: "Venue one-sheets",
       },
+      {
+        id: "logo-options",
+        title: "Logo Options",
+        href: "/brand-kit-export",
+        description: "Export kit and lockups",
+      },
     ],
   },
 ];
 
 function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/speaker-sheet") return "speaker-sheet";
+  if (pathname === "/brand-kit-export") return "logo-options";
   if (pathname === "/design-system") return "design-system";
   if (pathname === "/client/review" || pathname.startsWith("/client/review/")) {
     return "client-review";
