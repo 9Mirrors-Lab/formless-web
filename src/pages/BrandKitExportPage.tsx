@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { Download, Check } from "lucide-react";
+import { useId, useState, type ReactNode } from "react";
+import { Check, Download, Package } from "lucide-react";
 
 import { BrandShell } from "@/components/app-sidebar";
+import {
+  BrandPageBody,
+  BrandPageHeader,
+} from "@/components/BrandPageHeader";
 import logoWhiteSrc from "../../design/eyes-closed-logo-variations/Final-logos/09a-white-ec-notagline.svg";
 import logoBlackSrc from "../../design/eyes-closed-logo-variations/Final-logos/09b-black-ec-notagline.svg";
 import ecPublishingWhiteSrc from "../../design/eyes-closed-logo-variations/EC-White-Publishing.svg";
@@ -26,6 +30,7 @@ interface SizeDef {
 interface ThemeDef {
   id: string;
   name: string;
+  shortName: string;
   bgColor: string;
   logo: string;
 }
@@ -33,140 +38,365 @@ interface ThemeDef {
 interface ExportGroup {
   id: string;
   name: string;
+  shortName: string;
+  category: "logos" | "code" | "profiles" | "utility";
   sizes: SizeDef[];
   themes: ThemeDef[];
 }
 
+const CHECKER =
+  "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACVJREFUKFNjZCASMDKgAnv27PkPU4xVA1GCS0pKYDRR8AAAd3cI2uGg+8AAAAAASUVORK5CYII=')";
+
+const PROFILE_SIZES: SizeDef[] = [
+  {
+    id: "default",
+    name: "1080 × 1080",
+    width: 1080,
+    height: 1080,
+    safeZoneType: "circle",
+    padding: 200,
+  },
+];
+
+const PROFILE_THEMES: ThemeDef[] = [
+  {
+    id: "white",
+    name: "White on dark",
+    shortName: "White",
+    bgColor: "#050806",
+    logo: logoWhiteSrc,
+  },
+  {
+    id: "black",
+    name: "Black on cream",
+    shortName: "Black",
+    bgColor: "#f4ebd9",
+    logo: logoBlackSrc,
+  },
+];
+
 const EXPORT_GROUPS: ExportGroup[] = [
   {
-    id: "ec-publishing",
-    name: "EC Publishing Logo",
+    id: "standard",
+    name: "Standard mark",
+    shortName: "Mark",
+    category: "logos",
     sizes: [
-      { id: "svg", name: "Download SVG", width: 1401, height: 799, safeZoneType: "none", padding: 0 },
-      { id: "png", name: "Download PNG", width: 1401, height: 799, safeZoneType: "none", padding: 0 },
+      {
+        id: "large",
+        name: "Large",
+        width: 2048,
+        height: 918,
+        safeZoneType: "none",
+        padding: 0,
+      },
+      {
+        id: "medium",
+        name: "Medium",
+        width: 1024,
+        height: 459,
+        safeZoneType: "none",
+        padding: 0,
+      },
+      {
+        id: "small",
+        name: "Small",
+        width: 512,
+        height: 230,
+        safeZoneType: "none",
+        padding: 0,
+      },
     ],
     themes: [
-      { id: "white-trans", name: "White Logo", bgColor: "transparent", logo: ecPublishingWhiteSrc },
-      { id: "black-trans", name: "Black Logo", bgColor: "transparent", logo: ecPublishingBlackSrc },
-    ]
+      {
+        id: "white-trans",
+        name: "White",
+        shortName: "White",
+        bgColor: "transparent",
+        logo: logoWhiteSrc,
+      },
+      {
+        id: "black-trans",
+        name: "Black",
+        shortName: "Black",
+        bgColor: "transparent",
+        logo: logoBlackSrc,
+      },
+    ],
+  },
+  {
+    id: "ec-publishing",
+    name: "EC Publishing",
+    shortName: "Publishing",
+    category: "logos",
+    sizes: [
+      {
+        id: "svg",
+        name: "SVG",
+        width: 1401,
+        height: 799,
+        safeZoneType: "none",
+        padding: 0,
+      },
+      {
+        id: "png",
+        name: "PNG",
+        width: 1401,
+        height: 799,
+        safeZoneType: "none",
+        padding: 0,
+      },
+    ],
+    themes: [
+      {
+        id: "white-trans",
+        name: "White",
+        shortName: "White",
+        bgColor: "transparent",
+        logo: ecPublishingWhiteSrc,
+      },
+      {
+        id: "black-trans",
+        name: "Black",
+        shortName: "Black",
+        bgColor: "transparent",
+        logo: ecPublishingBlackSrc,
+      },
+    ],
   },
   {
     id: "qr",
-    name: "QR Code",
+    name: "QR code",
+    shortName: "QR",
+    category: "code",
     sizes: [
-      { id: "png", name: "Download PNG", width: 1080, height: 1080, safeZoneType: "none", padding: 100 },
-      { id: "svg", name: "Download SVG", width: 1080, height: 1080, safeZoneType: "none", padding: 100 },
-      { id: "pdf", name: "Download PDF", width: 1080, height: 1080, safeZoneType: "none", padding: 100 },
+      {
+        id: "png",
+        name: "PNG",
+        width: 1080,
+        height: 1080,
+        safeZoneType: "none",
+        padding: 100,
+      },
+      {
+        id: "svg",
+        name: "SVG",
+        width: 1080,
+        height: 1080,
+        safeZoneType: "none",
+        padding: 100,
+      },
+      {
+        id: "pdf",
+        name: "PDF",
+        width: 1080,
+        height: 1080,
+        safeZoneType: "none",
+        padding: 100,
+      },
     ],
     themes: [
-      { id: "default", name: "QR Code (Black)", bgColor: "#f4ebd9", logo: qrCodePngSrc },
-    ]
-  },
-  {
-    id: "standard",
-    name: "Standard Logos",
-    sizes: [
-      { id: "large", name: "Large (2048px)", width: 2048, height: 918, safeZoneType: "none", padding: 0 },
-      { id: "medium", name: "Medium (1024px)", width: 1024, height: 459, safeZoneType: "none", padding: 0 },
-      { id: "small", name: "Small (512px)", width: 512, height: 230, safeZoneType: "none", padding: 0 },
+      {
+        id: "default",
+        name: "Black on cream",
+        shortName: "Default",
+        bgColor: "#f4ebd9",
+        logo: qrCodePngSrc,
+      },
     ],
-    themes: [
-      { id: "white-trans", name: "White Logo (Transparent)", bgColor: "transparent", logo: logoWhiteSrc },
-      { id: "black-trans", name: "Black Logo (Transparent)", bgColor: "transparent", logo: logoBlackSrc },
-    ]
   },
   {
     id: "ig",
-    name: "Instagram Profile",
-    sizes: [
-      { id: "default", name: "1080 × 1080", width: 1080, height: 1080, safeZoneType: "circle", padding: 200 },
-    ],
-    themes: [
-      { id: "white", name: "White Logo (Dark bg)", bgColor: "#050806", logo: logoWhiteSrc },
-      { id: "black", name: "Black Logo (Cream bg)", bgColor: "#f4ebd9", logo: logoBlackSrc },
-    ]
+    name: "Instagram",
+    shortName: "IG",
+    category: "profiles",
+    sizes: PROFILE_SIZES,
+    themes: PROFILE_THEMES,
   },
   {
     id: "linkedin",
-    name: "LinkedIn Profile",
-    sizes: [
-      { id: "default", name: "1080 × 1080", width: 1080, height: 1080, safeZoneType: "circle", padding: 200 },
-    ],
-    themes: [
-      { id: "white", name: "White Logo (Dark bg)", bgColor: "#050806", logo: logoWhiteSrc },
-      { id: "black", name: "Black Logo (Cream bg)", bgColor: "#f4ebd9", logo: logoBlackSrc },
-    ]
+    name: "LinkedIn",
+    shortName: "LinkedIn",
+    category: "profiles",
+    sizes: PROFILE_SIZES,
+    themes: PROFILE_THEMES,
   },
   {
     id: "twitter",
-    name: "Twitter / X Profile",
-    sizes: [
-      { id: "default", name: "1080 × 1080", width: 1080, height: 1080, safeZoneType: "circle", padding: 200 },
-    ],
-    themes: [
-      { id: "white", name: "White Logo (Dark bg)", bgColor: "#050806", logo: logoWhiteSrc },
-      { id: "black", name: "Black Logo (Cream bg)", bgColor: "#f4ebd9", logo: logoBlackSrc },
-    ]
+    name: "X / Twitter",
+    shortName: "X",
+    category: "profiles",
+    sizes: PROFILE_SIZES,
+    themes: PROFILE_THEMES,
   },
   {
     id: "youtube",
-    name: "YouTube Profile",
-    sizes: [
-      { id: "default", name: "1080 × 1080", width: 1080, height: 1080, safeZoneType: "circle", padding: 200 },
-    ],
-    themes: [
-      { id: "white", name: "White Logo (Dark bg)", bgColor: "#050806", logo: logoWhiteSrc },
-      { id: "black", name: "Black Logo (Cream bg)", bgColor: "#f4ebd9", logo: logoBlackSrc },
-    ]
+    name: "YouTube",
+    shortName: "YouTube",
+    category: "profiles",
+    sizes: PROFILE_SIZES,
+    themes: PROFILE_THEMES,
   },
   {
     id: "tiktok",
-    name: "TikTok Profile",
-    sizes: [
-      { id: "default", name: "1080 × 1080", width: 1080, height: 1080, safeZoneType: "circle", padding: 200 },
-    ],
-    themes: [
-      { id: "white", name: "White Logo (Dark bg)", bgColor: "#050806", logo: logoWhiteSrc },
-      { id: "black", name: "Black Logo (Cream bg)", bgColor: "#f4ebd9", logo: logoBlackSrc },
-    ]
+    name: "TikTok",
+    shortName: "TikTok",
+    category: "profiles",
+    sizes: PROFILE_SIZES,
+    themes: PROFILE_THEMES,
   },
   {
     id: "email",
-    name: "Email Signature",
+    name: "Email signature",
+    shortName: "Email",
+    category: "utility",
     sizes: [
-      { id: "default", name: "400 × 150", width: 400, height: 150, safeZoneType: "square", padding: 20 },
+      {
+        id: "default",
+        name: "400 × 150",
+        width: 400,
+        height: 150,
+        safeZoneType: "square",
+        padding: 20,
+      },
     ],
     themes: [
-      { id: "white-trans", name: "White Logo (Transparent)", bgColor: "transparent", logo: logoWhiteSrc },
-      { id: "black-trans", name: "Black Logo (Transparent)", bgColor: "transparent", logo: logoBlackSrc },
-    ]
+      {
+        id: "white-trans",
+        name: "White",
+        shortName: "White",
+        bgColor: "transparent",
+        logo: logoWhiteSrc,
+      },
+      {
+        id: "black-trans",
+        name: "Black",
+        shortName: "Black",
+        bgColor: "transparent",
+        logo: logoBlackSrc,
+      },
+    ],
   },
   {
     id: "favicon",
-    name: "Favicon / Web",
+    name: "Favicon",
+    shortName: "Favicon",
+    category: "utility",
     sizes: [
-      { id: "default", name: "512 × 512", width: 512, height: 512, safeZoneType: "square", padding: 40 },
+      {
+        id: "default",
+        name: "512 × 512",
+        width: 512,
+        height: 512,
+        safeZoneType: "square",
+        padding: 40,
+      },
     ],
     themes: [
-      { id: "white-trans", name: "White Logo (Transparent)", bgColor: "transparent", logo: logoWhiteSrc },
-      { id: "black-trans", name: "Black Logo (Transparent)", bgColor: "transparent", logo: logoBlackSrc },
-    ]
-  }
+      {
+        id: "white-trans",
+        name: "White",
+        shortName: "White",
+        bgColor: "transparent",
+        logo: logoWhiteSrc,
+      },
+      {
+        id: "black-trans",
+        name: "Black",
+        shortName: "Black",
+        bgColor: "transparent",
+        logo: logoBlackSrc,
+      },
+    ],
+  },
 ];
 
+/** Shown in the picker. EC Publishing stays in the full ZIP only. */
+const HIDDEN_PICKER_IDS = new Set(["ec-publishing"]);
+const PICKER_GROUPS = EXPORT_GROUPS.filter((g) => !HIDDEN_PICKER_IDS.has(g.id));
+const DEFAULT_GROUP = PICKER_GROUPS[0];
+
+const CATEGORY_ORDER = [
+  { id: "logos" as const, label: "Logos" },
+  { id: "code" as const, label: "Code" },
+  { id: "profiles" as const, label: "Profiles" },
+  { id: "utility" as const, label: "Utility" },
+];
+
+function OptionChip({
+  selected,
+  onSelect,
+  children,
+  leading,
+}: {
+  selected: boolean;
+  onSelect: () => void;
+  children: ReactNode;
+  leading?: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={[
+        "inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 text-sm transition-colors",
+        selected
+          ? "border-clay/60 bg-clay/15 text-cream"
+          : "border-cream/12 bg-cream/[0.03] text-cream/65 hover:border-cream/25 hover:text-cream",
+      ].join(" ")}
+    >
+      {leading}
+      <span className="font-medium tracking-wide">{children}</span>
+      {selected ? <Check size={14} className="text-clay" aria-hidden /> : null}
+    </button>
+  );
+}
+
+function FieldLabel({
+  htmlFor,
+  children,
+}: {
+  htmlFor?: string;
+  children: ReactNode;
+}) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      className="mb-2.5 block font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40"
+    >
+      {children}
+    </label>
+  );
+}
+
 export default function BrandKitExportPage() {
-  const [activeGroupId, setActiveGroupId] = useState(EXPORT_GROUPS[0].id);
-  const [activeSizeId, setActiveSizeId] = useState(EXPORT_GROUPS[0].sizes[0].id);
-  const [activeThemeId, setActiveThemeId] = useState(EXPORT_GROUPS[0].themes[0].id);
-  
+  const [activeGroupId, setActiveGroupId] = useState(DEFAULT_GROUP.id);
+  const [activeSizeId, setActiveSizeId] = useState(DEFAULT_GROUP.sizes[0].id);
+  const [activeThemeId, setActiveThemeId] = useState(DEFAULT_GROUP.themes[0].id);
   const [isExporting, setIsExporting] = useState(false);
   const [isZipping, setIsZipping] = useState(false);
+  const assetSelectId = useId();
 
-  const activeGroup = EXPORT_GROUPS.find(g => g.id === activeGroupId)!;
-  const activeSize = activeGroup.sizes.find(s => s.id === activeSizeId) || activeGroup.sizes[0];
-  const activeTheme = activeGroup.themes.find(t => t.id === activeThemeId) || activeGroup.themes[0];
+  const activeGroup =
+    PICKER_GROUPS.find((g) => g.id === activeGroupId) ?? DEFAULT_GROUP;
+  const activeSize =
+    activeGroup.sizes.find((s) => s.id === activeSizeId) ??
+    activeGroup.sizes[0];
+  const activeTheme =
+    activeGroup.themes.find((t) => t.id === activeThemeId) ??
+    activeGroup.themes[0];
 
-  const generatePngBlob = async (size: SizeDef, theme: ThemeDef): Promise<Blob> => {
+  const selectGroup = (group: ExportGroup) => {
+    setActiveGroupId(group.id);
+    setActiveSizeId(group.sizes[0].id);
+    setActiveThemeId(group.themes[0].id);
+  };
+
+  const generatePngBlob = async (
+    size: SizeDef,
+    theme: ThemeDef,
+  ): Promise<Blob> => {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement("canvas");
       canvas.width = size.width;
@@ -183,14 +413,13 @@ export default function BrandKitExportPage() {
       img.onload = () => {
         const nativeWidth = img.naturalWidth || img.width || 1401;
         const nativeHeight = img.naturalHeight || img.height || 799;
-
-        const availableWidth = canvas.width - (size.padding * 2);
-        const availableHeight = canvas.height - (size.padding * 2);
-        
+        const availableWidth = canvas.width - size.padding * 2;
+        const availableHeight = canvas.height - size.padding * 2;
         const imgRatio = nativeWidth / nativeHeight;
         const availableRatio = availableWidth / availableHeight;
 
-        let drawWidth, drawHeight;
+        let drawWidth: number;
+        let drawHeight: number;
 
         if (imgRatio > availableRatio) {
           drawWidth = availableWidth;
@@ -202,7 +431,6 @@ export default function BrandKitExportPage() {
 
         const x = (canvas.width - drawWidth) / 2;
         const y = (canvas.height - drawHeight) / 2;
-
         ctx.drawImage(img, x, y, drawWidth, drawHeight);
 
         canvas.toBlob((blob) => {
@@ -225,33 +453,41 @@ export default function BrandKitExportPage() {
         if (group.id === "ec-publishing") {
           const folder = zip.folder(group.name);
           if (!folder) continue;
-          
-          const whiteSvgBlob = await fetch(ecPublishingWhiteSrc).then(r => r.blob());
-          folder.file('eyes-closed-publishing-white.svg', whiteSvgBlob);
-          
-          const blackSvgBlob = await fetch(ecPublishingBlackSrc).then(r => r.blob());
-          folder.file('eyes-closed-publishing-black.svg', blackSvgBlob);
 
-          const whitePngBlob = await fetch(ecPublishingWhitePngSrc).then(r => r.blob());
-          folder.file('eyes-closed-publishing-white.png', whitePngBlob);
-          
-          const blackPngBlob = await fetch(ecPublishingBlackPngSrc).then(r => r.blob());
-          folder.file('eyes-closed-publishing-black.png', blackPngBlob);
+          folder.file(
+            "eyes-closed-publishing-white.svg",
+            await fetch(ecPublishingWhiteSrc).then((r) => r.blob()),
+          );
+          folder.file(
+            "eyes-closed-publishing-black.svg",
+            await fetch(ecPublishingBlackSrc).then((r) => r.blob()),
+          );
+          folder.file(
+            "eyes-closed-publishing-white.png",
+            await fetch(ecPublishingWhitePngSrc).then((r) => r.blob()),
+          );
+          folder.file(
+            "eyes-closed-publishing-black.png",
+            await fetch(ecPublishingBlackPngSrc).then((r) => r.blob()),
+          );
           continue;
         }
 
         if (group.id === "qr") {
           const folder = zip.folder(group.name);
           if (!folder) continue;
-          
-          const pngBlob = await fetch(qrCodePngSrc).then(r => r.blob());
-          folder.file('eyes-closed-qr-code.png', pngBlob);
-          
-          const svgBlob = await fetch(qrCodeSvgSrc).then(r => r.blob());
-          folder.file('eyes-closed-qr-code.svg', svgBlob);
-          
-          const pdfBlob = await fetch(qrCodePdfSrc).then(r => r.blob());
-          folder.file('eyes-closed-qr-code.pdf', pdfBlob);
+          folder.file(
+            "eyes-closed-qr-code.png",
+            await fetch(qrCodePngSrc).then((r) => r.blob()),
+          );
+          folder.file(
+            "eyes-closed-qr-code.svg",
+            await fetch(qrCodeSvgSrc).then((r) => r.blob()),
+          );
+          folder.file(
+            "eyes-closed-qr-code.pdf",
+            await fetch(qrCodePdfSrc).then((r) => r.blob()),
+          );
           continue;
         }
 
@@ -261,9 +497,12 @@ export default function BrandKitExportPage() {
         for (const size of group.sizes) {
           for (const theme of group.themes) {
             const blob = await generatePngBlob(size, theme);
-            const safeThemeName = theme.name.replace(/\//g, '-');
-            const safeSizeName = size.name.replace(/\//g, '-');
-            folder.file(`eyes-closed-${group.id}-${safeThemeName}-${safeSizeName}.png`, blob);
+            const safeThemeName = theme.name.replace(/\//g, "-");
+            const safeSizeName = size.name.replace(/\//g, "-");
+            folder.file(
+              `eyes-closed-${group.id}-${safeThemeName}-${safeSizeName}.png`,
+              blob,
+            );
           }
         }
       }
@@ -273,7 +512,6 @@ export default function BrandKitExportPage() {
       link.href = URL.createObjectURL(content);
       link.download = "eyes-closed-complete-brand-kit.zip";
       link.click();
-
     } catch (err) {
       console.error(err);
       alert("Failed to generate zip file.");
@@ -284,26 +522,24 @@ export default function BrandKitExportPage() {
 
   const handleDownload = () => {
     if (activeGroup.id === "ec-publishing") {
-      const isWhite = activeTheme.id === 'white-trans';
-      const link = document.createElement('a');
-      link.download = `eyes-closed-publishing-${isWhite ? 'white' : 'black'}.${activeSize.id}`;
-      
-      if (activeSize.id === 'svg') {
+      const isWhite = activeTheme.id === "white-trans";
+      const link = document.createElement("a");
+      link.download = `eyes-closed-publishing-${isWhite ? "white" : "black"}.${activeSize.id}`;
+      if (activeSize.id === "svg") {
         link.href = isWhite ? ecPublishingWhiteSrc : ecPublishingBlackSrc;
-      } else if (activeSize.id === 'png') {
+      } else if (activeSize.id === "png") {
         link.href = isWhite ? ecPublishingWhitePngSrc : ecPublishingBlackPngSrc;
       }
-      
       link.click();
       return;
     }
 
     if (activeGroup.id === "qr") {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.download = `eyes-closed-qr-code.${activeSize.id}`;
-      if (activeSize.id === 'pdf') link.href = qrCodePdfSrc;
-      if (activeSize.id === 'svg') link.href = qrCodeSvgSrc;
-      if (activeSize.id === 'png') link.href = qrCodePngSrc;
+      if (activeSize.id === "pdf") link.href = qrCodePdfSrc;
+      if (activeSize.id === "svg") link.href = qrCodeSvgSrc;
+      if (activeSize.id === "png") link.href = qrCodePngSrc;
       link.click();
       return;
     }
@@ -312,7 +548,6 @@ export default function BrandKitExportPage() {
     const canvas = document.createElement("canvas");
     canvas.width = activeSize.width;
     canvas.height = activeSize.height;
-    
     const ctx = canvas.getContext("2d");
     if (!ctx) {
       setIsExporting(false);
@@ -329,14 +564,13 @@ export default function BrandKitExportPage() {
     img.onload = () => {
       const nativeWidth = img.naturalWidth || img.width || 1401;
       const nativeHeight = img.naturalHeight || img.height || 799;
-
-      const availableWidth = canvas.width - (activeSize.padding * 2);
-      const availableHeight = canvas.height - (activeSize.padding * 2);
-      
+      const availableWidth = canvas.width - activeSize.padding * 2;
+      const availableHeight = canvas.height - activeSize.padding * 2;
       const imgRatio = nativeWidth / nativeHeight;
       const availableRatio = availableWidth / availableHeight;
 
-      let drawWidth, drawHeight;
+      let drawWidth: number;
+      let drawHeight: number;
 
       if (imgRatio > availableRatio) {
         drawWidth = availableWidth;
@@ -348,213 +582,290 @@ export default function BrandKitExportPage() {
 
       const x = (canvas.width - drawWidth) / 2;
       const y = (canvas.height - drawHeight) / 2;
-
       ctx.drawImage(img, x, y, drawWidth, drawHeight);
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.download = `eyes-closed-${activeGroup.id}-${activeSize.id}-${activeTheme.id}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = canvas.toDataURL("image/png");
       link.click();
-      
       setIsExporting(false);
     };
-    
+
     img.onerror = () => {
       setIsExporting(false);
       alert("Failed to load SVG asset for export.");
     };
   };
 
-  const previewWidth = 400;
-  const previewHeight = activeSize.height < activeSize.width 
-    ? 400 * (activeSize.height / activeSize.width) 
-    : 400;
-    
   const paddingPercentage = (activeSize.padding / activeSize.width) * 100;
+  const isCircleSafe = activeSize.safeZoneType === "circle";
+  const exportLabel =
+    activeGroup.id === "qr"
+      ? `Download ${activeSize.name}`
+      : `Export ${activeSize.width} × ${activeSize.height}`;
 
   return (
-    <BrandShell activeId="logo-options" crumb="Logo Options">
-      <div className="px-5 py-10 text-cream sm:px-10 lg:px-12 lg:py-14">
-        <div className="mx-auto w-full max-w-screen-2xl">
-          <header className="mb-12 flex flex-col gap-6 text-left md:mb-16 md:flex-row md:items-end md:justify-between">
-            <div>
-              <span className="font-mono text-xs uppercase tracking-widest text-clay">
-                Utility
-              </span>
-              <h1 className="mt-4 font-serif text-4xl italic text-cream md:text-5xl">
-                Brand Export Kit
-              </h1>
-            </div>
+    <BrandShell activeId="brand-kit" crumb="Logo Options">
+      <BrandPageBody>
+        <div className="mx-auto w-full min-w-0 max-w-6xl overflow-x-hidden pb-24 md:pb-0">
+          <BrandPageHeader
+            eyebrow="Export materials"
+            title="Logo Options"
+            description="Pick an asset, preview it, then export."
+            actions={
+              <button
+                type="button"
+                onClick={handleDownloadAll}
+                disabled={isZipping}
+                className="hidden items-center justify-center gap-2.5 rounded-full border border-cream/15 bg-transparent px-5 py-3 text-xs font-bold uppercase tracking-widest text-cream/80 transition-colors hover:border-cream/30 hover:text-cream disabled:opacity-50 md:inline-flex"
+              >
+                {isZipping ? (
+                  <>
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-cream/20 border-t-cream" />
+                    Packaging…
+                  </>
+                ) : (
+                  <>
+                    <Package size={15} aria-hidden />
+                    Full kit ZIP
+                  </>
+                )}
+              </button>
+            }
+          />
 
-            <button
-              onClick={handleDownloadAll}
-              disabled={isZipping}
-              className="flex items-center justify-center gap-3 rounded-full bg-cream px-8 py-3 text-xs font-bold uppercase tracking-widest text-charcoal shadow-xl transition-colors hover:bg-clay hover:text-cream disabled:opacity-50"
-            >
-              {isZipping ? (
-                <>
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-charcoal/20 border-t-charcoal" />
-                  Packaging Zip...
-                </>
-              ) : (
-                <>
-                  <Download size={16} />
-                  Download Entire Kit (ZIP)
-                </>
-              )}
-            </button>
-          </header>
-
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-            <div className="flex flex-col gap-4">
-              {EXPORT_GROUPS.map((group) => {
-                const isGroupActive = activeGroupId === group.id;
-
-                return (
-                  <section
-                    key={group.id}
-                    className={`rounded-xl border transition-all ${isGroupActive ? "border-clay/40 bg-clay/5" : "border-cream/5 bg-transparent"}`}
-                  >
-                    <button
-                      className="w-full cursor-pointer rounded-t-xl border-b border-cream/5 p-4 text-left transition-colors hover:bg-cream/5"
-                      onClick={() => {
-                        setActiveGroupId(group.id);
-                        setActiveSizeId(group.sizes[0].id);
-                        setActiveThemeId(group.themes[0].id);
-                      }}
-                    >
-                      <h2
-                        className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wide ${isGroupActive ? "text-clay" : "text-cream/70"}`}
-                      >
-                        {group.name}
-                      </h2>
-                    </button>
-
+          <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-5 lg:mt-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1fr)_22rem]">
+            {/* Mobile: asset rail before preview so pick + see share one screen */}
+            <div className="order-1 min-w-0 lg:order-2 lg:sticky lg:top-20">
+              <aside className="flex min-w-0 flex-col gap-3">
+                <div className="min-w-0">
+                  <FieldLabel htmlFor={assetSelectId}>Asset</FieldLabel>
+                  <p className="mb-3 max-w-sm text-sm leading-snug text-cream/50">
+                    Each export is sized and cropped for that platform.
+                  </p>
+                  <div className="w-full min-w-0 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     <div
-                      className={`flex flex-col gap-5 p-4 ${isGroupActive ? "block" : "hidden"}`}
+                      id={assetSelectId}
+                      role="listbox"
+                      aria-label="Brand assets"
+                      className="flex w-max max-w-none gap-2 lg:w-full lg:max-w-full lg:flex-col"
                     >
-                      {group.sizes.length > 1 && (
-                        <div>
-                          <span className="mb-3 block font-mono text-[10px] uppercase tracking-widest text-cream/40">
-                            Select Size
-                          </span>
-                          <div className="flex flex-col gap-2">
-                            {group.sizes.map((size) => (
-                              <button
-                                key={size.id}
-                                onClick={() => {
-                                  setActiveSizeId(size.id);
-                                }}
-                                className={`flex items-center justify-between rounded-lg border p-3 text-left transition-all ${activeSizeId === size.id ? "border-clay/50 bg-clay/10 text-cream" : "border-cream/10 bg-black/40 text-cream/60 hover:bg-cream/5"}`}
-                              >
-                                <span className="text-sm font-medium">{size.name}</span>
-                                {activeSizeId === size.id && (
-                                  <Check size={14} className="text-clay" />
-                                )}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      {CATEGORY_ORDER.map((category) => {
+                        const items = PICKER_GROUPS.filter(
+                          (g) => g.category === category.id,
+                        );
+                        if (items.length === 0) return null;
 
-                      <div>
-                        <span className="mb-3 block font-mono text-[10px] uppercase tracking-widest text-cream/40">
-                          Select Variation
-                        </span>
-                        <div className="flex flex-col gap-2">
-                          {group.themes.map((theme) => (
-                            <button
-                              key={theme.id}
-                              onClick={() => {
-                                setActiveThemeId(theme.id);
-                              }}
-                              className={`flex items-center justify-between rounded-lg border p-3 text-left transition-all ${activeThemeId === theme.id ? "border-clay/50 bg-clay/10 text-cream" : "border-cream/10 bg-black/40 text-cream/60 hover:bg-cream/5"}`}
-                            >
-                              <div className="flex items-center gap-3">
-                                <div
-                                  className="relative h-4 w-4 overflow-hidden rounded-full border border-cream/20"
-                                  style={{
-                                    backgroundColor:
-                                      theme.bgColor === "transparent"
-                                        ? "#222"
-                                        : theme.bgColor,
-                                  }}
+                        return (
+                          <div
+                            key={category.id}
+                            className="flex shrink-0 items-center gap-2 lg:w-full lg:flex-col lg:items-stretch"
+                          >
+                            <p className="hidden font-mono text-[9px] uppercase tracking-[0.22em] text-cream/30 lg:mb-1 lg:mt-3 lg:block lg:first:mt-0">
+                              {category.label}
+                            </p>
+                            {items.map((group) => {
+                              const selected = group.id === activeGroupId;
+                              return (
+                                <button
+                                  key={group.id}
+                                  type="button"
+                                  role="option"
+                                  aria-selected={selected}
+                                  onClick={() => selectGroup(group)}
+                                  className={[
+                                    "inline-flex min-h-10 shrink-0 items-center justify-between gap-3 rounded-full border px-3.5 text-left text-sm transition-colors lg:min-h-11 lg:w-full lg:rounded-xl lg:px-3.5 lg:py-2.5",
+                                    selected
+                                      ? "border-clay/55 bg-clay/15 text-cream"
+                                      : "border-cream/12 bg-cream/[0.03] text-cream/65 hover:border-cream/25 hover:text-cream",
+                                  ].join(" ")}
                                 >
-                                  {theme.bgColor === "transparent" && (
-                                    <div className="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACVJREFUKFNjZCASMDKgAnv27PkPU4xVA1GCS0pKYDRR8AAAd3cI2uGg+8AAAAAASUVORK5CYII=')] opacity-20" />
-                                  )}
-                                </div>
-                                <span className="text-sm font-medium">{theme.name}</span>
-                              </div>
-                              {activeThemeId === theme.id && (
-                                <Check size={14} className="text-clay" />
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                                  <span className="font-medium tracking-wide lg:hidden">
+                                    {group.shortName}
+                                  </span>
+                                  <span className="hidden font-medium tracking-wide lg:inline">
+                                    {group.name}
+                                  </span>
+                                  {selected ? (
+                                    <Check
+                                      size={14}
+                                      className="hidden shrink-0 text-clay lg:inline"
+                                      aria-hidden
+                                    />
+                                  ) : null}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
                     </div>
-                  </section>
-                );
-              })}
+                  </div>
+                </div>
+              </aside>
             </div>
 
-            <div className="relative flex h-fit min-h-[600px] flex-col items-center justify-center rounded-[2rem] border border-cream/5 bg-[#111412] p-10 lg:col-span-2">
-              <div className="mb-10 w-full text-center">
-                <span className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-cream/40">
-                  Export Configuration
-                </span>
-                <h3 className="font-serif text-xl italic text-cream">
-                  {activeGroup.name}
-                </h3>
-                <p className="mt-1 text-sm text-cream/50">
-                  {activeTheme.name} • {activeSize.width} × {activeSize.height}px
+            <section
+              aria-label="Asset preview"
+              className="relative order-2 min-w-0 overflow-hidden rounded-2xl border border-cream/10 bg-[#0c100e] lg:order-1"
+            >
+              <div
+                className="pointer-events-none absolute inset-0 opacity-40"
+                aria-hidden
+                style={{
+                  background:
+                    "radial-gradient(ellipse 80% 55% at 50% 0%, rgba(204,88,51,0.12), transparent 55%), radial-gradient(ellipse 60% 40% at 100% 100%, rgba(159,181,170,0.08), transparent 50%)",
+                }}
+              />
+
+              <div className="relative flex min-w-0 items-center justify-between gap-3 border-b border-cream/[0.07] px-4 py-2.5 sm:px-5 sm:py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#9fb5aa]">
+                    Preview
+                  </p>
+                  <p className="mt-0.5 truncate font-serif text-base italic text-cream sm:mt-1 sm:text-xl">
+                    {activeGroup.name}
+                  </p>
+                </div>
+                <p className="max-w-[40%] shrink-0 truncate text-right font-mono text-[10px] leading-relaxed tracking-wide text-cream/45">
+                  {activeTheme.shortName}
+                  <span className="mx-1.5 text-cream/20">·</span>
+                  {activeSize.width}×{activeSize.height}
                 </p>
               </div>
 
-              <div
-                className="relative flex items-center justify-center rounded-lg border border-cream/10 shadow-2xl transition-all duration-300"
-                style={{
-                  width: previewWidth,
-                  height: previewHeight,
-                  backgroundColor:
-                    activeTheme.bgColor === "transparent"
-                      ? "transparent"
-                      : activeTheme.bgColor,
-                  backgroundImage:
-                    activeTheme.bgColor === "transparent"
-                      ? "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACVJREFUKFNjZCASMDKgAnv27PkPU4xVA1GCS0pKYDRR8AAAd3cI2uGg+8AAAAAASUVORK5CYII=')"
-                      : "none",
-                }}
-              >
-                <img
-                  src={activeTheme.logo}
-                  className="pointer-events-none h-full w-full object-contain"
-                  style={{ padding: `${paddingPercentage}%` }}
-                  alt="Preview"
-                />
-
-                {activeSize.safeZoneType === "circle" && (
-                  <div className="pointer-events-none absolute inset-0 rounded-full border border-dashed border-red-500 opacity-40" />
-                )}
+              <div className="relative flex min-w-0 items-center justify-center px-4 py-4 sm:px-8 sm:py-10 lg:py-12">
+                <div
+                  className={[
+                    "relative flex h-[132px] w-full max-w-[20rem] items-center justify-center overflow-hidden border border-cream/10 shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-[border-radius] duration-300 sm:h-[240px] sm:max-w-md lg:h-[280px]",
+                    isCircleSafe
+                      ? "rounded-full !max-w-[132px] sm:!max-w-[240px] lg:!max-w-[280px]"
+                      : "rounded-xl",
+                  ].join(" ")}
+                  style={{
+                    backgroundColor:
+                      activeTheme.bgColor === "transparent"
+                        ? "transparent"
+                        : activeTheme.bgColor,
+                    backgroundImage:
+                      activeTheme.bgColor === "transparent" ? CHECKER : "none",
+                    backgroundSize:
+                      activeTheme.bgColor === "transparent"
+                        ? "10px 10px"
+                        : undefined,
+                  }}
+                >
+                  <img
+                    src={activeTheme.logo}
+                    alt={`${activeGroup.name} — ${activeTheme.name}`}
+                    className="pointer-events-none max-h-full max-w-full object-contain"
+                    style={{ padding: `${Math.min(paddingPercentage, 18)}%` }}
+                  />
+                  {isCircleSafe ? (
+                    <div
+                      className="pointer-events-none absolute inset-0 rounded-full border border-dashed border-clay/50"
+                      aria-hidden
+                    />
+                  ) : null}
+                </div>
               </div>
 
-              <button
-                onClick={handleDownload}
-                disabled={isExporting}
-                className="mt-14 inline-flex cursor-pointer items-center gap-3 rounded-full bg-clay px-10 py-4 font-bold uppercase tracking-wide text-charcoal shadow-lg shadow-clay/20 transition-colors hover:bg-cream disabled:opacity-50"
-              >
-                <Download size={18} />
-                {isExporting
-                  ? "Exporting..."
-                  : activeGroup.id === "qr"
-                    ? activeSize.name
-                    : `Export ${activeSize.width} × ${activeSize.height}`}
-              </button>
-            </div>
+              {/* Format + color under preview */}
+              <div className="relative space-y-4 border-t border-cream/[0.07] px-4 py-4 sm:px-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:gap-8">
+                  {activeGroup.sizes.length > 1 ? (
+                    <div>
+                      <FieldLabel>Format</FieldLabel>
+                      <div className="flex flex-wrap gap-2">
+                        {activeGroup.sizes.map((size) => (
+                          <OptionChip
+                            key={size.id}
+                            selected={size.id === activeSizeId}
+                            onSelect={() => setActiveSizeId(size.id)}
+                          >
+                            {size.name}
+                          </OptionChip>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {activeGroup.themes.length > 1 ? (
+                    <div>
+                      <FieldLabel>Color</FieldLabel>
+                      <div className="flex flex-wrap gap-2">
+                        {activeGroup.themes.map((theme) => (
+                          <OptionChip
+                            key={theme.id}
+                            selected={theme.id === activeThemeId}
+                            onSelect={() => setActiveThemeId(theme.id)}
+                            leading={
+                              <span
+                                className="relative h-3.5 w-3.5 overflow-hidden rounded-full border border-cream/25"
+                                style={{
+                                  backgroundColor:
+                                    theme.bgColor === "transparent"
+                                      ? "#1a1f1c"
+                                      : theme.bgColor,
+                                }}
+                                aria-hidden
+                              >
+                                <span
+                                  className="absolute inset-[3px] rounded-full"
+                                  style={{
+                                    backgroundColor: theme.id.includes("white")
+                                      ? "#f4ebd9"
+                                      : "#050806",
+                                  }}
+                                />
+                              </span>
+                            }
+                          >
+                            {theme.shortName}
+                          </OptionChip>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadAll}
+                  disabled={isZipping}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-cream/12 px-4 py-2.5 text-[11px] font-medium uppercase tracking-widest text-cream/55 transition-colors hover:border-cream/25 hover:text-cream/80 disabled:opacity-50 md:hidden"
+                >
+                  <Package size={14} aria-hidden />
+                  {isZipping ? "Packaging full kit…" : "Full kit ZIP"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  disabled={isExporting}
+                  className="hidden w-full items-center justify-center gap-2.5 rounded-full bg-clay px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-charcoal transition-colors hover:bg-cream disabled:opacity-50 md:inline-flex"
+                >
+                  <Download size={16} aria-hidden />
+                  {isExporting ? "Exporting…" : exportLabel}
+                </button>
+              </div>
+            </section>
           </div>
         </div>
-      </div>
+
+        {/* Mobile sticky export — always reachable */}
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-cream/10 bg-[#080a09]/92 px-4 py-3 backdrop-blur-md md:hidden">
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={isExporting}
+            className="inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-clay px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-charcoal transition-colors hover:bg-cream disabled:opacity-50"
+          >
+            <Download size={16} aria-hidden />
+            {isExporting ? "Exporting…" : exportLabel}
+          </button>
+        </div>
+      </BrandPageBody>
     </BrandShell>
   );
 }

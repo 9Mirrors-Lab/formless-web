@@ -9,7 +9,7 @@ import { Menu, X } from "lucide-react";
 export type BrandNavId =
   | "brand"
   | "speaker-sheet"
-  | "logo-options"
+  | "brand-kit"
   | "client-review"
   | "design-system";
 
@@ -38,10 +38,10 @@ const NAV_GROUPS: NavGroup[] = [
         description: "Venue one-sheets",
       },
       {
-        id: "logo-options",
+        id: "brand-kit",
         title: "Logo Options",
         href: "/brand-kit-export",
-        description: "Export kit and lockups",
+        description: "Download logos.",
       },
     ],
   },
@@ -49,7 +49,7 @@ const NAV_GROUPS: NavGroup[] = [
 
 function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/speaker-sheet") return "speaker-sheet";
-  if (pathname === "/brand-kit-export") return "logo-options";
+  if (pathname === "/brand-kit-export") return "brand-kit";
   if (pathname === "/design-system") return "design-system";
   if (pathname === "/client/review" || pathname.startsWith("/client/review/")) {
     return "client-review";
@@ -107,28 +107,25 @@ function BrandNavPanel({
         aria-hidden
       />
 
-      <div className="relative flex items-start justify-between gap-3 px-5 pb-7 pt-[4.25rem]">
+      <div className="relative flex items-start justify-center px-3 pb-7 pt-[4.25rem]">
         <a
           href="/brand"
-          className="group block min-w-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
+          className="group block w-full min-w-0 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
           onClick={onClose}
         >
           <p
             id={labelledBy}
-            className="font-mono text-[10px] uppercase tracking-[0.32em] text-[#9fb5aa]"
+            className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#9fb5aa]"
           >
-            Brand studio
+            Brand Toolkit
           </p>
           <p className="mt-2 font-serif text-[1.65rem] font-light italic leading-none tracking-tight text-cream transition-colors group-hover:text-cream/90">
             Eyes Closed
           </p>
-          <p className="mt-2 max-w-[11rem] text-[12px] leading-snug text-cream/40">
-            Internal materials and foundations
-          </p>
         </a>
         <button
           type="button"
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cream/12 text-cream/70 transition-colors hover:border-cream/25 hover:text-cream md:hidden"
+          className="absolute right-3 top-[4.25rem] inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cream/12 text-cream/70 transition-colors hover:border-cream/25 hover:text-cream md:hidden"
           onClick={onClose}
           aria-label="Close navigation"
         >
@@ -208,7 +205,7 @@ function BrandNavPanel({
         </ul>
       </nav>
 
-      <div className="relative mt-auto border-t border-cream/[0.08] px-5 py-5">
+      <div className="relative mt-auto border-t border-cream/[0.08] px-3 py-5">
         <a
           href="/hub"
           className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-cream/40 transition-colors hover:text-[#9fb5aa]"

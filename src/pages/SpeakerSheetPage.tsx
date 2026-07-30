@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 import { BrandShell } from "@/components/app-sidebar";
+import {
+  BrandPageBody,
+  BrandPageHeader,
+} from "@/components/BrandPageHeader";
 
 type SpeakerVersion = {
   id: string;
@@ -151,7 +155,7 @@ export default function SpeakerSheetPage() {
   return (
     <>
       <BrandShell activeId="speaker-sheet" crumb="Speaker sheet">
-        <div className="flex flex-1 flex-col gap-6 p-4 md:p-8 lg:p-10">
+        <BrandPageBody>
           <SpeakerSheetSection
             concepts={SPEAKER_CONCEPTS}
             onOpen={(concept, index) =>
@@ -159,7 +163,7 @@ export default function SpeakerSheetPage() {
             }
             onOpenFoundation={() => setLightbox({ kind: "foundation" })}
           />
-        </div>
+        </BrandPageBody>
       </BrandShell>
 
       {lightbox && lightboxImage ? (
@@ -253,22 +257,14 @@ function SpeakerSheetSection({
   onOpenFoundation: () => void;
 }) {
   return (
-    <div>
-      <header className="max-w-2xl">
-        <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#9fb5aa]">
-          Brand · Speaker materials
-        </p>
-        <h2 className="mt-3 font-serif text-4xl italic text-cream md:text-5xl">
-          Speaker sheet
-        </h2>
-        <p className="mt-4 text-base leading-relaxed text-cream/65">
-          Three distinct layouts. Each card starts on Warm Crimson; pan to Mixed
-          type and First pass for that layout&apos;s history. Original Concept B
-          sits below as a separate reference.
-        </p>
-      </header>
+    <div className="flex flex-col gap-10">
+      <BrandPageHeader
+        eyebrow="Speaker materials"
+        title="Speaker sheet"
+        description="Three distinct layouts. Each card starts on Warm Crimson; pan to Mixed type and First pass for that layout's history. Original Concept B sits below as a separate reference."
+      />
 
-      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {concepts.map((concept) => (
           <ConceptCard
             key={concept.id}
@@ -278,7 +274,7 @@ function SpeakerSheetSection({
         ))}
       </div>
 
-      <article className="mt-6 overflow-hidden rounded-2xl border border-cream/10 bg-cream/[0.03] md:max-w-sm">
+      <article className="overflow-hidden rounded-2xl border border-cream/10 bg-cream/[0.03] md:max-w-sm">
         <button
           type="button"
           onClick={onOpenFoundation}
