@@ -443,6 +443,14 @@ export default function BrandKitExportPage() {
     });
   };
 
+  const fetchAssetBuffer = async (src: string): Promise<ArrayBuffer> => {
+    const response = await fetch(src);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch asset: ${src}`);
+    }
+    return response.arrayBuffer();
+  };
+
   const handleDownloadAll = async () => {
     setIsZipping(true);
     try {
@@ -456,19 +464,19 @@ export default function BrandKitExportPage() {
 
           folder.file(
             "eyes-closed-publishing-white.svg",
-            await fetch(ecPublishingWhiteSrc).then((r) => r.blob()),
+            await fetchAssetBuffer(ecPublishingWhiteSrc),
           );
           folder.file(
             "eyes-closed-publishing-black.svg",
-            await fetch(ecPublishingBlackSrc).then((r) => r.blob()),
+            await fetchAssetBuffer(ecPublishingBlackSrc),
           );
           folder.file(
             "eyes-closed-publishing-white.png",
-            await fetch(ecPublishingWhitePngSrc).then((r) => r.blob()),
+            await fetchAssetBuffer(ecPublishingWhitePngSrc),
           );
           folder.file(
             "eyes-closed-publishing-black.png",
-            await fetch(ecPublishingBlackPngSrc).then((r) => r.blob()),
+            await fetchAssetBuffer(ecPublishingBlackPngSrc),
           );
           continue;
         }
@@ -478,15 +486,15 @@ export default function BrandKitExportPage() {
           if (!folder) continue;
           folder.file(
             "eyes-closed-qr-code.png",
-            await fetch(qrCodePngSrc).then((r) => r.blob()),
+            await fetchAssetBuffer(qrCodePngSrc),
           );
           folder.file(
             "eyes-closed-qr-code.svg",
-            await fetch(qrCodeSvgSrc).then((r) => r.blob()),
+            await fetchAssetBuffer(qrCodeSvgSrc),
           );
           folder.file(
             "eyes-closed-qr-code.pdf",
-            await fetch(qrCodePdfSrc).then((r) => r.blob()),
+            await fetchAssetBuffer(qrCodePdfSrc),
           );
           continue;
         }
