@@ -185,7 +185,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     title: 'Brand',
     path: '/brand',
     category: 'design',
-    description: 'Brand studio landing. Placeholder until brand content is ready.',
+    description: 'Brand Toolkit landing. Placeholder until brand content is ready.',
     source: 'src/pages/BrandPage.tsx',
   },
   {

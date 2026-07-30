@@ -11,7 +11,7 @@ export default function BrandPage() {
         <BrandPageHeader
           eyebrow="Overview"
           title="Content coming soon"
-          description="Brand Studio holds internal materials and foundations for Eyes Closed."
+          description="Brand Toolkit holds internal materials and foundations for Eyes Closed."
         />
       </BrandPageBody>
     </BrandShell>

@@ -169,6 +169,76 @@ export function useIconAnimations(
         });
       }
 
+      if (hasScopeTargets(root, '.seed-circle')) {
+        const SEED_R = 20;
+        const expandTargets = (n: number) => [
+          ...$('.seed-circle-' + n),
+          ...$('.seed-clip-r-' + n),
+          ...$('.seed-lens-fill-' + n),
+        ];
+
+        gsap.set($('.seed-circle, .seed-clip-r, .seed-lens'), { attr: { r: 0 } });
+        gsap.set($('.seed-spark'), { opacity: 0, scale: 0, transformOrigin: '50% 50%' });
+
+        const tlSeed = gsap.timeline({
+          repeat: -1,
+          repeatDelay: 1.1,
+          defaults: { ease: 'power2.out' },
+        });
+
+        const sparkExpand = (n: number, label: string) => {
+          const spark = $('.seed-spark-' + n);
+          const targets = expandTargets(n);
+          tlSeed
+            .addLabel(label)
+            .to(spark, { opacity: 1, scale: 1, duration: 0.22 }, label)
+            .to(
+              targets,
+              { attr: { r: SEED_R }, duration: 0.7, ease: 'power2.out' },
+              label + '+=0.06',
+            )
+            .to(
+              spark,
+              { opacity: 0, scale: 0.4, duration: 0.28, ease: 'power1.in' },
+              label + '+=0.48',
+            );
+        };
+
+        sparkExpand(1, 'intro');
+        tlSeed.addLabel('gap1', '+=0.1');
+        sparkExpand(2, 'vesica');
+        tlSeed.addLabel('gap2', '+=0.1');
+        sparkExpand(3, 'upper');
+        tlSeed.addLabel('gap3', '+=0.1');
+        sparkExpand(4, 'lower');
+        tlSeed.addLabel('gap4', '+=0.1');
+        sparkExpand(5, 'upperLeft');
+        tlSeed.addLabel('gap5', '+=0.1');
+        sparkExpand(6, 'lowerLeft');
+        tlSeed.addLabel('gap6', '+=0.1');
+        sparkExpand(7, 'close');
+        tlSeed
+          .addLabel('hold')
+          .to({}, { duration: 1.5 })
+          .addLabel('dissolve')
+          .to(
+            [...$('.seed-orbit'), ...$('.seed-clip-orbit'), ...$('.seed-lens-orbit')],
+            {
+              attr: { r: 0 },
+              duration: 0.55,
+              stagger: 0.04,
+              ease: 'power1.in',
+            },
+            'dissolve',
+          )
+          .to($('.seed-spark'), { opacity: 0, scale: 0, duration: 0.2 }, 'dissolve')
+          .to(
+            [...$('.seed-circle-1'), ...$('.seed-clip-r-1')],
+            { attr: { r: 0 }, duration: 0.4, ease: 'power1.in' },
+            'dissolve+=0.35',
+          );
+      }
+
       if (hasScopeTargets(root, '.wake-sun')) {
         gsap.fromTo($('.wake-sun'), { y: 15 }, { y: -10, duration: 3, yoyo: true, repeat: -1, ease: 'power2.inOut' });
       }

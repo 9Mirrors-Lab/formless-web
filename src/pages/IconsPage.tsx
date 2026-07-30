@@ -7,7 +7,8 @@ import { useIconAnimations } from '@/hooks/useIconAnimations';
 
 export default function IconsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  useIconAnimations(containerRef);
+  // Reference gallery: always play loops so icons can be reviewed even when OS Reduce Motion is on.
+  useIconAnimations(containerRef, { ignoreReducedMotion: true });
 
   return (
     <div ref={containerRef} className="min-h-screen bg-[#080a09] text-cream py-20 px-5 sm:px-10 lg:px-12 selection:bg-clay/30 selection:text-cream">
@@ -79,8 +80,19 @@ export default function IconsPage() {
                 <div className="w-full aspect-[4/5] bg-charcoal rounded-[2rem] overflow-hidden relative flex items-center justify-center p-8 shadow-2xl transform transition-transform duration-700 group-hover:scale-[1.02]">
                   <svg className="w-full h-full" viewBox="0 0 400 500" fill="none">
                     <rect width="400" height="500" fill="#1a1a1a" />
+                    <circle cx="200" cy="250" r="5" fill="#cc5833" opacity="0.9" />
                     {Array.from({length: 12}).map((_, i) => (
-                      <circle key={i} className="horizon-ring" cx="200" cy="250" r={10} fill="none" stroke="#cc5833" strokeWidth="1.5" opacity="0" />
+                      <circle
+                        key={i}
+                        className="horizon-ring"
+                        cx="200"
+                        cy="250"
+                        r={10}
+                        fill="none"
+                        stroke="#cc5833"
+                        strokeWidth="1.5"
+                        opacity="0"
+                      />
                     ))}
                   </svg>
                 </div>

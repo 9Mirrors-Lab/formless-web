@@ -169,7 +169,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     href: '/brand',
     section: 'brand-identity',
     status: 'experiment',
-    description: 'Brand studio landing with coming-soon placeholder.',
+    description: 'Brand Toolkit landing with coming-soon placeholder.',
     source: 'src/pages/BrandPage.tsx',
   },
   {

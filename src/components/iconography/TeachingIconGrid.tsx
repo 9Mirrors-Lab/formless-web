@@ -24,6 +24,11 @@ type TeachingIconGridProps = {
   categories?: TeachingIconCategory[];
   /** Show GSAP motion note under each title. */
   showMotionNotes?: boolean;
+  /**
+   * Show the stable registry id (e.g. formless) for product use:
+   * TeachingIconMark id="…" / Callout icon="…".
+   */
+  showIds?: boolean;
   /** Category mono labels above each group (off when parent already titles sections). */
   showCategoryLabels?: boolean;
   className?: string;
@@ -60,6 +65,7 @@ export function TeachingIconGrid({
   mode = 'dual',
   categories = TEACHING_ICON_CATEGORIES,
   showMotionNotes = false,
+  showIds = false,
   showCategoryLabels = true,
   className = '',
 }: TeachingIconGridProps) {
@@ -90,6 +96,11 @@ export function TeachingIconGrid({
                       <h3 className="font-sans text-sm font-bold uppercase tracking-wide text-cream">
                         {icon.title}
                       </h3>
+                      {showIds ? (
+                        <p className="font-mono text-[11px] tracking-wide text-[#9fb5aa]">
+                          id: <span className="text-cream/90">{icon.id}</span>
+                        </p>
+                      ) : null}
                       <p className="text-[11px] leading-relaxed text-cream/55">{icon.desc}</p>
                       {note ? (
                         <p className="font-mono text-[10px] leading-relaxed text-[#9fb5aa]/90">{note}</p>
@@ -99,48 +110,6 @@ export function TeachingIconGrid({
                   </div>
                 );
               })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/** Compact strip of live marks for motion token docs. */
-export function TeachingIconMotionStrip({
-  ids,
-  className = '',
-}: {
-  ids?: string[];
-  className?: string;
-}) {
-  const selected =
-    ids && ids.length > 0
-      ? TEACHING_ICONS.filter((icon) => ids.includes(icon.id))
-      : TEACHING_ICONS.filter((icon) =>
-          ['observer', 'neural', 'anchor', 'formless', 'quantum', 'space', 'flow', 'pause'].includes(
-            icon.id,
-          ),
-        );
-
-  return (
-    <div className={`grid grid-cols-2 gap-4 sm:grid-cols-4 ${className}`.trim()}>
-      {selected.map((icon) => {
-        const note = motionNoteFor(icon);
-        return (
-          <div
-            key={icon.id}
-            className="flex flex-col overflow-hidden rounded-2xl border border-cream/10 bg-cream/[0.04]"
-          >
-            <div className="flex h-28 items-center justify-center bg-[#1a2332]">
-              {icon.render({ theme: 'dark' })}
-            </div>
-            <div className="px-3 py-2.5">
-              <p className="font-sans text-xs font-semibold text-cream">{icon.title}</p>
-              {note ? (
-                <p className="mt-1 font-mono text-[10px] leading-snug text-[#9fb5aa]">{note}</p>
-              ) : null}
             </div>
           </div>
         );

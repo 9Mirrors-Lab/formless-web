@@ -95,16 +95,12 @@ function SocialLink({
   external?: boolean;
 }) {
   const shellClass =
-    'group relative inline-flex rounded-full p-1 bg-cream/[0.04] ring-1 ring-cream/10 transition-[transform,background-color,box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-cream/[0.08] hover:ring-cream/20 active:scale-[0.97]';
-  const coreClass =
-    'flex h-11 w-11 items-center justify-center rounded-full bg-charcoal text-cream/55 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] transition-[transform,color,box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:text-cream group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.18)] group-hover:scale-[1.03]';
+    'group inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream/[0.1] text-cream/28 shadow-[inset_0_1px_2px_rgba(0,0,0,0.55)] transition-[transform,color,border-color,box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-cream/20 hover:text-cream/48 hover:shadow-[inset_0_1px_1.5px_rgba(0,0,0,0.4)] active:scale-[0.97]';
 
   const icon = (
     <>
       <span className={shellClass}>
-        <span className={coreClass}>
-          <Icon className="h-[18px] w-[18px]" />
-        </span>
+        <Icon className="h-[18px] w-[18px] opacity-90 [filter:drop-shadow(0_-1px_0_rgba(255,255,255,0.12))_drop-shadow(0_1px_0.5px_rgba(0,0,0,0.65))]" />
       </span>
       <span className="sr-only">{label}</span>
     </>
@@ -198,7 +194,7 @@ export function Footer() {
               {getText('footer', 'brand', 'name')}
             </a>
           )}
-          <p className="font-serif italic text-cream/50 text-lg mb-8 leading-relaxed">
+          <p className="font-serif italic text-cream/50 text-lg mb-8 leading-relaxed whitespace-pre-line">
             {getText('footer', 'brand', 'tagline')}
           </p>
           <div className="flex items-center justify-start gap-3">

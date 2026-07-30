@@ -4,15 +4,8 @@
  * Live at /design-system — dark immersive reference (matches /icons, brief-dark pages).
  */
 
-import { useRef } from 'react';
-
-import { TeachingIconGrid, TeachingIconMotionStrip } from '@/components/iconography/TeachingIconGrid';
-import {
-  ICON_ANIMATION_CATEGORIES,
-  ICON_ANIMATIONS,
-  type IconAnimationCategory,
-} from '@/data/iconAnimations';
-import { useIconAnimations } from '@/hooks/useIconAnimations';
+import { BrandShell } from '@/components/app-sidebar';
+import { TeachingIconMotionStudio } from '@/components/iconography/TeachingIconMotionStudio';
 
 const colors = {
   Brand: [
@@ -115,52 +108,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function AnimationTable({ category }: { category: IconAnimationCategory }) {
-  const rows = ICON_ANIMATIONS.filter((row) => row.category === category);
-  if (rows.length === 0) return null;
-
-  return (
-    <div className="mb-10 overflow-x-auto">
-      <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">{category}</p>
-      <table className="w-full min-w-[640px] border-collapse text-left text-sm">
-        <thead>
-          <tr className="border-b border-cream/10 text-cream/45">
-            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Icon</th>
-            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Targets</th>
-            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Motion</th>
-            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Duration</th>
-            <th className="pb-2 pr-4 font-mono text-[10px] font-normal uppercase tracking-widest">Easing</th>
-            <th className="pb-2 font-mono text-[10px] font-normal uppercase tracking-widest">Loop</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id} className="border-b border-cream/5">
-              <td className="py-3 pr-4 font-medium text-cream">{row.title}</td>
-              <td className="py-3 pr-4 font-mono text-[11px] text-[#9fb5aa]">{row.targets}</td>
-              <td className="py-3 pr-4 text-cream/70">{row.motion}</td>
-              <td className="py-3 pr-4 font-mono text-[11px] text-cream/55">{row.duration}</td>
-              <td className="py-3 pr-4 font-mono text-[11px] text-cream/55">{row.easing}</td>
-              <td className="py-3 font-mono text-[11px] text-cream/55">{row.loop}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
 export default function DesignSystem() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  useIconAnimations(containerRef);
-
   return (
-    <div
-      ref={containerRef}
-      className="brief-dark min-h-screen px-6 py-20 text-cream selection:bg-clay/30 selection:text-cream sm:px-10 lg:px-24"
-    >
-      <div className="noise-overlay-dark" aria-hidden />
-
+    <BrandShell activeId="design-system" crumb="Design system">
+      <div className="relative px-6 py-12 text-cream sm:px-10 lg:px-14 lg:py-16">
       <header className="relative mb-24 max-w-3xl">
         <span className="font-mono text-xs uppercase tracking-[0.25em] text-clay">Eyes Closed · v2.0</span>
         <h1 className="mt-4 font-serif text-5xl font-light italic leading-[1.08] text-cream md:text-6xl">
@@ -168,10 +119,14 @@ export default function DesignSystem() {
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream/65">
           Tokens from <code className="rounded bg-cream/5 px-1.5 py-0.5 font-mono text-sm text-cream/80">@theme</code>,
-          motion patterns, and the approved GSAP teaching-icon set. Dark immersive reference; public pages use cream or brief-dark bands.
-          Dual light/dark gallery also at{' '}
+          motion patterns, and the teaching-icon studio. Dark immersive reference; public pages use cream or brief-dark bands.
+          Dual light/dark lookbook at{' '}
           <a href="/icons" className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream">
             /icons
+          </a>
+          . Component options at{' '}
+          <a href="/components" className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream">
+            /components
           </a>
           .
         </p>
@@ -348,38 +303,24 @@ export default function DesignSystem() {
           <li>UI transitions: 300–500ms with cinematic ease; scroll teaching moments: 1–2s+</li>
           <li>No bounce, flash, or arcade-style particle overload</li>
         </ul>
-
-        <div className="mt-12">
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.15em] text-cream/50">
-            Icon loop samples
-          </p>
-          <p className="mb-6 max-w-2xl text-sm leading-relaxed text-cream/65">
-            Live GSAP loops from the approved teaching set. Same marks as Icon animations below; this strip shows how
-            motion tokens feel on the actual SVGs.
-          </p>
-          <TeachingIconMotionStrip />
-        </div>
       </Section>
 
       <Section title="Icon animations">
-        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-cream/65">
-          Approved teaching marks with GSAP loops via <code className="text-cream/80">useIconAnimations</code>. Each
-          mark uses class-targeted tweens; loops are slow, organic, and respect reduced motion. Full set below; dual
-          light/dark gallery at{' '}
+        <p className="mb-10 max-w-2xl text-sm leading-relaxed text-cream/65">
+          Live mark on the left; id, meaning, and motion controls on the right. Same groups and copy as{' '}
           <a href="/icons" className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream">
             /icons
           </a>
-          .
+          . Use the <code className="text-cream/80">id</code> with{' '}
+          <code className="text-cream/80">TeachingIconMark</code> or <code className="text-cream/80">Callout icon</code>{' '}
+          (registry: <code className="text-cream/80">teachingIcons.tsx</code>). A clay{' '}
+          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-clay">Live</span> mark means that id
+          already ships on a public page. Tune duration, easing, or loop to preview; Reset restores the shipped default.
         </p>
 
-        <TeachingIconGrid mode="dark" showMotionNotes />
-
-        <div className="mt-14">
-          {ICON_ANIMATION_CATEGORIES.map((category) => (
-            <AnimationTable key={category} category={category} />
-          ))}
-        </div>
+        <TeachingIconMotionStudio />
       </Section>
-    </div>
+      </div>
+    </BrandShell>
   );
 }

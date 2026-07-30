@@ -163,6 +163,94 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
       }
     },
     {
+      id: "seed", title: "Seed of life", desc: "The first overlap opens into a full pattern of equal relations", category: "Philosophy",
+      render: ({ theme }: { theme: IconTheme }) => {
+        const circleClass = theme === 'dark' ? 'text-cream/30' : 'text-charcoal/50';
+        // Same vesica foundation as space: central left (40,50), first neighbor right (60,50), r=20.
+        // Remaining centers sit on successive intersections (centers exactly one radius apart).
+        const centers = [
+          { n: 1, cx: 40, cy: 50 },
+          { n: 2, cx: 60, cy: 50 },
+          { n: 3, cx: 50, cy: 32.68 },
+          { n: 4, cx: 50, cy: 67.32 },
+          { n: 5, cx: 30, cy: 32.68 },
+          { n: 6, cx: 30, cy: 67.32 },
+          { n: 7, cx: 20, cy: 50 },
+        ] as const;
+        // Every pair whose centers are distance r apart — each gets a clay vesica lens
+        // (fill circle B clipped by circle A), matching the space mark technique.
+        const lenses = [
+          [1, 2],
+          [1, 3],
+          [1, 4],
+          [1, 5],
+          [1, 6],
+          [1, 7],
+          [2, 3],
+          [2, 4],
+          [3, 5],
+          [4, 6],
+          [5, 7],
+          [6, 7],
+        ] as const;
+
+        return (
+          <svg className="w-24 h-24 text-clay" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
+            <defs>
+              {centers.map((c) => (
+                <clipPath key={c.n} id={`seed-clip-${theme}-${c.n}`}>
+                  <circle
+                    className={`seed-clip-r seed-clip-r-${c.n}${c.n > 1 ? ' seed-clip-orbit' : ''}`}
+                    cx={c.cx}
+                    cy={c.cy}
+                    r="20"
+                  />
+                </clipPath>
+              ))}
+            </defs>
+
+            {lenses.map(([a, b]) => {
+              const fill = centers[b - 1];
+              return (
+                <circle
+                  key={`lens-${a}-${b}`}
+                  className={`seed-lens seed-lens-${a}-${b} seed-lens-fill-${b}${b > 1 ? ' seed-lens-orbit' : ''} text-clay`}
+                  cx={fill.cx}
+                  cy={fill.cy}
+                  r="20"
+                  fill="currentColor"
+                  stroke="none"
+                  clipPath={`url(#seed-clip-${theme}-${a})`}
+                />
+              );
+            })}
+
+            {centers.map((c) => (
+              <circle
+                key={`stroke-${c.n}`}
+                className={`seed-circle seed-circle-${c.n}${c.n > 1 ? ' seed-orbit' : ''} ${circleClass}`}
+                cx={c.cx}
+                cy={c.cy}
+                r="20"
+              />
+            ))}
+
+            {centers.map((c) => (
+              <circle
+                key={`spark-${c.n}`}
+                className={`seed-spark seed-spark-${c.n} text-clay`}
+                cx={c.cx}
+                cy={c.cy}
+                r="2.25"
+                fill="currentColor"
+                stroke="none"
+              />
+            ))}
+          </svg>
+        );
+      }
+    },
+    {
       id: "awakening", title: "The awakening", desc: "A situation you treated as closed now reads as workable", category: "Philosophy",
       render: ({ theme }: { theme: IconTheme }) => {
         const mossText = theme === 'dark' ? 'text-[#9fb5aa]' : 'text-moss';

@@ -7,7 +7,7 @@ type BrandPageHeaderProps = {
   actions?: ReactNode;
 };
 
-/** Shared top block for Brand Studio pages. Keep this structure identical across materials. */
+/** Shared top block for Brand Toolkit pages. Keep this structure identical across materials. */
 export function BrandPageHeader({
   eyebrow,
   title,

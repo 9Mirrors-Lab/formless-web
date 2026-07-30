@@ -3,6 +3,8 @@ dist
 .env
 .env.local
 *.local
+docs/project-access.local.md
+docs/supabase-access.local.md
 .DS_Store
 .vercel
 dist-moodboard

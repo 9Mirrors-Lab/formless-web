@@ -94,6 +94,16 @@ export const ICON_ANIMATIONS: IconAnimationSpec[] = [
     loop: 'yoyo',
   },
   {
+    id: 'seed',
+    title: 'Seed of life',
+    category: 'Philosophy',
+    targets: '.seed-circle, .seed-spark, .seed-lens',
+    motion: 'Intersection spark → radius expand; clay vesica lenses',
+    duration: '~9s timeline',
+    easing: 'power2.out',
+    loop: 'repeat + 1.1s delay',
+  },
+  {
     id: 'awakening',
     title: 'The awakening',
     category: 'Philosophy',
