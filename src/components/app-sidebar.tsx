@@ -22,28 +22,18 @@ type NavItem = {
   description: string;
 };
 
-type NavGroup = {
-  label: string;
-  items: NavItem[];
-};
-
-const NAV_GROUPS: NavGroup[] = [
+const NAV_ITEMS: NavItem[] = [
   {
-    label: "Materials",
-    items: [
-      {
-        id: "speaker-sheet",
-        title: "Speaker sheet",
-        href: "/speaker-sheet",
-        description: "Venue one-sheets",
-      },
-      {
-        id: "brand-kit",
-        title: "Logo Options",
-        href: "/brand-kit-export",
-        description: "Download logos.",
-      },
-    ],
+    id: "speaker-sheet",
+    title: "Speaker sheet",
+    href: "/speaker-sheet",
+    description: "Venue one-sheets",
+  },
+  {
+    id: "brand-kit",
+    title: "Logo Options",
+    href: "/brand-kit-export",
+    description: "Download logos.",
   },
 ];
 
@@ -137,71 +127,62 @@ function BrandNavPanel({
         className="relative flex-1 overflow-y-auto px-3 pb-6"
         aria-labelledby={labelledBy}
       >
-        <ul className="flex flex-col gap-7">
-          {NAV_GROUPS.map((group, groupIndex) => (
-            <li key={group.label}>
-              <p className="mb-2.5 px-3 font-mono text-[10px] uppercase tracking-[0.28em] text-cream/35">
-                {group.label}
-              </p>
-              <ul className="flex flex-col gap-0.5">
-                {group.items.map((item, itemIndex) => {
-                  const isActive = item.id === activeId;
+        <ul className="flex flex-col gap-0.5">
+          {NAV_ITEMS.map((item, itemIndex) => {
+            const isActive = item.id === activeId;
 
-                  return (
-                    <li
-                      key={item.id}
-                      className="brand-nav-item"
-                      style={{
-                        animationDelay: `${80 + groupIndex * 60 + itemIndex * 40}ms`,
-                      }}
+            return (
+              <li
+                key={item.id}
+                className="brand-nav-item"
+                style={{
+                  animationDelay: `${80 + itemIndex * 40}ms`,
+                }}
+              >
+                <a
+                  href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={[
+                    "group relative flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors duration-300",
+                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]",
+                    isActive
+                      ? "bg-cream/[0.06] text-cream"
+                      : "text-cream/58 hover:bg-cream/[0.03] hover:text-cream/85",
+                  ].join(" ")}
+                  onClick={onClose}
+                >
+                  <span
+                    className={[
+                      "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-300",
+                      isActive
+                        ? "bg-clay shadow-[0_0_12px_rgba(204,88,51,0.55)]"
+                        : "bg-cream/20 group-hover:bg-[#9fb5aa]/70",
+                    ].join(" ")}
+                    aria-hidden
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[14px] font-medium tracking-wide">
+                      {item.title}
+                    </span>
+                    <span
+                      className={[
+                        "mt-0.5 block text-[11px] leading-snug",
+                        isActive ? "text-cream/45" : "text-cream/28",
+                      ].join(" ")}
                     >
-                      <a
-                        href={item.href}
-                        aria-current={isActive ? "page" : undefined}
-                        className={[
-                          "group relative flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors duration-300",
-                          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]",
-                          isActive
-                            ? "bg-cream/[0.06] text-cream"
-                            : "text-cream/58 hover:bg-cream/[0.03] hover:text-cream/85",
-                        ].join(" ")}
-                        onClick={onClose}
-                      >
-                        <span
-                          className={[
-                            "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-300",
-                            isActive
-                              ? "bg-clay shadow-[0_0_12px_rgba(204,88,51,0.55)]"
-                              : "bg-cream/20 group-hover:bg-[#9fb5aa]/70",
-                          ].join(" ")}
-                          aria-hidden
-                        />
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-[14px] font-medium tracking-wide">
-                            {item.title}
-                          </span>
-                          <span
-                            className={[
-                              "mt-0.5 block text-[11px] leading-snug",
-                              isActive ? "text-cream/45" : "text-cream/28",
-                            ].join(" ")}
-                          >
-                            {item.description}
-                          </span>
-                        </span>
-                        {isActive ? (
-                          <span
-                            className="absolute inset-y-2 left-0 w-[2px] rounded-full bg-clay"
-                            aria-hidden
-                          />
-                        ) : null}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </li>
-          ))}
+                      {item.description}
+                    </span>
+                  </span>
+                  {isActive ? (
+                    <span
+                      className="absolute inset-y-2 left-0 w-[2px] rounded-full bg-clay"
+                      aria-hidden
+                    />
+                  ) : null}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 

@@ -607,7 +607,7 @@ export default function BrandKitExportPage() {
   return (
     <BrandShell activeId="brand-kit" crumb="Logo Options">
       <BrandPageBody>
-        <div className="mx-auto w-full min-w-0 max-w-6xl overflow-x-hidden pb-24 md:pb-0">
+        <div className="w-full min-w-0 max-w-6xl overflow-x-hidden pb-24 md:pb-0">
           <BrandPageHeader
             eyebrow="Export materials"
             title="Logo Options"
@@ -737,7 +737,7 @@ export default function BrandKitExportPage() {
               <div className="relative flex min-w-0 items-center justify-center px-4 py-4 sm:px-8 sm:py-10 lg:py-12">
                 <div
                   className={[
-                    "relative flex h-[132px] w-full max-w-[20rem] items-center justify-center overflow-hidden border border-cream/10 shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-[border-radius] duration-300 sm:h-[240px] sm:max-w-md lg:h-[280px]",
+                    "relative flex h-[132px] w-full max-w-[20rem] items-center justify-center overflow-hidden border border-cream/10 transition-[border-radius] duration-300 sm:h-[240px] sm:max-w-md lg:h-[280px]",
                     isCircleSafe
                       ? "rounded-full !max-w-[132px] sm:!max-w-[240px] lg:!max-w-[280px]"
                       : "rounded-xl",
