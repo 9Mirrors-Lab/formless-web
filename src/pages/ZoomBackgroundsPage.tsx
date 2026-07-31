@@ -87,8 +87,8 @@ const ZOOM_ROUNDS: ZoomRound[] = [
       {
         id: "3c",
         label: "3c",
-        name: "Corner Anchors",
-        note: "Misty field; View with Soni lockup on the right edge",
+        name: "View with Soni",
+        note: "Misty field with right-edge View with Soni lockup",
         imageSrc: "/design/zoom-backgrounds/formless-zoom-3c-corner-anchors.png",
       },
     ],
@@ -198,7 +198,7 @@ export default function ZoomBackgroundsPage() {
           <div className="flex flex-col gap-10">
             <BrandPageHeader
               title="Zoom backgrounds"
-              description="Eight 3840 × 2160 (16:9) session backdrops. Branding stays at the edges; center stays clear for head and shoulders."
+              description="Her beauty in the middle. Our branding hugging the edges like a polite stagehand who refuses to steal the scene."
             />
 
             <div className="flex flex-col gap-14">
