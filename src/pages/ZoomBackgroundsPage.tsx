@@ -88,7 +88,7 @@ const ZOOM_ROUNDS: ZoomRound[] = [
         id: "3c",
         label: "3c",
         name: "Corner Anchors",
-        note: "Misty field with right-edge book lockup",
+        note: "Misty field; View with Soni lockup on the right edge",
         imageSrc: "/design/zoom-backgrounds/formless-zoom-3c-corner-anchors.png",
       },
     ],
@@ -128,7 +128,7 @@ function PlateCard({
   onOpen: (item: ZoomBackground) => void;
 }) {
   return (
-    <article id={item.id} className="group scroll-mt-28 flex min-w-0 flex-col gap-2">
+    <article id={item.id} className="group scroll-mt-28 flex min-w-0 flex-col gap-3">
       <button
         type="button"
         onClick={() => onOpen(item)}
@@ -144,10 +144,10 @@ function PlateCard({
         />
       </button>
 
-      <div className="flex items-baseline justify-between gap-2">
-        <div className="flex min-w-0 items-baseline gap-2">
+      <div className="flex items-start justify-between gap-2 pt-0.5">
+        <div className="flex min-w-0 flex-1 items-start gap-2">
           <PlateStamp label={item.label} size="sm" />
-          <h3 className="truncate font-sans text-xs font-medium leading-none text-cream/40 md:text-sm">
+          <h3 className="font-sans text-xs font-medium leading-snug text-cream/40 md:text-sm">
             {item.name}
           </h3>
         </div>
@@ -225,8 +225,8 @@ export default function ZoomBackgroundsPage() {
                   <div
                     className={
                       round.items.length >= 5
-                        ? "grid w-full max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-5"
-                        : "grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
+                        ? "grid w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:gap-6"
+                        : "grid w-full max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6"
                     }
                   >
                     {round.items.map((item) => (
@@ -246,7 +246,7 @@ export default function ZoomBackgroundsPage() {
 
       {lightbox ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#050806]/92 p-4 backdrop-blur-sm sm:p-8"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#050806]/92 p-3 backdrop-blur-sm sm:p-5 lg:p-6"
           role="dialog"
           aria-modal="true"
           aria-label={`${lightbox.label} ${lightbox.name}`}
@@ -255,14 +255,14 @@ export default function ZoomBackgroundsPage() {
           <button
             type="button"
             onClick={() => setLightbox(null)}
-            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream/15 bg-charcoal/80 text-cream transition-colors hover:border-cream/30 hover:bg-charcoal"
+            className="absolute right-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream/15 bg-charcoal/80 text-cream transition-colors hover:border-cream/30 hover:bg-charcoal"
             aria-label="Close preview"
           >
             <X className="h-5 w-5" aria-hidden />
           </button>
 
           <figure
-            className="flex max-h-full max-w-5xl flex-col gap-4"
+            className="flex max-h-full w-full max-w-[min(96vw,1680px)] flex-col gap-3 sm:gap-4"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex flex-wrap items-baseline justify-center gap-3">
@@ -274,7 +274,7 @@ export default function ZoomBackgroundsPage() {
             <img
               src={lightbox.imageSrc}
               alt={`${lightbox.label} ${lightbox.name} Zoom background`}
-              className="max-h-[min(78dvh,880px)] w-auto rounded-lg border border-cream/10 object-contain shadow-2xl"
+              className="mx-auto max-h-[min(86dvh,1180px)] w-full rounded-lg border border-cream/10 object-contain shadow-2xl"
             />
             <figcaption className="flex flex-wrap items-center justify-center gap-3 text-center text-sm text-cream/55">
               <span>{lightbox.note}</span>
