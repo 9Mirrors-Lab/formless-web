@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/formless-design-system-v2-1ed9762a-d84b-4276-8928-65000c2c112c/tokens/colors.css">
+<link rel="stylesheet" href="_ds/formless-design-system-v2-1ed9762a-d84b-4276-8928-65000c2c112c/tokens/typography.css">
+<link rel="stylesheet" href="_ds/formless-design-system-v2-1ed9762a-d84b-4276-8928-65000c2c112c/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/formless-design-system-v2-1ed9762a-d84b-4276-8928-65000c2c112c/tokens/base.css">
+<link rel="stylesheet" href="_ds/formless-design-system-v2-1ed9762a-d84b-4276-8928-65000c2c112c/styles.css">
+<style>
+  body { margin: 0; background: #d9d6cd; }
+  .board { font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
+  .grain { position:absolute; inset:0; background-image:url("assets/grain.png"); background-size:400px 400px; pointer-events:none; }
+  .eyebrow { font-family:"Plus Jakarta Sans", monospace; text-transform:uppercase; font-weight:600; }
+  .teach { font-family:"Cormorant Garamond", Georgia, serif; font-style:italic; font-weight:300; line-height:1.15; }
+</style>
+</helmet>
+<div id="top" class="board" style="padding:120px; display:flex; flex-direction:column; gap:96px;">
+
+  <div style="display:flex; gap:24px; flex-wrap:wrap;">
+    <a href="#3a" style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:600; color:#cc5833; text-decoration:none; background:#f2f0e9; border:1.5px solid #cc5833; border-radius:9999px; padding:10px 28px;">↓ Round 3 — Corrected layouts</a>
+    <a href="#2a" style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:600; color:#2e4036; text-decoration:none; background:#f2f0e9; border:1.5px solid rgba(46,64,54,0.3); border-radius:9999px; padding:10px 28px;">↓ Round 2 — Book launch</a>
+    <a href="#1a" style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:600; color:rgba(46,64,54,0.6); text-decoration:none; background:#f2f0e9; border:1.5px solid rgba(46,64,54,0.15); border-radius:9999px; padding:10px 28px;">↓ Round 1 — Brand foundations</a>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:16px; max-width:1400px;">
+    <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:26px; font-weight:600; color:#1a1a1a; letter-spacing:0.02em;">Formless — Zoom backgrounds</div>
+    <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:44px; color:#2e4036; line-height:1.2;">Four directions for podcasts, interviews &amp; sessions. Each is 3840 × 2160 (16:9). The center is kept quiet for head &amp; shoulders.</div>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:rgba(26,26,26,0.55); line-height:1.6;">Shown at half size. Toggle the guide overlay in Tweaks. Tell me which to export as final PNGs — or which to refine.</div>
+  </div>
+
+  <!-- TURN 3 — Corrected safe zones -->
+  <div style="display:flex; align-items:center; gap:32px; margin-bottom:-48px;">
+    <div style="height:2px; flex:1; background:rgba(46,64,54,0.2);"></div>
+    <a href="#top" style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:rgba(46,64,54,0.5); text-decoration:none;">↑ Top</a>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:#cc5833;">Round 3 — Corrected layouts</div>
+    <div style="height:2px; flex:1; background:rgba(46,64,54,0.2);"></div>
+  </div>
+  <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:rgba(26,26,26,0.5); max-width:1400px; line-height:1.6; margin-bottom:-48px;">Person occupies the <strong>center 40% of width, from 15% top all the way to the bottom edge</strong>. All branding lives in the top strip, left column, right column, or corners only.</div>
+  <section style="display:flex; flex-wrap:wrap; gap:96px 80px;">
+
+    <!-- 3a: Left Pillar -->
+    <div id="3a" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #cc5833; border-radius:9999px; padding:8px 28px;">3a</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Left Pillar</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-3a" style="position:absolute; inset:0; overflow:hidden; background:#f2f0e9; display:flex;">
+          <div class="grain" style="opacity:0.05; mix-blend-mode:multiply; z-index:4;"></div>
+          <!-- LEFT PILLAR — safe zone: 0–28% width -->
+          <div style="position:relative; width:500px; height:100%; background:#2e4036; flex-shrink:0; overflow:hidden; z-index:2;">
+            <div style="position:absolute; inset:0; background:radial-gradient(90% 55% at 50% 0%, rgba(159,181,170,0.15) 0%, transparent 70%);"></div>
+            <!-- logo top of pillar -->
+            <div style="position:absolute; top:80px; left:64px; display:flex; flex-direction:column; gap:14px;">
+              <svg viewBox="0 0 1401 391" width="210" height="59" xmlns="http://www.w3.org/2000/svg">
+                <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#f2f0e9"></path>
+                <path d="M960.931 248.353C1049.87 173.839 1172.46 104.131 1350.34 20" stroke="rgba(242,240,233,0.55)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.67 8"></path>
+                <path d="M943.385 255.901C966.059 242.405 990.916 228.424 1017.95 213.984C1111.31 164.133 1230.67 108.825 1376.06 49.1812" stroke="rgba(242,240,233,0.55)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"></path>
+                <circle cx="1000.6" cy="225.3" r="3.6" fill="#cc5833"></circle><circle cx="1034.3" cy="203.7" r="4.3" fill="#cc5833"></circle><circle cx="1065.5" cy="184.4" r="3.4" fill="#cc5833"></circle><circle cx="1101.6" cy="162.8" r="6" fill="#f2f0e9"></circle><circle cx="1137.6" cy="143.6" r="3.4" fill="#cc5833"></circle><circle cx="1180.9" cy="117.1" r="5" fill="#f2f0e9"></circle><circle cx="1231.4" cy="90.7" r="3.6" fill="#f2f0e9"></circle><circle cx="1279.5" cy="64.3" r="5.8" fill="#cc5833"></circle><circle cx="1342" cy="25.8" r="4.8" fill="#f2f0e9"></circle>
+              </svg>
+              <span style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:36px; color:rgba(242,240,233,0.9); line-height:1; letter-spacing:0.01em;">Eyes Closed</span>
+            </div>
+            <!-- title stacked vertically in pillar -->
+            <div style="position:absolute; left:64px; bottom:100px; display:flex; flex-direction:column; gap:20px;">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:108px; color:#f2f0e9; line-height:0.88; letter-spacing:-0.01em;">Form<br>less</div>
+              <div style="width:48px; height:1.5px; background:rgba(242,240,233,0.3);"></div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:16px; letter-spacing:0.28em; text-transform:uppercase; color:#cc5833; line-height:1.6;">A book by<br>Sonika Cottman<br>Sept 1 · 2026</div>
+            </div>
+          </div>
+          <!-- RIGHT — clean field, person stands here -->
+          <div style="flex:1; position:relative; background:#f2f0e9; overflow:hidden;">
+            <!-- very faint ghost title texture, center — intentionally behind person -->
+            <div style="position:absolute; right:-80px; bottom:-40px; font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:700px; color:rgba(46,64,54,0.055); line-height:1; pointer-events:none; user-select:none;">F</div>
+          </div>
+        </div>
+        <!-- CORRECT GUIDE: center 40% width, full height from 15% -->
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:30%; top:12%; width:40%; height:88%; border:3px dashed rgba(204,88,51,0.6); pointer-events:none; border-radius:8px;">
+          <span style="position:absolute; top:-42px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#cc5833; background:#f2f0e9; padding:4px 12px; border-radius:4px;">Person zone — keep clear</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3b: Top Banner + Full Bleed -->
+    <div id="3b" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #cc5833; border-radius:9999px; padding:8px 28px;">3b</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Dusk Announcement</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-3b" style="position:absolute; inset:0; overflow:hidden; background:#1a100a;">
+          <img src="assets/imagery/desert-dusk.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.75;">
+          <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(8,6,4,0.88) 0%, rgba(8,6,4,0.4) 18%, rgba(8,6,4,0.15) 40%, rgba(8,6,4,0.3) 100%);"></div>
+          <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+          <!-- TOP BANNER — safe zone: top 18% height, full width -->
+          <div style="position:absolute; top:0; left:0; right:0; height:196px; display:flex; align-items:center; padding:0 80px; gap:0;">
+            <div style="display:flex; align-items:center; gap:18px;">
+              <svg viewBox="0 0 1401 391" width="190" height="53" xmlns="http://www.w3.org/2000/svg">
+                <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#f2f0e9"></path>
+                <path d="M960.931 248.353C1049.87 173.839 1172.46 104.131 1350.34 20" stroke="rgba(242,240,233,0.5)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.67 8"></path>
+                <path d="M943.385 255.901C966.059 242.405 990.916 228.424 1017.95 213.984C1111.31 164.133 1230.67 108.825 1376.06 49.1812" stroke="rgba(242,240,233,0.5)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"></path>
+                <circle cx="1000.6" cy="225.3" r="3.6" fill="#cc5833"></circle><circle cx="1034.3" cy="203.7" r="4.3" fill="#cc5833"></circle><circle cx="1065.5" cy="184.4" r="3.4" fill="#cc5833"></circle><circle cx="1101.6" cy="162.8" r="6" fill="#f2f0e9"></circle><circle cx="1137.6" cy="143.6" r="3.4" fill="#cc5833"></circle><circle cx="1180.9" cy="117.1" r="5" fill="#f2f0e9"></circle><circle cx="1231.4" cy="90.7" r="3.6" fill="#f2f0e9"></circle><circle cx="1279.5" cy="64.3" r="5.8" fill="#cc5833"></circle><circle cx="1342" cy="25.8" r="4.8" fill="#f2f0e9"></circle>
+              </svg>
+              <span style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:44px; color:#f2f0e9; letter-spacing:0.01em;">Eyes Closed</span>
+            </div>
+            <div style="flex:1;"></div>
+            <!-- right side of top band — safe zone -->
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:52px; color:#f2f0e9; line-height:1;">Formless</div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:8px; height:8px; border-radius:9999px; background:#cc5833;"></div>
+                <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:18px; letter-spacing:0.28em; text-transform:uppercase; color:#cc5833;">Arriving September 1, 2026</div>
+              </div>
+            </div>
+          </div>
+          <!-- RIGHT COLUMN — aligned to vertical rule -->
+          <div style="position:absolute; right:80px; bottom:96px; width:420px;">
+            <div style="box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; gap:14px; padding:6px 0 6px 28px; border-left:1px solid rgba(242,240,233,0.32);">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:32px; color:rgba(242,240,233,0.9); line-height:1.1; letter-spacing:0.005em; white-space:nowrap;">Something is arriving.</div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:13px; letter-spacing:0.28em; text-transform:uppercase; color:rgba(242,240,233,0.42); white-space:nowrap;">A book by Sonika Cottman</div>
+            </div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:30%; top:12%; width:40%; height:88%; border:3px dashed rgba(242,240,233,0.65); pointer-events:none; border-radius:8px;">
+          <span style="position:absolute; top:-42px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#f2f0e9; background:rgba(26,16,10,0.7); padding:4px 12px; border-radius:4px;">Person zone — keep clear</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3c: Right Column + Teaser -->
+    <div id="3c" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #cc5833; border-radius:9999px; padding:8px 28px;">3c</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Corner Anchors</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-3c" style="position:absolute; inset:0; overflow:hidden; background:#080a09;">
+          <img src="assets/imagery/misty-river.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.5;">
+          <div style="position:absolute; inset:0; background:radial-gradient(ellipse 100% 100% at 50% 50%, rgba(8,10,9,0) 0%, rgba(8,10,9,0.7) 100%);"></div>
+          <div style="position:absolute; inset:0; background:linear-gradient(90deg, rgba(8,10,9,0.5) 0%, rgba(8,10,9,0) 28%, rgba(8,10,9,0) 72%, rgba(8,10,9,0.65) 100%);"></div>
+          <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+          <!-- TOP-LEFT — logo anchor -->
+          <div style="position:absolute; top:72px; left:80px; display:flex; align-items:center; gap:16px;">
+            <svg viewBox="0 0 1401 391" width="160" height="45" xmlns="http://www.w3.org/2000/svg">
+              <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#f2f0e9"></path>
+              <path d="M960.931 248.353C1049.87 173.839 1172.46 104.131 1350.34 20" stroke="rgba(242,240,233,0.5)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.67 8"></path>
+              <path d="M943.385 255.901C966.059 242.405 990.916 228.424 1017.95 213.984C1111.31 164.133 1230.67 108.825 1376.06 49.1812" stroke="rgba(242,240,233,0.5)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"></path>
+              <circle cx="1000.6" cy="225.3" r="3.6" fill="#cc5833"></circle><circle cx="1034.3" cy="203.7" r="4.3" fill="#cc5833"></circle><circle cx="1065.5" cy="184.4" r="3.4" fill="#cc5833"></circle><circle cx="1101.6" cy="162.8" r="6" fill="#f2f0e9"></circle><circle cx="1137.6" cy="143.6" r="3.4" fill="#cc5833"></circle><circle cx="1180.9" cy="117.1" r="5" fill="#f2f0e9"></circle><circle cx="1231.4" cy="90.7" r="3.6" fill="#f2f0e9"></circle><circle cx="1279.5" cy="64.3" r="5.8" fill="#cc5833"></circle><circle cx="1342" cy="25.8" r="4.8" fill="#f2f0e9"></circle>
+            </svg>
+            <span style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:38px; color:#f2f0e9;">Eyes Closed</span>
+          </div>
+          <!-- RIGHT COLUMN — title lockup, safe zone: right ~28% -->
+          <div style="position:absolute; right:70px; top:0; bottom:0; width:480px; display:flex; flex-direction:column; justify-content:center; gap:28px; padding-left:44px; border-left:1px solid rgba(242,240,233,0.14);">
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:14px; letter-spacing:0.32em; text-transform:uppercase; color:rgba(242,240,233,0.42);">A book by Sonika Cottman</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:84px; color:#f2f0e9; line-height:0.92; letter-spacing:-0.02em; white-space:nowrap;">Formless</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px; max-width:380px;">
+              <div style="width:36px; height:1.5px; background:rgba(242,240,233,0.28);"></div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:15px; letter-spacing:0.26em; text-transform:uppercase; color:#cc5833;">Arriving September 1, 2026</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:28px; color:rgba(242,240,233,0.58); line-height:1.2; letter-spacing:0.01em; white-space:nowrap;">Something is arriving.</div>
+            </div>
+          </div>
+          <!-- BOTTOM-LEFT CORNER — safe zone: left edge -->
+          <div style="position:absolute; bottom:72px; left:80px;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:15px; letter-spacing:0.28em; text-transform:uppercase; color:rgba(242,240,233,0.35);">eyesclosed.com</div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:30%; top:12%; width:40%; height:88%; border:3px dashed rgba(242,240,233,0.65); pointer-events:none; border-radius:8px;">
+          <span style="position:absolute; top:-42px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#f2f0e9; background:rgba(8,10,9,0.7); padding:4px 12px; border-radius:4px;">Person zone — keep clear</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- TURN 2 — Book launch -->
+  <div style="display:flex; align-items:center; gap:32px; margin-bottom:-48px;">
+    <div style="height:2px; flex:1; background:rgba(46,64,54,0.2);"></div>
+    <a href="#top" style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:rgba(46,64,54,0.5); text-decoration:none;">↑ Top</a>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:#2e4036;">Round 2 — Book launch</div>
+    <div style="height:2px; flex:1; background:rgba(46,64,54,0.2);"></div>
+  </div>
+  <section style="display:flex; flex-wrap:wrap; gap:96px 80px;">
+
+    <!-- 2a: Desert Dusk — bottom bar -->
+    <div id="2a" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #cc5833; border-radius:9999px; padding:8px 28px;">2a</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Dusk Horizon</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-2a" style="position:absolute; inset:0; overflow:hidden; background:#1a100a;">
+          <img src="assets/imagery/desert-dusk.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.85;">
+          <div style="position:absolute; inset:0; background:linear-gradient(0deg, rgba(8,6,4,0.96) 0%, rgba(8,6,4,0.55) 22%, rgba(8,6,4,0) 52%);"></div>
+          <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(8,6,4,0.4) 0%, rgba(8,6,4,0) 30%);"></div>
+          <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+          <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:96px; color:rgba(242,240,233,0.7); position:absolute; left:50%; top:44%; transform:translateX(-50%); white-space:nowrap; letter-spacing:-0.01em; line-height:1; text-align:center;">Something is arriving.</div>
+          <div style="position:absolute; bottom:0; left:0; right:0; height:180px; background:#f2f0e9; display:flex; align-items:center; padding:0 120px; gap:0;">
+            <div style="display:flex; align-items:center; gap:20px; flex:1;">
+              <svg viewBox="0 0 1401 391" width="160" height="45" xmlns="http://www.w3.org/2000/svg">
+                <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#1a1a1a"></path>
+                <path d="M960.931 248.353C1049.87 173.839 1172.46 104.131 1350.34 20" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.67 8"></path>
+                <path d="M943.385 255.901C966.059 242.405 990.916 228.424 1017.95 213.984C1111.31 164.133 1230.67 108.825 1376.06 49.1812" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"></path>
+                <circle cx="1000.6" cy="225.3" r="3.6" fill="#a51c1c"></circle>
+                <circle cx="1034.3" cy="203.7" r="4.3" fill="#a51c1c"></circle>
+                <circle cx="1065.5" cy="184.4" r="3.4" fill="#a51c1c"></circle>
+                <circle cx="1101.6" cy="162.8" r="6" fill="#1a1a1a"></circle>
+                <circle cx="1137.6" cy="143.6" r="3.4" fill="#a51c1c"></circle>
+                <circle cx="1180.9" cy="117.1" r="5" fill="#1a1a1a"></circle>
+                <circle cx="1231.4" cy="90.7" r="3.6" fill="#1a1a1a"></circle>
+                <circle cx="1279.5" cy="64.3" r="5.8" fill="#a51c1c"></circle>
+                <circle cx="1342" cy="25.8" r="4.8" fill="#1a1a1a"></circle>
+              </svg>
+              <span style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:44px; color:#1a1a1a;">Eyes Closed</span>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:56px; color:#1a1a1a; line-height:1;">Formless</div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:18px; letter-spacing:0.28em; text-transform:uppercase; color:#cc5833;">Arriving September 1, 2026</div>
+            </div>
+            <div style="flex:1; display:flex; justify-content:flex-end;">
+              <div style="width:10px; height:10px; border-radius:9999px; background:#cc5833;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:37%; top:10%; width:26%; height:60%; border:3px dashed rgba(242,240,233,0.6); border-radius:9999px 9999px 40px 40px; pointer-events:none;">
+          <span style="position:absolute; top:-46px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#f2f0e9;">Head &amp; shoulders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2b: Ghost Type Dark -->
+    <div id="2b" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #cc5833; border-radius:9999px; padding:8px 28px;">2b</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Ghost Type</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-2b" style="position:absolute; inset:0; overflow:hidden; background:#080a09;">
+          <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+          <div style="position:absolute; top:50%; right:-120px; transform:translateY(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:560px; color:#f2f0e9; opacity:0.055; line-height:1; white-space:nowrap; user-select:none; pointer-events:none; letter-spacing:-0.02em;">Formless</div>
+          <div style="position:absolute; top:0; left:0; width:42%; height:100%; background:linear-gradient(90deg, rgba(8,10,9,0.96) 60%, rgba(8,10,9,0) 100%); pointer-events:none;"></div>
+          <div style="position:absolute; top:130px; left:130px; display:flex; flex-direction:column; gap:20px; max-width:480px;">
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:rgba(242,240,233,0.42);">A book by Sonika Cottman</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:74px; color:#f2f0e9; line-height:0.92; letter-spacing:-0.02em; white-space:nowrap;">Formless</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:11px; max-width:360px;">
+              <div style="width:28px; height:1.5px; background:rgba(242,240,233,0.28);"></div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:12px; letter-spacing:0.26em; text-transform:uppercase; color:#cc5833;">Arriving September 1, 2026</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:22px; color:rgba(242,240,233,0.58); line-height:1.2; letter-spacing:0.01em; white-space:nowrap;">Something is arriving.</div>
+            </div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:37%; top:12%; width:26%; height:72%; border:3px dashed rgba(242,240,233,0.5); border-radius:9999px 9999px 40px 40px; pointer-events:none;">
+          <span style="position:absolute; top:-46px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#f2f0e9;">Head &amp; shoulders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2c: Sunset Coast — top band -->
+    <div id="2c" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #cc5833; border-radius:9999px; padding:8px 28px;">2c</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Golden Coast</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-2c" style="position:absolute; inset:0; overflow:hidden; background:#1a0e08;">
+          <img src="assets/imagery/sunset-coast.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+          <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(8,6,4,0.82) 0%, rgba(8,6,4,0.2) 22%, rgba(8,6,4,0.05) 50%, rgba(8,6,4,0.45) 100%);"></div>
+          <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+          <div style="position:absolute; top:0; left:0; right:0; height:185px; display:flex; align-items:center; padding:0 130px; gap:0;">
+            <div style="display:flex; align-items:center; gap:18px; flex:1;">
+              <svg viewBox="0 0 1401 391" width="160" height="45" xmlns="http://www.w3.org/2000/svg">
+                <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#f2f0e9"></path>
+                <path d="M960.931 248.353C1049.87 173.839 1172.46 104.131 1350.34 20" stroke="rgba(242,240,233,0.6)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.67 8"></path>
+                <path d="M943.385 255.901C966.059 242.405 990.916 228.424 1017.95 213.984C1111.31 164.133 1230.67 108.825 1376.06 49.1812" stroke="rgba(242,240,233,0.6)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"></path>
+                <circle cx="1000.6" cy="225.3" r="3.6" fill="#cc5833"></circle>
+                <circle cx="1034.3" cy="203.7" r="4.3" fill="#cc5833"></circle>
+                <circle cx="1065.5" cy="184.4" r="3.4" fill="#cc5833"></circle>
+                <circle cx="1101.6" cy="162.8" r="6" fill="#f2f0e9"></circle>
+                <circle cx="1137.6" cy="143.6" r="3.4" fill="#cc5833"></circle>
+                <circle cx="1180.9" cy="117.1" r="5" fill="#f2f0e9"></circle>
+                <circle cx="1231.4" cy="90.7" r="3.6" fill="#f2f0e9"></circle>
+                <circle cx="1279.5" cy="64.3" r="5.8" fill="#cc5833"></circle>
+                <circle cx="1342" cy="25.8" r="4.8" fill="#f2f0e9"></circle>
+              </svg>
+              <span style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:46px; color:#f2f0e9;">Eyes Closed</span>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:18px; letter-spacing:0.28em; text-transform:uppercase; color:rgba(242,240,233,0.55);">A book by Sonika Cottman</div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:20px; letter-spacing:0.28em; text-transform:uppercase; color:#cc5833;">Formless · Arriving September 1</div>
+            </div>
+          </div>
+          <div style="position:absolute; bottom:120px; right:150px; display:flex; flex-direction:column; align-items:flex-end; gap:18px; max-width:640px; text-align:right;">
+            <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:82px; color:#f2f0e9; line-height:1.05;">A book on remembering<br>who you are.</div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:28%; top:18%; width:26%; height:68%; border:3px dashed rgba(242,240,233,0.6); border-radius:9999px 9999px 40px 40px; pointer-events:none;">
+          <span style="position:absolute; top:-46px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#f2f0e9;">Head &amp; shoulders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2d: Cream Arch -->
+    <div id="2d" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #cc5833; border-radius:9999px; padding:8px 28px;">2d</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">The Arc</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-2d" style="position:absolute; inset:0; overflow:hidden; background:#f2f0e9;">
+          <div class="grain" style="opacity:0.06; mix-blend-mode:multiply;"></div>
+          <svg viewBox="0 0 1401 391" width="1920" height="536" xmlns="http://www.w3.org/2000/svg" style="position:absolute; top:-80px; left:0; pointer-events:none;">
+            <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#2e4036"></path>
+          </svg>
+          <div style="position:absolute; top:58px; right:130px; display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:20px; letter-spacing:0.3em; text-transform:uppercase; color:rgba(242,240,233,0.9);">Eyes Closed</div>
+            <div style="width:8px; height:8px; border-radius:9999px; background:#cc5833; align-self:flex-end;"></div>
+          </div>
+          <div style="position:absolute; left:130px; bottom:130px; display:flex; flex-direction:column; gap:24px; max-width:820px;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:20px; letter-spacing:0.28em; text-transform:uppercase; color:#cc5833;">A book by Sonika Cottman</div>
+            <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:160px; color:#1a1a1a; line-height:0.88; letter-spacing:-0.01em;">Formless</div>
+            <div style="display:flex; align-items:center; gap:24px; margin-top:8px;">
+              <div style="height:1px; width:80px; background:rgba(26,26,26,0.25);"></div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:20px; letter-spacing:0.28em; text-transform:uppercase; color:rgba(26,26,26,0.55);">September 1, 2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:37%; top:42%; width:26%; height:52%; border:3px dashed rgba(46,64,54,0.45); border-radius:9999px 9999px 40px 40px; pointer-events:none;">
+          <span style="position:absolute; top:-46px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#2e4036;">Head &amp; shoulders</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div style="display:flex; align-items:center; gap:32px; margin-bottom:-48px;">
+    <div style="height:2px; flex:1; background:rgba(46,64,54,0.2);"></div>
+    <a href="#top" style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:rgba(46,64,54,0.5); text-decoration:none;">↑ Top</a>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:rgba(46,64,54,0.5);">Round 1 — Brand foundations</div>
+    <div style="height:2px; flex:1; background:rgba(46,64,54,0.2);"></div>
+  </div>
+
+  <!-- TURN 1 -->
+  <section style="display:flex; flex-wrap:wrap; gap:96px 80px;">
+
+    <!-- 1a -->
+    <div id="1a" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #2e4036; border-radius:9999px; padding:8px 28px;">1a</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Charcoal Sanctuary</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <!-- EXPORT TARGET -->
+        <div id="bg-1a" style="position:absolute; inset:0; overflow:hidden; background:
+          radial-gradient(circle at 18% 12%, rgba(204,88,51,0.1) 0%, rgba(204,88,51,0.02) 24%, rgba(8,10,9,0) 44%),
+          radial-gradient(circle at 78% 18%, rgba(159,181,170,0.14) 0%, rgba(159,181,170,0.02) 22%, rgba(8,10,9,0) 42%),
+          #080a09;">
+          <div class="grain" style="opacity:0.1; mix-blend-mode:soft-light;"></div>
+          <div style="position:absolute; inset:64px; border:1px solid rgba(242,240,233,0.12); border-radius:20px;"></div>
+          <div style="position:absolute; top:130px; left:130px; display:flex; flex-direction:column; align-items:flex-start; gap:6px;">
+            <svg viewBox="0 0 1401 391" width="330" height="92" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+              <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#f2f0e9"></path>
+              <path d="M960.931 248.353C1049.87 173.839 1172.46 104.131 1350.34 20" stroke="rgba(242,240,233,0.55)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.67 8"></path>
+              <path d="M943.385 255.901C966.059 242.405 990.916 228.424 1017.95 213.984C1111.31 164.133 1230.67 108.825 1376.06 49.1812" stroke="rgba(242,240,233,0.55)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"></path>
+              <g>
+                <circle cx="1000.6" cy="225.3" r="3.6" fill="#cc5833"></circle>
+                <circle cx="1034.3" cy="203.7" r="4.3" fill="#cc5833"></circle>
+                <circle cx="1065.5" cy="184.4" r="3.4" fill="#cc5833"></circle>
+                <circle cx="1101.6" cy="162.8" r="6" fill="#f2f0e9"></circle>
+                <circle cx="1137.6" cy="143.6" r="3.4" fill="#cc5833"></circle>
+                <circle cx="1180.9" cy="117.1" r="5" fill="#f2f0e9"></circle>
+                <circle cx="1231.4" cy="90.7" r="3.6" fill="#f2f0e9"></circle>
+                <circle cx="1279.5" cy="64.3" r="5.8" fill="#cc5833"></circle>
+                <circle cx="1342" cy="25.8" r="4.8" fill="#f2f0e9"></circle>
+              </g>
+            </svg>
+            <span style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:58px; color:#f2f0e9; letter-spacing:0.01em; line-height:1;">Eyes Closed</span>
+          </div>
+          <div style="position:absolute; left:130px; bottom:130px; max-width:490px; display:flex; flex-direction:column; gap:18px;">
+            <div class="eyebrow" style="font-size:14px; letter-spacing:0.28em; color:#cc5833;">Eyes Closed · Formless</div>
+            <div class="teach" style="font-size:36px; color:rgba(242,240,233,0.88);">If you can hear the voice,<br>who is listening?</div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:37%; top:24%; width:26%; height:70%; border:3px dashed rgba(242,240,233,0.55); border-radius:9999px 9999px 40px 40px; pointer-events:none;">
+          <span style="position:absolute; top:-46px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#f2f0e9;">Head &amp; shoulders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1b -->
+    <div id="1b" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #2e4036; border-radius:9999px; padding:8px 28px;">1b</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Misty River</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-1b" style="position:absolute; inset:0; overflow:hidden; background:#0e1512;">
+          <img src="assets/imagery/misty-river.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+          <div style="position:absolute; inset:0; background:linear-gradient(90deg, rgba(8,10,9,0.82) 0%, rgba(8,10,9,0.5) 32%, rgba(8,10,9,0.15) 55%, rgba(8,10,9,0.35) 100%);"></div>
+          <div style="position:absolute; inset:0; background:linear-gradient(0deg, rgba(8,10,9,0.6) 0%, rgba(8,10,9,0) 45%);"></div>
+          <div class="grain" style="opacity:0.09; mix-blend-mode:soft-light;"></div>
+          <img src="assets/logo/eyes-closed-logo-white.svg" alt="Eyes Closed" style="position:absolute; top:120px; left:130px; width:340px; height:auto;">
+          <div style="position:absolute; left:130px; bottom:140px; max-width:490px; display:flex; flex-direction:column; gap:18px;">
+            <div class="eyebrow" style="font-size:14px; letter-spacing:0.28em; color:#cc5833;">Formless</div>
+            <div class="teach" style="font-size:36px; color:rgba(242,240,233,0.9);">Remembering who you are<br>beyond the mind.</div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:37%; top:24%; width:26%; height:70%; border:3px dashed rgba(242,240,233,0.6); border-radius:9999px 9999px 40px 40px; pointer-events:none;">
+          <span style="position:absolute; top:-46px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#f2f0e9;">Head &amp; shoulders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1c -->
+    <div id="1c" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #2e4036; border-radius:9999px; padding:8px 28px;">1c</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Formless Dark</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-1c" style="position:absolute; inset:0; overflow:hidden; background:radial-gradient(120% 90% at 78% 18%, #14211b 0%, #0b100e 45%, #080a09 100%);">
+          <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+          <img src="assets/logo/eyes-closed-logo-arc-white.svg" alt="" style="position: absolute; top: 125px; right: 99px; width: 335px; height: 93px; opacity: 0.9">
+          <div style="position:absolute; top:130px; left:130px; display:flex; flex-direction:column; gap:18px;">
+            <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:64px; color:#f2f0e9; line-height:1;">Formless</div>
+            <div class="eyebrow" style="font-size:20px; letter-spacing:0.3em; color:rgba(159,181,170,0.9);">A book by Sonika Cottman · Sept 1 2026</div>
+          </div>
+          <div style="position:absolute; left:130px; bottom:140px; max-width:840px; display:flex; flex-direction:column; gap:34px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <span style="width:12px; height:12px; border-radius:9999px; background:#cc5833;"></span>
+              <span class="eyebrow" style="font-size:20px; letter-spacing:0.3em; color:rgba(242,240,233,0.55);">Eyes Closed</span>
+            </div>
+            <div class="teach" style="font-size:78px; color:#f2f0e9;">You are not the voice —<br>you are the one listening.</div>
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:37%; top:24%; width:26%; height:70%; border:3px dashed rgba(242,240,233,0.5); border-radius:9999px 9999px 40px 40px; pointer-events:none;">
+          <span style="position:absolute; top:-46px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#f2f0e9;">Head &amp; shoulders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1d -->
+    <div id="1d" style="display:flex; flex-direction:column; gap:24px; width:1920px;">
+      <div style="display:flex; align-items:baseline; gap:20px;">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:34px; color:#1a1a1a; background:#f2f0e9; border:2px solid #2e4036; border-radius:9999px; padding:8px 28px;">1d</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:40px; color:#2e4036;">Moss Editorial</span>
+      </div>
+      <div style="position:relative; width:1920px; height:1080px;">
+        <div id="bg-1d" style="position:absolute; inset:0; overflow:hidden; background:#080a09; display:flex;">
+          <div class="grain" style="opacity:0.1; mix-blend-mode:soft-light; z-index:3;"></div>
+          <div style="position:relative; width:690px; height:100%; background:#2e4036; flex-shrink:0; overflow:hidden;">
+            <div style="position:absolute; inset:0; background:radial-gradient(90% 55% at 50% 0%, rgba(159,181,170,0.18) 0%, transparent 70%);"></div>
+            <div style="position:absolute; top:64px; left:54px; display:flex; flex-direction:column; gap:10px;">
+              <svg viewBox="0 0 1401 391" width="170" height="48" xmlns="http://www.w3.org/2000/svg">
+                <path d="M26 213.635C290.41 417.952 742.311 415.548 1006.72 218.443C732.696 353.051 304.832 353.051 26 213.635Z" fill="#f2f0e9"></path>
+                <path d="M960.931 248.353C1049.87 173.839 1172.46 104.131 1350.34 20" stroke="rgba(242,240,233,0.55)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.67 8"></path>
+                <path d="M943.385 255.901C966.059 242.405 990.916 228.424 1017.95 213.984C1111.31 164.133 1230.67 108.825 1376.06 49.1812" stroke="rgba(242,240,233,0.55)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"></path>
+                <circle cx="1000.6" cy="225.3" r="3.6" fill="#cc5833"></circle><circle cx="1034.3" cy="203.7" r="4.3" fill="#cc5833"></circle><circle cx="1065.5" cy="184.4" r="3.4" fill="#cc5833"></circle><circle cx="1101.6" cy="162.8" r="6" fill="#f2f0e9"></circle><circle cx="1137.6" cy="143.6" r="3.4" fill="#cc5833"></circle><circle cx="1180.9" cy="117.1" r="5" fill="#f2f0e9"></circle><circle cx="1231.4" cy="90.7" r="3.6" fill="#f2f0e9"></circle><circle cx="1279.5" cy="64.3" r="5.8" fill="#cc5833"></circle><circle cx="1342" cy="25.8" r="4.8" fill="#f2f0e9"></circle>
+              </svg>
+              <span style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:26px; color:rgba(242,240,233,0.88); line-height:1; letter-spacing:0.02em;">Eyes Closed</span>
+            </div>
+            <div style="position:absolute; left:54px; top:250px; display:flex; flex-direction:column; gap:4px;">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:46px; color:#f2f0e9; line-height:1.08; letter-spacing:-0.012em; white-space:nowrap;">What you’re searching for</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:46px; color:#f2f0e9; line-height:1.08; letter-spacing:-0.012em; white-space:nowrap;">has never been missing.</div>
+            </div>
+            <div style="position:absolute; left:54px; bottom:70px; right:50px;">
+              <div style="width:40px; height:1.5px; background:#cc5833; margin-bottom:18px;"></div>
+              <div style="border-left:2px solid rgba(204,88,51,0.45); padding-left:18px; display:flex; flex-direction:column; gap:9px;">
+                <div style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:32px; letter-spacing:0.1em; text-transform:uppercase; color:#f2f0e9; line-height:1;">Formless</div>
+                <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#cc5833;">Coming September 1, 2026</div>
+                <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:400; font-size:18px; color:rgba(242,240,233,0.62); line-height:1.3;">An invitation to discover who you are beyond thought</div>
+                <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:500; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(242,240,233,0.36); margin-top:4px;">A book by Sonika Cottman</div>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1; position:relative; background:radial-gradient(ellipse 55% 45% at 62% 28%, rgba(159,181,170,0.07) 0%, transparent 70%), radial-gradient(ellipse 80% 60% at 50% 100%, rgba(46,64,54,0.18) 0%, transparent 55%), #080a09; overflow:hidden;">
+          </div>
+        </div>
+        <div class="guide" style="display:{{ guideDisplay }}; position:absolute; left:30%; top:12%; width:40%; height:88%; border:3px dashed rgba(242,240,233,0.5); border-radius:8px; pointer-events:none;">
+          <span style="position:absolute; top:-42px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#f2f0e9;">Person zone — keep clear</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:900},&quot;showGuide&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Guides&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const showGuide = this.props.showGuide ?? true;
+    return { guideDisplay: showGuide ? "block" : "none" };
+  }
+}
+</script>
+</body>
+</html>

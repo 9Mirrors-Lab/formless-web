@@ -9,6 +9,7 @@ import { Menu, X } from "lucide-react";
 export type BrandNavId =
   | "brand"
   | "speaker-sheet"
+  | "zoom-backgrounds"
   | "brand-kit"
   | "client-review"
   | "design-system";
@@ -30,6 +31,12 @@ const NAV_ITEMS: NavItem[] = [
     description: "Venue one-sheets",
   },
   {
+    id: "zoom-backgrounds",
+    title: "Zoom backgrounds",
+    href: "/zoom-backgrounds",
+    description: "Virtual session backdrops",
+  },
+  {
     id: "brand-kit",
     title: "Logo Options",
     href: "/brand-kit-export",
@@ -39,6 +46,7 @@ const NAV_ITEMS: NavItem[] = [
 
 function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/speaker-sheet") return "speaker-sheet";
+  if (pathname === "/zoom-backgrounds") return "zoom-backgrounds";
   if (pathname === "/brand-kit-export") return "brand-kit";
   if (pathname === "/design-system") return "design-system";
   if (pathname === "/client/review" || pathname.startsWith("/client/review/")) {
@@ -97,7 +105,7 @@ function BrandNavPanel({
         aria-hidden
       />
 
-      <div className="relative flex items-start justify-center px-3 pb-7 pt-[4.25rem]">
+      <div className="relative flex min-h-[135px] flex-col items-center justify-center px-3 pb-5 pt-5">
         <a
           href="/brand"
           className="group block w-full min-w-0 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
@@ -105,17 +113,17 @@ function BrandNavPanel({
         >
           <p
             id={labelledBy}
-            className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#9fb5aa]"
+            className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9fb5aa]"
           >
             Brand Toolkit
           </p>
-          <p className="mt-2 font-serif text-[1.65rem] font-light italic leading-none tracking-tight text-cream transition-colors group-hover:text-cream/90">
+          <p className="mt-2 font-serif text-[1.85rem] font-light italic leading-none tracking-tight text-cream transition-colors group-hover:text-cream/90">
             Eyes Closed
           </p>
         </a>
         <button
           type="button"
-          className="absolute right-3 top-[4.25rem] inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cream/12 text-cream/70 transition-colors hover:border-cream/25 hover:text-cream md:hidden"
+          className="absolute right-3 top-5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-cream/12 text-cream/70 transition-colors hover:border-cream/25 hover:text-cream md:hidden"
           onClick={onClose}
           aria-label="Close navigation"
         >
@@ -143,35 +151,24 @@ function BrandNavPanel({
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={[
-                    "group relative flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors duration-300",
+                    "group relative block rounded-lg px-3 py-2 transition-colors duration-300",
                     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]",
                     isActive
-                      ? "bg-cream/[0.06] text-cream"
-                      : "text-cream/58 hover:bg-cream/[0.03] hover:text-cream/85",
+                      ? "bg-cream/[0.05] text-cream"
+                      : "text-cream/50 hover:bg-cream/[0.03] hover:text-cream/80",
                   ].join(" ")}
                   onClick={onClose}
                 >
+                  <span className="block text-[12px] font-normal tracking-wide">
+                    {item.title}
+                  </span>
                   <span
                     className={[
-                      "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-300",
-                      isActive
-                        ? "bg-clay shadow-[0_0_12px_rgba(204,88,51,0.55)]"
-                        : "bg-cream/20 group-hover:bg-[#9fb5aa]/70",
+                      "mt-0.5 block text-[10px] leading-snug",
+                      isActive ? "text-cream/40" : "text-cream/25",
                     ].join(" ")}
-                    aria-hidden
-                  />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[14px] font-medium tracking-wide">
-                      {item.title}
-                    </span>
-                    <span
-                      className={[
-                        "mt-0.5 block text-[11px] leading-snug",
-                        isActive ? "text-cream/45" : "text-cream/28",
-                      ].join(" ")}
-                    >
-                      {item.description}
-                    </span>
+                  >
+                    {item.description}
                   </span>
                   {isActive ? (
                     <span
@@ -264,10 +261,11 @@ export function BrandNav({ activeId, open, onClose }: BrandNavProps) {
 type BrandShellProps = {
   children: ReactNode;
   activeId: BrandNavId;
-  crumb: string;
+  /** Kept for call-site compatibility; breadcrumb chrome was removed. */
+  crumb?: string;
 };
 
-export function BrandShell({ children, activeId, crumb }: BrandShellProps) {
+export function BrandShell({ children, activeId }: BrandShellProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -290,34 +288,15 @@ export function BrandShell({ children, activeId, crumb }: BrandShellProps) {
       />
 
       <div className="relative flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b border-cream/[0.08] bg-[#080a09]/85 px-4 backdrop-blur-md md:px-6">
+        <header className="sticky top-0 z-20 flex h-10 shrink-0 items-center gap-2 border-b border-cream/[0.08] bg-[#080a09]/85 px-4 backdrop-blur-md md:h-10 md:px-6">
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cream/12 text-cream/75 transition-colors hover:border-cream/25 hover:text-cream md:hidden"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-cream/12 text-cream/75 transition-colors hover:border-cream/25 hover:text-cream md:hidden"
             onClick={() => setOpen(true)}
             aria-label="Open navigation"
           >
-            <Menu className="h-4 w-4" aria-hidden />
+            <Menu className="h-3.5 w-3.5" aria-hidden />
           </button>
-
-          <div className="flex min-w-0 items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-cream/45">
-            <a
-              href="/hub"
-              className="hidden transition-colors hover:text-[#9fb5aa] sm:inline"
-            >
-              Hub
-            </a>
-            <span className="hidden text-cream/20 sm:inline" aria-hidden>
-              /
-            </span>
-            <a href="/brand" className="transition-colors hover:text-[#9fb5aa]">
-              Brand
-            </a>
-            <span className="text-cream/20" aria-hidden>
-              /
-            </span>
-            <span className="truncate text-cream/75">{crumb}</span>
-          </div>
         </header>
 
         <div className="relative flex-1">{children}</div>

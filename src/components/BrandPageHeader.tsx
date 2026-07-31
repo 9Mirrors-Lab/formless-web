@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
 type BrandPageHeaderProps = {
-  eyebrow: string;
+  /** Optional section cue. Prefer omitting when the shell breadcrumb already names the page. */
+  eyebrow?: string;
   title: string;
   description?: string;
   actions?: ReactNode;
@@ -15,16 +16,18 @@ export function BrandPageHeader({
   actions,
 }: BrandPageHeaderProps) {
   return (
-    <header className="flex flex-col gap-6 text-left md:flex-row md:items-end md:justify-between">
-      <div className="max-w-2xl">
-        <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#9fb5aa]">
-          {eyebrow}
-        </p>
-        <h2 className="mt-3 font-serif text-4xl italic text-cream md:text-5xl">
+    <header className="flex flex-col gap-2 text-left md:flex-row md:items-end md:justify-between md:gap-6">
+      <div className="min-w-0 max-w-3xl">
+        {eyebrow ? (
+          <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-[#9fb5aa]/70">
+            {eyebrow}
+          </p>
+        ) : null}
+        <h1 className="font-serif text-[1.75rem] italic leading-[1.05] tracking-[-0.02em] text-cream sm:text-[2rem] md:text-[2.25rem]">
           {title}
-        </h2>
+        </h1>
         {description ? (
-          <p className="mt-4 text-base leading-relaxed text-cream/65">
+          <p className="mt-1.5 max-w-xl text-[0.8125rem] leading-snug text-cream/55 md:mt-2 md:text-sm">
             {description}
           </p>
         ) : null}
@@ -38,7 +41,7 @@ export function BrandPageHeader({
 
 export function BrandPageBody({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 md:p-8 lg:p-10">
+    <div className="flex flex-1 flex-col gap-4 px-4 pb-4 pt-2 md:gap-5 md:px-8 md:pb-8 md:pt-2.5 lg:px-10 lg:pb-10">
       {children}
     </div>
   );

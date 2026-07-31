@@ -259,7 +259,6 @@ function SpeakerSheetSection({
   return (
     <div className="flex flex-col gap-10">
       <BrandPageHeader
-        eyebrow="Speaker materials"
         title="Speaker sheet"
         description="Three distinct layouts. Each card starts on Warm Crimson; pan to Mixed type and First pass for that layout's history. Original Concept B sits below as a separate reference."
       />

@@ -65,20 +65,20 @@ export const DevMenu = ({ path }: DevMenuProps) => {
   if (!import.meta.env.DEV) return null;
 
   return (
-    <div className="fixed left-4 top-4 z-[99999] flex flex-col items-start font-sans">
+    <div className="fixed right-3 top-3 z-[99999] flex flex-col items-end font-sans md:right-4 md:top-4">
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-cream/20 bg-charcoal px-3.5 py-2 text-sm font-medium text-cream shadow-lg transition-colors hover:border-moss/40 hover:bg-moss hover:text-charcoal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
+        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-cream/15 bg-charcoal/95 px-2.5 text-[11px] font-medium tracking-wide text-cream/70 shadow-md transition-colors hover:border-moss/40 hover:bg-moss hover:text-charcoal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
         aria-expanded={isOpen}
         aria-label={isOpen ? 'Close design navigation' : 'Open design navigation'}
       >
-        <Layers size={16} aria-hidden />
+        <Layers size={13} aria-hidden />
         Design
       </button>
 
       {isOpen ? (
-        <div className="mt-2 max-h-[min(78vh,40rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-xl border border-cream/15 bg-charcoal/95 text-cream shadow-2xl backdrop-blur-md">
+        <div className="mt-2 max-h-[min(70vh,36rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-xl border border-cream/15 bg-charcoal/95 text-cream shadow-2xl backdrop-blur-md">
           <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-cream/10 bg-charcoal/95 px-3.5 py-3">
             <div className="min-w-0">
               <p className="text-xs font-semibold tracking-wide text-cream">Design routes</p>
@@ -95,10 +95,10 @@ export const DevMenu = ({ path }: DevMenuProps) => {
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-cream/50 transition-colors hover:bg-cream/5 hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/80"
               aria-label="Close design navigation"
             >
-              <X size={16} aria-hidden />
+              <X size={14} aria-hidden />
             </button>
           </div>
 

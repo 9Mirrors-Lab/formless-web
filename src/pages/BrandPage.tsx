@@ -9,7 +9,6 @@ export default function BrandPage() {
     <BrandShell activeId="brand" crumb="Overview">
       <BrandPageBody>
         <BrandPageHeader
-          eyebrow="Overview"
           title="Content coming soon"
           description="Brand Toolkit holds internal materials and foundations for Eyes Closed."
         />

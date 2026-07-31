@@ -617,7 +617,6 @@ export default function BrandKitExportPage() {
       <BrandPageBody>
         <div className="w-full min-w-0 max-w-6xl overflow-x-hidden pb-24 md:pb-0">
           <BrandPageHeader
-            eyebrow="Export materials"
             title="Logo Options"
             description="Pick an asset, preview it, then export."
             actions={
@@ -642,9 +641,9 @@ export default function BrandKitExportPage() {
             }
           />
 
-          <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-5 lg:mt-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1fr)_22rem]">
+          <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-5 lg:mt-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1fr)_22rem]">
             {/* Mobile: asset rail before preview so pick + see share one screen */}
-            <div className="order-1 min-w-0 lg:order-2 lg:sticky lg:top-20">
+            <div className="order-1 min-w-0 lg:order-2 lg:sticky lg:top-14">
               <aside className="flex min-w-0 flex-col gap-3">
                 <div className="min-w-0">
                   <FieldLabel htmlFor={assetSelectId}>Asset</FieldLabel>

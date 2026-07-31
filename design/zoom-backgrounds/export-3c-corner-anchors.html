@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Export 3c Corner Anchors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; background: #000; }
+    .grain { position:absolute; inset:0; background-image:url("./assets/grain.png"); background-size:400px 400px; pointer-events:none; }
+  </style>
+</head>
+<body>
+  <div id="export" style="position:relative; width:3840px; height:2160px; overflow:hidden; background:#080a09;">
+    <img src="./assets/imagery/misty-river.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.5;">
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse 100% 100% at 50% 50%, rgba(8,10,9,0) 0%, rgba(8,10,9,0.7) 100%);"></div>
+    <div style="position:absolute; inset:0; background:linear-gradient(90deg, rgba(8,10,9,0.5) 0%, rgba(8,10,9,0) 28%, rgba(8,10,9,0) 72%, rgba(8,10,9,0.65) 100%);"></div>
+    <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+
+    <div style="position:absolute; top:144px; left:160px; display:flex; align-items:center; gap:28px;">
+      <img src="./assets/logo/eyes-closed-logo-white.svg" alt="Eyes Closed" style="width:380px; height:auto;">
+    </div>
+
+    <div style="position:absolute; right:140px; top:0; bottom:0; width:960px; display:flex; flex-direction:column; justify-content:center; gap:40px; padding-left:88px; border-left:1.5px solid rgba(242,240,233,0.14);">
+      <div style="display:flex; flex-direction:column; gap:28px;">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:22px; letter-spacing:0.32em; text-transform:uppercase; color:rgba(242,240,233,0.42);">A book by Sonika Cottman</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:148px; color:#f2f0e9; line-height:0.92; letter-spacing:-0.02em; white-space:nowrap;">Formless</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:22px; max-width:720px;">
+        <div style="width:56px; height:1.5px; background:rgba(242,240,233,0.28);"></div>
+        <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:24px; letter-spacing:0.26em; text-transform:uppercase; color:#cc5833;">Arriving September 1, 2026</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:44px; color:rgba(242,240,233,0.58); line-height:1.2; letter-spacing:0.01em; white-space:nowrap;">Something is arriving.</div>
+      </div>
+    </div>
+
+    <div style="position:absolute; bottom:144px; left:160px;">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:24px; letter-spacing:0.28em; text-transform:uppercase; color:rgba(242,240,233,0.35);">eyesclosed.com</div>
+    </div>
+  </div>
+</body>
+</html>

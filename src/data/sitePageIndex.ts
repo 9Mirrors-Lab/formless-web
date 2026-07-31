@@ -197,6 +197,14 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/SpeakerSheetPage.tsx',
   },
   {
+    id: 'zoom-backgrounds',
+    title: 'Zoom backgrounds',
+    path: '/zoom-backgrounds',
+    category: 'design',
+    description: 'Virtual Zoom backgrounds for podcasts, interviews, and sessions.',
+    source: 'src/pages/ZoomBackgroundsPage.tsx',
+  },
+  {
     id: 'design-system',
     title: 'Design system',
     path: '/design-system',
@@ -284,6 +292,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     category: 'design',
     description: 'Experimental homepage and layout playground.',
     source: 'src/pages/LayoutTestsPage.tsx',
+  },
+  {
+    id: 'cosmic-concepts',
+    title: 'Cosmic concepts (A–D)',
+    path: '/cosmic-concepts',
+    category: 'design',
+    description:
+      'Four cosmic home variants built from design-system icons and /science orbit language.',
+    source: 'src/pages/CosmicConceptsPage.tsx',
   },
   {
     id: 'pattern-mirror',

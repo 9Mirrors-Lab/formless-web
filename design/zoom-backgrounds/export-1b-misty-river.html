@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Export 1b Misty River</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; background: #000; }
+    .grain {
+      position: absolute;
+      inset: 0;
+      background-image: url("./assets/grain.png");
+      background-size: 400px 400px;
+      pointer-events: none;
+    }
+    .eyebrow {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .teach {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+  <div id="export" style="position:relative; width:3840px; height:2160px; overflow:hidden; background:#0e1512;">
+    <img src="./assets/imagery/misty-river.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+    <div style="position:absolute; inset:0; background:linear-gradient(90deg, rgba(8,10,9,0.88) 0%, rgba(8,10,9,0.55) 28%, rgba(8,10,9,0.18) 52%, rgba(8,10,9,0.4) 100%);"></div>
+    <div style="position:absolute; inset:0; background:linear-gradient(0deg, rgba(8,10,9,0.72) 0%, rgba(8,10,9,0.15) 38%, rgba(8,10,9,0) 55%);"></div>
+    <div class="grain" style="opacity:0.09; mix-blend-mode:soft-light;"></div>
+
+    <img src="./assets/logo/eyes-closed-logo-white.svg" alt="Eyes Closed" style="position:absolute; top:240px; left:260px; width:560px; height:auto;">
+
+    <div style="position:absolute; left:260px; bottom:260px; max-width:980px; display:flex; flex-direction:column; gap:28px;">
+      <div class="eyebrow" style="font-size:28px; letter-spacing:0.28em; color:#cc5833;">Formless</div>
+      <div class="teach" style="font-size:72px; color:rgba(242,240,233,0.9);">Remembering who you are<br>beyond the mind.</div>
+    </div>
+  </div>
+</body>
+</html>

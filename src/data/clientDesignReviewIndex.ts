@@ -81,6 +81,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
       'Full homepage rhythm experiment: hero with book aside, reflection, practice grid, science split, and notes.',
     source: 'src/pages/LayoutTestsPage.tsx',
   },
+  {
+    id: 'cosmic-concepts',
+    title: 'Cosmic design-system heroes (A–D)',
+    href: '/cosmic-concepts',
+    section: 'hero-home',
+    status: 'experiment',
+    description:
+      'Four radical home directions: annotated observatory, icon constellation, pillar index, nucleus witness. Uses /science orbits and /icons teaching marks.',
+    source: 'src/pages/CosmicConceptsPage.tsx',
+  },
 
   // Layout & pages
   {
@@ -180,6 +190,15 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     status: 'experiment',
     description: 'Speaker one-sheet concepts A/B/C with full-size preview.',
     source: 'src/pages/SpeakerSheetPage.tsx',
+  },
+  {
+    id: 'zoom-backgrounds',
+    title: 'Zoom backgrounds',
+    href: '/zoom-backgrounds',
+    section: 'brand-identity',
+    status: 'experiment',
+    description: 'Four 16:9 virtual backgrounds for podcasts, interviews, and sessions.',
+    source: 'src/pages/ZoomBackgroundsPage.tsx',
   },
   {
     id: 'design-system',
