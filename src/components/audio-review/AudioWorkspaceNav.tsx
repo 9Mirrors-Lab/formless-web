@@ -1,7 +1,8 @@
 /**
  * Shared workspace tabs for editorial listen/analysis and the companion kit.
- * Order: Listen · Companion · Analysis
- * Companion opens as a slide-out tray when onOpenCompanion is provided.
+ * Order: Brand · Companion · Listen · Analysis (client arrives on companion first).
+ * Brand links back to the Brand Toolkit. Companion opens a shadcn Sheet (side=top)
+ * when onOpenCompanion is provided.
  */
 
 export type AudioWorkspaceTab = 'listen' | 'companion' | 'analysis';
@@ -9,12 +10,13 @@ export type AudioWorkspaceTab = 'listen' | 'companion' | 'analysis';
 export type EditorialView = Exclude<AudioWorkspaceTab, 'companion'>;
 
 const TABS: ReadonlyArray<{
-  id: AudioWorkspaceTab;
+  id: AudioWorkspaceTab | 'brand';
   label: string;
   href: string;
 }> = [
-  { id: 'listen', label: 'Listen', href: '/audio/editorial?view=listen' },
+  { id: 'brand', label: 'Brand', href: '/brand' },
   { id: 'companion', label: 'Companion', href: '/audio/editorial?companion=1' },
+  { id: 'listen', label: 'Listen', href: '/audio/editorial?view=listen' },
   { id: 'analysis', label: 'Analysis', href: '/audio/editorial?view=analysis' },
 ];
 
@@ -45,12 +47,24 @@ export function AudioWorkspaceNav({
       aria-label={label}
     >
       {TABS.map((tab) => {
-        const selected = active === tab.id;
+        const selected = tab.id !== 'brand' && active === tab.id;
         const className = `inline-flex min-h-10 items-center rounded-full px-4 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           selected
             ? 'bg-moss text-cream'
             : 'text-cream/45 hover:text-cream/80'
         }`;
+
+        if (tab.id === 'brand') {
+          return (
+            <a
+              key={tab.id}
+              href={tab.href}
+              className={className}
+            >
+              {tab.label}
+            </a>
+          );
+        }
 
         if (tab.id === 'companion' && onOpenCompanion) {
           return (
@@ -108,10 +122,21 @@ export function editorialViewFromSearch(
   return 'listen';
 }
 
+/**
+ * Client default: companion open on bare /audio/editorial.
+ * Explicit ?view=listen|analysis (without companion=1) stays on that surface.
+ * ?companion=0 forces closed; ?companion=1 forces open.
+ */
 export function companionOpenFromSearch(
   search: string = typeof window !== 'undefined' ? window.location.search : '',
 ): boolean {
-  return new URLSearchParams(search).get('companion') === '1';
+  const params = new URLSearchParams(search);
+  const companion = params.get('companion');
+  if (companion === '0') return false;
+  if (companion === '1') return true;
+  const view = params.get('view');
+  if (view === 'listen' || view === 'analysis') return false;
+  return true;
 }
 
 export function setEditorialViewInUrl(view: EditorialView): void {
@@ -125,8 +150,12 @@ export function setCompanionOpenInUrl(open: boolean): void {
   const url = new URL(window.location.href);
   if (open) {
     url.searchParams.set('companion', '1');
+    url.searchParams.delete('view');
   } else {
     url.searchParams.delete('companion');
+    if (!url.searchParams.get('view')) {
+      url.searchParams.set('view', 'listen');
+    }
   }
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
 }

@@ -9,6 +9,7 @@ import { Menu, X } from "lucide-react";
 export type BrandNavId =
   | "brand"
   | "speaker-sheet"
+  | "audible-recording"
   | "zoom-backgrounds"
   | "brand-kit"
   | "client-review"
@@ -31,6 +32,12 @@ const NAV_ITEMS: NavItem[] = [
     description: "Venue one-sheets",
   },
   {
+    id: "audible-recording",
+    title: "Audible recording",
+    href: "/audio/editorial",
+    description: "Author companion and review",
+  },
+  {
     id: "zoom-backgrounds",
     title: "Zoom backgrounds",
     href: "/zoom-backgrounds",
@@ -46,6 +53,9 @@ const NAV_ITEMS: NavItem[] = [
 
 function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/speaker-sheet") return "speaker-sheet";
+  if (pathname === "/audio/editorial" || pathname.startsWith("/audio/editorial")) {
+    return "audible-recording";
+  }
   if (pathname === "/zoom-backgrounds") return "zoom-backgrounds";
   if (pathname === "/brand-kit-export") return "brand-kit";
   if (pathname === "/design-system") return "design-system";
@@ -105,10 +115,10 @@ function BrandNavPanel({
         aria-hidden
       />
 
-      <div className="relative flex min-h-[135px] flex-col items-center justify-center px-3 pb-5 pt-5">
+      <div className="relative flex min-h-[135px] flex-col items-start justify-center px-3 pb-5 pt-5">
         <a
           href="/brand"
-          className="group block w-full min-w-0 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
+          className="group block w-full min-w-0 px-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
           onClick={onClose}
         >
           <p
@@ -263,9 +273,15 @@ type BrandShellProps = {
   activeId: BrandNavId;
   /** Kept for call-site compatibility; breadcrumb chrome was removed. */
   crumb?: string;
+  /** Soft-light grain over the shell. Turn off behind full-bleed shaders. */
+  noise?: boolean;
 };
 
-export function BrandShell({ children, activeId }: BrandShellProps) {
+export function BrandShell({
+  children,
+  activeId,
+  noise = true,
+}: BrandShellProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -279,7 +295,7 @@ export function BrandShell({ children, activeId }: BrandShellProps) {
 
   return (
     <div className="brand-shell flex min-h-[100dvh] bg-[#080a09] text-cream selection:bg-clay/30 selection:text-cream">
-      <div className="noise-overlay-dark" aria-hidden />
+      {noise ? <div className="noise-overlay-dark" aria-hidden /> : null}
 
       <BrandNav
         activeId={activeId}

@@ -8,6 +8,8 @@ type ShaderBackdropProps = {
   /** Fixed covers the viewport; absolute fills the positioned parent. */
   position?: 'fixed' | 'absolute';
   className?: string;
+  /** Soft-light overlay mesh. Off removes the smeared/ghosted look. */
+  overlay?: boolean;
 };
 
 function probeWebGL2Support(): boolean {
@@ -49,9 +51,14 @@ export function ShaderBackdrop({
   theme = 'forest',
   position = 'absolute',
   className = '',
+  overlay = true,
 }: ShaderBackdropProps) {
   const [webgl2Supported, setWebgl2Supported] = useState<boolean | null>(null);
   const option = getBackgroundOption(theme);
+
+  useEffect(() => {
+    setWebgl2Supported(probeWebGL2Support());
+  }, []);
 
   if (!isShaderBackground(option)) {
     return null;
@@ -70,10 +77,6 @@ export function ShaderBackdrop({
     zIndex: 0,
     pointerEvents: 'none',
   };
-
-  useEffect(() => {
-    setWebgl2Supported(probeWebGL2Support());
-  }, []);
 
   return (
     <div className={`inset-0 ${positionClass} z-0 overflow-hidden ${className}`} aria-hidden>
@@ -95,16 +98,18 @@ export function ShaderBackdrop({
             distortion={theme === 'forest' ? 0.88 : 0.82}
             swirl={theme === 'forest' ? 0.12 : 0.18}
           />
-          <MeshGradient
-            key={`mesh-b-${theme}`}
-            className="opacity-45 mix-blend-soft-light transition-opacity duration-700"
-            style={meshStyle}
-            colors={[...p.meshOverlay]}
-            speed={theme === 'forest' ? 0.15 : 0.2}
-            distortion={theme === 'forest' ? 0.75 : 0.8}
-            swirl={theme === 'forest' ? 0.28 : 0.32}
-            grainOverlay={0.08}
-          />
+          {overlay ? (
+            <MeshGradient
+              key={`mesh-b-${theme}`}
+              className="opacity-45 mix-blend-soft-light transition-opacity duration-700"
+              style={meshStyle}
+              colors={[...p.meshOverlay]}
+              speed={theme === 'forest' ? 0.15 : 0.2}
+              distortion={theme === 'forest' ? 0.75 : 0.8}
+              swirl={theme === 'forest' ? 0.28 : 0.32}
+              grainOverlay={0.08}
+            />
+          ) : null}
         </>
       ) : null}
     </div>

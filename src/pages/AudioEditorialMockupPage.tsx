@@ -5,7 +5,7 @@
  * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
  * Content plan: companion top tray first → listen compare OR analysis → manuscript tray.
  * Interaction thesis: companion descends from top in two pages; soft source cross-label;
- * shared Companion / Listen / Analysis workspace tabs.
+ * shared Brand / Companion / Listen / Analysis workspace tabs.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
