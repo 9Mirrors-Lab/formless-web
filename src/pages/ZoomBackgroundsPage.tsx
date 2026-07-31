@@ -88,7 +88,7 @@ const ZOOM_ROUNDS: ZoomRound[] = [
         id: "3c",
         label: "3c",
         name: "View with Soni",
-        note: "Misty field with right-edge View with Soni lockup",
+        note: "Misty field with right-edge book lockup",
         imageSrc: "/design/zoom-backgrounds/formless-zoom-3c-corner-anchors.png",
       },
     ],
