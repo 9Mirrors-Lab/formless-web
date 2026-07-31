@@ -93,6 +93,34 @@ const ZOOM_ROUNDS: ZoomRound[] = [
       },
     ],
   },
+  {
+    id: "round-4",
+    plate: "04",
+    title: "Icon extensions",
+    items: [
+      {
+        id: "4a",
+        label: "4a",
+        name: "Icon Atmosphere",
+        note: "Teaching icons as perimeter weather; center quiet for the speaker",
+        imageSrc: "/design/zoom-backgrounds/formless-zoom-4a-neural-constellation.png",
+      },
+      {
+        id: "4b",
+        label: "4b",
+        name: "Frequency Pillar",
+        note: "Frequency of Mind as a full-height left pillar; cream person field",
+        imageSrc: "/design/zoom-backgrounds/formless-zoom-4b-frequency-shore.png",
+      },
+      {
+        id: "4c",
+        label: "4c",
+        name: "Horizon Bloom",
+        note: "Seed of Life as a bottom horizon across the full frame",
+        imageSrc: "/design/zoom-backgrounds/formless-zoom-4c-seed-bloom.png",
+      },
+    ],
+  },
 ];
 
 const ZOOM_BACKGROUNDS = ZOOM_ROUNDS.flatMap((round) => round.items);

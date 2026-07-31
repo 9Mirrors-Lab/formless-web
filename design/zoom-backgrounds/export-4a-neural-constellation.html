@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Export 4a Icon Atmosphere</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; background: #000; }
+    .grain {
+      position: absolute; inset: 0;
+      background-image: url("./assets/grain.png");
+      background-size: 400px 400px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!--
+    4a Icon Atmosphere — DIFFERENT from side-cluster.
+    Teaching icons as weather around the full frame: top frieze, left margin,
+    right margin, bottom corners. Person zone (center ~40%) stays quiet.
+    Artwork: exact paths from teachingIcons.tsx.
+  -->
+  <div id="export" style="position:relative; width:3840px; height:2160px; overflow:hidden; background:#080a09;">
+    <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+
+    <!-- Soft ambient wash across whole field (not a right blob) -->
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse 90% 70% at 50% 40%, rgba(159,181,170,0.07) 0%, transparent 65%);"></div>
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse 50% 40% at 12% 80%, rgba(204,88,51,0.05) 0%, transparent 60%);"></div>
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse 45% 35% at 88% 18%, rgba(204,88,51,0.05) 0%, transparent 55%);"></div>
+
+    <svg viewBox="0 0 3840 2160" width="3840" height="2160" style="position:absolute; inset:0;" aria-hidden="true">
+      <defs>
+        <symbol id="icon-dna" viewBox="0 0 100 100">
+          <g fill="none" stroke="#9fb5aa" stroke-width="2">
+            <circle cx="50" cy="50" r="40" stroke-dasharray="3 6"/>
+            <circle cx="50" cy="50" r="30" stroke="rgba(204,88,51,0.3)"/>
+            <path d="M50 10 C 60 40, 40 60, 50 90 M30 50 C 40 40, 60 60, 70 50"/>
+            <circle cx="50" cy="10" r="4" fill="#9fb5aa" stroke="none"/>
+            <circle cx="50" cy="90" r="4" fill="#9fb5aa" stroke="none"/>
+            <circle cx="30" cy="50" r="4" fill="#9fb5aa" stroke="none"/>
+            <circle cx="70" cy="50" r="4" fill="#9fb5aa" stroke="none"/>
+          </g>
+        </symbol>
+        <symbol id="icon-neural" viewBox="0 0 100 100">
+          <g fill="none" stroke="#9fb5aa" stroke-width="2">
+            <line x1="20" y1="20" x2="50" y2="50"/><line x1="80" y1="20" x2="50" y2="50"/>
+            <line x1="20" y1="80" x2="50" y2="50"/><line x1="80" y1="80" x2="50" y2="50"/>
+            <line x1="50" y1="15" x2="50" y2="50"/><line x1="15" y1="50" x2="50" y2="50"/>
+            <circle cx="50" cy="50" r="8" fill="rgba(204,88,51,0.2)" stroke="#9fb5aa"/>
+            <circle cx="20" cy="20" r="5" fill="#9fb5aa" stroke="none"/>
+            <circle cx="80" cy="20" r="5" fill="#9fb5aa" stroke="none"/>
+            <circle cx="20" cy="80" r="5" fill="#9fb5aa" stroke="none"/>
+            <circle cx="80" cy="80" r="5" fill="#9fb5aa" stroke="none"/>
+            <circle cx="50" cy="15" r="4" fill="#9fb5aa" stroke="none"/>
+            <circle cx="15" cy="50" r="4" fill="#9fb5aa" stroke="none"/>
+          </g>
+        </symbol>
+        <symbol id="icon-quantum" viewBox="0 0 100 100">
+          <g fill="none" stroke="#9fb5aa" stroke-width="1.5">
+            <circle cx="50" cy="50" r="40" stroke-dasharray="10 15 30 10" stroke="rgba(204,88,51,0.8)"/>
+            <circle cx="50" cy="50" r="30" stroke-dasharray="20 10 5 15"/>
+            <circle cx="50" cy="50" r="20" stroke-dasharray="5 5"/>
+            <circle cx="50" cy="50" r="6" fill="#9fb5aa" stroke="none"/>
+            <path d="M 50 20 L 50 30 M 50 70 L 50 80 M 20 50 L 30 50 M 70 50 L 80 50" stroke-width="2"/>
+          </g>
+        </symbol>
+        <symbol id="icon-seed" viewBox="0 0 100 100">
+          <defs><clipPath id="sa1"><circle cx="40" cy="50" r="20"/></clipPath></defs>
+          <g fill="none" stroke="rgba(242,240,233,0.35)" stroke-width="2">
+            <circle cx="60" cy="50" r="20" fill="#cc5833" stroke="none" opacity="0.5" clip-path="url(#sa1)"/>
+            <circle cx="50" cy="32.68" r="20" fill="#cc5833" stroke="none" opacity="0.45" clip-path="url(#sa1)"/>
+            <circle cx="50" cy="67.32" r="20" fill="#cc5833" stroke="none" opacity="0.45" clip-path="url(#sa1)"/>
+            <circle cx="40" cy="50" r="20"/><circle cx="60" cy="50" r="20"/>
+            <circle cx="50" cy="32.68" r="20"/><circle cx="50" cy="67.32" r="20"/>
+            <circle cx="30" cy="32.68" r="20"/><circle cx="30" cy="67.32" r="20"/>
+            <circle cx="20" cy="50" r="20"/>
+            <circle cx="40" cy="50" r="2.25" fill="#cc5833" stroke="none"/>
+            <circle cx="60" cy="50" r="2.25" fill="#cc5833" stroke="none"/>
+            <circle cx="50" cy="32.68" r="2.25" fill="#cc5833" stroke="none"/>
+            <circle cx="50" cy="67.32" r="2.25" fill="#cc5833" stroke="none"/>
+            <circle cx="30" cy="32.68" r="2.25" fill="#cc5833" stroke="none"/>
+            <circle cx="30" cy="67.32" r="2.25" fill="#cc5833" stroke="none"/>
+            <circle cx="20" cy="50" r="2.25" fill="#cc5833" stroke="none"/>
+          </g>
+        </symbol>
+        <symbol id="icon-observer" viewBox="0 0 100 100">
+          <g fill="none" stroke="#f2f0e9" stroke-width="1.5">
+            <circle cx="50" cy="50" r="10" stroke="#9fb5aa" opacity="0.4"/>
+            <circle cx="50" cy="50" r="18" stroke="#9fb5aa" opacity="0.55"/>
+            <circle cx="50" cy="50" r="26" stroke="#9fb5aa" opacity="0.7"/>
+            <circle cx="50" cy="50" r="6" fill="#f2f0e9" stroke="none"/>
+          </g>
+        </symbol>
+        <symbol id="icon-space" viewBox="0 0 100 100">
+          <defs><clipPath id="sp1"><circle cx="40" cy="50" r="20"/></clipPath></defs>
+          <g fill="none" stroke="rgba(242,240,233,0.35)" stroke-width="2">
+            <circle cx="60" cy="50" r="20" fill="#cc5833" stroke="none" clip-path="url(#sp1)"/>
+            <circle cx="40" cy="50" r="20"/><circle cx="60" cy="50" r="20"/>
+          </g>
+        </symbol>
+        <symbol id="icon-molecule" viewBox="0 0 100 100">
+          <g fill="none" stroke="#cc5833" stroke-width="2">
+            <polygon points="50,20 76,35 76,65 50,80 24,65 24,35" stroke-dasharray="4 4"/>
+            <line x1="50" y1="20" x2="50" y2="50"/><line x1="24" y1="65" x2="50" y2="50"/><line x1="76" y1="65" x2="50" y2="50"/>
+            <circle cx="50" cy="20" r="4" fill="#cc5833" stroke="none"/>
+            <circle cx="76" cy="35" r="4" fill="#cc5833" stroke="none"/>
+            <circle cx="76" cy="65" r="4" fill="#cc5833" stroke="none"/>
+            <circle cx="50" cy="80" r="4" fill="#cc5833" stroke="none"/>
+            <circle cx="24" cy="65" r="4" fill="#cc5833" stroke="none"/>
+            <circle cx="24" cy="35" r="4" fill="#cc5833" stroke="none"/>
+            <circle cx="50" cy="50" r="8" fill="rgba(204,88,51,0.3)" stroke="none"/>
+          </g>
+        </symbol>
+        <symbol id="icon-pause" viewBox="0 0 100 100">
+          <g fill="#f2f0e9"><rect x="35" y="30" width="8" height="40" rx="4"/><rect x="57" y="30" width="8" height="40" rx="4"/></g>
+        </symbol>
+        <symbol id="icon-anchor" viewBox="0 0 100 100">
+          <g fill="none" stroke="#9fb5aa" stroke-width="2" stroke-linecap="round">
+            <line x1="50" y1="20" x2="50" y2="67"/>
+            <circle cx="50" cy="75" r="8" fill="#9fb5aa" stroke="none"/>
+            <circle cx="50" cy="20" r="3" fill="#9fb5aa" stroke="none"/>
+          </g>
+        </symbol>
+        <symbol id="icon-voice" viewBox="0 0 100 100">
+          <g fill="none" stroke="#9fb5aa" stroke-width="1.5">
+            <circle cx="50" cy="50" r="30" stroke-dasharray="4 8 12 8"/>
+            <circle cx="50" cy="50" r="20" stroke-dasharray="10 5" stroke-opacity="0.6"/>
+            <circle cx="50" cy="50" r="8" fill="#9fb5aa" stroke="none"/>
+          </g>
+        </symbol>
+        <symbol id="icon-formless" viewBox="0 0 100 100">
+          <g fill="none" stroke="#f2f0e9" stroke-width="1.5">
+            <circle cx="50" cy="50" r="4.5" fill="#f2f0e9" stroke="none"/>
+            <circle cx="50" cy="50" r="14"/><circle cx="50" cy="50" r="22" opacity="0.55"/><circle cx="50" cy="50" r="30" opacity="0.3"/>
+          </g>
+        </symbol>
+        <symbol id="icon-ekg" viewBox="0 0 200 60">
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M0 10 H200 M0 20 H200 M0 30 H200 M0 40 H200 M0 50 H200" stroke="rgba(242,240,233,0.1)" stroke-width="1"/>
+            <path d="M0 30 H30 L40 10 L50 50 L65 5 L80 30 H200" stroke="#cc5833" stroke-width="3"/>
+          </g>
+        </symbol>
+      </defs>
+
+      <!-- Soft perimeter arcs linking the weather (not a right plexus) -->
+      <g fill="none" stroke="rgba(159,181,170,0.18)" stroke-width="1.4" stroke-dasharray="4 12">
+        <path d="M180 200 C 600 80, 1400 60, 1920 120"/>
+        <path d="M1920 120 C 2600 60, 3200 100, 3660 240"/>
+        <path d="M160 400 C 120 900, 140 1400, 200 1900"/>
+        <path d="M3680 400 C 3720 900, 3700 1400, 3640 1900"/>
+        <path d="M220 1980 C 900 2100, 1600 2080, 1920 2040"/>
+        <path d="M1920 2040 C 2400 2080, 3000 2100, 3620 1960"/>
+      </g>
+
+      <!-- TOP FRIEZE -->
+      <use href="#icon-voice" x="280" y="80" width="120" height="120" opacity="0.38"/>
+      <use href="#icon-neural" x="720" y="60" width="140" height="140" opacity="0.42"/>
+      <use href="#icon-quantum" x="1280" y="40" width="130" height="130" opacity="0.36"/>
+      <use href="#icon-formless" x="1860" y="50" width="120" height="120" opacity="0.28"/>
+      <use href="#icon-seed" x="2440" y="40" width="140" height="140" opacity="0.4"/>
+      <use href="#icon-molecule" x="3000" y="55" width="130" height="130" opacity="0.38"/>
+      <use href="#icon-dna" x="3520" y="70" width="120" height="120" opacity="0.34"/>
+
+      <!-- LEFT MARGIN (outside person zone) -->
+      <use href="#icon-space" x="100" y="420" width="150" height="150" opacity="0.4"/>
+      <use href="#icon-pause" x="140" y="780" width="130" height="130" opacity="0.45"/>
+      <use href="#icon-observer" x="80" y="1140" width="180" height="180" opacity="0.5"/>
+      <use href="#icon-anchor" x="130" y="1500" width="140" height="140" opacity="0.42"/>
+
+      <!-- RIGHT MARGIN -->
+      <use href="#icon-quantum" x="3580" y="420" width="140" height="140" opacity="0.36"/>
+      <use href="#icon-ekg" x="3480" y="780" width="280" height="84" opacity="0.5"/>
+      <use href="#icon-molecule" x="3560" y="1080" width="150" height="150" opacity="0.4"/>
+      <use href="#icon-seed" x="3540" y="1420" width="160" height="160" opacity="0.38"/>
+      <use href="#icon-neural" x="3580" y="1740" width="130" height="130" opacity="0.34"/>
+
+      <!-- BOTTOM CORNERS (under person shoulders) -->
+      <use href="#icon-dna" x="420" y="1880" width="110" height="110" opacity="0.28"/>
+      <use href="#icon-voice" x="720" y="1920" width="100" height="100" opacity="0.24"/>
+      <use href="#icon-formless" x="3020" y="1900" width="110" height="110" opacity="0.26"/>
+      <use href="#icon-space" x="3320" y="1880" width="120" height="120" opacity="0.28"/>
+    </svg>
+
+    <!-- Quiet veil over person zone so weather stays atmospheric -->
+    <div style="position:absolute; left:28%; top:14%; width:44%; height:72%; background:radial-gradient(ellipse at center, rgba(8,10,9,0.55) 0%, rgba(8,10,9,0) 72%); pointer-events:none;"></div>
+
+    <!-- Brand: top-left Eyes Closed -->
+    <div style="position:absolute; top:200px; left:220px; display:flex; flex-direction:column; gap:16px; z-index:2;">
+      <img src="./assets/logo/eyes-closed-logo-arc-white.svg" alt="" style="width:360px; height:auto; display:block;">
+      <span style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:48px; color:rgba(242,240,233,0.85);">Eyes Closed</span>
+    </div>
+
+    <!-- Lockup bottom-left -->
+    <div style="position:absolute; left:220px; bottom:160px; display:flex; flex-direction:column; gap:18px; z-index:2;">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:52px; color:#f2f0e9; letter-spacing:-0.01em;">Sonika Cottman</div>
+      <div style="width:180px; height:2px; background:rgba(242,240,233,0.45);"></div>
+      <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:44px; color:rgba(242,240,233,0.75);">Formless</div>
+    </div>
+  </div>
+</body>
+</html>

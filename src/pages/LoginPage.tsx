@@ -2,8 +2,17 @@ import { AuthForm } from '@/components/AuthForm';
 import { authLinkClassName, AuthPageShell } from '@/components/auth/AuthPageShell';
 import { useAuth } from '@/context/AuthContext';
 
+function safeNextPath(): string {
+  const next = new URLSearchParams(window.location.search).get('next');
+  if (!next || !next.startsWith('/') || next.startsWith('//')) {
+    return '/account';
+  }
+  return next;
+}
+
 export function LoginPage() {
   const { status, user, signIn } = useAuth();
+  const nextPath = safeNextPath();
 
   if (status === 'misconfigured') {
     return (
@@ -16,7 +25,7 @@ export function LoginPage() {
   }
 
   if (status === 'ready' && user) {
-    window.location.replace('/account');
+    window.location.replace(nextPath);
     return null;
   }
 
@@ -39,7 +48,7 @@ export function LoginPage() {
           if (result.errorMessage) {
             return result;
           }
-          window.location.replace('/account');
+          window.location.replace(nextPath);
           return {};
         }}
       />

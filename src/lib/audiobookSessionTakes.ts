@@ -321,3 +321,186 @@ export async function uploadSessionTake(
 
   return { ok: true, id: takeId, storagePath };
 }
+
+export type SessionTakeRow = {
+  id: string;
+  book_slug: string;
+  take_kind: SessionTakeKind;
+  storage_bucket: string;
+  storage_path: string;
+  mime_type: string;
+  file_size_bytes: number | null;
+  original_filename: string | null;
+  sample_rate_hz: number | null;
+  channels: number | null;
+  duration_seconds: number | null;
+  room_tone_seconds: number;
+  notes: string | null;
+  uploaded_by: string | null;
+  status: SessionTakeStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SessionTakeListResult =
+  | { ok: true; takes: SessionTakeRow[] }
+  | { ok: false; error: string };
+
+export type SessionTakeActionResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+export type SignedDownloadResult =
+  | { ok: true; url: string; filename: string }
+  | { ok: false; error: string };
+
+export const SESSION_TAKE_STATUS_LABELS: Record<SessionTakeStatus, string> = {
+  received: 'Received',
+  reviewing: 'Reviewing',
+  accepted: 'Accepted',
+  rejected: 'Rejected',
+};
+
+export const SESSION_TAKE_KIND_LABELS: Record<SessionTakeKind, string> = {
+  initial_calibration: 'Initial calibration',
+  session_calibration: 'Session calibration',
+  chapter_draft: 'Chapter draft',
+};
+
+const SESSION_TAKE_SELECT =
+  'id, book_slug, take_kind, storage_bucket, storage_path, mime_type, file_size_bytes, original_filename, sample_rate_hz, channels, duration_seconds, room_tone_seconds, notes, uploaded_by, status, created_at, updated_at';
+
+export async function fetchCurrentUserIsAdmin(): Promise<boolean> {
+  if (!hasSupabaseEnv()) return false;
+  const supabase = getBrowserSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('is_admin')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (error) return false;
+  return Boolean(data?.is_admin);
+}
+
+export async function listSessionTakes(): Promise<SessionTakeListResult> {
+  if (!hasSupabaseEnv()) {
+    return { ok: false, error: 'Supabase is not configured in this environment.' };
+  }
+
+  const supabase = getBrowserSupabaseClient();
+  const { data, error } = await supabase
+    .from('audiobook_session_takes')
+    .select(SESSION_TAKE_SELECT)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    return { ok: false, error: error.message || 'Could not load session takes.' };
+  }
+
+  return { ok: true, takes: (data ?? []) as SessionTakeRow[] };
+}
+
+export async function updateSessionTakeStatus(
+  id: string,
+  status: SessionTakeStatus,
+): Promise<SessionTakeActionResult> {
+  if (!hasSupabaseEnv()) {
+    return { ok: false, error: 'Supabase is not configured in this environment.' };
+  }
+
+  const supabase = getBrowserSupabaseClient();
+  const { error } = await supabase
+    .from('audiobook_session_takes')
+    .update({ status })
+    .eq('id', id);
+
+  if (error) {
+    return { ok: false, error: error.message || 'Could not update status.' };
+  }
+  return { ok: true };
+}
+
+export async function createSessionTakeDownloadUrl(
+  take: Pick<SessionTakeRow, 'storage_bucket' | 'storage_path' | 'original_filename'>,
+  expiresInSeconds = 3600,
+): Promise<SignedDownloadResult> {
+  if (!hasSupabaseEnv()) {
+    return { ok: false, error: 'Supabase is not configured in this environment.' };
+  }
+
+  const supabase = getBrowserSupabaseClient();
+  const { data, error } = await supabase.storage
+    .from(take.storage_bucket || SESSION_TAKE_BUCKET)
+    .createSignedUrl(take.storage_path, expiresInSeconds);
+
+  if (error || !data?.signedUrl) {
+    return {
+      ok: false,
+      error: error?.message || 'Could not create a download link.',
+    };
+  }
+
+  const filename =
+    take.original_filename?.trim() ||
+    take.storage_path.split('/').pop() ||
+    'session-take';
+
+  return { ok: true, url: data.signedUrl, filename };
+}
+
+export async function downloadSessionTake(
+  take: Pick<SessionTakeRow, 'storage_bucket' | 'storage_path' | 'original_filename'>,
+): Promise<SessionTakeActionResult> {
+  const signed = await createSessionTakeDownloadUrl(take);
+  if (!signed.ok) return signed;
+
+  const anchor = document.createElement('a');
+  anchor.href = signed.url;
+  anchor.download = signed.filename;
+  anchor.rel = 'noopener';
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  return { ok: true };
+}
+
+export async function deleteSessionTake(
+  take: Pick<SessionTakeRow, 'id' | 'storage_bucket' | 'storage_path'>,
+): Promise<SessionTakeActionResult> {
+  if (!hasSupabaseEnv()) {
+    return { ok: false, error: 'Supabase is not configured in this environment.' };
+  }
+
+  const supabase = getBrowserSupabaseClient();
+  const bucket = take.storage_bucket || SESSION_TAKE_BUCKET;
+  const { error: storageError } = await supabase.storage
+    .from(bucket)
+    .remove([take.storage_path]);
+
+  if (storageError) {
+    return {
+      ok: false,
+      error: storageError.message || 'Could not delete the storage object.',
+    };
+  }
+
+  const { error } = await supabase
+    .from('audiobook_session_takes')
+    .delete()
+    .eq('id', take.id);
+
+  if (error) {
+    return {
+      ok: false,
+      error: error.message || 'File removed from storage, but metadata delete failed.',
+    };
+  }
+
+  return { ok: true };
+}

@@ -140,6 +140,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
       'Phone-first send page: choose WAV/M4A, animated upload status, live bytes and percent.',
     source: 'src/pages/AudioSendTakePage.tsx',
   },
+  {
+    id: 'audio-files',
+    title: 'Audiobook · Files',
+    href: '/audio/files',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Admin file table: download client takes, update review status, delete rows and storage objects.',
+    source: 'src/pages/AudioFilesPage.tsx',
+  },
 
   // Motion & shaders
   {

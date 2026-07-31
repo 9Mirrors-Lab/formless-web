@@ -325,7 +325,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio/editorial',
     category: 'design',
     description:
-      'Mockup B: dark editorial listen room with book sidebar, stacked players, and manuscript tray.',
+      'Client arrival: companion top tray first (setup → room → read → send), then Listen / Analysis.',
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
@@ -334,7 +334,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio/editorial?companion=1',
     category: 'design',
     description:
-      'Author recording tray on editorial: room tone, book calibration passage, voice benchmark, complete session flow.',
+      'Companion top tray with stepper: Audacity setup, room tone, calibration, send take.',
     source: 'src/components/audio-review/AudioCompanionTray.tsx',
   },
   {
@@ -345,6 +345,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     description:
       'Mobile-first upload page for room tone + calibration takes, with live size and percent status.',
     source: 'src/pages/AudioSendTakePage.tsx',
+  },
+  {
+    id: 'audio-files',
+    title: 'Audiobook · Files',
+    path: '/audio/files',
+    category: 'design',
+    description:
+      'Admin table to list, download, status-update, and delete client session takes.',
+    source: 'src/pages/AudioFilesPage.tsx',
   },
   {
     id: 'design-framework',

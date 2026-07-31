@@ -43,6 +43,7 @@ import AudioStudioMockupPage from './pages/AudioStudioMockupPage';
 import AudioEditorialMockupPage from './pages/AudioEditorialMockupPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
+import AudioFilesPage from './pages/AudioFilesPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
 import { PostHogPageView } from './components/PostHogPageView';
 import { DevMenu } from './components/DevMenu';
@@ -123,6 +124,7 @@ export function Root({ path }: { path: string }) {
   const isAudioEditorial = path === '/audio/editorial';
   const isAudioCompanion = path === '/audio/companion';
   const isAudioSendTake = path === '/audio/send-take';
+  const isAudioFiles = path === '/audio/files';
 
   const isBrief = path === '/brief';
   const isBrief2 = path === '/brief2';
@@ -165,6 +167,7 @@ export function Root({ path }: { path: string }) {
   if (isAudioEditorial) return <AudioEditorialMockupPage />;
   if (isAudioCompanion) return <AudioCompanionKitPage />;
   if (isAudioSendTake) return <AudioSendTakePage />;
+  if (isAudioFiles) return <AudioFilesPage />;
 
   if (isBrief) return <BriefPage />;
   if (isBrief2) return <BriefPage2 />;
@@ -196,15 +199,16 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/audio' ||
     path === '/audio/editorial' ||
     path === '/audio/companion' ||
-    path === '/audio/send-take'
+    path === '/audio/send-take' ||
+    path === '/audio/files'
   );
 }
 
 function AppContentShell({ path }: { path: string }) {
   const { status, errorMessage } = useContentStatus();
 
-  // Send-take is a handset utility with no CMS copy; never block on content fetch.
-  if (path === '/audio/send-take') {
+  // Audio tools with no CMS copy; never block on content fetch.
+  if (path === '/audio/send-take' || path === '/audio/files') {
     return (
       <>
         <Root path={path} />
