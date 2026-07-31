@@ -3,14 +3,13 @@
  *
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
  * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
- * Content plan: book identity + chapters → listen compare OR analysis dashboard → manuscript tray /
- * companion recording tray.
- * Interaction thesis: soft source cross-label; tray slide; active sentence underline;
- * shared Listen / Companion / Analysis workspace tabs (Companion opens a right-edge tray).
+ * Content plan: companion top tray first → listen compare OR analysis → manuscript tray.
+ * Interaction thesis: companion descends from top in two pages; soft source cross-label;
+ * shared Companion / Listen / Analysis workspace tabs.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { AudioAnalysisDashboard } from '@/components/audio-review/AudioAnalysisDashboard';
 import { AudioCompanionTray } from '@/components/audio-review/AudioCompanionTray';
@@ -64,6 +63,14 @@ export default function AudioEditorialMockupPage() {
     playerRef.current?.seek(time);
   }, []);
   const review = useAudioReviewMock({ initialChapterId: 1, onSeek });
+
+  // Bare /audio/editorial opens companion; stamp companion=1 into the URL once.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (companionOpen && params.get('companion') !== '1') {
+      setCompanionOpenInUrl(true);
+    }
+  }, [companionOpen]);
 
   const selectView = useCallback((view: EditorialView) => {
     setCompanionOpen(false);

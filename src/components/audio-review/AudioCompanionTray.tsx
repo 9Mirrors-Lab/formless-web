@@ -1,20 +1,26 @@
 /**
- * Author recording companion — slide-out tray
- *
- * Three steps only: room tone → read calibration → send WAV/M4A.
- * Upload is the job of step 3; format notes stay one line.
+ * Author recording companion — shadcn Sheet (top) over the editorial room.
+ * Page 1: setup + room tone. Page 2: read passage + send take.
  */
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { Check, Upload, X } from 'lucide-react';
-import { useEffect, useId, useRef, useState } from 'react';
+import { Check, ChevronLeft, ChevronRight, Download, Upload, X } from 'lucide-react';
+import { useEffect, useId, useRef, useState, type RefObject } from 'react';
 
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import {
   CALIBRATION,
   COMPANION_KIT,
   COMPANION_SECTIONS,
   ROOM_TONE,
+  TEMPLATE_SETUP,
   UPLOAD_SPEC,
-  type CompanionSectionId,
 } from '@/data/audioCompanionKit';
 import {
   formatFileBytes,
@@ -31,21 +37,13 @@ type AudioCompanionTrayProps = {
 type UploadStatus = 'idle' | 'ready' | 'uploading' | 'sent' | 'error';
 
 const EASE_OUT = [0.32, 0.72, 0, 1] as const;
-
-const SECTION_ANCHORS: Record<CompanionSectionId, string> = {
-  room: 'companion-room-tone',
-  calibration: 'companion-calibration',
-  send: 'companion-send',
-};
+const STEP_IDS = COMPANION_SECTIONS.map((s) => s.id);
 
 export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
   const reduceMotion = useReducedMotion();
-  const titleId = useId();
   const fileInputId = useId();
-  const closeRef = useRef<HTMLButtonElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [activeSection, setActiveSection] = useState<CompanionSectionId>('room');
+  const [stepIndex, setStepIndex] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle');
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -53,57 +51,11 @@ export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    const previous = document.activeElement as HTMLElement | null;
-    const t = window.setTimeout(() => closeRef.current?.focus(), 40);
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      window.clearTimeout(t);
-      window.removeEventListener('keydown', onKey);
-      previous?.focus?.();
-    };
-  }, [open, onClose]);
+  const stepId = STEP_IDS[stepIndex] ?? 'prepare';
 
   useEffect(() => {
-    if (!open) {
-      setActiveSection('room');
-      return;
-    }
-    const root = scrollRef.current;
-    if (!root) return;
-
-    const nodes = COMPANION_SECTIONS.map((section) =>
-      root.querySelector<HTMLElement>(`#${SECTION_ANCHORS[section.id]}`),
-    ).filter((node): node is HTMLElement => Boolean(node));
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible?.target?.id) return;
-        const match = COMPANION_SECTIONS.find(
-          (section) => SECTION_ANCHORS[section.id] === visible.target.id,
-        );
-        if (match) setActiveSection(match.id);
-      },
-      { root, rootMargin: '-12% 0px -55% 0px', threshold: [0.15, 0.4, 0.7] },
-    );
-
-    nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+    if (!open) setStepIndex(0);
   }, [open]);
-
-  const scrollToSection = (id: CompanionSectionId) => {
-    const root = scrollRef.current;
-    const target = root?.querySelector<HTMLElement>(`#${SECTION_ANCHORS[id]}`);
-    target?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-    setActiveSection(id);
-  };
 
   const chooseFile = (file: File | null) => {
     setSentId(null);
@@ -169,355 +121,489 @@ export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
     setUploadStatus('sent');
   };
 
+  const stepMotion = reduceMotion
+    ? { initial: false, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        initial: { opacity: 0, y: 8 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -6 },
+      };
+
   return (
-    <AnimatePresence>
-      {open ? (
-        <>
-          <motion.button
-            type="button"
-            aria-label="Close companion kit"
-            className="absolute inset-0 z-40 bg-black/55"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.22, ease: EASE_OUT }}
-            onClick={onClose}
-          />
-          <motion.aside
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={titleId}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : { type: 'spring', stiffness: 320, damping: 36 }
-            }
-            className="absolute inset-y-0 right-0 z-50 flex w-full max-w-[26rem] flex-col border-l border-cream/10 bg-[#0c100e] font-companion text-cream shadow-[-20px_0_48px_rgba(0,0,0,0.4)] md:max-w-[30rem]"
-          >
-            <header className="relative z-[1] flex shrink-0 items-start justify-between gap-4 border-b border-cream/10 px-5 py-4 md:px-6">
-              <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#9fb5aa]/80">
-                  {COMPANION_KIT.imprint} · {COMPANION_KIT.book}
-                </p>
-                <h2
-                  id={titleId}
-                  className="mt-1.5 text-[1.45rem] font-semibold leading-tight tracking-[-0.03em] text-cream"
-                >
-                  Recording companion
-                </h2>
-              </div>
+    <Sheet
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+    >
+      <SheetContent
+        side="top"
+        showCloseButton={false}
+        overlayClassName="bg-black/55"
+        className="flex h-[min(58svh,38rem)] flex-col gap-0 overflow-hidden border-cream/10 bg-[#0a0e0c] p-0 font-companion text-cream shadow-[0_28px_80px_rgba(0,0,0,0.5)] data-[side=top]:h-[min(58svh,38rem)] sm:max-w-none"
+      >
+        <SheetHeader className="mx-auto w-full max-w-[80rem] shrink-0 space-y-0 px-5 pb-3 pt-4 text-left md:px-8 md:pt-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9fb5aa]/70">
+                {COMPANION_KIT.imprint} · {COMPANION_KIT.book}
+              </p>
+              <SheetTitle className="sr-only">{COMPANION_KIT.title}</SheetTitle>
+              <SheetDescription className="sr-only">{COMPANION_KIT.lede}</SheetDescription>
+            </div>
+            <SheetClose asChild>
               <button
-                ref={closeRef}
                 type="button"
-                onClick={onClose}
-                className="rounded-full border border-cream/15 p-2.5 text-cream/50 transition-colors duration-200 hover:border-cream/35 hover:text-cream"
+                className="rounded-full border border-cream/15 p-2 text-cream/50 transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-cream/35 hover:text-cream"
                 aria-label="Close"
               >
-                <X size={18} />
+                <X size={17} strokeWidth={1.25} />
               </button>
-            </header>
+            </SheetClose>
+          </div>
+        </SheetHeader>
 
-            <nav
-              aria-label="Recording steps"
-              className="relative z-[1] flex shrink-0 gap-1 border-b border-cream/10 px-4 py-3 md:px-5"
+        <div className="mx-auto flex min-h-0 w-full max-w-[80rem] flex-1 flex-col overflow-hidden px-5 pb-5 md:px-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={stepId}
+              {...stepMotion}
+              transition={{ duration: reduceMotion ? 0 : 0.28, ease: EASE_OUT }}
+              className="flex min-h-0 flex-1 flex-col overflow-hidden"
             >
-              {COMPANION_SECTIONS.map((section, index) => {
-                const selected = activeSection === section.id;
-                return (
-                  <button
-                    key={section.id}
-                    type="button"
-                    onClick={() => scrollToSection(section.id)}
-                    className={`flex min-h-11 min-w-0 flex-1 flex-col items-start justify-center rounded-xl px-2.5 py-2 text-left transition-colors duration-200 ${
-                      selected
-                        ? 'bg-moss text-cream'
-                        : 'text-cream/45 hover:bg-cream/[0.04] hover:text-cream/75'
-                    }`}
-                  >
-                    <span
-                      className={`text-[9px] font-medium tabular-nums tracking-[0.16em] ${
-                        selected ? 'text-cream/70' : 'text-cream/30'
-                      }`}
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <span className="mt-0.5 truncate text-[11px] font-medium tracking-[-0.01em]">
-                      {section.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </nav>
-
-            <div
-              ref={scrollRef}
-              className="relative z-[1] min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-14 pt-6 md:px-6"
-            >
-              {/* 01 Room tone */}
-              <section id={SECTION_ANCHORS.room} className="scroll-mt-4">
-                <p className="text-[10px] font-medium uppercase tracking-[0.24em] text-cream/35">
-                  01 · {ROOM_TONE.name}
-                </p>
-                <h3 className="mt-3 text-[1.75rem] font-semibold tracking-[-0.03em] text-cream">
-                  {ROOM_TONE.headline}
-                </h3>
-                <ol className="mt-6 space-y-0">
-                  {ROOM_TONE.rules.map((rule, i) => (
-                    <li
-                      key={rule}
-                      className="flex items-baseline gap-3 border-t border-cream/10 py-3.5 first:border-t-0 first:pt-0"
-                    >
-                      <span className="text-[11px] font-medium tabular-nums text-cream/30">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <span className="text-lg font-medium tracking-[-0.02em] text-cream/90">
-                        {rule}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-                <p className="mt-4 text-sm font-light leading-relaxed text-cream/45">
-                  {ROOM_TONE.purpose} Start silence only after record is already rolling.
-                </p>
-              </section>
-
-              {/* 02 Calibration */}
-              <section
-                id={SECTION_ANCHORS.calibration}
-                className="scroll-mt-4 mt-12 border-t border-cream/10 pt-10"
-              >
-                <p className="text-[10px] font-medium uppercase tracking-[0.24em] text-cream/35">
-                  02 · {CALIBRATION.name}
-                </p>
-                <h3 className="mt-3 text-[1.75rem] font-semibold tracking-[-0.03em] text-cream">
-                  {CALIBRATION.headline}
-                </h3>
-                <p className="mt-3 text-sm font-light leading-relaxed text-cream/45">
-                  Read the opening of Chapter One. Stop when the passage ends.
-                </p>
-
-                <article className="mt-6 rounded-2xl border border-cream/10 bg-[#101412] px-5 py-7 md:px-6 md:py-8">
-                  <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#9fb5aa]/75">
-                    {CALIBRATION.chapterLabel}
-                  </p>
-                  <div className="mt-6 space-y-6">
-                    {CALIBRATION.bookPassageParagraphs.map((paragraph, index) => {
-                      const isTitle = index === 0;
-                      return (
-                        <p
-                          key={`${index}-${paragraph.slice(0, 24)}`}
-                          className={
-                            isTitle
-                              ? 'text-[0.95rem] font-medium tracking-[-0.01em] text-[#9fb5aa]/90'
-                              : 'max-w-[34ch] text-[1.15rem] font-light leading-[1.7] tracking-[-0.012em] text-cream/92'
-                          }
-                        >
-                          {paragraph}
-                        </p>
-                      );
-                    })}
-                  </div>
-                </article>
-              </section>
-
-              {/* 03 Send */}
-              <section
-                id={SECTION_ANCHORS.send}
-                className="scroll-mt-4 mt-12 border-t border-cream/10 pt-10"
-              >
-                <p className="text-[10px] font-medium uppercase tracking-[0.24em] text-cream/35">
-                  03 · {UPLOAD_SPEC.name}
-                </p>
-                <h3 className="mt-3 text-[1.75rem] font-semibold tracking-[-0.03em] text-cream">
-                  Send your take
-                </h3>
-                <p className="mt-3 text-sm font-light leading-relaxed text-cream/45">
-                  Export your take, then upload here. Room tone first, then the passage.
-                </p>
-                <p className="mt-3 font-mono text-[12px] tracking-normal text-[#9fb5aa]/85">
-                  .wav or .m4a
-                  <span className="text-cream/30"> · </span>
-                  {UPLOAD_SPEC.channels} · {UPLOAD_SPEC.sampleRate}
-                </p>
-                <p className="mt-3">
-                  <a
-                    href="/audio/send-take"
-                    className="text-xs font-medium uppercase tracking-[0.14em] text-cream/45 underline-offset-4 transition-colors hover:text-cream/75 hover:underline"
-                  >
-                    Open phone upload page
-                  </a>
-                </p>
-
-                {/*
-                  Native file input kept in-flow for reliability.
-                  accept uses extensions only; MIME lists gray out Finder on macOS.
-                */}
-                <input
-                  ref={fileInputRef}
-                  id={fileInputId}
-                  type="file"
-                  accept={UPLOAD_SPEC.acceptAttr}
-                  className="sr-only"
-                  tabIndex={-1}
-                  onChange={(event) => {
-                    chooseFile(event.target.files?.[0] ?? null);
-                  }}
+              {stepId === 'prepare' ? (
+                <PrepareStep
+                  onNext={() => setStepIndex((i) => Math.min(STEP_IDS.length - 1, i + 1))}
                 />
+              ) : null}
+              {stepId === 'read' ? (
+                <ReadAndSendStep
+                  fileInputId={fileInputId}
+                  fileInputRef={fileInputRef}
+                  selectedFile={selectedFile}
+                  uploadStatus={uploadStatus}
+                  uploadError={uploadError}
+                  sentId={sentId}
+                  isDragging={isDragging}
+                  uploadProgress={uploadProgress}
+                  setIsDragging={setIsDragging}
+                  chooseFile={chooseFile}
+                  openFilePicker={openFilePicker}
+                  clearFile={clearFile}
+                  sendFile={sendFile}
+                  onBack={() => setStepIndex((i) => Math.max(0, i - 1))}
+                />
+              ) : null}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
 
-                <div className="mt-6">
-                  {uploadStatus === 'sent' ? (
-                    <div className="rounded-2xl border border-[#9fb5aa]/30 bg-[#9fb5aa]/08 px-4 py-5">
-                      <div className="flex items-start gap-3">
-                        <span className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-moss text-cream">
-                          <Check size={15} strokeWidth={2} aria-hidden />
+function PrepareStep({ onNext }: { onNext: () => void }) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <section className="flex min-h-0 flex-1 items-stretch gap-4 overflow-y-auto pb-2 md:gap-6">
+      <div className="mx-auto flex w-full max-w-[40rem] flex-1 flex-col justify-center">
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: EASE_OUT }}
+          className="mb-6 shrink-0"
+        >
+          <h3 className="font-serif text-[clamp(2.2rem,4vw,3.2rem)] italic leading-[0.9] tracking-[-0.03em] text-cream">
+            Setup{' '}
+            <span className="not-italic text-moss">first</span>
+          </h3>
+          <p className="mt-2 text-[13px] font-light text-cream/45">
+            Open the template in Audacity, then continue.
+          </p>
+        </motion.div>
+
+        <ol className="min-w-0 space-y-0">
+          {TEMPLATE_SETUP.steps.map((step, i) => {
+            const n = String(i + 1).padStart(2, '0');
+
+            return (
+              <li
+                key={step.id}
+                className="list-none border-b border-cream/[0.1] py-3.5 first:pt-0 last:border-b-0"
+              >
+                <motion.div
+                  initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: reduceMotion ? 0 : 0.03 + i * 0.05,
+                    ease: EASE_OUT,
+                  }}
+                  className="flex items-start gap-3"
+                >
+                  <p className="w-7 shrink-0 pt-0.5 font-serif text-[0.95rem] italic tabular-nums text-[#9fb5aa]/75">
+                    {n}
+                  </p>
+                  <div className="min-w-0 flex-1">
+                    {step.kind === 'download' ? (
+                      <a
+                        href={TEMPLATE_SETUP.templateHref}
+                        download={TEMPLATE_SETUP.templateFileName}
+                        className="group inline-flex max-w-full items-baseline gap-2 text-cream transition-colors hover:text-moss"
+                      >
+                        <Download
+                          size={14}
+                          strokeWidth={1.5}
+                          className="relative top-0.5 shrink-0 text-[#9fb5aa] transition-colors group-hover:text-moss"
+                          aria-hidden
+                        />
+                        <span className="truncate border-b border-cream/25 pb-px font-mono text-[12px] leading-snug tracking-[-0.01em] transition-colors group-hover:border-moss/50">
+                          {step.detail}
                         </span>
-                        <div>
-                          <p className="text-base font-medium tracking-[-0.02em] text-cream">
-                            Take received
-                          </p>
-                          <p className="mt-1 text-sm font-light leading-relaxed text-cream/50">
-                            Room tone and calibration are in. You can close this tray.
-                          </p>
-                          {sentId ? (
-                            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/28">
-                              Ref {sentId.slice(0, 8)}
-                            </p>
-                          ) : null}
-                          <button
-                            type="button"
-                            onClick={clearFile}
-                            className="mt-3 min-h-10 text-[11px] font-medium uppercase tracking-[0.16em] text-cream/45 transition-colors hover:text-cream/75"
-                          >
-                            Send another
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div
-                      className={`rounded-2xl border border-dashed px-4 py-6 transition-colors duration-200 ${
-                        isDragging
-                          ? 'border-[#9fb5aa]/55 bg-[#9fb5aa]/08'
-                          : selectedFile
-                            ? 'border-[#9fb5aa]/35 bg-cream/[0.03]'
-                            : 'border-cream/20 bg-cream/[0.02]'
-                      }`}
-                      onDragEnter={(event) => {
-                        event.preventDefault();
-                        setIsDragging(true);
-                      }}
-                      onDragOver={(event) => {
-                        event.preventDefault();
-                        setIsDragging(true);
-                      }}
-                      onDragLeave={(event) => {
-                        event.preventDefault();
-                        if (event.currentTarget === event.target) setIsDragging(false);
-                      }}
-                      onDrop={(event) => {
-                        event.preventDefault();
-                        setIsDragging(false);
-                        chooseFile(event.dataTransfer.files?.[0] ?? null);
-                      }}
-                    >
-                      <div className="flex flex-col items-start gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cream/15 text-[#9fb5aa]">
-                          <Upload size={18} strokeWidth={1.75} aria-hidden />
-                        </span>
-                        <div>
-                          <p className="text-base font-medium tracking-[-0.015em] text-cream/90">
-                            {selectedFile ? selectedFile.name : 'Choose your file'}
-                          </p>
-                          <p className="mt-1 text-sm font-light text-cream/40">
-                            {selectedFile
-                              ? formatFileBytes(selectedFile.size)
-                              : 'Drop a file here, or browse'}
-                          </p>
-                        </div>
+                        <span className="sr-only">Download template</span>
+                      </a>
+                    ) : (
+                      <>
+                        <p className="text-[0.95rem] font-semibold leading-snug tracking-[-0.02em] text-cream">
+                          {step.action}
+                        </p>
 
-                        <div className="mt-1 flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={openFilePicker}
-                            disabled={uploadStatus === 'uploading'}
-                            className="inline-flex min-h-11 items-center justify-center rounded-full border border-cream/20 px-5 text-xs font-semibold uppercase tracking-[0.12em] text-cream/80 transition-colors hover:border-cream/40 hover:text-cream disabled:opacity-50"
-                          >
-                            {selectedFile ? 'Choose different' : 'Browse files'}
-                          </button>
-
-                          {selectedFile ? (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => void sendFile()}
-                                disabled={uploadStatus === 'uploading'}
-                                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-moss px-5 text-xs font-semibold uppercase tracking-[0.12em] text-cream transition-opacity hover:opacity-95 disabled:cursor-wait disabled:opacity-70"
-                              >
-                                {uploadStatus === 'uploading' ? 'Sending…' : 'Send take'}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={clearFile}
-                                disabled={uploadStatus === 'uploading'}
-                                className="inline-flex min-h-11 items-center justify-center rounded-full px-3 text-xs font-medium uppercase tracking-[0.12em] text-cream/45 transition-colors hover:text-cream/75 disabled:opacity-50"
-                              >
-                                Clear
-                              </button>
-                            </>
-                          ) : null}
-                        </div>
-
-                        {uploadStatus === 'uploading' && uploadProgress ? (
-                          <div className="mt-4 w-full" aria-live="polite">
-                            <p className="text-xs font-light leading-relaxed text-cream/55">
-                              {uploadProgress.message}
-                            </p>
-                            <div className="mt-2 flex items-baseline justify-between gap-3 text-[11px] text-cream/40">
-                              <span className="tabular-nums">
-                                {formatFileBytes(uploadProgress.loadedBytes)}
-                                <span className="text-cream/25"> / </span>
-                                {formatFileBytes(uploadProgress.totalBytes)}
-                              </span>
-                              <span className="font-medium tabular-nums text-cream/70">
-                                {uploadProgress.percent}%
-                              </span>
-                            </div>
-                            <div
-                              className="mt-2 h-1.5 overflow-hidden rounded-full bg-cream/10"
-                              role="progressbar"
-                              aria-valuemin={0}
-                              aria-valuemax={100}
-                              aria-valuenow={uploadProgress.percent}
-                              aria-label="Upload progress"
-                            >
-                              <div
-                                className="h-full rounded-full bg-moss transition-[width] duration-200 ease-out"
-                                style={{ width: `${uploadProgress.percent}%` }}
-                              />
-                            </div>
-                          </div>
+                        {step.kind === 'action' ? (
+                          <p className="mt-1.5 text-[12px] font-light leading-snug text-cream/45">
+                            Choose{' '}
+                            <span className="font-mono text-[11px] text-cream/70">
+                              {step.detail}
+                            </span>
+                          </p>
                         ) : null}
-                      </div>
-                    </div>
-                  )}
 
-                  {uploadError ? (
-                    <p
-                      role="alert"
-                      className="mt-3 text-sm font-light leading-relaxed text-[#e0a090]"
-                    >
-                      {uploadError}
+                        {step.kind === 'save' ? (
+                          <p className="mt-1.5 text-[12px] font-light leading-snug text-cream/45">
+                            Save as{' '}
+                            <span className="break-all font-mono text-[11px] text-cream/80">
+                              {step.detail}
+                            </span>
+                          </p>
+                        ) : null}
+
+                        {step.kind === 'settings' ? (
+                          <p className="mt-1.5 text-[12px] font-light leading-relaxed text-cream/50">
+                            {step.detail}
+                          </p>
+                        ) : null}
+                      </>
+                    )}
+                  </div>
+                </motion.div>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <button
+        type="button"
+        onClick={onNext}
+        aria-label="Continue to recording"
+        className="my-auto inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-cream/15 text-cream/50 transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-cream/40 hover:text-cream"
+      >
+        <ChevronRight size={22} strokeWidth={1.25} aria-hidden />
+      </button>
+    </section>
+  );
+}
+
+type SendPanelProps = {
+  fileInputId: string;
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  selectedFile: File | null;
+  uploadStatus: UploadStatus;
+  uploadError: string | null;
+  sentId: string | null;
+  isDragging: boolean;
+  uploadProgress: UploadProgress | null;
+  setIsDragging: (v: boolean) => void;
+  chooseFile: (file: File | null) => void;
+  openFilePicker: () => void;
+  clearFile: () => void;
+  sendFile: () => Promise<void>;
+  onBack: () => void;
+};
+
+function DottedPath() {
+  return (
+    <div
+      className="h-px min-w-6 flex-1 bg-[repeating-linear-gradient(90deg,rgba(252,249,242,0.35)_0_3px,transparent_3px_9px)]"
+      aria-hidden
+    />
+  );
+}
+
+function ReadAndSendStep({
+  fileInputId,
+  fileInputRef,
+  selectedFile,
+  uploadStatus,
+  uploadError,
+  sentId,
+  isDragging,
+  uploadProgress,
+  setIsDragging,
+  chooseFile,
+  openFilePicker,
+  clearFile,
+  sendFile,
+  onBack,
+}: SendPanelProps) {
+  const reduceMotion = useReducedMotion();
+  const [title, ...body] = CALIBRATION.bookPassageParagraphs;
+
+  return (
+    <section className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <motion.div
+        initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: EASE_OUT }}
+        className="shrink-0 pb-4"
+        aria-label="Recording path"
+      >
+        <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-[auto_minmax(9.5rem,12rem)_minmax(0,1fr)_minmax(12.5rem,14.5rem)] lg:gap-6">
+          <div className="hidden h-12 w-12 lg:block" aria-hidden />
+          <div className="flex items-center gap-3">
+            <p className="shrink-0 font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] italic leading-none tracking-[-0.02em] text-cream">
+              Record{' '}
+              <span className="not-italic text-moss">now</span>
+            </p>
+            <DottedPath />
+          </div>
+          <div className="flex items-center gap-3">
+            <h3 className="shrink-0 font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] italic leading-none tracking-[-0.02em] text-cream">
+              Read{' '}
+              <span className="not-italic text-moss">now</span>
+            </h3>
+            <DottedPath />
+          </div>
+          <div className="flex items-center justify-end gap-3">
+            <DottedPath />
+            <p className="shrink-0 font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] italic leading-none tracking-[-0.02em] text-cream">
+              Send{' '}
+              <span className="not-italic text-moss">take</span>
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="grid min-h-0 flex-1 grid-cols-1 content-start items-start gap-4 overflow-hidden lg:grid-cols-[auto_minmax(9.5rem,12rem)_minmax(0,1fr)_minmax(12.5rem,14.5rem)] lg:gap-6">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Back to setup"
+          className="my-auto inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-cream/15 text-cream/50 transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-cream/40 hover:text-cream lg:order-none"
+        >
+          <ChevronLeft size={22} strokeWidth={1.25} aria-hidden />
+        </button>
+
+        <aside className="flex min-h-0 flex-col justify-start border-b border-cream/10 pb-5 lg:border-b-0 lg:pb-0">
+          <p className="text-[13px] font-light leading-relaxed text-cream/50">
+            {ROOM_TONE.lede}
+          </p>
+          <p className="mt-4 font-companion text-[2.75rem] font-semibold leading-none tracking-[-0.04em] text-cream">
+            {ROOM_TONE.durationSeconds}
+            <span className="ml-1 text-[1rem] font-medium text-cream/35">s</span>
+          </p>
+          <ul className="mt-4 space-y-2">
+            {ROOM_TONE.rules.map((rule) => (
+              <li key={rule} className="flex items-center gap-2.5 text-[13px] text-cream/75">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#9fb5aa]" aria-hidden />
+                {rule}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-[12px] font-light leading-relaxed text-cream/35">
+            {ROOM_TONE.purpose}
+          </p>
+        </aside>
+
+        <article className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+          <p className="shrink-0 text-[13px] font-light text-cream/40">
+            Keep recording. Stop when the last line ends.
+          </p>
+          <div className="mt-3">
+            <p className="text-[0.98rem] font-medium tracking-[-0.01em] text-[#9fb5aa]/95">
+              {title}
+            </p>
+            <div className="mt-3 columns-1 gap-x-8 md:columns-2">
+              {body.map((paragraph) => (
+                <p
+                  key={paragraph.slice(0, 28)}
+                  className="mb-3 break-inside-avoid text-[0.92rem] font-light leading-[1.48] tracking-[-0.01em] text-cream/90"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+            <p className="mt-4 text-right font-serif text-[clamp(1.45rem,2.6vw,2rem)] italic leading-none tracking-[-0.02em] text-cream">
+              Stop{' '}
+              <span className="not-italic text-moss">recording</span>
+            </p>
+          </div>
+        </article>
+
+        <aside className="flex shrink-0 flex-col border-t border-cream/10 pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+          <input
+            ref={fileInputRef}
+            id={fileInputId}
+            type="file"
+            accept={UPLOAD_SPEC.acceptAttr}
+            className="sr-only"
+            tabIndex={-1}
+            onChange={(event) => {
+              chooseFile(event.target.files?.[0] ?? null);
+            }}
+          />
+
+          {uploadStatus === 'sent' ? (
+            <div className="rounded-xl border border-[#9fb5aa]/30 bg-[#9fb5aa]/08 px-3.5 py-3.5">
+              <div className="flex items-start gap-2.5">
+                <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-moss text-cream">
+                  <Check size={14} strokeWidth={2} aria-hidden />
+                </span>
+                <div>
+                  <p className="text-sm font-medium tracking-[-0.02em] text-cream">
+                    Take received
+                  </p>
+                  {sentId ? (
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/28">
+                      Ref {sentId.slice(0, 8)}
                     </p>
                   ) : null}
                 </div>
-              </section>
+              </div>
             </div>
-          </motion.aside>
-        </>
-      ) : null}
-    </AnimatePresence>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={openFilePicker}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openFilePicker();
+                  }
+                }}
+                onDragEnter={(event) => {
+                  event.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={(event) => {
+                  event.preventDefault();
+                  if (event.currentTarget === event.target) setIsDragging(false);
+                }}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  setIsDragging(false);
+                  chooseFile(event.dataTransfer.files?.[0] ?? null);
+                }}
+                className={`group relative flex min-h-[10.5rem] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed px-4 py-6 text-center transition-colors duration-200 ${
+                  isDragging
+                    ? 'border-[#9fb5aa]/55 bg-[#9fb5aa]/12'
+                    : selectedFile
+                      ? 'border-[#9fb5aa]/40 bg-[#141816]'
+                      : 'border-cream/22 bg-[#121614] hover:border-cream/40 hover:bg-[#151916]'
+                }`}
+              >
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-[0.07]"
+                  style={{
+                    backgroundImage:
+                      'radial-gradient(circle at 1px 1px, rgba(252,249,242,0.7) 1px, transparent 0)',
+                    backgroundSize: '14px 14px',
+                  }}
+                  aria-hidden
+                />
+                <span className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-cream/15 bg-cream/[0.03] text-[#9fb5aa] transition-transform duration-300 group-hover:scale-105">
+                  <Upload size={17} strokeWidth={1.75} aria-hidden />
+                </span>
+                {selectedFile ? (
+                  <>
+                    <p className="relative mt-3 max-w-full truncate text-[13px] font-medium tracking-[-0.015em] text-cream/90">
+                      {selectedFile.name}
+                    </p>
+                    <p className="relative mt-1 text-[11px] font-light text-cream/40">
+                      {formatFileBytes(selectedFile.size)} · click to replace
+                    </p>
+                  </>
+                ) : (
+                  <p className="relative mt-3 text-[13px] font-medium tracking-[-0.015em] text-cream/80">
+                    Drop take here
+                  </p>
+                )}
+              </div>
+
+              {selectedFile ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => void sendFile()}
+                    disabled={uploadStatus === 'uploading'}
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-moss px-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-cream transition-opacity hover:opacity-95 disabled:cursor-wait disabled:opacity-70"
+                  >
+                    {uploadStatus === 'uploading' ? 'Sending…' : 'Send take'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={clearFile}
+                    disabled={uploadStatus === 'uploading'}
+                    className="inline-flex min-h-8 w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.12em] text-cream/40 transition-colors hover:text-cream/70 disabled:opacity-50"
+                  >
+                    Clear
+                  </button>
+                </>
+              ) : null}
+
+              {uploadStatus === 'uploading' && uploadProgress ? (
+                <div className="w-full" aria-live="polite">
+                  <div className="flex items-baseline justify-between gap-3 text-[10px] text-cream/40">
+                    <span className="tabular-nums">
+                      {formatFileBytes(uploadProgress.loadedBytes)}
+                      <span className="text-cream/25"> / </span>
+                      {formatFileBytes(uploadProgress.totalBytes)}
+                    </span>
+                    <span className="font-medium tabular-nums text-cream/70">
+                      {uploadProgress.percent}%
+                    </span>
+                  </div>
+                  <div
+                    className="mt-2 h-1 overflow-hidden rounded-full bg-cream/10"
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={uploadProgress.percent}
+                    aria-label="Upload progress"
+                  >
+                    <div
+                      className="h-full rounded-full bg-moss transition-[width] duration-200 ease-out"
+                      style={{ width: `${uploadProgress.percent}%` }}
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          )}
+
+          {uploadError ? (
+            <p role="alert" className="mt-2 text-[12px] font-light leading-relaxed text-[#e0a090]">
+              {uploadError}
+            </p>
+          ) : null}
+        </aside>
+      </div>
+    </section>
   );
 }
