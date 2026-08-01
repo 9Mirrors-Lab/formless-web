@@ -67,6 +67,16 @@ function formatCompareTimelineTime(seconds: number): string {
   return `:${rounded}`;
 }
 
+function audioFormatBadge(url: string): string {
+  const path = url.split('?')[0]?.toLowerCase() ?? '';
+  if (path.endsWith('.mp3')) return 'MP3';
+  if (path.endsWith('.wav')) return 'WAV';
+  if (path.endsWith('.m4a') || path.endsWith('.mp4') || path.endsWith('.aac')) {
+    return 'M4A';
+  }
+  return 'AUDIO';
+}
+
 /**
  * wavesurfer-multitrack stack: Original + Optimized, synced timeline.
  * Long chapters start zoomed to a ~90s window; wheel / shift-drag / footer scrollbar pan.
@@ -550,7 +560,11 @@ export const AudioCompareMultitrack = forwardRef<
             Original
           </p>
           <span className="mt-1 font-mono text-[9px] text-cream/25">
-            {originalUrl ? 'M4A' : loading ? '…' : 'PENDING'}
+            {originalUrl
+              ? audioFormatBadge(originalUrl)
+              : loading
+                ? '…'
+                : 'PENDING'}
           </span>
         </button>
         <button
@@ -573,7 +587,7 @@ export const AudioCompareMultitrack = forwardRef<
             Optimized
           </p>
           <span className="mt-1 font-mono text-[9px] text-[#9fb5aa]/45">
-            {optimizedUrl ? 'M4A' : 'PENDING'}
+            {optimizedUrl ? audioFormatBadge(optimizedUrl) : 'PENDING'}
           </span>
         </button>
       </div>

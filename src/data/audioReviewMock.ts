@@ -39,7 +39,7 @@ export const AUDIO_STATUS_LABEL: Record<
   string
 > = {
   recorded: 'Chapter recorded',
-  ready: 'Ready for review',
+  ready: 'Recorded and mastered',
   approved: 'Approved',
 };
 
@@ -189,7 +189,7 @@ const CHAPTER_4_MANUSCRIPT = sentences(4, [
 
 function placeholderManuscript(chapterId: number, title: string): AudioSentence[] {
   const opening =
-    chapterId === 0
+    chapterId === 0 || chapterId === 13
       ? `Opening of ${title}.`
       : `Opening of Chapter ${chapterId}: ${title}.`;
   return sentences(chapterId, [
@@ -216,8 +216,19 @@ function placeholderManuscript(chapterId: number, title: string): AudioSentence[
   ]);
 }
 
-/** Intro + chapters 1–11 = 12 tracks. Five originals recorded; none optimized yet. */
+/**
+ * Opening Credits + Intro + chapters 1–11.
+ * Opening Credits (id 13): original + optimized uploaded (status ready).
+ * Intro + chapters 1–4: originals recorded; not optimized yet.
+ */
 export const AUDIO_CHAPTERS: AudioChapter[] = [
+  {
+    id: 13,
+    title: 'Opening Credits',
+    length: 43,
+    status: 'ready',
+    manuscript: placeholderManuscript(13, 'Opening Credits'),
+  },
   {
     id: 0,
     title: 'Introduction',
@@ -310,9 +321,11 @@ export const AUDIO_CHAPTERS: AudioChapter[] = [
   },
 ];
 
-/** Sidebar / transport label for chapter index (0 = Introduction). */
+/** Sidebar / transport label for chapter index (0 = Introduction, 13 = Opening Credits). */
 export function formatChapterIndex(id: number): string {
-  return id === 0 ? 'Intro' : String(id);
+  if (id === 0) return 'Intro';
+  if (id === 13) return 'OC';
+  return String(id);
 }
 
 export function formatAudioTime(totalSeconds: number): string {
