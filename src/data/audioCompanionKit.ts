@@ -164,7 +164,7 @@ export const UPLOAD_SPEC = {
     `Save as ${SESSION_FILES.exportName}`,
     'Mono · 44.1 kHz · 16-bit',
   ],
-  maxSizeLabel: '300 MB max',
+  maxSizeLabel: '600 MB max',
   /**
    * Empty accept: do not filter the native picker.
    * Extension/MIME accept lists grey out valid recordings on macOS Finder and iOS Files.

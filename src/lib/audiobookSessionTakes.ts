@@ -60,7 +60,7 @@ const ALLOWED_EXT = new Set([
   '.aup3',
 ]);
 
-const MAX_BYTES = 314572800; // 300 MB
+const MAX_BYTES = 629145600; // 600 MB
 
 /** Audacity 3 project files are SQLite, not audio/*; browsers often report octet-stream. */
 const AUP3_MIME = 'application/x-audacity-project';
@@ -86,7 +86,7 @@ export function formatFileBytes(size: number): string {
 
 export function validateSessionTakeFile(file: File): string | null {
   if (file.size <= 0) return 'File is empty.';
-  if (file.size > MAX_BYTES) return 'File must be 300 MB or smaller.';
+  if (file.size > MAX_BYTES) return 'File must be 600 MB or smaller.';
   if (!isAllowedTakeFile(file)) {
     return 'Use an audio recording or Audacity project (.aup3).';
   }
