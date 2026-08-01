@@ -154,6 +154,30 @@ function encodeStorageObjectPath(path: string): string {
     .join('/');
 }
 
+/**
+ * Supabase Free projects hard-cap uploads at 50 MB via the *global* Storage
+ * setting. Bucket limits (e.g. 600 MB) cannot exceed that ceiling.
+ */
+function explainStorageUploadError(raw: string, fileBytes: number): string {
+  const lower = raw.toLowerCase();
+  const looksLikeSize =
+    lower.includes('maximum') ||
+    lower.includes('exceeded') ||
+    lower.includes('too large') ||
+    lower.includes('payload') ||
+    lower.includes('entity too large') ||
+    lower.includes('file size');
+
+  if (looksLikeSize) {
+    return (
+      `File is ${formatFileBytes(fileBytes)}, but this Supabase project’s global ` +
+      `upload limit is 50 MB on the Free plan. Upgrade the Eyes_Closed org to Pro, ` +
+      `then set Storage → Settings → Global file size limit to 600 MB.`
+    );
+  }
+  return raw;
+}
+
 type StorageUploadResult =
   | { ok: true }
   | { ok: false; error: string; aborted?: boolean };
@@ -203,10 +227,9 @@ function uploadFileWithProgress(options: {
         resolve({ ok: true });
         return;
       }
-      const body = xhr.response as { message?: string; error?: string } | null;
-      const message =
-        body?.message || body?.error || `Upload failed (${xhr.status}).`;
-      resolve({ ok: false, error: message });
+      const body = xhr.response as { message?: string; error?: string; statusCode?: string } | null;
+      const raw = body?.message || body?.error || `Upload failed (${xhr.status}).`;
+      resolve({ ok: false, error: explainStorageUploadError(raw, file.size) });
     };
 
     xhr.onerror = () => {
