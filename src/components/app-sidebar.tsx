@@ -9,7 +9,8 @@ import { Menu, X } from "lucide-react";
 export type BrandNavId =
   | "brand"
   | "speaker-sheet"
-  | "audible-recording"
+  | "audible"
+  | "audible-master"
   | "zoom-backgrounds"
   | "brand-kit"
   | "client-review"
@@ -17,11 +18,19 @@ export type BrandNavId =
 
 export type BrandNavSection = BrandNavId;
 
+type NavChild = {
+  id: BrandNavId;
+  title: string;
+  href: string;
+  description: string;
+};
+
 type NavItem = {
   id: BrandNavId;
   title: string;
   href: string;
   description: string;
+  children?: NavChild[];
 };
 
 const NAV_ITEMS: NavItem[] = [
@@ -32,10 +41,18 @@ const NAV_ITEMS: NavItem[] = [
     description: "Venue one-sheets",
   },
   {
-    id: "audible-recording",
-    title: "Audible recording",
-    href: "/audio/editorial",
-    description: "Author companion and review",
+    id: "audible",
+    title: "Audible",
+    href: "/audio/companion",
+    description: "Author recording companion",
+    children: [
+      {
+        id: "audible-master",
+        title: "Audible Master",
+        href: "/audio/editorial",
+        description: "Listen and analysis",
+      },
+    ],
   },
   {
     id: "zoom-backgrounds",
@@ -53,8 +70,11 @@ const NAV_ITEMS: NavItem[] = [
 
 function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/speaker-sheet") return "speaker-sheet";
+  if (pathname === "/audio/companion" || pathname.startsWith("/audio/companion")) {
+    return "audible";
+  }
   if (pathname === "/audio/editorial" || pathname.startsWith("/audio/editorial")) {
-    return "audible-recording";
+    return "audible-master";
   }
   if (pathname === "/zoom-backgrounds") return "zoom-backgrounds";
   if (pathname === "/brand-kit-export") return "brand-kit";
@@ -148,6 +168,8 @@ function BrandNavPanel({
         <ul className="flex flex-col gap-0.5">
           {NAV_ITEMS.map((item, itemIndex) => {
             const isActive = item.id === activeId;
+            const childActive = item.children?.some((child) => child.id === activeId) ?? false;
+            const groupActive = isActive || childActive;
 
             return (
               <li
@@ -163,7 +185,7 @@ function BrandNavPanel({
                   className={[
                     "group relative block rounded-lg px-3 py-2 transition-colors duration-300",
                     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]",
-                    isActive
+                    groupActive
                       ? "bg-cream/[0.05] text-cream"
                       : "text-cream/50 hover:bg-cream/[0.03] hover:text-cream/80",
                   ].join(" ")}
@@ -175,7 +197,7 @@ function BrandNavPanel({
                   <span
                     className={[
                       "mt-0.5 block text-[10px] leading-snug",
-                      isActive ? "text-cream/40" : "text-cream/25",
+                      groupActive ? "text-cream/40" : "text-cream/25",
                     ].join(" ")}
                   >
                     {item.description}
@@ -187,6 +209,48 @@ function BrandNavPanel({
                     />
                   ) : null}
                 </a>
+
+                {item.children && item.children.length > 0 ? (
+                  <ul className="mt-0.5 ml-3 border-l border-cream/[0.08] pl-2">
+                    {item.children.map((child) => {
+                      const isChildActive = child.id === activeId;
+                      return (
+                        <li key={child.id}>
+                          <a
+                            href={child.href}
+                            aria-current={isChildActive ? "page" : undefined}
+                            className={[
+                              "group relative block rounded-lg px-3 py-1.5 transition-colors duration-300",
+                              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]",
+                              isChildActive
+                                ? "bg-cream/[0.05] text-cream"
+                                : "text-cream/40 hover:bg-cream/[0.03] hover:text-cream/70",
+                            ].join(" ")}
+                            onClick={onClose}
+                          >
+                            <span className="block text-[11px] font-normal tracking-wide">
+                              {child.title}
+                            </span>
+                            <span
+                              className={[
+                                "mt-0.5 block text-[10px] leading-snug",
+                                isChildActive ? "text-cream/40" : "text-cream/20",
+                              ].join(" ")}
+                            >
+                              {child.description}
+                            </span>
+                            {isChildActive ? (
+                              <span
+                                className="absolute inset-y-1.5 left-0 w-[2px] rounded-full bg-clay"
+                                aria-hidden
+                              />
+                            ) : null}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
               </li>
             );
           })}

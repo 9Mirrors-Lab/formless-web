@@ -304,7 +304,7 @@ export default function AudioSendTakePage() {
         <input
           ref={fileInputRef}
           type="file"
-          accept={UPLOAD_SPEC.acceptAttr}
+          {...(UPLOAD_SPEC.acceptAttr ? { accept: UPLOAD_SPEC.acceptAttr } : {})}
           className="sr-only"
           tabIndex={-1}
           onChange={(event) => {
@@ -325,7 +325,7 @@ export default function AudioSendTakePage() {
                     From Files
                   </p>
                   <p className="mt-2 text-[17px] font-light leading-snug tracking-[-0.01em] text-cream/78">
-                    WAV or M4A
+                    Audio or .aup3
                   </p>
                 </div>
               ) : null}

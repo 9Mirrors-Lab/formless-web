@@ -40,24 +40,42 @@ export type UploadSessionTakeResult =
   | { ok: true; id: string; storagePath: string }
   | { ok: false; error: string; aborted?: boolean };
 
-const ALLOWED_MIME = new Set([
-  'audio/wav',
-  'audio/x-wav',
-  'audio/wave',
-  'audio/vnd.wave',
-  'audio/mp4',
-  'audio/x-m4a',
-  'audio/aac',
-  'audio/m4a',
+const ALLOWED_EXT = new Set([
+  '.wav',
+  '.wave',
+  '.m4a',
+  '.mp3',
+  '.aac',
+  '.flac',
+  '.ogg',
+  '.oga',
+  '.opus',
+  '.aiff',
+  '.aif',
+  '.caf',
+  '.wma',
+  '.webm',
+  '.3gp',
+  '.amr',
+  '.aup3',
 ]);
 
-const ALLOWED_EXT = new Set(['.wav', '.wave', '.m4a']);
+const MAX_BYTES = 314572800; // 300 MB
 
-const MAX_BYTES = 104857600;
+/** Audacity 3 project files are SQLite, not audio/*; browsers often report octet-stream. */
+const AUP3_MIME = 'application/x-audacity-project';
 
 function extensionOf(name: string): string {
   const idx = name.lastIndexOf('.');
   return idx >= 0 ? name.slice(idx).toLowerCase() : '';
+}
+
+function isAllowedTakeFile(file: File): boolean {
+  const ext = extensionOf(file.name);
+  if (ext === '.aup3') return true;
+  const type = file.type.trim().toLowerCase();
+  if (type.startsWith('audio/')) return true;
+  return ALLOWED_EXT.has(ext);
 }
 
 export function formatFileBytes(size: number): string {
@@ -68,13 +86,9 @@ export function formatFileBytes(size: number): string {
 
 export function validateSessionTakeFile(file: File): string | null {
   if (file.size <= 0) return 'File is empty.';
-  if (file.size > MAX_BYTES) return 'File must be 100 MB or smaller.';
-
-  const ext = extensionOf(file.name);
-  const mimeOk = file.type ? ALLOWED_MIME.has(file.type) : false;
-  const extOk = ALLOWED_EXT.has(ext);
-  if (!mimeOk && !extOk) {
-    return 'Use a WAV or M4A file.';
+  if (file.size > MAX_BYTES) return 'File must be 300 MB or smaller.';
+  if (!isAllowedTakeFile(file)) {
+    return 'Use an audio recording or Audacity project (.aup3).';
   }
   return null;
 }
@@ -84,8 +98,13 @@ function sanitizeFilename(name: string): string {
 }
 
 function resolveMime(file: File): string {
-  if (file.type && ALLOWED_MIME.has(file.type)) return file.type;
   const ext = extensionOf(file.name);
+  if (ext === '.aup3') return AUP3_MIME;
+
+  const type = file.type.trim().toLowerCase();
+  if (type.startsWith('audio/')) {
+    return type;
+  }
   switch (ext) {
     case '.wav':
     case '.wave':
@@ -96,8 +115,28 @@ function resolveMime(file: File): string {
       return 'audio/mp4';
     case '.aac':
       return 'audio/aac';
+    case '.flac':
+      return 'audio/flac';
+    case '.ogg':
+    case '.oga':
+      return 'audio/ogg';
+    case '.opus':
+      return 'audio/opus';
+    case '.aiff':
+    case '.aif':
+      return 'audio/aiff';
+    case '.caf':
+      return 'audio/x-caf';
+    case '.wma':
+      return 'audio/x-ms-wma';
+    case '.webm':
+      return 'audio/webm';
+    case '.3gp':
+      return 'audio/3gpp';
+    case '.amr':
+      return 'audio/amr';
     default:
-      return file.type || 'application/octet-stream';
+      return type || 'application/octet-stream';
   }
 }
 

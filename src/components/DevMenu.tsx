@@ -64,11 +64,10 @@ export const DevMenu = ({ path }: DevMenuProps) => {
 
   if (!import.meta.env.DEV) return null;
 
-  // Stay out of the companion tray (top sheet) so it does not float over recording UI.
-  const companionOpen =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('companion') === '1';
-  if (companionOpen) return null;
+  // Stay out of the companion recording page so it does not float over the ritual UI.
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/audio/companion')) {
+    return null;
+  }
 
   return (
     <div className="fixed right-3 top-3 z-[99999] flex flex-col items-end font-sans md:right-4 md:top-4">

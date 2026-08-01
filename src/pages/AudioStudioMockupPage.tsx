@@ -110,16 +110,16 @@ export default function AudioStudioMockupPage() {
 
         <div className="space-y-2 border-t border-cream/10 px-4 py-3">
           <a
-            href="/audio/editorial?companion=1"
+            href="/audio/companion"
             className="block font-mono text-[10px] uppercase tracking-[0.18em] text-[#9fb5aa]/80 transition-colors hover:text-[#9fb5aa]"
           >
-            Companion kit →
+            Audible companion →
           </a>
           <a
             href="/audio/editorial"
             className="block font-mono text-[10px] uppercase tracking-[0.18em] text-cream/40 transition-colors hover:text-[#9fb5aa]"
           >
-            Compare editorial mockup →
+            Audible Master →
           </a>
         </div>
       </aside>

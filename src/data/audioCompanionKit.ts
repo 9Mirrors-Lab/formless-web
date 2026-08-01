@@ -150,7 +150,7 @@ export const UPLOAD_SPEC = {
   name: 'Send',
   headline: 'Send your take',
   lede: 'Export from Audacity, then upload here.',
-  format: 'WAV or M4A',
+  format: 'Audio or Audacity project (.aup3)',
   bitDepth: '16-bit PCM',
   sampleRate: '44.1 kHz',
   channels: 'Mono',
@@ -164,9 +164,13 @@ export const UPLOAD_SPEC = {
     `Save as ${SESSION_FILES.exportName}`,
     'Mono · 44.1 kHz · 16-bit',
   ],
-  maxSizeLabel: '100 MB max',
-  /** Extensions only. MIME tokens in accept gray out files in macOS Finder. */
-  acceptAttr: '.wav,.wave,.m4a',
+  maxSizeLabel: '300 MB max',
+  /**
+   * Empty accept: do not filter the native picker.
+   * Extension/MIME accept lists grey out valid recordings on macOS Finder and iOS Files.
+   * Validation in audiobookSessionTakes allows audio recordings and .aup3 projects.
+   */
+  acceptAttr: '',
 } as const;
 
 /** Two pages: prepare (setup + room) then read + send. */

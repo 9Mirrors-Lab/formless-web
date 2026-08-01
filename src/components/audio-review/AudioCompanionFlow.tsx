@@ -1,19 +1,10 @@
 /**
- * Author recording companion — shadcn Sheet (top) over the editorial room.
- * Page 1: setup + room tone. Page 2: read passage + send take.
+ * Author recording companion — full-page ritual (setup → room tone → read → send).
  */
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { Check, ChevronLeft, ChevronRight, Download, Upload, X } from 'lucide-react';
-import { useEffect, useId, useRef, useState, type RefObject } from 'react';
+import { Check, ChevronLeft, ChevronRight, Download, Upload } from 'lucide-react';
+import { useId, useRef, useState, type RefObject } from 'react';
 
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
 import {
   CALIBRATION,
   COMPANION_KIT,
@@ -29,17 +20,12 @@ import {
   type UploadProgress,
 } from '@/lib/audiobookSessionTakes';
 
-type AudioCompanionTrayProps = {
-  open: boolean;
-  onClose: () => void;
-};
-
 type UploadStatus = 'idle' | 'ready' | 'uploading' | 'sent' | 'error';
 
 const EASE_OUT = [0.32, 0.72, 0, 1] as const;
 const STEP_IDS = COMPANION_SECTIONS.map((s) => s.id);
 
-export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
+export function AudioCompanionFlow() {
   const reduceMotion = useReducedMotion();
   const fileInputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -52,10 +38,6 @@ export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
 
   const stepId = STEP_IDS[stepIndex] ?? 'prepare';
-
-  useEffect(() => {
-    if (!open) setStepIndex(0);
-  }, [open]);
 
   const chooseFile = (file: File | null) => {
     setSentId(null);
@@ -108,7 +90,7 @@ export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
     const result = await uploadSessionTake({
       file: selectedFile,
       takeKind: 'initial_calibration',
-      notes: 'Companion tray: room tone + calibration',
+      notes: 'Companion: room tone + calibration',
       roomToneSeconds: ROOM_TONE.durationSeconds,
       onProgress: setUploadProgress,
     });
@@ -130,40 +112,24 @@ export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
       };
 
   return (
-    <Sheet
-      open={open}
-      onOpenChange={(next) => {
-        if (!next) onClose();
-      }}
-    >
-      <SheetContent
-        side="top"
-        showCloseButton={false}
-        overlayClassName="bg-black/55"
-        className="flex h-[min(58svh,38rem)] flex-col gap-0 overflow-hidden border-cream/10 bg-[#0a0e0c] p-0 font-companion text-cream shadow-[0_28px_80px_rgba(0,0,0,0.5)] data-[side=top]:h-[min(58svh,38rem)] sm:max-w-none"
-      >
-        <SheetHeader className="mx-auto w-full max-w-[80rem] shrink-0 space-y-0 px-5 pb-3 pt-4 text-left md:px-8 md:pt-5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9fb5aa]/70">
-                {COMPANION_KIT.imprint} · {COMPANION_KIT.book}
-              </p>
-              <SheetTitle className="sr-only">{COMPANION_KIT.title}</SheetTitle>
-              <SheetDescription className="sr-only">{COMPANION_KIT.lede}</SheetDescription>
-            </div>
-            <SheetClose asChild>
-              <button
-                type="button"
-                className="rounded-full border border-cream/15 p-2 text-cream/50 transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-cream/35 hover:text-cream"
-                aria-label="Close"
-              >
-                <X size={17} strokeWidth={1.25} />
-              </button>
-            </SheetClose>
-          </div>
-        </SheetHeader>
+    <div className="flex min-h-0 flex-1 flex-col font-companion text-cream">
+      <header className="shrink-0 pb-4 md:pb-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9fb5aa]/70">
+          {COMPANION_KIT.imprint} · {COMPANION_KIT.book}
+        </p>
+        <p className="mt-1 text-[13px] font-light text-cream/45">{COMPANION_KIT.lede}</p>
+      </header>
 
-        <div className="mx-auto flex min-h-0 w-full max-w-[80rem] flex-1 flex-col overflow-hidden px-5 pb-5 md:px-8">
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-xl border border-cream/10 bg-[#0a0e0c]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'radial-gradient(ellipse 80% 50% at 20% 0%, rgba(159,181,170,0.45), transparent 55%)',
+          }}
+          aria-hidden
+        />
+        <div className="relative flex min-h-[min(70svh,42rem)] flex-col overflow-hidden px-5 py-5 md:px-8 md:py-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={stepId}
@@ -197,8 +163,8 @@ export function AudioCompanionTray({ open, onClose }: AudioCompanionTrayProps) {
             </motion.div>
           </AnimatePresence>
         </div>
-      </SheetContent>
-    </Sheet>
+      </div>
+    </div>
   );
 }
 
@@ -214,10 +180,9 @@ function PrepareStep({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.4, ease: EASE_OUT }}
           className="mb-6 shrink-0"
         >
-          <h3 className="font-serif text-[clamp(2.2rem,4vw,3.2rem)] italic leading-[0.9] tracking-[-0.03em] text-cream">
-            Setup{' '}
-            <span className="not-italic text-moss">first</span>
-          </h3>
+          <h2 className="font-serif text-[clamp(2.2rem,4vw,3.2rem)] italic leading-[0.9] tracking-[-0.03em] text-cream">
+            Setup <span className="not-italic text-moss">first</span>
+          </h2>
           <p className="mt-2 text-[13px] font-light text-cream/45">
             Open the template in Audacity, then continue.
           </p>
@@ -372,29 +337,26 @@ function ReadAndSendStep({
           <div className="hidden h-12 w-12 lg:block" aria-hidden />
           <div className="flex items-center gap-3">
             <p className="shrink-0 font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] italic leading-none tracking-[-0.02em] text-cream">
-              Record{' '}
-              <span className="not-italic text-moss">now</span>
+              Record <span className="not-italic text-moss">now</span>
             </p>
             <DottedPath />
           </div>
           <div className="flex items-center gap-3">
-            <h3 className="shrink-0 font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] italic leading-none tracking-[-0.02em] text-cream">
-              Read{' '}
-              <span className="not-italic text-moss">now</span>
-            </h3>
+            <h2 className="shrink-0 font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] italic leading-none tracking-[-0.02em] text-cream">
+              Read <span className="not-italic text-moss">now</span>
+            </h2>
             <DottedPath />
           </div>
           <div className="flex items-center justify-end gap-3">
             <DottedPath />
             <p className="shrink-0 font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] italic leading-none tracking-[-0.02em] text-cream">
-              Send{' '}
-              <span className="not-italic text-moss">take</span>
+              Send <span className="not-italic text-moss">take</span>
             </p>
           </div>
         </div>
       </motion.div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 content-start items-start gap-4 overflow-hidden lg:grid-cols-[auto_minmax(9.5rem,12rem)_minmax(0,1fr)_minmax(12.5rem,14.5rem)] lg:gap-6">
+      <div className="grid min-h-0 flex-1 grid-cols-1 content-start items-start gap-4 overflow-y-auto lg:grid-cols-[auto_minmax(9.5rem,12rem)_minmax(0,1fr)_minmax(12.5rem,14.5rem)] lg:gap-6 lg:overflow-hidden">
         <button
           type="button"
           onClick={onBack}
@@ -429,7 +391,7 @@ function ReadAndSendStep({
           <p className="shrink-0 text-[13px] font-light text-cream/40">
             Keep recording. Stop when the last line ends.
           </p>
-          <div className="mt-3">
+          <div className="mt-3 min-h-0 overflow-y-auto">
             <p className="text-[0.98rem] font-medium tracking-[-0.01em] text-[#9fb5aa]/95">
               {title}
             </p>
@@ -444,8 +406,7 @@ function ReadAndSendStep({
               ))}
             </div>
             <p className="mt-4 text-right font-serif text-[clamp(1.45rem,2.6vw,2rem)] italic leading-none tracking-[-0.02em] text-cream">
-              Stop{' '}
-              <span className="not-italic text-moss">recording</span>
+              Stop <span className="not-italic text-moss">recording</span>
             </p>
           </div>
         </article>
@@ -455,7 +416,7 @@ function ReadAndSendStep({
             ref={fileInputRef}
             id={fileInputId}
             type="file"
-            accept={UPLOAD_SPEC.acceptAttr}
+            {...(UPLOAD_SPEC.acceptAttr ? { accept: UPLOAD_SPEC.acceptAttr } : {})}
             className="sr-only"
             tabIndex={-1}
             onChange={(event) => {

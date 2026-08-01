@@ -325,17 +325,17 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio/editorial',
     category: 'design',
     description:
-      'Client arrival: companion top tray first (setup → room → read → send), then Listen / Analysis.',
+      'Audible Master: Listen / Analysis workspace for Formless chapter audio.',
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
     id: 'audio-companion',
     title: 'Audiobook · Companion kit',
-    path: '/audio/editorial?companion=1',
+    path: '/audio/companion',
     category: 'design',
     description:
-      'Companion top tray with stepper: Audacity setup, room tone, calibration, send take.',
-    source: 'src/components/audio-review/AudioCompanionTray.tsx',
+      'Audible companion page: Audacity setup, room tone, calibration, send take.',
+    source: 'src/pages/AudioCompanionKitPage.tsx',
   },
   {
     id: 'audio-send-take',

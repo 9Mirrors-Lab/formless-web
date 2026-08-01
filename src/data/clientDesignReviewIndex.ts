@@ -127,8 +127,18 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Dark editorial listen mockup: book-led sidebar, stacked players, manuscript tray with sentence sync.',
+      'Audible Master: listen compare and analysis for Formless chapter audio.',
     source: 'src/pages/AudioEditorialMockupPage.tsx',
+  },
+  {
+    id: 'audio-companion',
+    title: 'Audiobook · Companion',
+    href: '/audio/companion',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Audible companion page: setup, room tone, calibration passage, send take.',
+    source: 'src/pages/AudioCompanionKitPage.tsx',
   },
   {
     id: 'audio-send-take',
@@ -137,7 +147,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Phone-first send page: choose WAV/M4A, animated upload status, live bytes and percent.',
+      'Phone-first send page: choose audio or Audacity .aup3, animated upload status, live bytes and percent.',
     source: 'src/pages/AudioSendTakePage.tsx',
   },
   {

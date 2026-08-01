@@ -1,33 +1,28 @@
 /**
- * Audio mockup B — Editorial listen + analysis
+ * Audio mockup B — Editorial listen + analysis (Audible Master)
  *
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
  * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
- * Content plan: companion top tray first → listen compare OR analysis → manuscript tray.
- * Interaction thesis: companion descends from top in two pages; soft source cross-label;
- * shared Brand / Companion / Listen / Analysis workspace tabs.
+ * Companion ritual lives on /audio/companion. This page is Listen / Analysis only.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { AudioAnalysisDashboard } from '@/components/audio-review/AudioAnalysisDashboard';
-import { AudioCompanionTray } from '@/components/audio-review/AudioCompanionTray';
 import {
   AudioCompareMultitrack,
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
 import {
   AudioWorkspaceNav,
-  companionOpenFromSearch,
   editorialViewFromSearch,
-  setCompanionOpenInUrl,
   setEditorialViewInUrl,
-  type AudioWorkspaceTab,
   type EditorialView,
 } from '@/components/audio-review/AudioWorkspaceNav';
 import { audioChapterStatusIcon } from '@/components/audio-review/audioStatusIcons';
 import { FormlessBookCoverPanel } from '@/components/audio-review/FormlessBookCoverPanel';
+import { BrandShell } from '@/components/app-sidebar';
 import {
   AUDIO_BOOK,
   audioStatusLabel,
@@ -58,42 +53,27 @@ export default function AudioEditorialMockupPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
   const [volume, setVolume] = useState(0.85);
   const [mode, setMode] = useState<EditorialView>(() => editorialViewFromSearch());
-  const [companionOpen, setCompanionOpen] = useState(() => companionOpenFromSearch());
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
   }, []);
   const review = useAudioReviewMock({ initialChapterId: 1, onSeek });
 
-  // Bare /audio/editorial opens companion; stamp companion=1 into the URL once.
+  // Old tray deep-links land on the companion page.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (companionOpen && params.get('companion') !== '1') {
-      setCompanionOpenInUrl(true);
+    if (params.get('companion') === '1') {
+      window.location.replace('/audio/companion');
     }
-  }, [companionOpen]);
+  }, []);
 
   const selectView = useCallback((view: EditorialView) => {
-    setCompanionOpen(false);
-    setCompanionOpenInUrl(false);
     setMode(view);
     setEditorialViewInUrl(view);
   }, []);
 
-  const openCompanion = useCallback(() => {
-    review.setReadAlongOpen(false);
-    setCompanionOpen(true);
-    setCompanionOpenInUrl(true);
-  }, [review.setReadAlongOpen]);
-
-  const closeCompanion = useCallback(() => {
-    setCompanionOpen(false);
-    setCompanionOpenInUrl(false);
-  }, []);
-
-  const activeTab: AudioWorkspaceTab = companionOpen ? 'companion' : mode;
-
   return (
-    <div className="flex h-[100svh] overflow-hidden bg-[#0a0c0b] font-sans text-cream antialiased">
+    <BrandShell activeId="audible-master" crumb="Audible Master" noise={false}>
+    <div className="flex h-[calc(100dvh-2.5rem)] overflow-hidden bg-[#0a0c0b] font-sans text-cream antialiased">
       <aside className="hidden w-[300px] shrink-0 flex-col border-r border-cream/10 bg-[#101412] md:flex">
         <FormlessBookCoverPanel chapters={review.chapters} />
 
@@ -154,19 +134,12 @@ export default function AudioEditorialMockupPage() {
 
       <main className="relative flex min-w-0 flex-1 flex-col bg-[#0d100e]">
         <div className="flex shrink-0 items-center justify-between gap-4 border-b border-cream/10 px-5 py-3 md:px-8">
-          <AudioWorkspaceNav
-            active={activeTab}
-            onSelectView={selectView}
-            onOpenCompanion={openCompanion}
-          />
+          <AudioWorkspaceNav active={mode} onSelectView={selectView} />
 
-          {mode === 'listen' && !companionOpen ? (
+          {mode === 'listen' ? (
             <button
               type="button"
-              onClick={() => {
-                closeCompanion();
-                review.setReadAlongOpen(true);
-              }}
+              onClick={() => review.setReadAlongOpen(true)}
               className="shrink-0 border border-cream/15 bg-transparent px-4 py-2.5 text-sm text-cream transition-colors hover:border-[#9fb5aa]/50 hover:bg-moss hover:text-cream"
             >
               Read along
@@ -339,7 +312,7 @@ export default function AudioEditorialMockupPage() {
         )}
 
         <AnimatePresence>
-          {review.readAlongOpen && mode === 'listen' && !companionOpen ? (
+          {review.readAlongOpen && mode === 'listen' ? (
             <>
               <motion.button
                 type="button"
@@ -407,9 +380,8 @@ export default function AudioEditorialMockupPage() {
             </>
           ) : null}
         </AnimatePresence>
-
-        <AudioCompanionTray open={companionOpen} onClose={closeCompanion} />
       </main>
     </div>
+    </BrandShell>
   );
 }
