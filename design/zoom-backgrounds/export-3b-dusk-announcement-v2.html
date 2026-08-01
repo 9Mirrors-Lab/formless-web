@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Export 3b Dusk Announcement v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; background: #000; }
+    .grain { position:absolute; inset:0; background-image:url("./assets/grain.png"); background-size:400px 400px; pointer-events:none; }
+    .type {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-style: normal;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.75), 0 0 30px rgba(0,0,0,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div id="export" style="position:relative; width:3840px; height:2160px; overflow:hidden; background:#1a100a;">
+    <img src="./assets/imagery/desert-dusk.jpg" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.75;">
+    <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(8,6,4,0.88) 0%, rgba(8,6,4,0.4) 18%, rgba(8,6,4,0.15) 40%, rgba(8,6,4,0.3) 100%);"></div>
+    <div class="grain" style="opacity:0.08; mix-blend-mode:soft-light;"></div>
+
+    <div style="position:absolute; top:0; left:0; right:0; height:392px; display:flex; align-items:center; padding:0 160px;">
+      <div style="display:flex; align-items:center; gap:36px;">
+        <img src="./assets/logo/eyes-closed-logo-white.svg" alt="Eyes Closed" style="width:504px; height:auto; filter:drop-shadow(0 4px 18px rgba(0,0,0,0.55));">
+      </div>
+      <div style="flex:1;"></div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:14px;">
+        <div class="type" style="font-weight:800; font-size:96px; color:#f2f0e9; line-height:1; letter-spacing:0.03em; text-transform:uppercase;">Formless</div>
+        <div class="type" style="font-weight:700; font-size:32px; letter-spacing:0.08em; text-transform:uppercase; color:#cc5833;">Arriving September 1, 2026</div>
+      </div>
+    </div>
+
+    <div style="position:absolute; right:160px; bottom:192px; width:900px;">
+      <div style="box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; gap:22px; padding:8px 0 8px 56px; border-left:2px solid rgba(242,240,233,0.35);">
+        <div class="type" style="font-weight:600; font-size:48px; color:rgba(242,240,233,0.94); line-height:1.1; letter-spacing:-0.01em; white-space:nowrap;">Something is arriving.</div>
+        <div class="type" style="font-weight:700; font-size:24px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(242,240,233,0.48); white-space:nowrap;">A book by Sonika Cottman</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

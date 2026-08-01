@@ -6,6 +6,9 @@ import {
   BrandPageBody,
   BrandPageHeader,
 } from "@/components/BrandPageHeader";
+import { Callout } from "@/components/ui/Callout";
+
+type ZoomVersion = "v1" | "v2";
 
 type ZoomBackground = {
   id: string;
@@ -22,7 +25,7 @@ type ZoomRound = {
   items: ZoomBackground[];
 };
 
-const ZOOM_ROUNDS: ZoomRound[] = [
+const ZOOM_ROUNDS_V1: ZoomRound[] = [
   {
     id: "round-1",
     plate: "01",
@@ -93,37 +96,63 @@ const ZOOM_ROUNDS: ZoomRound[] = [
       },
     ],
   },
-  {
-    id: "round-4",
-    plate: "04",
-    title: "Icon extensions",
-    items: [
-      {
-        id: "4a",
-        label: "4a",
-        name: "Icon Atmosphere",
-        note: "Teaching icons as perimeter weather; center quiet for the speaker",
-        imageSrc: "/design/zoom-backgrounds/formless-zoom-4a-neural-constellation.png",
-      },
-      {
-        id: "4b",
-        label: "4b",
-        name: "Frequency Pillar",
-        note: "Frequency of Mind as a full-height left pillar; cream person field",
-        imageSrc: "/design/zoom-backgrounds/formless-zoom-4b-frequency-shore.png",
-      },
-      {
-        id: "4c",
-        label: "4c",
-        name: "Horizon Bloom",
-        note: "Seed of Life as a bottom horizon across the full frame",
-        imageSrc: "/design/zoom-backgrounds/formless-zoom-4c-seed-bloom.png",
-      },
-    ],
-  },
 ];
 
-const ZOOM_BACKGROUNDS = ZOOM_ROUNDS.flatMap((round) => round.items);
+const ZOOM_ROUNDS_V2: ZoomRound[] = ZOOM_ROUNDS_V1.map((round) => ({
+  ...round,
+  items: round.items.map((item) => ({
+    ...item,
+    id: `${item.id}-v2`,
+    note: `${item.note}. Zoom-safe type: bold sans, no italics, tighter tracking, soft shadow.`,
+    imageSrc: item.imageSrc.replace(/\.png$/, "-v2.png"),
+  })),
+}));
+
+function VersionTabs({
+  version,
+  onChange,
+}: {
+  version: ZoomVersion;
+  onChange: (next: ZoomVersion) => void;
+}) {
+  const tabClass = (id: ZoomVersion) =>
+    [
+      "px-1 py-1 font-sans text-xs font-semibold uppercase tracking-[0.18em] transition-colors",
+      version === id
+        ? "text-cream"
+        : "text-cream/40 hover:text-cream/70",
+    ].join(" ");
+
+  return (
+    <div
+      className="inline-flex items-center gap-3"
+      role="tablist"
+      aria-label="Zoom background versions"
+    >
+      <button
+        type="button"
+        role="tab"
+        aria-selected={version === "v1"}
+        className={tabClass("v1")}
+        onClick={() => onChange("v1")}
+      >
+        Version 1
+      </button>
+      <span className="font-sans text-xs text-cream/25" aria-hidden>
+        |
+      </span>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={version === "v2"}
+        className={tabClass("v2")}
+        onClick={() => onChange("v2")}
+      >
+        Version 2
+      </button>
+    </div>
+  );
+}
 
 function PlateStamp({
   label,
@@ -194,20 +223,28 @@ function PlateCard({
 }
 
 export default function ZoomBackgroundsPage() {
+  const [version, setVersion] = useState<ZoomVersion>("v1");
   const [lightbox, setLightbox] = useState<ZoomBackground | null>(null);
+
+  const rounds = version === "v1" ? ZOOM_ROUNDS_V1 : ZOOM_ROUNDS_V2;
+  const backgrounds = rounds.flatMap((round) => round.items);
+
+  useEffect(() => {
+    setLightbox(null);
+  }, [version]);
 
   useEffect(() => {
     if (!lightbox) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setLightbox(null);
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-        const index = ZOOM_BACKGROUNDS.findIndex((item) => item.id === lightbox.id);
+        const index = backgrounds.findIndex((item) => item.id === lightbox.id);
         if (index < 0) return;
         const next =
           event.key === "ArrowLeft"
             ? Math.max(0, index - 1)
-            : Math.min(ZOOM_BACKGROUNDS.length - 1, index + 1);
-        setLightbox(ZOOM_BACKGROUNDS[next] ?? null);
+            : Math.min(backgrounds.length - 1, index + 1);
+        setLightbox(backgrounds[next] ?? null);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -217,7 +254,7 @@ export default function ZoomBackgroundsPage() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = previousOverflow;
     };
-  }, [lightbox]);
+  }, [lightbox, backgrounds]);
 
   return (
     <>
@@ -229,10 +266,30 @@ export default function ZoomBackgroundsPage() {
               description="Her beauty in the middle. Our branding hugging the edges like a polite stagehand who refuses to steal the scene."
             />
 
+            <div className="flex flex-col gap-5">
+              <VersionTabs version={version} onChange={setVersion} />
+              {version === "v2" ? (
+                <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/45">
+                  Version 2 is tuned for Zoom compression: bold sans type, no italics,
+                  larger solid letterforms, tighter tracking, and a soft shadow so cream
+                  type holds against dark scenery.
+                </p>
+              ) : null}
+            </div>
+
+            <Callout
+              variant="letterpress"
+              surface="dark"
+              icon="north"
+              className="max-w-2xl flex-wrap items-start gap-x-3 gap-y-1.5 sm:items-center"
+            >
+              Backgrounds look blurry in Zoom? Update Zoom settings. Toggle HD on.
+            </Callout>
+
             <div className="flex flex-col gap-14">
-              {ZOOM_ROUNDS.map((round) => (
+              {rounds.map((round) => (
                 <section
-                  key={round.id}
+                  key={`${version}-${round.id}`}
                   id={round.id}
                   aria-labelledby={`${round.id}-heading`}
                   className="scroll-mt-28 flex flex-col gap-6"
