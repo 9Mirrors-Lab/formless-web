@@ -111,16 +111,24 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     if (!token) throw new Error('Could not authorize the Drive upload.');
 
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim() || DEFAULT_FOLDER_ID;
+    // Google binds CORS on the resumable session to this Origin. Without it,
+    // browser PUTs to the upload URL fail with a network/CORS error.
+    const browserOrigin = requestOrigin(req);
+    const driveHeaders: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json; charset=UTF-8',
+      'X-Upload-Content-Length': String(size),
+      'X-Upload-Content-Type': mimeType || 'application/octet-stream',
+    };
+    if (browserOrigin) {
+      driveHeaders.Origin = browserOrigin;
+    }
+
     const driveResponse = await fetch(
       'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name,mimeType,size,webViewLink',
       {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json; charset=UTF-8',
-          'X-Upload-Content-Length': String(size),
-          'X-Upload-Content-Type': mimeType || 'application/octet-stream',
-        },
+        headers: driveHeaders,
         body: JSON.stringify({
           name: filename,
           parents: [folderId],
