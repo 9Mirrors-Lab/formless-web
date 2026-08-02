@@ -59,13 +59,20 @@ function originIsAllowed(req: ApiRequest) {
   if (!origin) return true;
 
   const configured = process.env.DRIVE_UPLOAD_ALLOWED_ORIGIN?.trim();
-  if (configured) return origin === configured;
+  if (configured) {
+    const allowed = configured
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+    return allowed.includes(origin);
+  }
 
   return (
     origin === 'https://eyesclosed.love' ||
     origin === 'https://www.eyesclosed.love' ||
     /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
-    /^https:\/\/formless-web(?:-[a-z0-9-]+)?\.vercel\.app$/.test(origin)
+    /^https:\/\/formless(?:-web)?(?:-[a-z0-9]+)+\.vercel\.app$/.test(origin) ||
+    origin === 'https://formless-web.vercel.app'
   );
 }
 
