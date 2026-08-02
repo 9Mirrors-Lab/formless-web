@@ -1,4 +1,8 @@
 import { getBrowserSupabaseClient, hasSupabaseEnv } from '@/lib/supabase';
+import {
+  GOOGLE_DRIVE_STORAGE_PROVIDER,
+  uploadFileToGoogleDrive,
+} from '@/lib/googleDriveUpload';
 
 export const SESSION_TAKE_BUCKET = 'audiobook-takes';
 
@@ -37,7 +41,7 @@ export type UploadSessionTakeInput = {
 };
 
 export type UploadSessionTakeResult =
-  | { ok: true; id: string; storagePath: string }
+  | { ok: true; id: string; storagePath: string; storageProvider: string }
   | { ok: false; error: string; aborted?: boolean };
 
 const ALLOWED_EXT = new Set([
@@ -45,18 +49,6 @@ const ALLOWED_EXT = new Set([
   '.wave',
   '.m4a',
   '.mp3',
-  '.aac',
-  '.flac',
-  '.ogg',
-  '.oga',
-  '.opus',
-  '.aiff',
-  '.aif',
-  '.caf',
-  '.wma',
-  '.webm',
-  '.3gp',
-  '.amr',
   '.aup3',
 ]);
 
@@ -72,9 +64,6 @@ function extensionOf(name: string): string {
 
 function isAllowedTakeFile(file: File): boolean {
   const ext = extensionOf(file.name);
-  if (ext === '.aup3') return true;
-  const type = file.type.trim().toLowerCase();
-  if (type.startsWith('audio/')) return true;
   return ALLOWED_EXT.has(ext);
 }
 
@@ -88,16 +77,12 @@ export function validateSessionTakeFile(file: File): string | null {
   if (file.size <= 0) return 'File is empty.';
   if (file.size > MAX_BYTES) return 'File must be 600 MB or smaller.';
   if (!isAllowedTakeFile(file)) {
-    return 'Use an audio recording or Audacity project (.aup3).';
+    return 'Use a WAV, M4A, MP3, or Audacity project (.aup3).';
   }
   return null;
 }
 
-function sanitizeFilename(name: string): string {
-  return name.replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 120);
-}
-
-function resolveMime(file: File): string {
+export function resolveSessionTakeMime(file: File): string {
   const ext = extensionOf(file.name);
   if (ext === '.aup3') return AUP3_MIME;
 
@@ -147,105 +132,6 @@ function reportProgress(
   onProgress?.(progress);
 }
 
-function encodeStorageObjectPath(path: string): string {
-  return path
-    .split('/')
-    .map((segment) => encodeURIComponent(segment))
-    .join('/');
-}
-
-/**
- * Supabase Free projects hard-cap uploads at 50 MB via the *global* Storage
- * setting. Bucket limits (e.g. 600 MB) cannot exceed that ceiling.
- */
-function explainStorageUploadError(raw: string, fileBytes: number): string {
-  const lower = raw.toLowerCase();
-  const looksLikeSize =
-    lower.includes('maximum') ||
-    lower.includes('exceeded') ||
-    lower.includes('too large') ||
-    lower.includes('payload') ||
-    lower.includes('entity too large') ||
-    lower.includes('file size');
-
-  if (looksLikeSize) {
-    return (
-      `File is ${formatFileBytes(fileBytes)}, but this Supabase project’s global ` +
-      `upload limit is 50 MB on the Free plan. Upgrade the Eyes_Closed org to Pro, ` +
-      `then set Storage → Settings → Global file size limit to 600 MB.`
-    );
-  }
-  return raw;
-}
-
-type StorageUploadResult =
-  | { ok: true }
-  | { ok: false; error: string; aborted?: boolean };
-
-/**
- * XHR upload so browsers can report real transfer progress (bytes + %).
- * Supabase storage-js `.upload()` does not expose upload progress events.
- */
-function uploadFileWithProgress(options: {
-  url: string;
-  anonKey: string;
-  accessToken: string;
-  file: File;
-  contentType: string;
-  onProgress?: (loaded: number, total: number) => void;
-  signal?: AbortSignal;
-}): Promise<StorageUploadResult> {
-  const { url, anonKey, accessToken, file, contentType, onProgress, signal } = options;
-
-  return new Promise((resolve) => {
-    if (signal?.aborted) {
-      resolve({ ok: false, error: 'Upload cancelled.', aborted: true });
-      return;
-    }
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    xhr.responseType = 'json';
-    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-    xhr.setRequestHeader('apikey', anonKey);
-    xhr.setRequestHeader('Content-Type', contentType);
-    xhr.setRequestHeader('x-upsert', 'false');
-
-    const onAbort = () => {
-      xhr.abort();
-    };
-    signal?.addEventListener('abort', onAbort, { once: true });
-
-    xhr.upload.onprogress = (event) => {
-      if (!event.lengthComputable) return;
-      onProgress?.(event.loaded, event.total);
-    };
-
-    xhr.onload = () => {
-      signal?.removeEventListener('abort', onAbort);
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve({ ok: true });
-        return;
-      }
-      const body = xhr.response as { message?: string; error?: string; statusCode?: string } | null;
-      const raw = body?.message || body?.error || `Upload failed (${xhr.status}).`;
-      resolve({ ok: false, error: explainStorageUploadError(raw, file.size) });
-    };
-
-    xhr.onerror = () => {
-      signal?.removeEventListener('abort', onAbort);
-      resolve({ ok: false, error: 'Network error while uploading.' });
-    };
-
-    xhr.onabort = () => {
-      signal?.removeEventListener('abort', onAbort);
-      resolve({ ok: false, error: 'Upload cancelled.', aborted: true });
-    };
-
-    xhr.send(file);
-  });
-}
-
 export async function uploadSessionTake(
   input: UploadSessionTakeInput,
 ): Promise<UploadSessionTakeResult> {
@@ -277,22 +163,11 @@ export async function uploadSessionTake(
   const bookSlug = input.bookSlug ?? 'formless';
   const takeKind = input.takeKind ?? 'initial_calibration';
   const roomToneSeconds = input.roomToneSeconds ?? 30;
-  const mimeType = resolveMime(input.file);
-  const safeName = sanitizeFilename(input.file.name || 'take.wav');
-  const storagePath = `${bookSlug}/${takeKind}/${Date.now()}-${safeName}`;
-
+  const mimeType = resolveSessionTakeMime(input.file);
   const supabase = getBrowserSupabaseClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-  const accessToken = session?.access_token ?? anonKey;
-  const objectUrl = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/${SESSION_TAKE_BUCKET}/${encodeStorageObjectPath(storagePath)}`;
 
   reportProgress(input.onProgress, {
     phase: 'uploading',
@@ -302,23 +177,11 @@ export async function uploadSessionTake(
     message: `Uploading 0 B of ${formatFileBytes(totalBytes)} · 0%`,
   });
 
-  const storageResult = await uploadFileWithProgress({
-    url: objectUrl,
-    anonKey,
-    accessToken,
+  const storageResult = await uploadFileToGoogleDrive({
     file: input.file,
     contentType: mimeType,
     signal: input.signal,
-    onProgress: (loaded, total) => {
-      const percent = total > 0 ? Math.min(100, Math.round((loaded / total) * 100)) : 0;
-      reportProgress(input.onProgress, {
-        phase: 'uploading',
-        loadedBytes: loaded,
-        totalBytes: total,
-        percent,
-        message: `Uploading ${formatFileBytes(loaded)} of ${formatFileBytes(total)} · ${percent}%`,
-      });
-    },
+    onProgress: input.onProgress,
   });
 
   if (!storageResult.ok) {
@@ -344,13 +207,14 @@ export async function uploadSessionTake(
     message: `Uploaded ${formatFileBytes(totalBytes)}. Saving take…`,
   });
 
+  const driveFileId = storageResult.file.id;
   const takeId = crypto.randomUUID();
   const { error } = await supabase.from('audiobook_session_takes').insert({
     id: takeId,
     book_slug: bookSlug,
     take_kind: takeKind,
-    storage_bucket: SESSION_TAKE_BUCKET,
-    storage_path: storagePath,
+    storage_bucket: GOOGLE_DRIVE_STORAGE_PROVIDER,
+    storage_path: driveFileId,
     mime_type: mimeType,
     file_size_bytes: input.file.size,
     original_filename: input.file.name,
@@ -361,7 +225,6 @@ export async function uploadSessionTake(
   });
 
   if (error) {
-    await supabase.storage.from(SESSION_TAKE_BUCKET).remove([storagePath]);
     const message = error.message || 'Could not save take metadata.';
     reportProgress(input.onProgress, {
       phase: 'error',
@@ -381,7 +244,12 @@ export async function uploadSessionTake(
     message: `Take received · ${formatFileBytes(totalBytes)}`,
   });
 
-  return { ok: true, id: takeId, storagePath };
+  return {
+    ok: true,
+    id: takeId,
+    storagePath: driveFileId,
+    storageProvider: GOOGLE_DRIVE_STORAGE_PROVIDER,
+  };
 }
 
 export type SessionTakeRow = {
@@ -492,6 +360,14 @@ export async function createSessionTakeDownloadUrl(
   take: Pick<SessionTakeRow, 'storage_bucket' | 'storage_path' | 'original_filename'>,
   expiresInSeconds = 3600,
 ): Promise<SignedDownloadResult> {
+  if (take.storage_bucket === GOOGLE_DRIVE_STORAGE_PROVIDER) {
+    return {
+      ok: true,
+      url: `https://drive.google.com/file/d/${encodeURIComponent(take.storage_path)}/view`,
+      filename: take.original_filename?.trim() || 'session-take',
+    };
+  }
+
   if (!hasSupabaseEnv()) {
     return { ok: false, error: 'Supabase is not configured in this environment.' };
   }
@@ -535,6 +411,13 @@ export async function downloadSessionTake(
 export async function deleteSessionTake(
   take: Pick<SessionTakeRow, 'id' | 'storage_bucket' | 'storage_path'>,
 ): Promise<SessionTakeActionResult> {
+  if (take.storage_bucket === GOOGLE_DRIVE_STORAGE_PROVIDER) {
+    return {
+      ok: false,
+      error: 'Remove this recording from Google Drive before deleting its tracking record.',
+    };
+  }
+
   if (!hasSupabaseEnv()) {
     return { ok: false, error: 'Supabase is not configured in this environment.' };
   }

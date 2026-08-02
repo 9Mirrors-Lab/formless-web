@@ -141,7 +141,7 @@ export function AudioCompanionFlow() {
                       </span>
                       <div>
                         <p className="text-sm font-medium tracking-[-0.02em] text-cream">
-                          Take received
+                          Take received in Drive
                         </p>
                         {sentId ? (
                           <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/28">
@@ -232,7 +232,7 @@ export function AudioCompanionFlow() {
                         disabled={uploadStatus === 'uploading'}
                         className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-moss px-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-cream transition-opacity hover:opacity-95 disabled:cursor-wait disabled:opacity-70"
                       >
-                        {uploadStatus === 'uploading' ? 'Sending…' : 'Send take'}
+                          {uploadStatus === 'uploading' ? 'Sending to Drive…' : 'Send to Drive'}
                       </button>
                       <button
                         type="button"
