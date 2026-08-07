@@ -17,7 +17,7 @@ type UseAudioReviewMockOptions = {
 };
 
 export function useAudioReviewMock({
-  initialChapterId = 1,
+  initialChapterId = 13,
   onSeek,
 }: UseAudioReviewMockOptions = {}) {
   const onSeekRef = useRef(onSeek);
@@ -58,8 +58,9 @@ export function useAudioReviewMock({
       setOptimizedUrl(result.optimizedUrl);
       setTrackDuration(result.durationSeconds);
       setAudioLoading(false);
-      // Prefer original when that is the only uploaded master.
-      if (result.originalUrl && !result.optimizedUrl) {
+      if (result.optimizedUrl) {
+        setSource('optimized');
+      } else if (result.originalUrl) {
         setSource('original');
       }
     })();

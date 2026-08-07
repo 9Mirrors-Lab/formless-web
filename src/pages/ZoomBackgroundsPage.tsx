@@ -6,7 +6,6 @@ import {
   BrandPageBody,
   BrandPageHeader,
 } from "@/components/BrandPageHeader";
-import { Callout } from "@/components/ui/Callout";
 
 type ZoomVersion = "v1" | "v2";
 
@@ -266,7 +265,7 @@ export default function ZoomBackgroundsPage() {
               description="Her beauty in the middle. Our branding hugging the edges like a polite stagehand who refuses to steal the scene."
             />
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-3">
               <VersionTabs version={version} onChange={setVersion} />
               {version === "v2" ? (
                 <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/45">
@@ -275,16 +274,10 @@ export default function ZoomBackgroundsPage() {
                   type holds against dark scenery.
                 </p>
               ) : null}
+              <p className="max-w-xl font-sans text-sm leading-relaxed text-cream/45">
+                If backgrounds look soft in Zoom, open Zoom settings and turn HD on.
+              </p>
             </div>
-
-            <Callout
-              variant="letterpress"
-              surface="dark"
-              icon="north"
-              className="max-w-2xl flex-wrap items-start gap-x-3 gap-y-1.5 sm:items-center"
-            >
-              Backgrounds look blurry in Zoom? Update Zoom settings. Toggle HD on.
-            </Callout>
 
             <div className="flex flex-col gap-14">
               {rounds.map((round) => (
@@ -307,13 +300,7 @@ export default function ZoomBackgroundsPage() {
                     </h2>
                   </div>
 
-                  <div
-                    className={
-                      round.items.length >= 5
-                        ? "grid w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:gap-6"
-                        : "grid w-full max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6"
-                    }
-                  >
+                  <div className="grid w-full max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
                     {round.items.map((item) => (
                       <PlateCard
                         key={item.id}

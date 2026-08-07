@@ -2,6 +2,11 @@ import { getBrowserSupabaseClient, hasSupabaseEnv } from '@/lib/supabase';
 
 export type AudiobookTrackSource = 'original' | 'optimized';
 
+export const AUDIOBOOK_TRACK_SOURCE_LABELS: Record<AudiobookTrackSource, string> = {
+  original: 'Original',
+  optimized: 'Optimized',
+};
+
 export type AudiobookTrack = {
   id: string;
   bookSlug: string;
@@ -30,6 +35,9 @@ type AudiobookTrackRow = {
   file_size_bytes: number | null;
   original_filename: string | null;
 };
+
+const TRACK_SELECT =
+  'id, book_slug, chapter_number, chapter_title, source, storage_bucket, storage_path, mime_type, duration_seconds, file_size_bytes, original_filename';
 
 function publicObjectUrl(bucket: string, path: string): string {
   const base = import.meta.env.VITE_SUPABASE_URL?.replace(/\/$/, '');
@@ -63,6 +71,70 @@ export type ChapterAudioUrls = {
   tracks: AudiobookTrack[];
 };
 
+export type AudiobookTrackListResult =
+  | { ok: true; tracks: AudiobookTrack[] }
+  | { ok: false; error: string };
+
+export type AudiobookTrackActionResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+export async function listPublishedAudiobookTracks(
+  bookSlug = 'formless',
+): Promise<AudiobookTrackListResult> {
+  if (!hasSupabaseEnv()) {
+    return { ok: false, error: 'Supabase is not configured in this environment.' };
+  }
+
+  const supabase = getBrowserSupabaseClient();
+  const { data, error } = await supabase
+    .from('audiobook_tracks')
+    .select(TRACK_SELECT)
+    .eq('book_slug', bookSlug)
+    .eq('is_published', true)
+    .order('chapter_number', { ascending: true });
+
+  if (error) {
+    return {
+      ok: false,
+      error: error.message || 'Could not load published audiobook tracks.',
+    };
+  }
+
+  const tracks = ((data as AudiobookTrackRow[] | null) ?? [])
+    .map(mapRow)
+    .sort((a, b) => {
+      if (a.chapterNumber !== b.chapterNumber) {
+        return a.chapterNumber - b.chapterNumber;
+      }
+      if (a.source === b.source) return 0;
+      return a.source === 'original' ? -1 : 1;
+    });
+
+  return { ok: true, tracks };
+}
+
+export function downloadAudiobookTrack(track: AudiobookTrack): AudiobookTrackActionResult {
+  if (!track.publicUrl) {
+    return { ok: false, error: 'Missing public download URL for this track.' };
+  }
+
+  const filename =
+    track.originalFilename?.trim() ||
+    track.storagePath.split('/').pop() ||
+    'audiobook-track';
+
+  const anchor = document.createElement('a');
+  anchor.href = track.publicUrl;
+  anchor.download = filename;
+  anchor.rel = 'noopener';
+  anchor.target = '_blank';
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  return { ok: true };
+}
+
 export async function fetchChapterAudio(
   chapterNumber: number,
   bookSlug = 'formless',
@@ -74,9 +146,7 @@ export async function fetchChapterAudio(
   const supabase = getBrowserSupabaseClient();
   const { data, error } = await supabase
     .from('audiobook_tracks')
-    .select(
-      'id, book_slug, chapter_number, chapter_title, source, storage_bucket, storage_path, mime_type, duration_seconds, file_size_bytes, original_filename',
-    )
+    .select(TRACK_SELECT)
     .eq('book_slug', bookSlug)
     .eq('chapter_number', chapterNumber)
     .eq('is_published', true);

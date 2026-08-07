@@ -131,6 +131,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
+    id: 'audio-editorial-v2',
+    title: 'Audiobook review · Editorial v2',
+    href: '/audio/editorial-v2',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Immersive Formless listen: cover world, floating player, journey track strip.',
+    source: 'src/pages/AudioEditorialV2MockupPage.tsx',
+  },
+  {
     id: 'audio-companion',
     title: 'Audiobook · Companion',
     href: '/audio/companion',
@@ -190,6 +200,28 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     description:
       'Approved teaching marks with GSAP loops, light and dark previews. Same set in /design-system foundations.',
     source: 'src/pages/IconsPage.tsx, src/components/iconography/',
+  },
+  {
+    id: 'helix-lockup',
+    title: 'Helix teaching lockup',
+    href: '/client/review/helix-lockup',
+    section: 'motion-shaders',
+    status: 'promoted',
+    description:
+      'Approved Trace helix for /book mobile. Marks above each word; recognize = solid · vertical dash · hollow.',
+    source:
+      'src/components/HelixTeachingLockup.tsx, src/pages/BookPage.tsx',
+  },
+  {
+    id: 'helix-dust',
+    title: 'Helix dust study',
+    href: '/client/review/helix-dust',
+    section: 'motion-shaders',
+    status: 'experiment',
+    description:
+      'Animation-only dust helix. Three sunlit-mote variations (Sunshaft, Volume, Catchlight). No teaching copy.',
+    source:
+      'src/components/HelixDustStudy.tsx, src/pages/ClientReviewHelixDustPage.tsx',
   },
 
   // Brand & identity

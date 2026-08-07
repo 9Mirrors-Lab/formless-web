@@ -9,12 +9,18 @@ export type IconTheme = 'light' | 'dark';
 
 export type TeachingIconCategory = 'Protocol' | 'Philosophy' | 'Realization';
 
+export type TeachingIconRenderProps = {
+  theme: IconTheme;
+  /** Unique suffix so clipPath ids stay valid when multiple marks mount. */
+  instanceId?: string;
+};
+
 export interface TeachingIconSpec {
   id: string;
   title: string;
   desc: string;
   category: TeachingIconCategory;
-  render: (props: { theme: IconTheme }) => React.ReactNode;
+  render: (props: TeachingIconRenderProps) => React.ReactNode;
 }
 
 export const TEACHING_ICONS: TeachingIconSpec[] = [
@@ -146,16 +152,17 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
     },
     {
       id: "space", title: "Creating space", desc: "Room between you and the first rush to react or fix", category: "Philosophy",
-      render: ({ theme }: { theme: IconTheme }) => {
+      render: ({ theme, instanceId = theme }: TeachingIconRenderProps) => {
         const circleClass = theme === 'dark' ? 'text-cream/30' : 'text-charcoal/50';
+        const clipId = `space-clip-${instanceId}`;
         return (
           <svg className="w-24 h-24 text-clay" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
             <defs>
-              <clipPath id={`space-clip-${theme}`}>
+              <clipPath id={clipId}>
                 <circle className="space-circle-left" cx="40" cy="50" r="20" />
               </clipPath>
             </defs>
-            <circle className="space-circle-right text-clay" cx="60" cy="50" r="20" fill="currentColor" stroke="none" clipPath={`url(#space-clip-${theme})`} />
+            <circle className="space-circle-right text-clay" cx="60" cy="50" r="20" fill="currentColor" stroke="none" clipPath={`url(#${clipId})`} />
             <circle className={`space-circle-left ${circleClass}`} cx="40" cy="50" r="20" />
             <circle className={`space-circle-right ${circleClass}`} cx="60" cy="50" r="20" />
           </svg>
@@ -164,7 +171,7 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
     },
     {
       id: "seed", title: "Seed of life", desc: "The first overlap opens into a full pattern of equal relations", category: "Philosophy",
-      render: ({ theme }: { theme: IconTheme }) => {
+      render: ({ theme, instanceId = theme }: TeachingIconRenderProps) => {
         const circleClass = theme === 'dark' ? 'text-cream/30' : 'text-charcoal/50';
         // Same vesica foundation as space: central left (40,50), first neighbor right (60,50), r=20.
         // Remaining centers sit on successive intersections (centers exactly one radius apart).
@@ -198,7 +205,7 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
           <svg className="w-24 h-24 text-clay" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
             <defs>
               {centers.map((c) => (
-                <clipPath key={c.n} id={`seed-clip-${theme}-${c.n}`}>
+                <clipPath key={c.n} id={`seed-clip-${instanceId}-${c.n}`}>
                   <circle
                     className={`seed-clip-r seed-clip-r-${c.n}${c.n > 1 ? ' seed-clip-orbit' : ''}`}
                     cx={c.cx}
@@ -220,7 +227,7 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
                   r="20"
                   fill="currentColor"
                   stroke="none"
-                  clipPath={`url(#seed-clip-${theme}-${a})`}
+                  clipPath={`url(#seed-clip-${instanceId}-${a})`}
                 />
               );
             })}

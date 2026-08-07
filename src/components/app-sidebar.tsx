@@ -7,14 +7,16 @@ import {
 import { Menu, X } from "lucide-react";
 
 export type BrandNavId =
-  | "brand"
-  | "speaker-sheet"
-  | "audible"
-  | "audible-master"
-  | "zoom-backgrounds"
-  | "brand-kit"
-  | "client-review"
-  | "design-system";
+    | "brand"
+    | "speaker-sheet"
+    | "audible"
+    | "audible-master"
+    | "audible-master-v2"
+    | "audible-analysis"
+    | "zoom-backgrounds"
+    | "brand-kit"
+    | "client-review"
+    | "design-system";
 
 export type BrandNavSection = BrandNavId;
 
@@ -50,7 +52,19 @@ const NAV_ITEMS: NavItem[] = [
         id: "audible-master",
         title: "Audible Master",
         href: "/audio/editorial",
-        description: "Listen and analysis",
+        description: "Listen compare",
+      },
+      {
+        id: "audible-master-v2",
+        title: "Audible Master v2",
+        href: "/audio/editorial-v2",
+        description: "Immersive listen",
+      },
+      {
+        id: "audible-analysis",
+        title: "Analysis",
+        href: "/audio/editorial?view=analysis",
+        description: "Recording report",
       },
     ],
   },
@@ -68,12 +82,20 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-function navIdFromPath(pathname: string): BrandNavId {
+function navIdFromPath(
+  pathname: string,
+  search: string = typeof window !== "undefined" ? window.location.search : "",
+): BrandNavId {
   if (pathname === "/speaker-sheet") return "speaker-sheet";
   if (pathname === "/audio/companion" || pathname.startsWith("/audio/companion")) {
     return "audible";
   }
+  if (pathname === "/audio/editorial-v2" || pathname.startsWith("/audio/editorial-v2")) {
+    return "audible-master-v2";
+  }
   if (pathname === "/audio/editorial" || pathname.startsWith("/audio/editorial")) {
+    const view = new URLSearchParams(search).get("view");
+    if (view === "analysis") return "audible-analysis";
     return "audible-master";
   }
   if (pathname === "/zoom-backgrounds") return "zoom-backgrounds";
@@ -89,12 +111,13 @@ function navIdFromPath(pathname: string): BrandNavId {
 export function useBrandNavActive(): BrandNavId {
   const [active, setActive] = useState<BrandNavId>(() =>
     typeof window !== "undefined"
-      ? navIdFromPath(window.location.pathname)
+      ? navIdFromPath(window.location.pathname, window.location.search)
       : "brand",
   );
 
   useEffect(() => {
-    const sync = () => setActive(navIdFromPath(window.location.pathname));
+    const sync = () =>
+      setActive(navIdFromPath(window.location.pathname, window.location.search));
     window.addEventListener("popstate", sync);
     sync();
     return () => {

@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import {
   TEACHING_ICONS,
   type IconTheme,
@@ -51,6 +52,7 @@ export function TeachingIconMark({
   animate = false,
   className = '',
 }: TeachingIconMarkProps) {
+  const reactId = useId().replace(/:/g, '');
   const icon = getTeachingIcon(id);
   if (!icon) return null;
 
@@ -76,7 +78,7 @@ export function TeachingIconMark({
           transform: `translate(-50%, -50%) scale(${scale})`,
         }}
       >
-        {icon.render({ theme })}
+        {icon.render({ theme, instanceId: `${id}-${theme}-${reactId}` })}
       </span>
     </span>
   );

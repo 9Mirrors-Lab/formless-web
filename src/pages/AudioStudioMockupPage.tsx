@@ -41,7 +41,7 @@ export default function AudioStudioMockupPage() {
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
   }, []);
-  const review = useAudioReviewMock({ initialChapterId: 1, onSeek });
+  const review = useAudioReviewMock({ initialChapterId: 13, onSeek });
   const summary = chapterProgressSummary(review.chapters);
 
   return (
@@ -80,7 +80,7 @@ export default function AudioStudioMockupPage() {
           </div>
         </div>
 
-        <nav className="min-h-0 flex-1 overflow-y-auto px-2 py-3" aria-label="Chapters">
+        <nav className="scrollbar-cream min-h-0 flex-1 overflow-y-auto px-2 py-3" aria-label="Chapters">
           {review.chapters.map((chapter) => {
             const active = chapter.id === review.chapterId;
             return (

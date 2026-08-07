@@ -393,6 +393,38 @@
 }
 
 @layer utilities {
+  /* Thin cream-on-charcoal scrollbar for dark panels (chapters rail, etc.). */
+  .scrollbar-cream {
+    color-scheme: dark;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(242 240 233 / 0.28) rgb(16 20 18);
+  }
+
+  .scrollbar-cream::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-cream::-webkit-scrollbar-track {
+    background: rgb(16 20 18);
+  }
+
+  .scrollbar-cream::-webkit-scrollbar-thumb {
+    background-color: rgb(242 240 233 / 0.28);
+    border-radius: 9999px;
+    border: 1px solid rgb(16 20 18);
+    background-clip: padding-box;
+  }
+
+  .scrollbar-cream::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(242 240 233 / 0.45);
+  }
+
+  .scrollbar-cream::-webkit-scrollbar-corner {
+    background: rgb(16 20 18);
+  }
+
   /* Audiobook compare: hide native Multitrack scrollbar; custom pan bar is in the footer. */
   .audio-compare-scroll > div > div {
     scrollbar-width: none;

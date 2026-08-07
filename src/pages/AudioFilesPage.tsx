@@ -67,6 +67,12 @@ import {
   type SessionTakeRow,
   type SessionTakeStatus,
 } from '@/lib/audiobookSessionTakes';
+import {
+  AUDIOBOOK_TRACK_SOURCE_LABELS,
+  downloadAudiobookTrack,
+  listPublishedAudiobookTracks,
+  type AudiobookTrack,
+} from '@/lib/audiobookTracks';
 
 type GateState = 'loading' | 'signed-out' | 'forbidden' | 'ready' | 'misconfigured';
 type StatusFilter = SessionTakeStatus | 'all';
@@ -123,6 +129,8 @@ export default function AudioFilesPage() {
   const { status: authStatus, user } = useAuth();
   const [gate, setGate] = useState<GateState>('loading');
   const [takes, setTakes] = useState<SessionTakeRow[]>([]);
+  const [tracks, setTracks] = useState<AudiobookTrack[]>([]);
+  const [tracksError, setTracksError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [busyIds, setBusyIds] = useState<Set<string>>(() => new Set());
@@ -148,18 +156,32 @@ export default function AudioFilesPage() {
   const loadTakes = useCallback(async () => {
     setRefreshing(true);
     setLoadError(null);
-    const result = await listSessionTakes();
+    setTracksError(null);
+
+    const [takesResult, tracksResult] = await Promise.all([
+      listSessionTakes(),
+      listPublishedAudiobookTracks(),
+    ]);
+
     setRefreshing(false);
-    if (!result.ok) {
-      setLoadError(result.error);
+
+    if (!takesResult.ok) {
+      setLoadError(takesResult.error);
       setTakes([]);
-      return;
+    } else {
+      setTakes(takesResult.takes);
+      setSelectedIds((prev) => {
+        const valid = new Set(takesResult.takes.map((take) => take.id));
+        return new Set([...prev].filter((id) => valid.has(id)));
+      });
     }
-    setTakes(result.takes);
-    setSelectedIds((prev) => {
-      const valid = new Set(result.takes.map((take) => take.id));
-      return new Set([...prev].filter((id) => valid.has(id)));
-    });
+
+    if (!tracksResult.ok) {
+      setTracksError(tracksResult.error);
+      setTracks([]);
+    } else {
+      setTracks(tracksResult.tracks);
+    }
   }, []);
 
   useEffect(() => {
@@ -243,6 +265,14 @@ export default function AudioFilesPage() {
     markBusy([take.id], true);
     const result = await downloadSessionTake(take);
     markBusy([take.id], false);
+    if (!result.ok) setActionError(result.error);
+  };
+
+  const handleTrackDownload = (track: AudiobookTrack) => {
+    setActionError(null);
+    markBusy([track.id], true);
+    const result = downloadAudiobookTrack(track);
+    markBusy([track.id], false);
     if (!result.ok) setActionError(result.error);
   };
 
@@ -361,8 +391,9 @@ export default function AudioFilesPage() {
   return (
     <Shell>
       <Header
-        count={filteredTakes.length}
-        total={takes.length}
+        trackCount={tracks.length}
+        takeCount={filteredTakes.length}
+        takeTotal={takes.length}
         actions={
           <>
             <Button
@@ -403,7 +434,155 @@ export default function AudioFilesPage() {
         }
       />
 
-      <div className="mt-8 flex flex-wrap items-center gap-3">
+      {actionError ? (
+        <p
+          role="alert"
+          className="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-100"
+        >
+          {actionError}
+        </p>
+      ) : null}
+
+      <section className="mt-10">
+        <div className="mb-4">
+          <h2 className="font-serif text-2xl italic tracking-tight text-cream">
+            Chapter tracks
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-cream/55">
+            Published originals and optimized masters from the{' '}
+            <code className="rounded bg-cream/10 px-1.5 py-0.5 font-mono text-[11px] text-cream/80">
+              audiobook
+            </code>{' '}
+            bucket.
+          </p>
+        </div>
+
+        {tracksError ? (
+          <p
+            role="alert"
+            className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-100"
+          >
+            {tracksError}
+          </p>
+        ) : (
+          <div className="overflow-hidden rounded-2xl border border-cream/10 bg-charcoal/50">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-cream/10 hover:bg-transparent">
+                  <TableHead className="text-cream/50">Chapter</TableHead>
+                  <TableHead className="text-cream/50">File</TableHead>
+                  <TableHead className="text-cream/50">Source</TableHead>
+                  <TableHead className="text-cream/50">Size</TableHead>
+                  <TableHead className="w-20 text-cream/50">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tracks.length === 0 ? (
+                  <TableRow className="border-cream/10 hover:bg-transparent">
+                    <TableCell
+                      colSpan={5}
+                      className="h-28 text-center text-cream/45"
+                    >
+                      <div className="inline-flex flex-col items-center gap-3">
+                        <FileAudio className="size-6 text-cream/30" />
+                        <span>No published chapter tracks yet.</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  tracks.map((track) => {
+                    const busy = busyIds.has(track.id);
+                    const label =
+                      track.originalFilename ||
+                      track.storagePath.split('/').pop() ||
+                      'Untitled track';
+                    return (
+                      <TableRow
+                        key={track.id}
+                        className="border-cream/10 text-cream hover:bg-cream/[0.03]"
+                      >
+                        <TableCell className="text-cream/75">
+                          <div className="min-w-0">
+                            <p className="font-medium text-cream">
+                              {track.chapterTitle}
+                            </p>
+                            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/35">
+                              Ch {track.chapterNumber}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell className="max-w-[18rem]">
+                          <div className="min-w-0">
+                            <a
+                              href={track.publicUrl}
+                              download={label}
+                              className="truncate font-medium text-cream underline-offset-4 transition-colors hover:text-moss hover:underline"
+                              title="Download file"
+                            >
+                              {label}
+                            </a>
+                            <p className="mt-1 truncate font-mono text-[10px] uppercase tracking-[0.14em] text-cream/35">
+                              {track.storageBucket} · {track.storagePath}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className={
+                              track.source === 'optimized'
+                                ? 'border-moss/40 bg-moss/20 text-[#9fb5aa]'
+                                : 'border-cream/20 bg-cream/10 text-cream/80'
+                            }
+                          >
+                            {AUDIOBOOK_TRACK_SOURCE_LABELS[track.source]}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-cream/65">
+                          {track.fileSizeBytes != null
+                            ? formatFileBytes(track.fileSizeBytes)
+                            : '—'}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-end">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              className="text-cream/60 hover:bg-cream/10 hover:text-cream"
+                              disabled={busy || !track.publicUrl}
+                              aria-label={`Download ${label}`}
+                              title="Download"
+                              onClick={() => handleTrackDownload(track)}
+                            >
+                              <Download className="size-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </section>
+
+      <section className="mt-12">
+        <div className="mb-4">
+          <h2 className="font-serif text-2xl italic tracking-tight text-cream">
+            Session takes
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-cream/55">
+            Client uploads for review. Update status, download originals, or
+            delete.
+          </p>
+        </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
         <Select
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value as StatusFilter)}
@@ -451,15 +630,6 @@ export default function AudioFilesPage() {
         ) : null}
       </div>
 
-      {actionError ? (
-        <p
-          role="alert"
-          className="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-100"
-        >
-          {actionError}
-        </p>
-      ) : null}
-
       {loadError ? (
         <p
           role="alert"
@@ -485,7 +655,7 @@ export default function AudioFilesPage() {
                 <TableHead className="text-cream/50">Status</TableHead>
                 <TableHead className="text-cream/50">Size</TableHead>
                 <TableHead className="text-cream/50">Received</TableHead>
-                <TableHead className="w-12 text-cream/50">
+                <TableHead className="w-20 text-cream/50">
                   <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
@@ -524,9 +694,15 @@ export default function AudioFilesPage() {
                       </TableCell>
                       <TableCell className="max-w-[18rem]">
                         <div className="min-w-0">
-                          <p className="truncate font-medium text-cream">
+                          <button
+                            type="button"
+                            className="truncate text-left font-medium text-cream underline-offset-4 transition-colors hover:text-moss hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                            onClick={() => void handleDownload(take)}
+                            disabled={busy}
+                            title="Download file"
+                          >
                             {take.original_filename || 'Untitled take'}
-                          </p>
+                          </button>
                           <p className="mt-1 truncate font-mono text-[10px] uppercase tracking-[0.14em] text-cream/35">
                             {take.book_slug} · {take.storage_path}
                           </p>
@@ -580,37 +756,51 @@ export default function AudioFilesPage() {
                         {formatWhen(take.created_at)}
                       </TableCell>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              className="text-cream/60 hover:bg-cream/10 hover:text-cream"
-                              disabled={busy}
-                              aria-label="Row actions"
-                            >
-                              <MoreHorizontal className="size-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Manage file</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              onClick={() => void handleDownload(take)}
-                            >
-                              <Download className="size-4" />
-                              Download
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              variant="destructive"
-                              onClick={() => setPendingDelete([take])}
-                            >
-                              <Trash2 className="size-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <div className="flex items-center justify-end gap-0.5">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            className="text-cream/60 hover:bg-cream/10 hover:text-cream"
+                            disabled={busy}
+                            aria-label={`Download ${take.original_filename || 'file'}`}
+                            title="Download"
+                            onClick={() => void handleDownload(take)}
+                          >
+                            <Download className="size-4" />
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                className="text-cream/60 hover:bg-cream/10 hover:text-cream"
+                                disabled={busy}
+                                aria-label="Row actions"
+                              >
+                                <MoreHorizontal className="size-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Manage file</DropdownMenuLabel>
+                              <DropdownMenuItem
+                                onClick={() => void handleDownload(take)}
+                              >
+                                <Download className="size-4" />
+                                Download
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => setPendingDelete([take])}
+                              >
+                                <Trash2 className="size-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
@@ -620,6 +810,7 @@ export default function AudioFilesPage() {
           </Table>
         </div>
       )}
+      </section>
 
       <AlertDialog
         open={Boolean(pendingDelete?.length)}
@@ -675,12 +866,14 @@ function Shell({ children }: { children: ReactNode }) {
 }
 
 function Header({
-  count,
-  total,
+  trackCount,
+  takeCount,
+  takeTotal,
   actions,
 }: {
-  count?: number;
-  total?: number;
+  trackCount?: number;
+  takeCount?: number;
+  takeTotal?: number;
   actions?: ReactNode;
 }) {
   return (
@@ -710,12 +903,15 @@ function Header({
             Files
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-cream/55 md:text-base">
-            Review client session takes, download the originals, and update
-            review status.
+            Browse published chapter tracks and client session takes. Download
+            originals or optimized masters from Supabase.
           </p>
-          {typeof count === 'number' && typeof total === 'number' ? (
+          {typeof trackCount === 'number' &&
+          typeof takeCount === 'number' &&
+          typeof takeTotal === 'number' ? (
             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.18em] text-cream/40">
-              Showing {count} of {total}
+              {trackCount} chapter tracks · {takeCount} of {takeTotal} session
+              takes
             </p>
           ) : null}
         </div>

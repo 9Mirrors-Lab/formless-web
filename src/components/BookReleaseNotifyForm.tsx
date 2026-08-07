@@ -10,6 +10,8 @@ import {
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
+export type BookReleaseNotifyVariant = 'card' | 'dock';
+
 type BookReleaseNotifyFormProps = {
   releaseDate?: string;
   subheadline?: string;
@@ -18,6 +20,8 @@ type BookReleaseNotifyFormProps = {
   metaUpdates?: string;
   successTitle?: string;
   errorMessage?: string;
+  /** `dock` = mobile sticky thumb bar. `card` = desktop panel. */
+  variant?: BookReleaseNotifyVariant;
 };
 
 const DEFAULT_RELEASE_DATE = 'September 1, 2026';
@@ -47,25 +51,40 @@ function MetaItem({ icon, label }: { icon: ReactNode; label: string }) {
 function NotifyMetaRow({
   metaRelease,
   metaUpdates,
+  compact = false,
 }: {
   metaRelease: string;
   metaUpdates: string;
+  compact?: boolean;
 }) {
   return (
-    <div className="mt-5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-      <div className="flex min-w-max flex-nowrap items-center justify-center gap-x-2.5 font-sans text-[11px] leading-none text-cream/40 sm:gap-x-3 sm:text-xs">
-        <MetaItem
-          icon={<BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.75} />}
-          label={metaRelease}
-        />
-        <span className="shrink-0 text-cream/20" aria-hidden="true">
-          |
-        </span>
-        <MetaItem
-          icon={<Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.75} />}
-          label={metaUpdates}
-        />
-      </div>
+    <div
+      className={[
+        'flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 font-sans leading-none text-cream/40',
+        compact ? 'mt-2.5 text-[10px]' : 'mt-5 text-[11px] sm:gap-x-3 sm:text-xs',
+      ].join(' ')}
+    >
+      <MetaItem
+        icon={
+          <BookOpen
+            className={compact ? 'h-3 w-3' : 'h-3.5 w-3.5 sm:h-4 sm:w-4'}
+            strokeWidth={1.75}
+          />
+        }
+        label={metaRelease}
+      />
+      <span className="shrink-0 text-cream/20" aria-hidden="true">
+        |
+      </span>
+      <MetaItem
+        icon={
+          <Send
+            className={compact ? 'h-3 w-3' : 'h-3.5 w-3.5 sm:h-4 sm:w-4'}
+            strokeWidth={1.75}
+          />
+        }
+        label={metaUpdates}
+      />
     </div>
   );
 }
@@ -78,6 +97,7 @@ export function BookReleaseNotifyForm({
   metaUpdates = DEFAULT_META_UPDATES,
   successTitle = DEFAULT_SUCCESS_TITLE,
   errorMessage = DEFAULT_ERROR,
+  variant = 'card',
 }: BookReleaseNotifyFormProps) {
   const [email, setEmail] = useState('');
   const [submittedEmail, setSubmittedEmail] = useState('');
@@ -88,6 +108,8 @@ export function BookReleaseNotifyForm({
   const releaseDateLabel = releaseDate.trim() || DEFAULT_RELEASE_DATE;
   const resolvedMetaRelease = metaRelease.trim() || DEFAULT_META_RELEASE;
   const resolvedMetaUpdates = metaUpdates.trim() || DEFAULT_META_UPDATES;
+  const emailFieldId =
+    variant === 'dock' ? 'book-release-email-dock' : 'book-release-email';
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -129,6 +151,80 @@ export function BookReleaseNotifyForm({
       captureSignupFailed('book_page', 'book_release_form', 'server_error');
       setStatus('error');
     }
+  }
+
+  if (variant === 'dock') {
+    if (status === 'success') {
+      return (
+        <div className="px-1 py-1" role="status" aria-live="polite">
+          <p className="font-serif text-lg leading-tight text-cream">{successTitle}</p>
+          <p className="mt-1 font-sans text-xs leading-relaxed text-cream/55">
+            We will notify <span className="text-cream/85">{submittedEmail}</span> on{' '}
+            {releaseDateLabel}.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-cream/45">
+          {releaseDateLabel}
+        </p>
+
+        <div className="flex items-start gap-2">
+          <div className="min-w-0 flex-1">
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-stretch"
+              id="book-release-dock-form"
+            >
+              <label htmlFor={emailFieldId} className="sr-only">
+                Email address
+              </label>
+              <input
+                id={emailFieldId}
+                type="email"
+                name="email"
+                autoComplete="email"
+                form="book-release-dock-form"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  if (status === 'error') setStatus('idle');
+                }}
+                placeholder="Your email"
+                disabled={status === 'submitting'}
+                className="w-full rounded-full border border-cream/15 bg-[#080a09]/80 px-4 py-3 font-sans text-sm text-cream placeholder:text-cream/30 transition-colors duration-300 focus:border-cream/30 focus:outline-none disabled:opacity-60"
+              />
+            </form>
+
+            {status === 'error' ? (
+              <p className="mt-2 font-sans text-xs text-clay/90" role="alert">
+                {errorMessage}
+              </p>
+            ) : (
+              <div className="flex justify-center">
+                <NotifyMetaRow
+                  metaRelease={resolvedMetaRelease}
+                  metaUpdates={resolvedMetaUpdates}
+                  compact
+                />
+              </div>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            form="book-release-dock-form"
+            disabled={status === 'submitting'}
+            className="shrink-0 rounded-full bg-clay px-5 py-3 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-cream transition-colors duration-500 hover:bg-clay/90 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {status === 'submitting' ? '…' : buttonLabel}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const cardClassName =
@@ -176,7 +272,7 @@ export function BookReleaseNotifyForm({
             <TeachingIconMark id="space" theme="dark" size={56} animate />
           </span>
           <span
-            className="hidden self-center h-12 w-px shrink-0 bg-cream/15 sm:block"
+            className="hidden h-12 w-px shrink-0 self-center bg-cream/15 sm:block"
             aria-hidden="true"
           />
           <h2 className="flex min-w-0 flex-col justify-center font-serif leading-[1.05] tracking-[-0.02em]">
@@ -190,16 +286,16 @@ export function BookReleaseNotifyForm({
         </div>
       </div>
 
-      <p className="mt-4 mb-5 whitespace-pre-line text-center font-sans text-[15px] leading-relaxed text-cream/55 md:text-base">
+      <p className="mb-5 mt-4 whitespace-pre-line text-center font-sans text-[15px] leading-relaxed text-cream/55 md:text-base">
         {subheadCopy}
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <label htmlFor="book-release-email" className="sr-only">
+        <label htmlFor={emailFieldId} className="sr-only">
           Email address
         </label>
         <input
-          id="book-release-email"
+          id={emailFieldId}
           type="email"
           name="email"
           autoComplete="email"

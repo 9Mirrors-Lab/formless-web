@@ -329,6 +329,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
+    id: 'audio-editorial-v2',
+    title: 'Audiobook review · Editorial v2',
+    path: '/audio/editorial-v2',
+    category: 'design',
+    description:
+      'Immersive Formless listen world: cover as atmosphere, glass player island, chapter constellation.',
+    source: 'src/pages/AudioEditorialV2MockupPage.tsx',
+  },
+  {
     id: 'audio-companion',
     title: 'Audiobook · Companion kit',
     path: '/audio/companion',
@@ -396,6 +405,26 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     category: 'client',
     description: 'Pre–layout-test hero lockup kept for side-by-side client comparison.',
     source: 'src/pages/ClientReviewHeroClassicPage.tsx, src/components/Hero.tsx',
+  },
+  {
+    id: 'client-review-helix-lockup',
+    title: 'Helix teaching lockup',
+    path: '/client/review/helix-lockup',
+    category: 'client',
+    description:
+      'Pause / Observe / Recognize double-helix lockup with Unwind, Trace, and Current motion options.',
+    source:
+      'src/pages/ClientReviewHelixLockupPage.tsx, src/components/HelixTeachingLockup.tsx',
+  },
+  {
+    id: 'client-review-helix-dust',
+    title: 'Helix dust study',
+    path: '/client/review/helix-dust',
+    category: 'client',
+    description:
+      'Dust-only helix study with three sunlit particle variations; teaching lockup removed.',
+    source:
+      'src/pages/ClientReviewHelixDustPage.tsx, src/components/HelixDustStudy.tsx',
   },
   {
     id: 'client-site-updates',

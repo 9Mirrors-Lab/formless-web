@@ -38,9 +38,12 @@ import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import ClientSiteUpdatesPage from './pages/ClientSiteUpdatesPage';
 import ClientDesignReviewPage from './pages/ClientDesignReviewPage';
 import ClientReviewHeroClassicPage from './pages/ClientReviewHeroClassicPage';
+import ClientReviewHelixLockupPage from './pages/ClientReviewHelixLockupPage';
+import ClientReviewHelixDustPage from './pages/ClientReviewHelixDustPage';
 import SiteHubPage from './pages/SiteHubPage';
 import AudioStudioMockupPage from './pages/AudioStudioMockupPage';
 import AudioEditorialMockupPage from './pages/AudioEditorialMockupPage';
+import AudioEditorialV2MockupPage from './pages/AudioEditorialV2MockupPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
 import AudioFilesPage from './pages/AudioFilesPage';
@@ -120,8 +123,11 @@ export function Root({ path }: { path: string }) {
   const isClientSiteUpdates = path === '/client/site-updates';
   const isClientDesignReview = path === '/client/review';
   const isClientReviewHeroClassic = path === '/client/review/hero-classic';
+  const isClientReviewHelixLockup = path === '/client/review/helix-lockup';
+  const isClientReviewHelixDust = path === '/client/review/helix-dust';
   const isAudioStudio = path === '/audio';
   const isAudioEditorial = path === '/audio/editorial';
+  const isAudioEditorialV2 = path === '/audio/editorial-v2';
   const isAudioCompanion = path === '/audio/companion';
   const isAudioSendTake = path === '/audio/send-take';
   const isAudioFiles = path === '/audio/files';
@@ -163,8 +169,11 @@ export function Root({ path }: { path: string }) {
   if (isClientSiteUpdates) return <ClientSiteUpdatesPage />;
   if (isClientDesignReview) return <ClientDesignReviewPage />;
   if (isClientReviewHeroClassic) return <ClientReviewHeroClassicPage />;
+  if (isClientReviewHelixLockup) return <ClientReviewHelixLockupPage />;
+  if (isClientReviewHelixDust) return <ClientReviewHelixDustPage />;
   if (isAudioStudio) return <AudioStudioMockupPage />;
   if (isAudioEditorial) return <AudioEditorialMockupPage />;
+  if (isAudioEditorialV2) return <AudioEditorialV2MockupPage />;
   if (isAudioCompanion) return <AudioCompanionKitPage />;
   if (isAudioSendTake) return <AudioSendTakePage />;
   if (isAudioFiles) return <AudioFilesPage />;
@@ -198,6 +207,7 @@ function isUnrestrictedPath(path: string): boolean {
     path.startsWith('/client/review/') ||
     path === '/audio' ||
     path === '/audio/editorial' ||
+    path === '/audio/editorial-v2' ||
     path === '/audio/companion' ||
     path === '/audio/send-take' ||
     path === '/audio/files'

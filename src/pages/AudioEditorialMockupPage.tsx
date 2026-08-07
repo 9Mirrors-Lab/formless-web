@@ -3,7 +3,8 @@
  *
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
  * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
- * Companion ritual lives on /audio/companion. This page is Listen / Analysis only.
+ * Companion ritual lives on /audio/companion.
+ * Listen = Audible Master; Analysis = sidebar sibling under Audible.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
@@ -15,7 +16,6 @@ import {
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
 import {
-  AudioWorkspaceNav,
   editorialViewFromSearch,
   setEditorialViewInUrl,
   type EditorialView,
@@ -56,7 +56,7 @@ export default function AudioEditorialMockupPage() {
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
   }, []);
-  const review = useAudioReviewMock({ initialChapterId: 1, onSeek });
+  const review = useAudioReviewMock({ initialChapterId: 13, onSeek });
 
   // Old tray deep-links land on the companion page.
   useEffect(() => {
@@ -71,14 +71,20 @@ export default function AudioEditorialMockupPage() {
     setEditorialViewInUrl(view);
   }, []);
 
+  const shellActiveId = mode === 'analysis' ? 'audible-analysis' : 'audible-master';
+
   return (
-    <BrandShell activeId="audible-master" crumb="Audible Master" noise={false}>
+    <BrandShell
+      activeId={shellActiveId}
+      crumb={mode === 'analysis' ? 'Analysis' : 'Audible Master'}
+      noise={false}
+    >
     <div className="flex h-[calc(100dvh-2.5rem)] overflow-hidden bg-[#0a0c0b] font-sans text-cream antialiased">
       <aside className="hidden w-[300px] shrink-0 flex-col border-r border-cream/10 bg-[#101412] md:flex">
         <FormlessBookCoverPanel chapters={review.chapters} />
 
-        <nav className="min-h-0 flex-1 overflow-y-auto px-5 py-2" aria-label="Chapters">
-          <p className="mb-1 border-b border-cream/10 pb-3 font-mono text-[10px] uppercase tracking-[0.28em] text-cream/35">
+        <nav className="scrollbar-cream min-h-0 flex-1 overflow-y-auto px-5 py-3" aria-label="Chapters">
+          <p className="mb-1 border-b border-cream/10 pb-2 font-mono text-[10px] uppercase tracking-[0.28em] text-cream/35">
             Chapter
           </p>
           <ol className="list-none">
@@ -92,7 +98,7 @@ export default function AudioEditorialMockupPage() {
                       selectView('listen');
                       review.selectChapter(chapter.id);
                     }}
-                    className="group flex w-full items-baseline gap-2.5 py-3 text-left transition-colors"
+                    className="group flex w-full items-baseline gap-2.5 py-2.5 text-left transition-colors"
                   >
                     <span
                       className="mt-1 inline-flex w-3.5 shrink-0 justify-center"
@@ -133,10 +139,8 @@ export default function AudioEditorialMockupPage() {
       </aside>
 
       <main className="relative flex min-w-0 flex-1 flex-col bg-[#0d100e]">
-        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-cream/10 px-5 py-3 md:px-8">
-          <AudioWorkspaceNav active={mode} onSelectView={selectView} />
-
-          {mode === 'listen' ? (
+        {mode === 'listen' ? (
+          <div className="flex shrink-0 items-center justify-end gap-4 border-b border-cream/10 px-5 py-3 md:px-8">
             <button
               type="button"
               onClick={() => review.setReadAlongOpen(true)}
@@ -144,23 +148,23 @@ export default function AudioEditorialMockupPage() {
             >
               Read along
             </button>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
 
         {mode === 'analysis' ? (
           <AudioAnalysisDashboard />
         ) : (
           <>
-            <header className="border-b border-cream/10 px-6 py-8 md:px-10">
+            <header className="border-b border-cream/10 px-6 py-5 md:px-10">
               <div className="flex w-full max-w-[900px] items-end justify-between gap-6">
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40">
                     Chapter {formatChapterIndex(review.chapter.id)} · {AUDIO_BOOK.format}
                   </p>
-                  <h2 className="mt-2 font-serif text-4xl italic leading-tight text-cream md:text-5xl">
+                  <h2 className="mt-1.5 font-serif text-3xl italic leading-tight text-cream md:text-4xl">
                     {review.chapter.title}
                   </h2>
-                  <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-cream/50">
+                  <div className="mt-2.5 flex flex-wrap items-center gap-3 text-sm text-cream/50">
                     <span className="font-mono text-[11px] uppercase tracking-wider">
                       <span className="text-cream/35">Length</span>{' '}
                       {formatAudioTime(review.chapter.length)}
@@ -177,8 +181,8 @@ export default function AudioEditorialMockupPage() {
               </div>
             </header>
 
-            <div className="flex min-h-0 w-full max-w-[900px] flex-1 flex-col overflow-y-auto px-6 py-8 md:px-10">
-              <p className="mb-6 text-sm leading-relaxed text-cream/45">
+            <div className="flex min-h-0 w-full max-w-[900px] flex-1 flex-col overflow-y-auto px-6 py-5 md:px-10">
+              <p className="mb-4 text-sm leading-relaxed text-cream/45">
                 Listen to the original chapter recording, then the optimized mix. Press{' '}
                 <kbd className="rounded border border-cream/15 bg-cream/5 px-1.5 py-0.5 font-mono text-[11px] text-cream/70">
                   T
@@ -186,9 +190,9 @@ export default function AudioEditorialMockupPage() {
                 to flip sources without losing your place.
               </p>
 
-              <section className="mb-8 border-b border-cream/10 pb-6">
-                <div className="mb-4 flex items-baseline justify-between gap-4">
-                  <h3 className="font-serif text-2xl italic text-cream">Compare</h3>
+              <section className="mb-6 border-b border-cream/10 pb-5">
+                <div className="mb-3 flex items-baseline justify-between gap-4">
+                  <h3 className="font-serif text-xl italic text-cream">Compare</h3>
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={`${review.source}-${review.sourceFlash}`}
