@@ -11,6 +11,7 @@ type SpeakerVersion = {
   id: string;
   label: string;
   imageSrc: string;
+  pdfSrc?: string;
 };
 
 type SpeakerConcept = {
@@ -22,74 +23,49 @@ type SpeakerConcept = {
   versions: SpeakerVersion[];
 };
 
+const ASSET_REV = "20260810-new-way-to-live";
+
 const SPEAKER_CONCEPTS: SpeakerConcept[] = [
   {
-    id: "b1-compact-cover-rail",
-    letter: "B1",
-    name: "Compact Cover Rail",
-    hierarchy: "Cover + name → bio → keynote → topics",
+    id: "a-ceremonial-center",
+    letter: "A",
+    name: "Ceremonial Center",
+    hierarchy: "Keynote → portrait → bio → topics / takeaways → contact",
     recommended: true,
     versions: [
       {
-        id: "b1-r4",
-        label: "Warm Crimson",
-        imageSrc: "/design/speaker-notes/versions/b1-r4-warm-crimson.png",
-      },
-      {
-        id: "b1-r3",
-        label: "Mixed type",
-        imageSrc: "/design/speaker-notes/versions/b1-r3-mixed-type.png",
-      },
-      {
-        id: "b1-r2",
-        label: "First pass",
-        imageSrc: "/design/speaker-notes/versions/b1-r2-first-pass.png",
+        id: "a-light",
+        label: "Light",
+        imageSrc: `/design/speaker-notes/versions/a-ceremonial-center.png?v=${ASSET_REV}`,
+        pdfSrc: `/design/speaker-notes/exports/layout-a-beyond-the-mind.pdf?v=${ASSET_REV}`,
       },
     ],
   },
   {
-    id: "b2-keynote-first",
-    letter: "B2",
-    name: "Keynote-First Stack",
-    hierarchy: "Keynote → speaker → topics → book badge",
+    id: "b-editorial-bands",
+    letter: "B",
+    name: "Editorial Bands",
+    hierarchy: "Header → bio + portrait → intro → panels → contact bar",
     versions: [
       {
-        id: "b2-r4",
-        label: "Warm Crimson",
-        imageSrc: "/design/speaker-notes/versions/b2-r4-warm-crimson.png",
-      },
-      {
-        id: "b2-r3",
-        label: "Mixed type",
-        imageSrc: "/design/speaker-notes/versions/b2-r3-mixed-type.png",
-      },
-      {
-        id: "b2-r2",
-        label: "First pass",
-        imageSrc: "/design/speaker-notes/versions/b2-r2-first-pass.png",
+        id: "b-light",
+        label: "Light",
+        imageSrc: `/design/speaker-notes/versions/b-editorial-bands.png?v=${ASSET_REV}`,
+        pdfSrc: `/design/speaker-notes/exports/layout-b-beyond-the-mind.pdf?v=${ASSET_REV}`,
       },
     ],
   },
   {
-    id: "b3-two-column",
-    letter: "B3",
-    name: "Two-Column Briefing",
-    hierarchy: "Identity left → content right",
+    id: "c-contact-first",
+    letter: "C",
+    name: "Contact First",
+    hierarchy: "Portrait + title → topics → takeaways → bio → booking panel",
     versions: [
       {
-        id: "b3-r4",
-        label: "Warm Crimson",
-        imageSrc: "/design/speaker-notes/versions/b3-r4-warm-crimson.png",
-      },
-      {
-        id: "b3-r3",
-        label: "Mixed type",
-        imageSrc: "/design/speaker-notes/versions/b3-r3-mixed-type.png",
-      },
-      {
-        id: "b3-r2",
-        label: "First pass",
-        imageSrc: "/design/speaker-notes/versions/b3-r2-first-pass.png",
+        id: "c-light",
+        label: "Light",
+        imageSrc: `/design/speaker-notes/versions/c-contact-first.png?v=${ASSET_REV}`,
+        pdfSrc: `/design/speaker-notes/exports/layout-c-beyond-the-mind.pdf?v=${ASSET_REV}`,
       },
     ],
   },
@@ -260,7 +236,7 @@ function SpeakerSheetSection({
     <div className="flex flex-col gap-10">
       <BrandPageHeader
         title="Speaker sheet"
-        description="Three distinct layouts. Each card starts on Warm Crimson; pan to Mixed type and First pass for that layout's history. Original Concept B sits below as a separate reference."
+        description="Three light layouts for Beyond the Mind, A New Way to Live: Ceremonial Center, Editorial Bands, and Contact First. No book cover; contact paths labeled with real links. Earlier dark Concept B variants stay available below as archive reference."
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -440,6 +416,15 @@ function ConceptCard({
           >
             Download PNG
           </a>
+          {version.pdfSrc ? (
+            <a
+              href={version.pdfSrc}
+              download
+              className="inline-flex items-center rounded-full border border-cream/15 px-3.5 py-2 text-xs font-medium text-cream/80 transition-colors hover:border-cream/30 hover:text-cream"
+            >
+              Download PDF
+            </a>
+          ) : null}
         </div>
       </div>
     </article>
