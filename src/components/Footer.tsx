@@ -11,7 +11,7 @@ const SOCIAL_LINKS = [
     external: true,
   },
   {
-    href: 'https://www.linkedin.com/in/sonika-cottman-61b5b17/',
+    href: 'https://www.linkedin.com/in/sonika-cottman/',
     label: 'LinkedIn',
     Icon: LinkedInGlyph,
     external: true,

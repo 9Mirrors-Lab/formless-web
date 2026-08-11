@@ -23,14 +23,15 @@ type SpeakerConcept = {
   versions: SpeakerVersion[];
 };
 
-const ASSET_REV = "20260810-new-way-to-live";
+const ASSET_REV = "20260810-ceremonial-formless";
 
 const SPEAKER_CONCEPTS: SpeakerConcept[] = [
   {
     id: "a-ceremonial-center",
     letter: "A",
     name: "Ceremonial Center",
-    hierarchy: "Keynote → portrait → bio → topics / takeaways → contact",
+    hierarchy:
+      "Formless mark → keynote → portrait → mission / bio → topics / takeaways → contact",
     recommended: true,
     versions: [
       {
