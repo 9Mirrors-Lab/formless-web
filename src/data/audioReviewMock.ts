@@ -525,7 +525,7 @@ function placeholderManuscript(chapterId: number, title: string): AudioSentence[
 }
 
 /**
- * Opening Credits + Acknowledgments + Intro + chapters 1–11.
+ * Opening Credits + Intro + chapters 1–11 + Acknowledgments.
  * Opening Credits (id 13) + Acknowledgments (id 12): original + optimized (status ready).
  * Intro + chapters 1–4: originals recorded; not optimized yet.
  */
@@ -536,13 +536,6 @@ export const AUDIO_CHAPTERS: AudioChapter[] = [
     length: 43,
     status: 'ready',
     manuscript: CHAPTER_13_MANUSCRIPT,
-  },
-  {
-    id: 12,
-    title: 'Acknowledgments',
-    length: 431,
-    status: 'ready',
-    manuscript: CHAPTER_12_MANUSCRIPT,
   },
   {
     id: 0,
@@ -633,6 +626,13 @@ export const AUDIO_CHAPTERS: AudioChapter[] = [
     status: 'pending',
     provisional: true,
     manuscript: placeholderManuscript(11, 'Living From Stillness'),
+  },
+  {
+    id: 12,
+    title: 'Acknowledgments',
+    length: 431,
+    status: 'ready',
+    manuscript: CHAPTER_12_MANUSCRIPT,
   },
 ];
 

@@ -45,6 +45,14 @@ function publicObjectUrl(bucket: string, path: string): string {
   return `${base}/storage/v1/object/public/${bucket}/${path}`;
 }
 
+/** Listen order: Opening Credits, Introduction, chapters 1–11, Acknowledgments. */
+export function audiobookListenOrderRank(chapterNumber: number): number {
+  if (chapterNumber === 13) return 0;
+  if (chapterNumber === 0) return 1;
+  if (chapterNumber === 12) return 13;
+  return chapterNumber + 1;
+}
+
 function mapRow(row: AudiobookTrackRow): AudiobookTrack {
   const duration =
     row.duration_seconds == null ? null : Number(row.duration_seconds);
@@ -104,9 +112,9 @@ export async function listPublishedAudiobookTracks(
   const tracks = ((data as AudiobookTrackRow[] | null) ?? [])
     .map(mapRow)
     .sort((a, b) => {
-      if (a.chapterNumber !== b.chapterNumber) {
-        return a.chapterNumber - b.chapterNumber;
-      }
+      const order = audiobookListenOrderRank(a.chapterNumber)
+        - audiobookListenOrderRank(b.chapterNumber);
+      if (order !== 0) return order;
       if (a.source === b.source) return 0;
       return a.source === 'original' ? -1 : 1;
     });
