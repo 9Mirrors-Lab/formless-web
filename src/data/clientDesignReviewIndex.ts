@@ -133,7 +133,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
   {
     id: 'audio-advance-listen',
     title: 'Advance listen',
-    href: '/audio/advance-listen',
+    href: '/advance-listen',
     section: 'layout-pages',
     status: 'experiment',
     description:

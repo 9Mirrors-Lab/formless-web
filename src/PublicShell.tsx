@@ -68,7 +68,7 @@ function BackgroundsLegacyRedirect() {
 
 function EditorialV2LegacyRedirect() {
   useLayoutEffect(() => {
-    window.location.replace('/audio/advance-listen');
+    window.location.replace('/advance-listen');
   }, []);
   return null;
 }
@@ -136,7 +136,7 @@ export function Root({ path }: { path: string }) {
   const isClientReviewHelixDust = path === '/client/review/helix-dust';
   const isAudioStudio = path === '/audio';
   const isAudioEditorial = path === '/audio/editorial';
-  const isAudioAdvanceListen = path === '/audio/advance-listen';
+  const isAudioAdvanceListen = path === '/advance-listen';
   const isAudioEditorialV2Legacy = path === '/audio/editorial-v2';
   const isAudioCompanion = path === '/audio/companion';
   const isAudioSendTake = path === '/audio/send-take';
@@ -224,7 +224,7 @@ function isUnrestrictedPath(path: string): boolean {
     path.startsWith('/client/review/') ||
     path === '/audio' ||
     path === '/audio/editorial' ||
-    path === '/audio/advance-listen' ||
+    path === '/advance-listen' ||
     path === '/audio/editorial-v2' ||
     path === '/audio/companion' ||
     path === '/audio/send-take' ||

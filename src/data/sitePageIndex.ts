@@ -331,7 +331,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
   {
     id: 'audio-advance-listen',
     title: 'Advance listen',
-    path: '/audio/advance-listen',
+    path: '/advance-listen',
     category: 'design',
     description:
       'Standalone Formless listen world: optimized master, mobile now-playing, chapter drawer.',

@@ -32,6 +32,7 @@ export function isInternalAuthPath(pathname: string): boolean {
   if (path === '/eyes-closed-logo-options') return true;
   if (path === '/design/eyes-closed-logo-variations/04-options.html') return true;
 
+  if (path === '/advance-listen') return true;
   if (path === '/audio' || path.startsWith('/audio/')) return true;
 
   return false;

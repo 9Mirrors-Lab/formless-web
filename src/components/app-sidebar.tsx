@@ -76,7 +76,7 @@ function navIdFromPath(
   if (pathname === "/audio/companion" || pathname.startsWith("/audio/companion")) {
     return "audible";
   }
-  if (pathname === "/audio/advance-listen" || pathname.startsWith("/audio/advance-listen")) {
+  if (pathname === "/advance-listen" || pathname.startsWith("/advance-listen")) {
     return "audible";
   }
   if (pathname === "/audio/editorial-v2" || pathname.startsWith("/audio/editorial-v2")) {

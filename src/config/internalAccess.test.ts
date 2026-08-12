@@ -24,7 +24,7 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/zoom-backgrounds')).toBe(true);
     expect(isInternalAuthPath('/audio/companion')).toBe(true);
     expect(isInternalAuthPath('/audio/editorial')).toBe(true);
-    expect(isInternalAuthPath('/audio/advance-listen')).toBe(true);
+    expect(isInternalAuthPath('/advance-listen')).toBe(true);
     expect(isInternalAuthPath('/audio/files')).toBe(true);
     expect(isInternalAuthPath('/eyes-closed-logo-options')).toBe(true);
     expect(isInternalAuthPath('/')).toBe(false);
