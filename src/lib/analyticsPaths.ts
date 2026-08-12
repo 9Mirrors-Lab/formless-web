@@ -32,7 +32,7 @@ export const INTERNAL_ANALYTICS_PATH_PREFIXES = [
 export const SESSION_REPLAY_PATHS = ['/', '/work', '/book', '/science', '/about'] as const;
 
 export function normalizePathname(pathname: string): string {
-  return pathname.replace(/\/+$/, '') || '/';
+  return pathname.replace(/\/+$/, '').toLowerCase() || '/';
 }
 
 export function currentPathname(): string {

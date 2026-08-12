@@ -7,6 +7,8 @@ export type AuthCredentials = {
   password: string;
 };
 
+const AUTH_NEXT_STORAGE_KEY = 'eyesclosed.auth.next';
+
 export function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
@@ -36,6 +38,37 @@ export function getAuthCallbackUrl(): string {
   return `${window.location.origin}/auth/callback`;
 }
 
+/** Same-origin relative path only; blocks open redirects. */
+export function safeAuthNextPath(
+  raw: string | null | undefined,
+  fallback = '/account',
+): string {
+  if (!raw || !raw.startsWith('/') || raw.startsWith('//')) {
+    return fallback;
+  }
+  return raw;
+}
+
+export function stashAuthNextPath(path: string | null | undefined): void {
+  const next = safeAuthNextPath(path, '');
+  if (!next) {
+    sessionStorage.removeItem(AUTH_NEXT_STORAGE_KEY);
+    return;
+  }
+  sessionStorage.setItem(AUTH_NEXT_STORAGE_KEY, next);
+}
+
+export function takeAuthNextPath(fallback = '/account'): string {
+  const stored = sessionStorage.getItem(AUTH_NEXT_STORAGE_KEY);
+  sessionStorage.removeItem(AUTH_NEXT_STORAGE_KEY);
+  return safeAuthNextPath(stored, fallback);
+}
+
+export function loginHrefForCurrentLocation(): string {
+  const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  return `/login?next=${encodeURIComponent(safeAuthNextPath(next, '/brand'))}`;
+}
+
 export async function signInWithPassword({ email, password }: AuthCredentials) {
   const supabase = getBrowserSupabaseClient();
   return supabase.auth.signInWithPassword({
@@ -54,8 +87,10 @@ export async function signUpWithPassword({ email, password }: AuthCredentials) {
   });
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(nextPath?: string | null) {
   const supabase = getBrowserSupabaseClient();
+  const fromQuery = new URLSearchParams(window.location.search).get('next');
+  stashAuthNextPath(nextPath ?? fromQuery);
 
   return supabase.auth.signInWithOAuth({
     provider: 'google',

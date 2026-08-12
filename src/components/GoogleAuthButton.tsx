@@ -6,6 +6,7 @@ type GoogleAuthButtonProps = {
   label?: string;
   disabled?: boolean;
   className?: string;
+  nextPath?: string | null;
 };
 
 function GoogleIcon() {
@@ -35,6 +36,7 @@ export function GoogleAuthButton({
   label = 'Continue with Google',
   disabled = false,
   className = '',
+  nextPath,
 }: GoogleAuthButtonProps) {
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -43,7 +45,7 @@ export function GoogleAuthButton({
     setErrorMessage(null);
     setSubmitting(true);
 
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(nextPath);
     if (error) {
       setErrorMessage(getAuthErrorMessage(error));
       setSubmitting(false);

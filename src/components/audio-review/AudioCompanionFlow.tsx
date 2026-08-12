@@ -1,5 +1,6 @@
 /**
- * Author recording companion — single page: guidance + always-visible upload.
+ * Author recording companion — guidance + always-visible upload.
+ * `page` is the standalone kit. `tray` is the editorial side panel.
  */
 import { motion, useReducedMotion } from 'framer-motion';
 import { Check, Download, Upload } from 'lucide-react';
@@ -23,7 +24,12 @@ type UploadStatus = 'idle' | 'ready' | 'uploading' | 'sent' | 'error';
 
 const EASE_OUT = [0.32, 0.72, 0, 1] as const;
 
-export function AudioCompanionFlow() {
+type AudioCompanionFlowProps = {
+  variant?: 'page' | 'tray';
+};
+
+export function AudioCompanionFlow({ variant = 'page' }: AudioCompanionFlowProps) {
+  const isTray = variant === 'tray';
   const reduceMotion = useReducedMotion();
   const fileInputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -103,51 +109,87 @@ export function AudioCompanionFlow() {
   const setupSteps = TEMPLATE_SETUP.steps.filter((step) => step.kind !== 'download');
   const downloadStep = TEMPLATE_SETUP.steps.find((step) => step.kind === 'download');
 
-  return (
-    <div className="flex min-h-0 flex-1 flex-col font-companion text-cream">
-      <header className="shrink-0 pb-4 md:pb-5">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9fb5aa]/70">
-          {COMPANION_KIT.imprint} · {COMPANION_KIT.book}
-        </p>
-        <p className="mt-1 text-[13px] font-light text-cream/45">{COMPANION_KIT.lede}</p>
-      </header>
+  const panelClass = isTray
+    ? 'border-b border-cream/10 pb-6'
+    : 'rounded-xl border border-cream/10 bg-[#0a0e0c] px-5 py-5 md:px-7 md:py-6';
 
-      <div className="relative flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto">
+  return (
+    <div
+      className={
+        isTray
+          ? 'font-companion text-cream'
+          : 'flex min-h-0 flex-1 flex-col font-companion text-cream'
+      }
+    >
+      {isTray ? null : (
+        <header className="shrink-0 pb-4 md:pb-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9fb5aa]/70">
+            {COMPANION_KIT.imprint} · {COMPANION_KIT.book}
+          </p>
+          <p className="mt-1 text-[13px] font-light text-cream/45">{COMPANION_KIT.lede}</p>
+        </header>
+      )}
+
+      <div
+        className={
+          isTray
+            ? 'flex flex-col gap-6'
+            : 'relative flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto'
+        }
+      >
         {downloadStep ? (
-          <section className="rounded-xl border border-cream/10 bg-[#0a0e0c] px-5 py-5 md:px-7 md:py-6">
+          <section className={panelClass}>
             <motion.div
               initial={reduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: EASE_OUT }}
-              className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+              className={
+                isTray
+                  ? 'flex flex-col gap-4'
+                  : 'flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'
+              }
             >
               <div className="min-w-0">
-                <p className="font-serif text-[clamp(1.5rem,2.6vw,2rem)] italic leading-none tracking-[-0.03em] text-cream">
+                <p
+                  className={
+                    isTray
+                      ? 'font-serif text-[1.75rem] italic leading-none tracking-[-0.03em] text-cream'
+                      : 'font-serif text-[clamp(1.5rem,2.6vw,2rem)] italic leading-none tracking-[-0.03em] text-cream'
+                  }
+                >
                   Download <span className="not-italic text-moss">template</span>
                 </p>
-                <p className="mt-2 text-[13px] font-light text-cream/45">
+                <p className="mt-2 text-[13px] font-light leading-relaxed text-cream/45">
                   Start here. Get the Audacity project before you record.
                 </p>
               </div>
               <a
                 href={TEMPLATE_SETUP.templateHref}
                 download={TEMPLATE_SETUP.templateFileName}
-                className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-moss px-5 text-[11px] font-semibold uppercase tracking-[0.12em] text-cream transition-opacity hover:opacity-95"
+                className={
+                  isTray
+                    ? 'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-moss px-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-cream transition-opacity hover:opacity-95'
+                    : 'inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-moss px-5 text-[11px] font-semibold uppercase tracking-[0.12em] text-cream transition-opacity hover:opacity-95'
+                }
               >
                 <Download size={14} strokeWidth={1.75} aria-hidden />
-                <span className="truncate">{downloadStep.detail}</span>
+                <span className="min-w-0 truncate">{downloadStep.detail}</span>
               </a>
             </motion.div>
           </section>
         ) : null}
 
-        <div className="rounded-xl border border-cream/10 bg-[#0a0e0c] px-5 py-5 md:px-7 md:py-6">
+        <div className={isTray ? '' : 'rounded-xl border border-cream/10 bg-[#0a0e0c] px-5 py-5 md:px-7 md:py-6'}>
           <section className="relative">
             <motion.h2
               initial={reduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: EASE_OUT, delay: 0.05 }}
-              className="font-serif text-[clamp(1.85rem,3.2vw,2.6rem)] italic leading-[0.95] tracking-[-0.03em] text-cream"
+              className={
+                isTray
+                  ? 'font-serif text-[1.75rem] italic leading-none tracking-[-0.03em] text-cream'
+                  : 'font-serif text-[clamp(1.85rem,3.2vw,2.6rem)] italic leading-[0.95] tracking-[-0.03em] text-cream'
+              }
             >
               Setup <span className="not-italic text-moss">first</span>
             </motion.h2>
@@ -201,7 +243,13 @@ export function AudioCompanionFlow() {
           </section>
 
           <section className="relative mt-10 border-t border-cream/10 pt-8">
-            <div className="grid gap-8 md:grid-cols-[minmax(9rem,11rem)_minmax(0,1fr)] md:gap-8">
+            <div
+              className={
+                isTray
+                  ? 'grid gap-8'
+                  : 'grid gap-8 md:grid-cols-[minmax(9rem,11rem)_minmax(0,1fr)] md:gap-8'
+              }
+            >
               <aside>
                 <p className="font-serif text-[clamp(1.35rem,2.2vw,1.75rem)] italic leading-none tracking-[-0.02em] text-cream">
                   Record <span className="not-italic text-moss">now</span>
@@ -239,7 +287,7 @@ export function AudioCompanionFlow() {
                 <p className="mt-4 text-[0.98rem] font-medium tracking-[-0.01em] text-[#9fb5aa]/95">
                   {title}
                 </p>
-                <div className="mt-3 columns-1 gap-x-8 md:columns-2">
+                <div className={isTray ? 'mt-3 columns-1' : 'mt-3 columns-1 gap-x-8 md:columns-2'}>
                   {body.map((paragraph) => (
                     <p
                       key={paragraph.slice(0, 28)}
@@ -257,7 +305,7 @@ export function AudioCompanionFlow() {
           </section>
         </div>
 
-        <section className="rounded-xl border border-cream/10 bg-[#0a0e0c] px-4 py-4 md:px-5 md:py-5">
+        <section className={isTray ? 'border-t border-cream/10 pt-6' : 'rounded-xl border border-cream/10 bg-[#0a0e0c] px-4 py-4 md:px-5 md:py-5'}>
           <p className="font-serif text-[clamp(1.35rem,2.2vw,1.75rem)] italic leading-none tracking-[-0.02em] text-cream">
             Send <span className="not-italic text-moss">take</span>
           </p>

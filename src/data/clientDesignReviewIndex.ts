@@ -131,14 +131,14 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
-    id: 'audio-editorial-v2',
-    title: 'Audiobook review · Editorial v2',
-    href: '/audio/editorial-v2',
+    id: 'audio-advance-listen',
+    title: 'Advance listen',
+    href: '/audio/advance-listen',
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Immersive Formless listen: cover world, floating player, journey track strip.',
-    source: 'src/pages/AudioEditorialV2MockupPage.tsx',
+      'Standalone Formless listen: optimized master, mobile now-playing, chapter drawer.',
+    source: 'src/pages/AdvanceListenPage.tsx',
   },
   {
     id: 'audio-companion',

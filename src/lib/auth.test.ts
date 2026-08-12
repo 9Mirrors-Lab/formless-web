@@ -35,4 +35,14 @@ describe('auth helpers', () => {
     expect(getAuthCallbackUrl()).toBe('http://localhost:5173/auth/callback');
     vi.unstubAllGlobals();
   });
+
+  it('accepts only same-origin relative next paths', async () => {
+    vi.resetModules();
+    const { safeAuthNextPath } = await import('@/lib/auth');
+    expect(safeAuthNextPath('/brand')).toBe('/brand');
+    expect(safeAuthNextPath('/hub?tab=design')).toBe('/hub?tab=design');
+    expect(safeAuthNextPath('https://evil.example/x')).toBe('/account');
+    expect(safeAuthNextPath('//evil.example')).toBe('/account');
+    expect(safeAuthNextPath(null, '/brand')).toBe('/brand');
+  });
 });

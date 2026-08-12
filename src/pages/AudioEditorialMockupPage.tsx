@@ -3,7 +3,7 @@
  *
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
  * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
- * Companion ritual lives on /audio/companion.
+ * Recording Companion opens as a right tray (same width as Read along).
  * Listen = Audible Master; Analysis = sidebar sibling under Audible.
  */
 import { AnimatePresence, motion } from 'framer-motion';
@@ -11,12 +11,15 @@ import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-r
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { AudioAnalysisDashboard } from '@/components/audio-review/AudioAnalysisDashboard';
+import { AudioCompanionFlow } from '@/components/audio-review/AudioCompanionFlow';
 import {
   AudioCompareMultitrack,
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
 import {
+  companionOpenFromSearch,
   editorialViewFromSearch,
+  setCompanionOpenInUrl,
   setEditorialViewInUrl,
   type EditorialView,
 } from '@/components/audio-review/AudioWorkspaceNav';
@@ -31,6 +34,10 @@ import {
   type AudioChapterStatus,
 } from '@/data/audioReviewMock';
 import { useAudioReviewMock } from '@/hooks/useAudioReviewMock';
+
+/** Shared with Read along so both trays stay the same width. */
+const EDITORIAL_TRAY_PANEL =
+  'absolute inset-y-0 right-0 z-30 flex w-full max-w-lg flex-col border-l border-cream/10 bg-[#121614] shadow-xl';
 
 function statusTone(status: AudioChapterStatus): string {
   switch (status) {
@@ -52,26 +59,56 @@ function statusTone(status: AudioChapterStatus): string {
 export default function AudioEditorialMockupPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
   const [volume, setVolume] = useState(0.85);
-  const [mode, setMode] = useState<EditorialView>(() => editorialViewFromSearch());
+  const [mode, setMode] = useState<EditorialView>(() =>
+    companionOpenFromSearch() ? 'listen' : editorialViewFromSearch(),
+  );
+  const [companionOpen, setCompanionOpen] = useState(() => companionOpenFromSearch());
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
   }, []);
   const review = useAudioReviewMock({ initialChapterId: 13, onSeek });
 
-  // Old tray deep-links land on the companion page.
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('companion') === '1') {
-      window.location.replace('/audio/companion');
-    }
+  const setReadAlongOpen = review.setReadAlongOpen;
+
+  const closeCompanion = useCallback(() => {
+    setCompanionOpen(false);
+    setCompanionOpenInUrl(false);
   }, []);
+
+  const openCompanion = useCallback(() => {
+    setReadAlongOpen(false);
+    setMode('listen');
+    setCompanionOpen(true);
+    setCompanionOpenInUrl(true);
+  }, [setReadAlongOpen]);
+
+  const openReadAlong = useCallback(() => {
+    closeCompanion();
+    setReadAlongOpen(true);
+  }, [closeCompanion, setReadAlongOpen]);
+
+  const closeTrays = useCallback(() => {
+    setReadAlongOpen(false);
+    closeCompanion();
+  }, [closeCompanion, setReadAlongOpen]);
+
+  useEffect(() => {
+    if (!companionOpen && !review.readAlongOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      closeTrays();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [closeTrays, companionOpen, review.readAlongOpen]);
 
   const selectView = useCallback((view: EditorialView) => {
     setMode(view);
+    setCompanionOpen(false);
     setEditorialViewInUrl(view);
   }, []);
 
-  const shellActiveId = mode === 'analysis' ? 'audible-analysis' : 'audible-master';
+  const shellActiveId = mode === 'analysis' ? 'audible-analysis' : 'audible';
 
   return (
     <BrandShell
@@ -143,7 +180,7 @@ export default function AudioEditorialMockupPage() {
           <div className="flex shrink-0 items-center justify-end gap-4 border-b border-cream/10 px-5 py-3 md:px-8">
             <button
               type="button"
-              onClick={() => review.setReadAlongOpen(true)}
+              onClick={openReadAlong}
               className="shrink-0 border border-cream/15 bg-transparent px-4 py-2.5 text-sm text-cream transition-colors hover:border-[#9fb5aa]/50 hover:bg-moss hover:text-cream"
             >
               Read along
@@ -158,7 +195,16 @@ export default function AudioEditorialMockupPage() {
             <header className="border-b border-cream/10 px-6 py-5 md:px-10">
               <div className="flex w-full max-w-[900px] items-end justify-between gap-6">
                 <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40">
+                  <button
+                    type="button"
+                    onClick={openCompanion}
+                    aria-expanded={companionOpen}
+                    aria-controls="recording-companion-tray"
+                    className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#9fb5aa]/80 underline decoration-[#9fb5aa]/35 underline-offset-[5px] transition-colors hover:text-[#9fb5aa] hover:decoration-[#9fb5aa]/70"
+                  >
+                    Recording Companion
+                  </button>
+                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40">
                     Chapter {formatChapterIndex(review.chapter.id)} · {AUDIO_BOOK.format}
                   </p>
                   <h2 className="mt-1.5 font-serif text-3xl italic leading-tight text-cream md:text-4xl">
@@ -316,23 +362,25 @@ export default function AudioEditorialMockupPage() {
         )}
 
         <AnimatePresence>
-          {review.readAlongOpen && mode === 'listen' ? (
+          {mode === 'listen' && (review.readAlongOpen || companionOpen) ? (
             <>
               <motion.button
                 type="button"
-                aria-label="Close read along"
+                aria-label={companionOpen ? 'Close recording companion' : 'Close read along'}
                 className="absolute inset-0 z-20 bg-black/50"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => review.setReadAlongOpen(false)}
+                onClick={closeTrays}
               />
+              {review.readAlongOpen ? (
               <motion.aside
+                key="read-along-tray"
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', stiffness: 280, damping: 32 }}
-                className="absolute inset-y-0 right-0 z-30 flex w-full max-w-lg flex-col border-l border-cream/10 bg-[#121614] shadow-xl"
+                className={EDITORIAL_TRAY_PANEL}
               >
                 <div className="flex items-center justify-between border-b border-cream/10 px-6 py-5">
                   <div>
@@ -381,6 +429,39 @@ export default function AudioEditorialMockupPage() {
                   </div>
                 </div>
               </motion.aside>
+              ) : null}
+              {companionOpen ? (
+              <motion.aside
+                key="companion-tray"
+                id="recording-companion-tray"
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', stiffness: 280, damping: 32 }}
+                className={EDITORIAL_TRAY_PANEL}
+                aria-label="Recording companion"
+              >
+                <div className="flex items-center justify-between border-b border-cream/10 px-6 py-5">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-cream/40">
+                      Recording Companion
+                    </p>
+                    <p className="mt-1 font-serif text-2xl italic text-cream">Companion</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={closeCompanion}
+                    className="p-2 text-cream/45 hover:text-cream"
+                    aria-label="Close"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+                  <AudioCompanionFlow variant="tray" />
+                </div>
+              </motion.aside>
+              ) : null}
             </>
           ) : null}
         </AnimatePresence>

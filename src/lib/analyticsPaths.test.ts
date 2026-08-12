@@ -6,8 +6,9 @@ import {
 } from './analyticsPaths';
 
 describe('analyticsPaths', () => {
-  it('normalizes trailing slashes', () => {
+  it('normalizes trailing slashes and casing', () => {
     expect(normalizePathname('/book/')).toBe('/book');
+    expect(normalizePathname('/Brand')).toBe('/brand');
     expect(normalizePathname('/')).toBe('/');
   });
 

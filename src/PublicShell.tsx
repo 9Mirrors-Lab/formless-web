@@ -43,7 +43,7 @@ import ClientReviewHelixDustPage from './pages/ClientReviewHelixDustPage';
 import SiteHubPage from './pages/SiteHubPage';
 import AudioStudioMockupPage from './pages/AudioStudioMockupPage';
 import AudioEditorialMockupPage from './pages/AudioEditorialMockupPage';
-import AudioEditorialV2MockupPage from './pages/AudioEditorialV2MockupPage';
+import AdvanceListenPage from './pages/AdvanceListenPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
 import AudioFilesPage from './pages/AudioFilesPage';
@@ -52,6 +52,8 @@ import { PostHogPageView } from './components/PostHogPageView';
 import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
+import { RequireInternalAuth } from './components/RequireInternalAuth';
+import { isInternalAuthPath } from './config/internalAccess';
 
 const publicSiteRestricted = isPublicSiteRestricted();
 
@@ -60,6 +62,13 @@ function BackgroundsLegacyRedirect() {
     const url = new URL(window.location.href);
     url.pathname = '/backgrounds';
     window.location.replace(`${url.pathname}${url.search}${url.hash}`);
+  }, []);
+  return null;
+}
+
+function EditorialV2LegacyRedirect() {
+  useLayoutEffect(() => {
+    window.location.replace('/audio/advance-listen');
   }, []);
   return null;
 }
@@ -127,7 +136,8 @@ export function Root({ path }: { path: string }) {
   const isClientReviewHelixDust = path === '/client/review/helix-dust';
   const isAudioStudio = path === '/audio';
   const isAudioEditorial = path === '/audio/editorial';
-  const isAudioEditorialV2 = path === '/audio/editorial-v2';
+  const isAudioAdvanceListen = path === '/audio/advance-listen';
+  const isAudioEditorialV2Legacy = path === '/audio/editorial-v2';
   const isAudioCompanion = path === '/audio/companion';
   const isAudioSendTake = path === '/audio/send-take';
   const isAudioFiles = path === '/audio/files';
@@ -173,7 +183,8 @@ export function Root({ path }: { path: string }) {
   if (isClientReviewHelixDust) return <ClientReviewHelixDustPage />;
   if (isAudioStudio) return <AudioStudioMockupPage />;
   if (isAudioEditorial) return <AudioEditorialMockupPage />;
-  if (isAudioEditorialV2) return <AudioEditorialV2MockupPage />;
+  if (isAudioAdvanceListen) return <AdvanceListenPage />;
+  if (isAudioEditorialV2Legacy) return <EditorialV2LegacyRedirect />;
   if (isAudioCompanion) return <AudioCompanionKitPage />;
   if (isAudioSendTake) return <AudioSendTakePage />;
   if (isAudioFiles) return <AudioFilesPage />;
@@ -198,6 +209,12 @@ export function Root({ path }: { path: string }) {
 function isUnrestrictedPath(path: string): boolean {
   return (
     path === '/hub' ||
+    path === '/brand' ||
+    path === '/speaker-sheet' ||
+    path === '/zoom-backgrounds' ||
+    path === '/brand-kit-export' ||
+    path === '/eyes-closed-logo-options' ||
+    path === '/design/eyes-closed-logo-variations/04-options.html' ||
     path === '/login' ||
     path === '/signup' ||
     path === '/account' ||
@@ -207,6 +224,7 @@ function isUnrestrictedPath(path: string): boolean {
     path.startsWith('/client/review/') ||
     path === '/audio' ||
     path === '/audio/editorial' ||
+    path === '/audio/advance-listen' ||
     path === '/audio/editorial-v2' ||
     path === '/audio/companion' ||
     path === '/audio/send-take' ||
@@ -216,12 +234,12 @@ function isUnrestrictedPath(path: string): boolean {
 
 function AppContentShell({ path }: { path: string }) {
   const { status, errorMessage } = useContentStatus();
+  const page = <Root path={path} />;
 
-  // Audio tools with no CMS copy; never block on content fetch.
-  if (path === '/audio/send-take' || path === '/audio/files') {
+  if (isInternalAuthPath(path)) {
     return (
       <>
-        <Root path={path} />
+        <RequireInternalAuth>{page}</RequireInternalAuth>
         <DevMenu path={path} />
       </>
     );
@@ -249,7 +267,7 @@ function AppContentShell({ path }: { path: string }) {
       {publicSiteRestricted && !isUnrestrictedPath(path) ? (
         <RestrictedPublicHome path={path} />
       ) : (
-        <Root path={path} />
+        page
       )}
       <DevMenu path={path} />
     </>
@@ -257,7 +275,7 @@ function AppContentShell({ path }: { path: string }) {
 }
 
 export function PublicShell({ path }: { path: string }) {
-  const normalizedPath = path.replace(/\/+$/, '') || '/';
+  const normalizedPath = path.replace(/\/+$/, '').toLowerCase() || '/';
 
   if (normalizedPath === '/client-feedback-revision') {
     return <LegacyLayoutTestsRedirect />;

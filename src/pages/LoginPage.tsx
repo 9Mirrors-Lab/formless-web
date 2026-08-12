@@ -1,18 +1,24 @@
+import { useEffect } from 'react';
+
 import { AuthForm } from '@/components/AuthForm';
 import { authLinkClassName, AuthPageShell } from '@/components/auth/AuthPageShell';
 import { useAuth } from '@/context/AuthContext';
+import { safeAuthNextPath, stashAuthNextPath } from '@/lib/auth';
 
-function safeNextPath(): string {
-  const next = new URLSearchParams(window.location.search).get('next');
-  if (!next || !next.startsWith('/') || next.startsWith('//')) {
-    return '/account';
-  }
-  return next;
+function nextPathFromQuery(): string {
+  return safeAuthNextPath(
+    new URLSearchParams(window.location.search).get('next'),
+    '/account',
+  );
 }
 
 export function LoginPage() {
   const { status, user, signIn } = useAuth();
-  const nextPath = safeNextPath();
+  const nextPath = nextPathFromQuery();
+
+  useEffect(() => {
+    stashAuthNextPath(nextPath);
+  }, [nextPath]);
 
   if (status === 'misconfigured') {
     return (
@@ -33,7 +39,7 @@ export function LoginPage() {
     <AuthPageShell>
       <AuthForm
         title="Welcome back"
-        description="Sign in to access member content as it becomes available."
+        description="Sign in to open Brand Studio, the hub, and other internal materials."
         submitLabel="Sign in"
         alternateAction={
           <>

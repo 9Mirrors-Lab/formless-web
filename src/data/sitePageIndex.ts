@@ -329,13 +329,13 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/AudioEditorialMockupPage.tsx',
   },
   {
-    id: 'audio-editorial-v2',
-    title: 'Audiobook review · Editorial v2',
-    path: '/audio/editorial-v2',
+    id: 'audio-advance-listen',
+    title: 'Advance listen',
+    path: '/audio/advance-listen',
     category: 'design',
     description:
-      'Immersive Formless listen world: cover as atmosphere, glass player island, chapter constellation.',
-    source: 'src/pages/AudioEditorialV2MockupPage.tsx',
+      'Standalone Formless listen world: optimized master, mobile now-playing, chapter drawer.',
+    source: 'src/pages/AdvanceListenPage.tsx',
   },
   {
     id: 'audio-companion',

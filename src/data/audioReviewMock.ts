@@ -636,9 +636,9 @@ export const AUDIO_CHAPTERS: AudioChapter[] = [
   },
 ];
 
-/** Sidebar / transport label for chapter index (0 = Intro, 12 = Ack, 13 = OC). */
+/** Sidebar / transport label for chapter index (0 = Int, 12 = Ack, 13 = OC). */
 export function formatChapterIndex(id: number): string {
-  if (id === 0) return 'Intro';
+  if (id === 0) return 'Int';
   if (id === 12) return 'Ack';
   if (id === 13) return 'OC';
   return String(id);

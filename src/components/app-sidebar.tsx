@@ -10,8 +10,6 @@ export type BrandNavId =
     | "brand"
     | "speaker-sheet"
     | "audible"
-    | "audible-master"
-    | "audible-master-v2"
     | "audible-analysis"
     | "zoom-backgrounds"
     | "brand-kit"
@@ -45,21 +43,9 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: "audible",
     title: "Audible",
-    href: "/audio/companion",
-    description: "Author recording companion",
+    href: "/audio/editorial",
+    description: "Audible master",
     children: [
-      {
-        id: "audible-master",
-        title: "Audible Master",
-        href: "/audio/editorial",
-        description: "Listen compare",
-      },
-      {
-        id: "audible-master-v2",
-        title: "Audible Master v2",
-        href: "/audio/editorial-v2",
-        description: "Immersive listen",
-      },
       {
         id: "audible-analysis",
         title: "Analysis",
@@ -90,13 +76,16 @@ function navIdFromPath(
   if (pathname === "/audio/companion" || pathname.startsWith("/audio/companion")) {
     return "audible";
   }
+  if (pathname === "/audio/advance-listen" || pathname.startsWith("/audio/advance-listen")) {
+    return "audible";
+  }
   if (pathname === "/audio/editorial-v2" || pathname.startsWith("/audio/editorial-v2")) {
-    return "audible-master-v2";
+    return "audible";
   }
   if (pathname === "/audio/editorial" || pathname.startsWith("/audio/editorial")) {
     const view = new URLSearchParams(search).get("view");
     if (view === "analysis") return "audible-analysis";
-    return "audible-master";
+    return "audible";
   }
   if (pathname === "/zoom-backgrounds") return "zoom-backgrounds";
   if (pathname === "/brand-kit-export") return "brand-kit";

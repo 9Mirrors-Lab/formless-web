@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { authLinkClassName, AuthPagePanel, AuthPageShell } from '@/components/auth/AuthPageShell';
-import { completeAuthCallback, getAuthErrorMessage } from '@/lib/auth';
+import {
+  completeAuthCallback,
+  getAuthErrorMessage,
+  takeAuthNextPath,
+} from '@/lib/auth';
 
 type CallbackState = 'loading' | 'error';
 
@@ -22,7 +26,7 @@ export function AuthCallbackPage() {
         return;
       }
 
-      window.location.replace('/account');
+      window.location.replace(takeAuthNextPath('/account'));
     }
 
     void run();

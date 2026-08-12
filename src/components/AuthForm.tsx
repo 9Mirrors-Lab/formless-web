@@ -57,6 +57,8 @@ type AuthFormProps = {
   theme?: AuthFormTheme;
   passwordAutoComplete?: 'current-password' | 'new-password';
   showGoogleAuth?: boolean;
+  hideIntro?: boolean;
+  googleNextPath?: string | null;
   alternateAction: ReactNode;
   onSubmit: (values: { email: string; password: string }) => Promise<{
     errorMessage?: string;
@@ -71,6 +73,8 @@ export function AuthForm({
   theme = 'dark',
   passwordAutoComplete = 'current-password',
   showGoogleAuth = true,
+  hideIntro = false,
+  googleNextPath,
   alternateAction,
   onSubmit,
 }: AuthFormProps) {
@@ -114,21 +118,23 @@ export function AuthForm({
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div
-        className={`mb-10 px-8 py-10 text-center ${
-          theme === 'dark' ? authPanelClassName : ''
-        }`}
-      >
-        <p className={`mb-3 font-mono text-[11px] uppercase tracking-[0.24em] ${styles.eyebrow}`}>
-          Member access
-        </p>
-        <h1 className={`font-serif text-4xl italic ${styles.title}`}>{title}</h1>
-        <p className={`mt-4 font-sans text-sm leading-relaxed ${styles.description}`}>{description}</p>
-      </div>
+      {hideIntro ? null : (
+        <div
+          className={`mb-10 px-8 py-10 text-center ${
+            theme === 'dark' ? authPanelClassName : ''
+          }`}
+        >
+          <p className={`mb-3 font-mono text-[11px] uppercase tracking-[0.24em] ${styles.eyebrow}`}>
+            Member access
+          </p>
+          <h1 className={`font-serif text-4xl italic ${styles.title}`}>{title}</h1>
+          <p className={`mt-4 font-sans text-sm leading-relaxed ${styles.description}`}>{description}</p>
+        </div>
+      )}
 
       {showGoogleAuth ? (
         <div className="mb-6 space-y-4">
-          <GoogleAuthButton disabled={submitting} />
+          <GoogleAuthButton disabled={submitting} nextPath={googleNextPath} />
           <div className="flex items-center gap-3">
             <span className="h-px flex-1 bg-cream/10" aria-hidden />
             <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${styles.eyebrow}`}>

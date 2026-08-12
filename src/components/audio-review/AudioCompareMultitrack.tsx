@@ -35,6 +35,8 @@ type AudioCompareMultitrackProps = {
   loading?: boolean;
   /** Optional known duration; otherwise taken from the loaded media. */
   durationSeconds?: number | null;
+  /** Single optimized waveform; hides the original lane and source rail. */
+  optimizedOnly?: boolean;
   onSourceChange?: (source: 'original' | 'optimized') => void;
   onTimeUpdate?: (time: number) => void;
   onReady?: () => void;
@@ -98,6 +100,7 @@ export const AudioCompareMultitrack = forwardRef<
     trackHeight = 72,
     loading = false,
     durationSeconds = null,
+    optimizedOnly = false,
     onSourceChange,
     onTimeUpdate,
     onReady,
@@ -138,7 +141,11 @@ export const AudioCompareMultitrack = forwardRef<
   const resolvedOriginal = originalUrl;
   const hasOptimized = Boolean(optimizedUrl);
   const resolvedOptimized = optimizedUrl || null;
-  const hasUploadedAudio = hasOriginal || hasOptimized;
+  const waveformUrl = optimizedOnly ? resolvedOptimized : resolvedOriginal;
+  const hasUploadedAudio = optimizedOnly
+    ? hasOptimized
+    : hasOriginal || hasOptimized;
+  const laneCount = optimizedOnly ? 1 : hasOptimized ? 2 : 1;
 
   const peaksLoading =
     loading || (hasUploadedAudio && (!peaksReady || !trackPeaks));
@@ -208,7 +215,7 @@ export const AudioCompareMultitrack = forwardRef<
 
   // Precompute peaks before Multitrack mounts (one fetch/decode per URL).
   useEffect(() => {
-    if (loading || !resolvedOriginal) {
+    if (loading || !waveformUrl) {
       setPeaksReady(false);
       setTrackPeaks(null);
       setPeaksError(null);
@@ -222,7 +229,25 @@ export const AudioCompareMultitrack = forwardRef<
 
     void (async () => {
       try {
-        const original = await extractAudioPeaks(resolvedOriginal, {
+        if (optimizedOnly) {
+          const optimized = await extractAudioPeaks(waveformUrl, {
+            signal: controller.signal,
+          });
+          if (controller.signal.aborted) return;
+          let duration = optimized.duration;
+          if (durationSeconds != null && durationSeconds > 0) {
+            duration = durationSeconds;
+          }
+          setTrackPeaks({
+            original: [],
+            optimized: optimized.peaks,
+            duration,
+          });
+          setPeaksReady(true);
+          return;
+        }
+
+        const original = await extractAudioPeaks(resolvedOriginal!, {
           signal: controller.signal,
         });
         let optimizedPeaks: number[][] | null = null;
@@ -261,56 +286,73 @@ export const AudioCompareMultitrack = forwardRef<
     })();
 
     return () => controller.abort();
-  }, [loading, resolvedOriginal, resolvedOptimized, durationSeconds]);
+  }, [
+    loading,
+    waveformUrl,
+    optimizedOnly,
+    resolvedOriginal,
+    resolvedOptimized,
+    durationSeconds,
+  ]);
 
   useEffect(() => {
-    if (loading || !peaksReady || !trackPeaks || !resolvedOriginal) return;
+    if (loading || !peaksReady || !trackPeaks || !waveformUrl) return;
+    if (optimizedOnly && !trackPeaks.optimized) return;
     const container = containerRef.current;
     if (!container) return;
 
     const muted = WAVE_GRADIENTS.muted;
     const moss = WAVE_GRADIENTS.moss;
 
-    const tracks = [
-      {
-        id: 'original',
-        url: resolvedOriginal,
-        peaks: trackPeaks.original,
-        startPosition: 0,
-        volume: 1,
-        options: {
-          height: trackHeight,
-          waveColor: muted.wave,
-          progressColor: muted.progress,
-          barWidth: 2,
-          barGap: 1,
-          barRadius: 1,
-          normalize: true,
-        },
+    const optimizedLane = {
+      id: 'optimized',
+      url: resolvedOptimized ?? waveformUrl,
+      peaks: trackPeaks.optimized ?? trackPeaks.original,
+      startPosition: 0,
+      volume: 1,
+      options: {
+        height: trackHeight,
+        waveColor: moss.wave,
+        progressColor: moss.progress,
+        barWidth: 2,
+        barGap: 1,
+        barRadius: 1,
+        normalize: true,
       },
-      ...(hasOptimized && resolvedOptimized && trackPeaks.optimized
-        ? [
-            {
-              id: 'optimized',
-              url: resolvedOptimized,
-              peaks: trackPeaks.optimized,
-              startPosition: 0,
-              volume: activeSourceRef.current === 'optimized' ? 1 : 0,
-              options: {
-                height: trackHeight,
-                waveColor: moss.wave,
-                progressColor: moss.progress,
-                barWidth: 2,
-                barGap: 1,
-                barRadius: 1,
-                normalize: true,
-              },
-            },
-          ]
-        : []),
-    ];
+    };
 
-    if (hasOptimized) {
+    const tracks = optimizedOnly
+      ? [optimizedLane]
+      : [
+          {
+            id: 'original',
+            url: resolvedOriginal!,
+            peaks: trackPeaks.original,
+            startPosition: 0,
+            volume: 1,
+            options: {
+              height: trackHeight,
+              waveColor: muted.wave,
+              progressColor: muted.progress,
+              barWidth: 2,
+              barGap: 1,
+              barRadius: 1,
+              normalize: true,
+            },
+          },
+          ...(hasOptimized && resolvedOptimized && trackPeaks.optimized
+            ? [
+                {
+                  ...optimizedLane,
+                  url: resolvedOptimized,
+                  peaks: trackPeaks.optimized,
+                  volume: activeSourceRef.current === 'optimized' ? 1 : 0,
+                },
+              ]
+            : []),
+        ];
+
+    if (!optimizedOnly && hasOptimized) {
       tracks[0]!.volume = activeSourceRef.current === 'original' ? 1 : 0;
     }
 
@@ -424,9 +466,11 @@ export const AudioCompareMultitrack = forwardRef<
     loading,
     peaksReady,
     trackPeaks,
+    waveformUrl,
     resolvedOriginal,
     resolvedOptimized,
     hasOptimized,
+    optimizedOnly,
     trackHeight,
     stopPoll,
     syncScrollMetrics,
@@ -436,13 +480,13 @@ export const AudioCompareMultitrack = forwardRef<
     const mt = multitrackRef.current;
     if (!mt) return;
     const level = Math.max(0, Math.min(1, volume));
-    if (!hasOptimized) {
+    if (optimizedOnly || !hasOptimized) {
       mt.setTrackVolume(0, level);
       return;
     }
     mt.setTrackVolume(0, activeSource === 'original' ? level : 0);
     mt.setTrackVolume(1, activeSource === 'optimized' ? level : 0);
-  }, [activeSource, hasOptimized, volume]);
+  }, [activeSource, hasOptimized, optimizedOnly, volume]);
 
   useEffect(() => {
     const mt = multitrackRef.current;
@@ -534,82 +578,86 @@ export const AudioCompareMultitrack = forwardRef<
 
   return (
     <div className={`flex gap-4 ${className}`}>
-      <div
-        className="flex w-[88px] shrink-0 flex-col"
-        role={onSourceChange ? 'group' : undefined}
-        aria-label={onSourceChange ? 'Audio source' : undefined}
-        aria-hidden={onSourceChange ? undefined : true}
-      >
-        <button
-          type="button"
-          disabled={!onSourceChange}
-          onClick={() => onSourceChange?.('original')}
-          className={`flex flex-col justify-center border-b border-cream/8 px-0.5 text-left transition-colors ${
-            onSourceChange
-              ? 'cursor-pointer hover:bg-cream/[0.03]'
-              : 'cursor-default'
-          }`}
-          style={{ height: trackHeight }}
-          aria-pressed={onSourceChange ? activeSource === 'original' : undefined}
+      {optimizedOnly ? null : (
+        <div
+          className="flex w-[88px] shrink-0 flex-col"
+          role={onSourceChange ? 'group' : undefined}
+          aria-label={onSourceChange ? 'Audio source' : undefined}
+          aria-hidden={onSourceChange ? undefined : true}
         >
-          <p
-            className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
-              activeSource === 'original' ? 'text-cream' : 'text-cream/45'
+          <button
+            type="button"
+            disabled={!onSourceChange}
+            onClick={() => onSourceChange?.('original')}
+            className={`flex flex-col justify-center border-b border-cream/8 px-0.5 text-left transition-colors ${
+              onSourceChange
+                ? 'cursor-pointer hover:bg-cream/[0.03]'
+                : 'cursor-default'
             }`}
+            style={{ height: trackHeight }}
+            aria-pressed={onSourceChange ? activeSource === 'original' : undefined}
           >
-            Original
-          </p>
-          <span className="mt-1 font-mono text-[9px] text-cream/25">
-            {originalUrl
-              ? audioFormatBadge(originalUrl)
-              : loading
-                ? '…'
-                : 'PENDING'}
-          </span>
-        </button>
-        <button
-          type="button"
-          disabled={!onSourceChange || !hasOptimized}
-          onClick={() => onSourceChange?.('optimized')}
-          className={`flex flex-col justify-center px-0.5 text-left transition-colors ${
-            onSourceChange && hasOptimized
-              ? 'cursor-pointer hover:bg-cream/[0.03]'
-              : 'cursor-default'
-          }`}
-          style={{ height: trackHeight }}
-          aria-pressed={onSourceChange ? activeSource === 'optimized' : undefined}
-        >
-          <p
-            className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
-              activeSource === 'optimized' ? 'text-[#9fb5aa]' : 'text-[#9fb5aa]/55'
+            <p
+              className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
+                activeSource === 'original' ? 'text-cream' : 'text-cream/45'
+              }`}
+            >
+              Original
+            </p>
+            <span className="mt-1 font-mono text-[9px] text-cream/25">
+              {originalUrl
+                ? audioFormatBadge(originalUrl)
+                : loading
+                  ? '…'
+                  : 'PENDING'}
+            </span>
+          </button>
+          <button
+            type="button"
+            disabled={!onSourceChange || !hasOptimized}
+            onClick={() => onSourceChange?.('optimized')}
+            className={`flex flex-col justify-center px-0.5 text-left transition-colors ${
+              onSourceChange && hasOptimized
+                ? 'cursor-pointer hover:bg-cream/[0.03]'
+                : 'cursor-default'
             }`}
+            style={{ height: trackHeight }}
+            aria-pressed={onSourceChange ? activeSource === 'optimized' : undefined}
           >
-            Optimized
-          </p>
-          <span className="mt-1 font-mono text-[9px] text-[#9fb5aa]/45">
-            {optimizedUrl ? audioFormatBadge(optimizedUrl) : 'PENDING'}
-          </span>
-        </button>
-      </div>
+            <p
+              className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
+                activeSource === 'optimized' ? 'text-[#9fb5aa]' : 'text-[#9fb5aa]/55'
+              }`}
+            >
+              Optimized
+            </p>
+            <span className="mt-1 font-mono text-[9px] text-[#9fb5aa]/45">
+              {optimizedUrl ? audioFormatBadge(optimizedUrl) : 'PENDING'}
+            </span>
+          </button>
+        </div>
+      )}
       <div className="audio-compare-scroll min-w-0 flex-1 overflow-hidden rounded-md border border-cream/10 bg-[#0e1110]">
         {!hasUploadedAudio && !loading ? (
           <div
             className="flex items-center px-3 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/35"
             style={{ height: trackHeight }}
           >
-            Original master not uploaded yet
+            {optimizedOnly
+              ? 'Optimized master not uploaded yet'
+              : 'Original master not uploaded yet'}
           </div>
         ) : peaksLoading ? (
           <div
             className="flex items-center px-3 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/35"
-            style={{ height: trackHeight * (hasOptimized ? 2 : 1) }}
+            style={{ height: trackHeight * laneCount }}
           >
             {peaksError ? 'Waveform failed to load' : 'Loading waveform…'}
           </div>
         ) : (
           <div ref={containerRef} id="audio-compare-waveform" className="w-full" />
         )}
-        {!hasOptimized ? (
+        {!hasOptimized && !optimizedOnly ? (
           <div
             className="flex items-center border-t border-cream/8 px-3 font-mono text-[10px] uppercase tracking-[0.18em] text-[#9fb5aa]/45"
             style={{ height: trackHeight }}

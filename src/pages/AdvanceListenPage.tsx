@@ -1,9 +1,9 @@
 /**
- * Audio editorial v2 — Immersive Formless listen world
+ * Advance listen — Immersive Formless listen world
  *
- * Visual thesis: Void Light cover is the room and the brand mark.
- * Player and track list sit open in that field; no production chrome.
- * Sibling of /audio/editorial (v1); does not replace it.
+ * Visual thesis: Void Light cover is the room.
+ * Player and track list sit open in that field; optimized master only.
+ * Standalone listen page. Not wrapped in BrandShell; no toolkit nav.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
@@ -13,10 +13,9 @@ import {
   AudioCompareMultitrack,
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
+import { AdvanceListenMobilePlayer } from '@/components/audio-review/AdvanceListenMobilePlayer';
 import { FORMLESS_COVER_DIRECTIONS } from '@/components/audio-review/FormlessBookCoverPanel';
-import { BrandShell } from '@/components/app-sidebar';
 import {
-  AUDIO_BOOK,
   formatAudioTime,
   formatChapterIndex,
 } from '@/data/audioReviewMock';
@@ -24,14 +23,15 @@ import { useAudioReviewMock } from '@/hooks/useAudioReviewMock';
 
 const EASE_HEAVY = [0.32, 0.72, 0, 1] as const;
 
-/** Locked cover direction for editorial v2 atmosphere + hero mark. */
+/** Locked cover direction for editorial v2 atmosphere. */
 const VOID_LIGHT_COVER =
   FORMLESS_COVER_DIRECTIONS.find((c) => c.id === 'c') ?? FORMLESS_COVER_DIRECTIONS[0]!;
 
-export default function AudioEditorialV2MockupPage() {
+export default function AdvanceListenPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
   const [volume, setVolume] = useState(0.85);
   const [entered, setEntered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
@@ -43,11 +43,19 @@ export default function AudioEditorialV2MockupPage() {
     return () => window.cancelAnimationFrame(id);
   }, []);
 
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)');
+    const sync = () => setIsMobile(media.matches);
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, []);
+
   return (
-    <BrandShell activeId="audible-master-v2" crumb="Audible Master v2" noise={false}>
-      <div className="relative flex h-[calc(100dvh-2.5rem)] min-h-0 flex-col overflow-hidden bg-[#060807] font-sans text-cream antialiased">
-        {/* Atmosphere — Void Light only */}
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
+    <div className="min-h-[100dvh] bg-[#080a09] text-cream selection:bg-clay/30 selection:text-cream">
+      <div className="relative flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#060807] font-sans text-cream antialiased">
+        {/* Atmosphere — Void Light only (desktop listen world) */}
+        <div className="pointer-events-none absolute inset-0 hidden md:block" aria-hidden>
           <motion.img
             src={VOID_LIGHT_COVER.src}
             alt=""
@@ -79,43 +87,37 @@ export default function AudioEditorialV2MockupPage() {
           </div>
         </div>
 
-        {/* Stage — content starts at the top; no separate utility bar */}
-        <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pt-4 pb-4 md:px-8 md:pt-5 md:pb-6">
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-10 lg:gap-12">
-            {/* Cover mark — brand presence; subordinate to the listening task */}
-            <motion.aside
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 16 }}
-              transition={{ duration: 0.9, ease: EASE_HEAVY, delay: 0.08 }}
-              className="mx-auto w-full max-w-[148px] shrink-0 md:mx-0 md:max-w-[176px] lg:max-w-[196px]"
-            >
-              <img
-                src={VOID_LIGHT_COVER.src}
-                alt={`${AUDIO_BOOK.title} cover · ${VOID_LIGHT_COVER.label}`}
-                className="aspect-[2/3] w-full object-cover object-top"
-              />
-              <div className="mt-4 text-center md:text-left">
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9fb5aa]/80">
-                  {AUDIO_BOOK.imprint}
-                </p>
-                <h1 className="mt-1 font-serif text-2xl italic leading-none text-cream md:text-[1.85rem]">
-                  {AUDIO_BOOK.title}
-                </h1>
-                <p className="mt-2 text-sm text-cream/55">{AUDIO_BOOK.author}</p>
-              </div>
-            </motion.aside>
+        <AdvanceListenMobilePlayer
+          chapter={review.chapter}
+          chapters={review.chapters}
+          chapterId={review.chapterId}
+          playing={review.playing}
+          currentTime={review.currentTime}
+          onPlayPause={() => review.setPlaying(!review.playing)}
+          onSeek={review.seek}
+          onSelectChapter={review.selectChapter}
+          onJumpChapter={review.jumpChapter}
+        />
 
+        {/* Stage — desktop listen column. Parked offscreen on mobile so the
+            waveform engine stays mounted and can play. */}
+        <div
+          className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pt-4 pb-4 max-md:pointer-events-none max-md:invisible max-md:absolute max-md:top-0 max-md:left-0 max-md:h-[100dvh] max-md:w-[64rem] max-md:-translate-x-full md:px-8 md:pt-5 md:pb-6"
+          aria-hidden={isMobile}
+          inert={isMobile || undefined}
+        >
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col">
             {/* Listen column — quiet work slab so type is not fighting the atmosphere */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 20 }}
-              transition={{ duration: 0.9, ease: EASE_HEAVY, delay: 0.16 }}
+              transition={{ duration: 0.9, ease: EASE_HEAVY, delay: 0.08 }}
               className="relative flex min-h-0 min-w-0 flex-1 flex-col rounded-sm bg-[#080a09]/78 px-3 py-3 shadow-[inset_0_1px_0_rgba(242,240,233,0.06)] backdrop-blur-[10px] md:px-5 md:py-4"
             >
               <header className="flex shrink-0 items-start justify-between gap-4">
                 <div className="min-w-0">
                   <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/55">
-                    Chapter {formatChapterIndex(review.chapter.id)} · {AUDIO_BOOK.format}
+                    Chapter {formatChapterIndex(review.chapter.id)} · Advance Listening Edition
                   </p>
                   <h2 className="mt-1.5 font-serif text-3xl italic leading-tight text-cream md:text-[2.35rem]">
                     {review.chapter.title}
@@ -138,50 +140,16 @@ export default function AudioEditorialV2MockupPage() {
               </header>
 
               <div className="mt-4 shrink-0">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`${review.source}-${review.sourceFlash}`}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.35, ease: EASE_HEAVY }}
-                    className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em]"
-                    aria-live="polite"
-                    aria-label={`Hearing ${review.source}`}
-                  >
-                    <span
-                      className={
-                        review.source === 'original' ? 'text-cream' : 'text-cream/40'
-                      }
-                    >
-                      Original
-                    </span>
-                    <span className="text-cream/35" aria-hidden>
-                      ·
-                    </span>
-                    <span
-                      className={
-                        review.source === 'optimized' ? 'text-[#9fb5aa]' : 'text-cream/40'
-                      }
-                    >
-                      Optimized
-                    </span>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <div className="mt-3 shrink-0">
                 <AudioCompareMultitrack
                   ref={playerRef}
-                  originalUrl={review.originalUrl}
                   optimizedUrl={review.optimizedUrl}
-                  activeSource={review.source}
+                  optimizedOnly
+                  activeSource="optimized"
                   playing={review.playing}
                   volume={volume}
                   trackHeight={48}
                   loading={review.audioLoading}
                   durationSeconds={review.chapter.length}
-                  onSourceChange={review.setSource}
                   onTimeUpdate={review.setCurrentTime}
                   onReady={() => review.setAudioReady(true)}
                   onFinish={() => review.setPlaying(false)}
@@ -214,24 +182,18 @@ export default function AudioEditorialV2MockupPage() {
                   <button
                     type="button"
                     onClick={() => review.seek(review.currentTime - 10)}
-                    className="relative rounded-full p-2 text-cream/50 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-cream/5 hover:text-cream"
+                    className="rounded-full p-2 text-cream/50 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-cream/5 hover:text-cream"
                     aria-label="Rewind 10 seconds"
                   >
                     <RotateCcw size={16} strokeWidth={1.5} />
-                    <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-mono text-[8px] font-medium text-cream/70">
-                      10
-                    </span>
                   </button>
                   <button
                     type="button"
                     onClick={() => review.seek(review.currentTime + 10)}
-                    className="relative rounded-full p-2 text-cream/50 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-cream/5 hover:text-cream"
+                    className="rounded-full p-2 text-cream/50 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-cream/5 hover:text-cream"
                     aria-label="Forward 10 seconds"
                   >
                     <RotateCw size={16} strokeWidth={1.5} />
-                    <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-mono text-[8px] font-medium text-cream/70">
-                      10
-                    </span>
                   </button>
                 </div>
 
@@ -320,7 +282,7 @@ export default function AudioEditorialV2MockupPage() {
 
         {/* Read along overlay */}
         <AnimatePresence>
-          {review.readAlongOpen ? (
+          {review.readAlongOpen && !isMobile ? (
             <>
               <motion.button
                 type="button"
@@ -392,6 +354,6 @@ export default function AudioEditorialV2MockupPage() {
           ) : null}
         </AnimatePresence>
       </div>
-    </BrandShell>
+    </div>
   );
 }
