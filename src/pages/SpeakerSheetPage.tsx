@@ -205,7 +205,9 @@ function SpeakerSheetSection({
         >
           https://canva.link/speaker-sheets
         </a>
-        . Earlier designs sit below as reference.
+        .
+        <br />
+        Earlier designs sit below as reference.
       </p>
 
       <div className="flex flex-col gap-14">
