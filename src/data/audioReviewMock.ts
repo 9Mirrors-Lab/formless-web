@@ -527,7 +527,7 @@ function placeholderManuscript(chapterId: number, title: string): AudioSentence[
 /**
  * Opening Credits + Intro + chapters 1–11 + Acknowledgments.
  * Opening Credits (id 13) + Acknowledgments (id 12): original + optimized (status ready).
- * Intro + chapters 1–4: originals recorded; not optimized yet.
+ * Intro + chapters 1–9: originals recorded; not optimized yet.
  */
 export const AUDIO_CHAPTERS: AudioChapter[] = [
   {
@@ -575,40 +575,36 @@ export const AUDIO_CHAPTERS: AudioChapter[] = [
   {
     id: 5,
     title: 'The Observer and The Observed',
-    length: 17 * 60 + 30,
-    status: 'pending',
-    provisional: true,
+    length: 3147,
+    status: 'recorded',
     manuscript: placeholderManuscript(5, 'The Observer and The Observed'),
   },
   {
     id: 6,
     title: 'Thought, Story, and Identity',
-    length: 20 * 60 + 12,
-    status: 'pending',
-    provisional: true,
+    length: 2956,
+    status: 'recorded',
     manuscript: placeholderManuscript(6, 'Thought, Story, and Identity'),
   },
   {
     id: 7,
     title: 'Nature, Animals & Their Wisdom',
-    length: 15 * 60 + 40,
-    status: 'pending',
+    length: 2519,
+    status: 'recorded',
     manuscript: placeholderManuscript(7, 'Nature, Animals & Their Wisdom'),
   },
   {
     id: 8,
     title: 'Love Without Possession',
-    length: 18 * 60 + 5,
-    status: 'pending',
-    provisional: true,
+    length: 3604,
+    status: 'recorded',
     manuscript: placeholderManuscript(8, 'Love Without Possession'),
   },
   {
     id: 9,
     title: 'Work and Daily Life',
-    length: 14 * 60 + 22,
-    status: 'pending',
-    provisional: true,
+    length: 2917,
+    status: 'recorded',
     manuscript: placeholderManuscript(9, 'Work and Daily Life'),
   },
   {
