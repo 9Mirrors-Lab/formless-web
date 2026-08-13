@@ -54,6 +54,7 @@ import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
 import { RequireInternalAuth } from './components/RequireInternalAuth';
 import { isInternalAuthPath } from './config/internalAccess';
+import { hasAuthCallbackCode } from './lib/auth';
 
 const publicSiteRestricted = isPublicSiteRestricted();
 
@@ -235,6 +236,10 @@ function isUnrestrictedPath(path: string): boolean {
 function AppContentShell({ path }: { path: string }) {
   const { status, errorMessage } = useContentStatus();
   const page = <Root path={path} />;
+
+  if (path === '/auth/callback' || hasAuthCallbackCode(window.location.search)) {
+    return <AuthCallbackPage />;
+  }
 
   if (isInternalAuthPath(path)) {
     return (

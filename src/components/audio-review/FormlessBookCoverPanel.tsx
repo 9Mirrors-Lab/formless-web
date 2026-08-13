@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { audioChapterStatusIcon } from '@/components/audio-review/audioStatusIcons';
 import {
   AUDIO_BOOK,
@@ -48,6 +46,10 @@ export const FORMLESS_COVER_DIRECTIONS: FormlessCoverDirection[] = [
   },
 ];
 
+/** Locked cover for listen / editorial sidebars. */
+export const FORMLESS_COVER =
+  FORMLESS_COVER_DIRECTIONS.find((c) => c.id === 'c') ?? FORMLESS_COVER_DIRECTIONS[0]!;
+
 type FormlessBookCoverPanelProps = {
   chapters: AudioChapter[];
 };
@@ -76,11 +78,9 @@ const PROGRESS_ROWS: Array<{
   { label: 'Approved', tone: 'approved', key: 'approved' },
 ];
 
-/** Compact sidebar identity: cover thumbnail + cover study + chapter progress. */
+/** Compact sidebar identity: cover thumbnail + chapter progress. */
 export function FormlessBookCoverPanel({ chapters }: FormlessBookCoverPanelProps) {
-  const [coverId, setCoverId] = useState<FormlessCoverDirection['id']>('c');
-  const cover =
-    FORMLESS_COVER_DIRECTIONS.find((c) => c.id === coverId) ?? FORMLESS_COVER_DIRECTIONS[0]!;
+  const cover = FORMLESS_COVER;
   const summary = chapterProgressSummary(chapters);
   const counts = {
     recorded: summary.recorded,
@@ -93,9 +93,8 @@ export function FormlessBookCoverPanel({ chapters }: FormlessBookCoverPanelProps
       <div className="flex items-start gap-3.5">
         <div className="relative h-[108px] w-[72px] shrink-0 overflow-hidden rounded-md border border-cream/12 bg-[#0c0f0d] shadow-[0_12px_28px_rgba(0,0,0,0.4)]">
           <img
-            key={cover.src}
             src={cover.src}
-            alt={`${AUDIO_BOOK.title} cover direction: ${cover.label}`}
+            alt={`${AUDIO_BOOK.title} cover`}
             className="h-full w-full object-cover object-top"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
@@ -109,34 +108,6 @@ export function FormlessBookCoverPanel({ chapters }: FormlessBookCoverPanelProps
             {AUDIO_BOOK.title}
           </h1>
           <p className="mt-1.5 truncate text-xs text-cream/45">{AUDIO_BOOK.author}</p>
-
-          <div className="mt-3 flex items-center justify-between gap-2">
-            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-cream/35">
-              Cover
-            </p>
-            <div className="flex gap-1" role="tablist" aria-label="Book cover directions">
-              {FORMLESS_COVER_DIRECTIONS.map((direction) => {
-                const selected = direction.id === coverId;
-                return (
-                  <button
-                    key={direction.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={selected}
-                    title={direction.label}
-                    onClick={() => setCoverId(direction.id)}
-                    className={`h-5 min-w-5 rounded-full px-1.5 font-mono text-[9px] uppercase tracking-wider transition-colors ${
-                      selected
-                        ? 'bg-[#9fb5aa]/25 text-[#9fb5aa]'
-                        : 'bg-cream/5 text-cream/35 hover:bg-cream/10 hover:text-cream/60'
-                    }`}
-                  >
-                    {direction.id}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </div>
 

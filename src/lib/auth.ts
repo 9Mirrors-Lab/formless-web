@@ -38,6 +38,11 @@ export function getAuthCallbackUrl(): string {
   return `${window.location.origin}/auth/callback`;
 }
 
+/** PKCE `?code=` can land on Site URL (origin root) if redirectTo is rejected. */
+export function hasAuthCallbackCode(search: string): boolean {
+  return new URLSearchParams(search).has('code');
+}
+
 /** Same-origin relative path only; blocks open redirects. */
 export function safeAuthNextPath(
   raw: string | null | undefined,

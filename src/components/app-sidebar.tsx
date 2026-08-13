@@ -50,7 +50,7 @@ const NAV_ITEMS: NavItem[] = [
         id: "audible-analysis",
         title: "Analysis",
         href: "/audio/editorial?view=analysis",
-        description: "Recording report",
+        description: "Recording report · Master phases",
       },
     ],
   },
@@ -84,7 +84,7 @@ function navIdFromPath(
   }
   if (pathname === "/audio/editorial" || pathname.startsWith("/audio/editorial")) {
     const view = new URLSearchParams(search).get("view");
-    if (view === "analysis") return "audible-analysis";
+    if (view === "analysis" || view === "master-phases") return "audible-analysis";
     return "audible";
   }
   if (pathname === "/zoom-backgrounds") return "zoom-backgrounds";

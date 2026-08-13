@@ -127,8 +127,18 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Audible Master: listen compare and analysis for Formless chapter audio.',
+      'Audible Master: listen compare, analysis, and master-phase track records for Formless chapter audio.',
     source: 'src/pages/AudioEditorialMockupPage.tsx',
+  },
+  {
+    id: 'audio-master-phases',
+    title: 'Audiobook review · Master phases',
+    href: '/audio/editorial?view=master-phases',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Six-phase mastering log per track. Stops at Ready for Final QC.',
+    source: 'src/components/audio-review/MasterPhasesWorkspace.tsx',
   },
   {
     id: 'audio-advance-listen',

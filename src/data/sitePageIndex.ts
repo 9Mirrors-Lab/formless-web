@@ -325,8 +325,17 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio/editorial',
     category: 'design',
     description:
-      'Audible Master: Listen / Analysis workspace for Formless chapter audio.',
+      'Audible Master: Listen / Analysis / Master phases workspace for Formless chapter audio.',
     source: 'src/pages/AudioEditorialMockupPage.tsx',
+  },
+  {
+    id: 'audio-master-phases',
+    title: 'Audiobook review · Master phases',
+    path: '/audio/editorial?view=master-phases',
+    category: 'design',
+    description:
+      'Per-track six-phase mastering log. Written after Phase 6; Ready for Final QC.',
+    source: 'src/components/audio-review/MasterPhasesWorkspace.tsx',
   },
   {
     id: 'audio-advance-listen',

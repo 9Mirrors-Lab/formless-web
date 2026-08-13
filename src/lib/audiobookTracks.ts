@@ -45,11 +45,11 @@ function publicObjectUrl(bucket: string, path: string): string {
   return `${base}/storage/v1/object/public/${bucket}/${path}`;
 }
 
-/** Listen order: Opening Credits, Introduction, chapters 1–11, Acknowledgments. */
+/** Listen order: Opening Credits, Introduction, chapters 1–9, Acknowledgments. */
 export function audiobookListenOrderRank(chapterNumber: number): number {
   if (chapterNumber === 13) return 0;
   if (chapterNumber === 0) return 1;
-  if (chapterNumber === 12) return 13;
+  if (chapterNumber === 12) return 11;
   return chapterNumber + 1;
 }
 

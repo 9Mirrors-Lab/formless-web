@@ -1,9 +1,9 @@
 /**
- * Editorial Listen / Analysis view helpers (URL sync).
- * Workspace switching lives in the brand sidebar, not an in-page tablist.
+ * Editorial Listen / Analysis / Master phases view helpers (URL sync).
+ * Analysis ↔ Master phases switches via in-page tabs; Listen stays in the brand sidebar.
  */
 
-export type AudioWorkspaceTab = 'listen' | 'analysis';
+export type AudioWorkspaceTab = 'listen' | 'analysis' | 'master-phases';
 
 export type EditorialView = AudioWorkspaceTab;
 
@@ -12,13 +12,28 @@ export function editorialViewFromSearch(
 ): EditorialView {
   const view = new URLSearchParams(search).get('view');
   if (view === 'analysis') return 'analysis';
+  if (view === 'master-phases') return 'master-phases';
   return 'listen';
 }
 
-export function setEditorialViewInUrl(view: EditorialView): void {
+export function masterPhaseTrackFromSearch(
+  search: string = typeof window !== 'undefined' ? window.location.search : '',
+): number | null {
+  const raw = new URLSearchParams(search).get('track');
+  if (raw == null || raw === '') return null;
+  const id = Number(raw);
+  return Number.isInteger(id) ? id : null;
+}
+
+export function setEditorialViewInUrl(view: EditorialView, trackId?: number | null): void {
   const url = new URL(window.location.href);
   url.searchParams.set('view', view);
   url.searchParams.delete('companion');
+  if (view === 'master-phases' && trackId != null) {
+    url.searchParams.set('track', String(trackId));
+  } else {
+    url.searchParams.delete('track');
+  }
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
 }
 

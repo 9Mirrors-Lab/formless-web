@@ -1,6 +1,10 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
+import {
+  AnalysisWorkspaceTabs,
+  type AnalysisWorkspaceTab,
+} from '@/components/audio-review/AnalysisWorkspaceTabs';
 import { AnalysisMetricGlyph } from '@/components/audio-review/AnalysisMetricVisuals';
 import {
   AUDIO_ANALYSIS_ACTIONS,
@@ -114,7 +118,13 @@ function MetricEssay({ metric }: { metric: AnalysisMetric }) {
   );
 }
 
-export function AudioAnalysisDashboard() {
+type AudioAnalysisDashboardProps = {
+  onSelectWorkspaceTab: (tab: AnalysisWorkspaceTab) => void;
+};
+
+export function AudioAnalysisDashboard({
+  onSelectWorkspaceTab,
+}: AudioAnalysisDashboardProps) {
   const reduceMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<AnalysisMetricId>('lufs');
   const essayRef = useRef<HTMLDivElement>(null);
@@ -157,7 +167,11 @@ export function AudioAnalysisDashboard() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <header className="shrink-0 border-b border-cream/10 px-6 py-8 md:px-10">
-        <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40">
+        <AnalysisWorkspaceTabs
+          value="analysis"
+          onValueChange={onSelectWorkspaceTab}
+        />
+        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.28em] text-cream/40">
           {AUDIO_ANALYSIS_VERDICT.eyebrow}
         </p>
         <h2 className="mt-3 max-w-3xl font-serif text-4xl italic leading-[1.12] text-cream md:text-5xl lg:text-[3.35rem]">

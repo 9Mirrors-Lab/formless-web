@@ -36,6 +36,13 @@ describe('auth helpers', () => {
     vi.unstubAllGlobals();
   });
 
+  it('detects a PKCE code on any path', async () => {
+    vi.resetModules();
+    const { hasAuthCallbackCode } = await import('@/lib/auth');
+    expect(hasAuthCallbackCode('?code=abc')).toBe(true);
+    expect(hasAuthCallbackCode('?next=/brand')).toBe(false);
+  });
+
   it('accepts only same-origin relative next paths', async () => {
     vi.resetModules();
     const { safeAuthNextPath } = await import('@/lib/auth');

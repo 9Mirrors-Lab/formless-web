@@ -4,7 +4,7 @@
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
  * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
  * Recording Companion opens as a right tray (same width as Read along).
- * Listen = Audible Master; Analysis = sidebar sibling under Audible.
+ * Listen = Audible Master; Analysis / Master phases = in-page tabs under Analysis nav.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
@@ -19,12 +19,14 @@ import {
 import {
   companionOpenFromSearch,
   editorialViewFromSearch,
+  masterPhaseTrackFromSearch,
   setCompanionOpenInUrl,
   setEditorialViewInUrl,
   type EditorialView,
 } from '@/components/audio-review/AudioWorkspaceNav';
 import { audioChapterStatusIcon } from '@/components/audio-review/audioStatusIcons';
 import { FormlessBookCoverPanel } from '@/components/audio-review/FormlessBookCoverPanel';
+import { MasterPhasesWorkspace } from '@/components/audio-review/MasterPhasesWorkspace';
 import { BrandShell } from '@/components/app-sidebar';
 import {
   AUDIO_BOOK,
@@ -61,6 +63,9 @@ export default function AudioEditorialMockupPage() {
   const [volume, setVolume] = useState(0.85);
   const [mode, setMode] = useState<EditorialView>(() =>
     companionOpenFromSearch() ? 'listen' : editorialViewFromSearch(),
+  );
+  const [masterTrackId, setMasterTrackId] = useState<number | null>(() =>
+    masterPhaseTrackFromSearch(),
   );
   const [companionOpen, setCompanionOpen] = useState(() => companionOpenFromSearch());
   const onSeek = useCallback((time: number) => {
@@ -102,18 +107,31 @@ export default function AudioEditorialMockupPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [closeTrays, companionOpen, review.readAlongOpen]);
 
-  const selectView = useCallback((view: EditorialView) => {
+  const selectView = useCallback((view: EditorialView, trackId: number | null = null) => {
     setMode(view);
     setCompanionOpen(false);
-    setEditorialViewInUrl(view);
+    if (view !== 'master-phases') {
+      setMasterTrackId(null);
+      setEditorialViewInUrl(view);
+      return;
+    }
+    setMasterTrackId(trackId);
+    setEditorialViewInUrl(view, trackId);
   }, []);
 
-  const shellActiveId = mode === 'analysis' ? 'audible-analysis' : 'audible';
+  const shellActiveId =
+    mode === 'analysis' || mode === 'master-phases' ? 'audible-analysis' : 'audible';
 
   return (
     <BrandShell
       activeId={shellActiveId}
-      crumb={mode === 'analysis' ? 'Analysis' : 'Audible Master'}
+      crumb={
+        mode === 'master-phases'
+          ? 'Master phases'
+          : mode === 'analysis'
+            ? 'Analysis'
+            : 'Audible Master'
+      }
       noise={false}
     >
     <div className="flex h-[calc(100dvh-2.5rem)] overflow-hidden bg-[#0a0c0b] font-sans text-cream antialiased">
@@ -126,12 +144,19 @@ export default function AudioEditorialMockupPage() {
           </p>
           <ol className="list-none">
             {review.chapters.map((chapter) => {
-              const active = chapter.id === review.chapterId;
+              const active =
+                mode === 'master-phases'
+                  ? chapter.id === masterTrackId
+                  : chapter.id === review.chapterId;
               return (
                 <li key={chapter.id} className="border-b border-cream/[0.06]">
                   <button
                     type="button"
                     onClick={() => {
+                      if (mode === 'master-phases') {
+                        selectView('master-phases', chapter.id);
+                        return;
+                      }
                       selectView('listen');
                       review.selectChapter(chapter.id);
                     }}
@@ -189,7 +214,14 @@ export default function AudioEditorialMockupPage() {
         ) : null}
 
         {mode === 'analysis' ? (
-          <AudioAnalysisDashboard />
+          <AudioAnalysisDashboard
+            onSelectWorkspaceTab={(tab) => selectView(tab)}
+          />
+        ) : mode === 'master-phases' ? (
+          <MasterPhasesWorkspace
+            focusTrackId={masterTrackId}
+            onSelectWorkspaceTab={(tab) => selectView(tab)}
+          />
         ) : (
           <>
             <header className="border-b border-cream/10 px-6 py-5 md:px-10">

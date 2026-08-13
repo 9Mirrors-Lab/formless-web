@@ -14,7 +14,7 @@ import {
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
 import { AdvanceListenMobilePlayer } from '@/components/audio-review/AdvanceListenMobilePlayer';
-import { FORMLESS_COVER_DIRECTIONS } from '@/components/audio-review/FormlessBookCoverPanel';
+import { FORMLESS_COVER } from '@/components/audio-review/FormlessBookCoverPanel';
 import {
   formatAudioTime,
   formatChapterIndex,
@@ -24,8 +24,7 @@ import { useAudioReviewMock } from '@/hooks/useAudioReviewMock';
 const EASE_HEAVY = [0.32, 0.72, 0, 1] as const;
 
 /** Locked cover direction for editorial v2 atmosphere. */
-const VOID_LIGHT_COVER =
-  FORMLESS_COVER_DIRECTIONS.find((c) => c.id === 'c') ?? FORMLESS_COVER_DIRECTIONS[0]!;
+const VOID_LIGHT_COVER = FORMLESS_COVER;
 
 export default function AdvanceListenPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
