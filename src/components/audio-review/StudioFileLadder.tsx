@@ -93,6 +93,7 @@ type StudioRungTickProps = {
 export function StudioRungTick({ id, state }: StudioRungTickProps) {
   return (
     <span
+      data-rung={id}
       className={`relative inline-flex h-2.5 w-2.5 rounded-full border ${tickClass(state)}`}
       aria-hidden
     />

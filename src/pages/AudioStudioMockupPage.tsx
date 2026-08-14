@@ -100,7 +100,6 @@ export default function AudioStudioMockupPage() {
                   </span>
                   <span className="mt-0.5 block font-mono text-[10px] text-cream/35">
                     {formatAudioTime(chapter.length)}
-                    {chapter.provisional ? ' · title TBD' : ''}
                   </span>
                 </span>
               </button>
