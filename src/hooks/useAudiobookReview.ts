@@ -1,25 +1,30 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   activeSentenceAt,
-  AUDIO_CHAPTERS,
+  AUDIO_LISTEN_ORDER,
   type AudioChapter,
   type AudioSentence,
-} from '@/data/audioReviewMock';
-import { fetchChapterAudio } from '@/lib/audiobookTracks';
+} from '@/data/audioBook';
+import {
+  chapterAudioFromTracks,
+  chaptersFromTracks,
+  listPublishedAudiobookTracks,
+  type AudiobookTrack,
+} from '@/lib/audiobookTracks';
 
 export type AudioSource = 'original' | 'optimized';
 
-type UseAudioReviewMockOptions = {
+type UseAudiobookReviewOptions = {
   initialChapterId?: number;
   /** Called when transport seeks so the waveform player can follow. */
   onSeek?: (time: number) => void;
 };
 
-export function useAudioReviewMock({
+export function useAudiobookReview({
   initialChapterId = 13,
   onSeek,
-}: UseAudioReviewMockOptions = {}) {
+}: UseAudiobookReviewOptions = {}) {
   const onSeekRef = useRef(onSeek);
   onSeekRef.current = onSeek;
   const [chapterId, setChapterId] = useState(initialChapterId);
@@ -28,47 +33,62 @@ export function useAudioReviewMock({
   const [currentTime, setCurrentTime] = useState(0);
   const [readAlongOpen, setReadAlongOpen] = useState(false);
   const [sourceFlash, setSourceFlash] = useState(0);
-  const [originalUrl, setOriginalUrl] = useState<string | null>(null);
-  const [optimizedUrl, setOptimizedUrl] = useState<string | null>(null);
-  const [trackDuration, setTrackDuration] = useState<number | null>(null);
+  const [tracks, setTracks] = useState<AudiobookTrack[]>([]);
+  const [catalogReady, setCatalogReady] = useState(false);
   const [audioReady, setAudioReady] = useState(false);
   const [audioLoading, setAudioLoading] = useState(true);
 
-  const baseChapter: AudioChapter =
-    AUDIO_CHAPTERS.find((c) => c.id === chapterId) ?? AUDIO_CHAPTERS[0]!;
+  const chapters = useMemo(() => chaptersFromTracks(tracks), [tracks]);
 
+  const baseChapter: AudioChapter =
+    chapters.find((chapter) => chapter.id === chapterId) ??
+    chapters[0] ?? {
+      id: initialChapterId,
+      title: '',
+      length: 0,
+      status: 'pending',
+      manuscript: [],
+    };
+
+  const audio = chapterAudioFromTracks(tracks, chapterId);
+  const originalUrl = audio.originalUrl;
+  const optimizedUrl = audio.optimizedUrl;
   const chapter: AudioChapter = {
     ...baseChapter,
-    length: trackDuration ?? baseChapter.length,
+    length: audio.durationSeconds ?? baseChapter.length,
   };
 
   const activeSentence: AudioSentence | null = activeSentenceAt(chapter, currentTime);
 
   useEffect(() => {
     let cancelled = false;
+    setAudioLoading(true);
+    void (async () => {
+      const result = await listPublishedAudiobookTracks();
+      if (cancelled) return;
+      const nextTracks = result.ok ? result.tracks : [];
+      setTracks(nextTracks);
+      setCatalogReady(true);
+      setAudioLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!catalogReady) return;
     setAudioReady(false);
     setAudioLoading(true);
     setPlaying(false);
     setCurrentTime(0);
-
-    void (async () => {
-      const result = await fetchChapterAudio(chapterId);
-      if (cancelled) return;
-      setOriginalUrl(result.originalUrl);
-      setOptimizedUrl(result.optimizedUrl);
-      setTrackDuration(result.durationSeconds);
-      setAudioLoading(false);
-      if (result.optimizedUrl) {
-        setSource('optimized');
-      } else if (result.originalUrl) {
-        setSource('original');
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [chapterId]);
+    if (optimizedUrl) {
+      setSource('optimized');
+    } else if (originalUrl) {
+      setSource('original');
+    }
+    setAudioLoading(false);
+  }, [catalogReady, chapterId, originalUrl, optimizedUrl]);
 
   const toggleSource = useCallback(() => {
     setSource((prev) => (prev === 'original' ? 'optimized' : 'original'));
@@ -133,15 +153,16 @@ export function useAudioReviewMock({
 
   const jumpChapter = useCallback((direction: -1 | 1) => {
     setChapterId((id) => {
-      const index = AUDIO_CHAPTERS.findIndex((c) => c.id === id);
+      const order = chapters.length > 0 ? chapters.map((chapter) => chapter.id) : [...AUDIO_LISTEN_ORDER];
+      const index = order.indexOf(id);
       const nextIndex = index + direction;
-      if (nextIndex < 0 || nextIndex >= AUDIO_CHAPTERS.length) return id;
-      return AUDIO_CHAPTERS[nextIndex]!.id;
+      if (nextIndex < 0 || nextIndex >= order.length) return id;
+      return order[nextIndex]!;
     });
-  }, []);
+  }, [chapters]);
 
   return {
-    chapters: AUDIO_CHAPTERS,
+    chapters,
     chapter,
     chapterId,
     selectChapter,
@@ -160,6 +181,8 @@ export function useAudioReviewMock({
     setReadAlongOpen,
     originalUrl,
     optimizedUrl,
+    tracks,
+    catalogReady,
     audioReady,
     setAudioReady,
     audioLoading,

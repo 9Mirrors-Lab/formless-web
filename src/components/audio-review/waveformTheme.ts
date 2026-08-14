@@ -1,9 +1,4 @@
-/** Dark theme tokens for wavesurfer.js on audio review mockups. */
-
-export const AUDIO_DEMO = {
-  original: '/audio/demo-original.wav',
-  optimized: '/audio/demo-optimized.wav',
-} as const;
+/** Dark theme tokens for wavesurfer.js on audio review. */
 
 export type WaveformAccent = 'muted' | 'moss' | 'clay' | 'ink';
 

@@ -11,6 +11,7 @@ export type BrandNavId =
     | "speaker-sheet"
     | "audible"
     | "audible-analysis"
+    | "audible-studio"
     | "zoom-backgrounds"
     | "brand-kit"
     | "client-review"
@@ -52,6 +53,12 @@ const NAV_ITEMS: NavItem[] = [
         href: "/audio/editorial?view=analysis",
         description: "Recording report · Master phases",
       },
+      {
+        id: "audible-studio",
+        title: "Studio ladder",
+        href: "/audio/editorial2",
+        description: "File status toward Audible",
+      },
     ],
   },
   {
@@ -78,6 +85,9 @@ function navIdFromPath(
   }
   if (pathname === "/advance-listen" || pathname.startsWith("/advance-listen")) {
     return "audible";
+  }
+  if (pathname === "/audio/editorial2" || pathname.startsWith("/audio/editorial2")) {
+    return "audible-studio";
   }
   if (pathname === "/audio/editorial-v2" || pathname.startsWith("/audio/editorial-v2")) {
     return "audible";

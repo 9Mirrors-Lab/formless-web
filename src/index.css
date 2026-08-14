@@ -425,6 +425,32 @@
     background: rgb(16 20 18);
   }
 
+  .studio-tick-skipped {
+    background-image: linear-gradient(
+      135deg,
+      transparent calc(50% - 0.6px),
+      currentColor calc(50% - 0.6px),
+      currentColor calc(50% + 0.6px),
+      transparent calc(50% + 0.6px)
+    );
+  }
+
+  @keyframes studio-tick-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgb(242 240 233 / 0);
+    }
+    50% {
+      box-shadow: 0 0 0 3px rgb(242 240 233 / 0.2);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .studio-tick-current {
+      animation: none;
+    }
+  }
+
   /* Audiobook compare: hide native Multitrack scrollbar; custom pan bar is in the footer. */
   .audio-compare-scroll > div > div {
     scrollbar-width: none;

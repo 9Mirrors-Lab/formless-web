@@ -1,8 +1,20 @@
 import {
-  AUDIO_CHAPTER_TITLE_BY_ID,
+  AUDIO_LISTEN_ORDER,
+  audiobookListenOrderRank,
   canonicalChapterTitle,
-} from '@/data/audioReviewMock';
+  chapterStatusFromSources,
+  isAudioChapterId,
+  type AudioChapter,
+} from '@/data/audioBook';
+import { manuscriptForChapter } from '@/data/audioManuscripts';
+import {
+  googleDriveMediaUrl,
+  isGoogleDriveMediaUrl,
+} from '@/lib/googleDriveMedia';
+import { GOOGLE_DRIVE_STORAGE_PROVIDER } from '@/lib/googleDriveUpload';
 import { getBrowserSupabaseClient, hasSupabaseEnv } from '@/lib/supabase';
+
+export { googleDriveMediaUrl, isGoogleDriveMediaUrl };
 
 export type AudiobookTrackSource = 'original' | 'optimized';
 
@@ -43,19 +55,34 @@ type AudiobookTrackRow = {
 const TRACK_SELECT =
   'id, book_slug, chapter_number, chapter_title, source, storage_bucket, storage_path, mime_type, duration_seconds, file_size_bytes, original_filename';
 
-function publicObjectUrl(bucket: string, path: string): string {
+export function audiobookPublicUrl(bucket: string, path: string): string {
+  if (bucket === GOOGLE_DRIVE_STORAGE_PROVIDER) {
+    return googleDriveMediaUrl(path);
+  }
   const base = import.meta.env.VITE_SUPABASE_URL?.replace(/\/$/, '');
   if (!base) return '';
   return `${base}/storage/v1/object/public/${bucket}/${path}`;
 }
 
-/** Listen order: Opening Credits, Introduction, chapters 1–9, Acknowledgments. */
-export function audiobookListenOrderRank(chapterNumber: number): number {
-  if (chapterNumber === 13) return 0;
-  if (chapterNumber === 0) return 1;
-  if (chapterNumber === 12) return 11;
-  return chapterNumber + 1;
+/** Masters always play through Drive. Originals keep their catalog storage URL. */
+export function audiobookTrackPublicUrl(
+  source: AudiobookTrackSource,
+  bucket: string,
+  path: string,
+): string {
+  switch (source) {
+    case 'optimized':
+      return googleDriveMediaUrl(path);
+    case 'original':
+      return audiobookPublicUrl(bucket, path);
+    default: {
+      const _exhaustive: never = source;
+      return _exhaustive;
+    }
+  }
 }
+
+export { audiobookListenOrderRank };
 
 function mapRow(row: AudiobookTrackRow): AudiobookTrack {
   const duration =
@@ -72,7 +99,7 @@ function mapRow(row: AudiobookTrackRow): AudiobookTrack {
     durationSeconds: Number.isFinite(duration) ? duration : null,
     fileSizeBytes: row.file_size_bytes,
     originalFilename: row.original_filename,
-    publicUrl: publicObjectUrl(row.storage_bucket, row.storage_path),
+    publicUrl: audiobookTrackPublicUrl(row.source, row.storage_bucket, row.storage_path),
   };
 }
 
@@ -114,7 +141,7 @@ export async function listPublishedAudiobookTracks(
   }
 
   const tracks = ((data as AudiobookTrackRow[] | null) ?? [])
-    .filter((row) => AUDIO_CHAPTER_TITLE_BY_ID[row.chapter_number] != null)
+    .filter((row) => isAudioChapterId(row.chapter_number))
     .map(mapRow)
     .sort((a, b) => {
       const order = audiobookListenOrderRank(a.chapterNumber)
@@ -177,7 +204,42 @@ export async function fetchChapterAudio(
     originalUrl: original?.publicUrl ?? null,
     optimizedUrl: optimized?.publicUrl ?? null,
     durationSeconds:
-      original?.durationSeconds ?? optimized?.durationSeconds ?? null,
+      optimized?.durationSeconds ?? original?.durationSeconds ?? null,
     tracks,
+  };
+}
+
+export function chaptersFromTracks(tracks: AudiobookTrack[]): AudioChapter[] {
+  return AUDIO_LISTEN_ORDER.map((id) => {
+    const original = tracks.find(
+      (track) => track.chapterNumber === id && track.source === 'original',
+    );
+    const optimized = tracks.find(
+      (track) => track.chapterNumber === id && track.source === 'optimized',
+    );
+    const duration = optimized?.durationSeconds ?? original?.durationSeconds ?? 0;
+    return {
+      id,
+      title: canonicalChapterTitle(id),
+      length: Number.isFinite(duration) ? Math.round(duration) : 0,
+      status: chapterStatusFromSources(Boolean(original), Boolean(optimized)),
+      manuscript: manuscriptForChapter(id),
+    };
+  });
+}
+
+export function chapterAudioFromTracks(
+  tracks: AudiobookTrack[],
+  chapterNumber: number,
+): ChapterAudioUrls {
+  const chapterTracks = tracks.filter((track) => track.chapterNumber === chapterNumber);
+  const original = chapterTracks.find((track) => track.source === 'original') ?? null;
+  const optimized = chapterTracks.find((track) => track.source === 'optimized') ?? null;
+  return {
+    originalUrl: original?.publicUrl ?? null,
+    optimizedUrl: optimized?.publicUrl ?? null,
+    durationSeconds:
+      optimized?.durationSeconds ?? original?.durationSeconds ?? null,
+    tracks: chapterTracks,
   };
 }

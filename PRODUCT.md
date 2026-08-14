@@ -6,7 +6,7 @@ brand
 
 ## Users
 
-People who have had enough of stress, pain, anger, lack, or discontentment. They arrive exhausted by outer fixes and are open to a quieter invitation inward. Secondary users include the Eyes Closed client reviewing design directions and audiobook production mockups (`/audio`, `/audio/editorial`, Design Lab).
+People who have had enough of stress, pain, anger, lack, or discontentment. They arrive exhausted by outer fixes and are open to a quieter invitation inward. Secondary users include the Eyes Closed client reviewing design directions and audiobook production (`/audio`, `/audio/editorial`, Design Lab).
 
 ## Product Purpose
 

@@ -18,8 +18,8 @@ import { FORMLESS_COVER } from '@/components/audio-review/FormlessBookCoverPanel
 import {
   formatAudioTime,
   formatChapterIndex,
-} from '@/data/audioReviewMock';
-import { useAudioReviewMock } from '@/hooks/useAudioReviewMock';
+} from '@/data/audioBook';
+import { useAudiobookReview } from '@/hooks/useAudiobookReview';
 
 const EASE_HEAVY = [0.32, 0.72, 0, 1] as const;
 
@@ -35,7 +35,7 @@ export default function AdvanceListenPage() {
   const onSeek = useCallback((time: number) => {
     playerRef.current?.seek(time);
   }, []);
-  const review = useAudioReviewMock({ initialChapterId: 13, onSeek });
+  const review = useAudiobookReview({ initialChapterId: 13, onSeek });
 
   useEffect(() => {
     const id = window.requestAnimationFrame(() => setEntered(true));

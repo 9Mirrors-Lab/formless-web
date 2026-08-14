@@ -42,3 +42,23 @@ export function getMobileNavVariant(search?: string): MobileNavVariant {
   if (fromEnv === 'shroud' || fromEnv === 'bloom') return fromEnv;
   return 'default';
 }
+
+const EDITORIAL_BOOK_COVER_QUERY_KEY = 'editorialBookCover';
+
+/**
+ * Book cover block on editorial2. Off until cover artwork is approved.
+ * `?editorialBookCover=1` or `VITE_EDITORIAL_BOOK_COVER=true`. Default: off.
+ */
+export function resolveEditorialBookCoverEnabled(search?: string): boolean {
+  if (typeof window !== 'undefined' || search !== undefined) {
+    const params = new URLSearchParams(search ?? window.location.search);
+    const fromQuery = parseBooleanFlag(params.get(EDITORIAL_BOOK_COVER_QUERY_KEY));
+    if (fromQuery !== null) return fromQuery;
+  }
+
+  const fromEnv = import.meta.env.VITE_EDITORIAL_BOOK_COVER;
+  if (fromEnv === 'true' || fromEnv === '1') return true;
+  if (fromEnv === 'false' || fromEnv === '0') return false;
+
+  return false;
+}

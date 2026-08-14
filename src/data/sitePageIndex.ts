@@ -316,8 +316,8 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio',
     category: 'design',
     description:
-      'Mockup A: dark studio compare for Formless chapter audio (Original vs Optimized, T toggle, read-along).',
-    source: 'src/pages/AudioStudioMockupPage.tsx',
+      'Studio compare for Formless chapter audio (Original vs Optimized, T toggle, read-along).',
+    source: 'src/pages/AudioStudioPage.tsx',
   },
   {
     id: 'audio-editorial',
@@ -326,7 +326,16 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     category: 'design',
     description:
       'Audible Master: Listen / Analysis / Master phases workspace for Formless chapter audio.',
-    source: 'src/pages/AudioEditorialMockupPage.tsx',
+    source: 'src/pages/AudioEditorialPage.tsx',
+  },
+  {
+    id: 'audio-editorial-2',
+    title: 'Audiobook review · Studio ladder',
+    path: '/audio/editorial2',
+    category: 'design',
+    description:
+      'Editorial2: six-rung file ladder toward Audible, master-phase results, no serif.',
+    source: 'src/pages/AudioEditorial2Page.tsx',
   },
   {
     id: 'audio-master-phases',

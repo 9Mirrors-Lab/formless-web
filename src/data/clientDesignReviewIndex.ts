@@ -128,7 +128,17 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     status: 'experiment',
     description:
       'Audible Master: listen compare, analysis, and master-phase track records for Formless chapter audio.',
-    source: 'src/pages/AudioEditorialMockupPage.tsx',
+    source: 'src/pages/AudioEditorialPage.tsx',
+  },
+  {
+    id: 'audio-editorial-2',
+    title: 'Audiobook review · Studio ladder',
+    href: '/audio/editorial2',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Editorial2: six-rung file ladder toward Audible, master-phase results, cover flagged off.',
+    source: 'src/pages/AudioEditorial2Page.tsx',
   },
   {
     id: 'audio-master-phases',

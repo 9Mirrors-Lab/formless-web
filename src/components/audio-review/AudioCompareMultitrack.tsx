@@ -13,6 +13,7 @@ import {
   WAVE_GRADIENTS,
 } from '@/components/audio-review/waveformTheme';
 import { extractAudioPeaks } from '@/lib/extractAudioPeaks';
+import { isGoogleDriveMediaUrl } from '@/lib/audiobookTracks';
 
 export type AudioCompareHandle = {
   play: () => void;
@@ -109,6 +110,7 @@ export const AudioCompareMultitrack = forwardRef<
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const driveAudioRef = useRef<HTMLAudioElement | null>(null);
   const multitrackRef = useRef<ReturnType<typeof MultiTrack.create> | null>(null);
   const activeSourceRef = useRef(activeSource);
   const onTimeUpdateRef = useRef(onTimeUpdate);
@@ -126,6 +128,7 @@ export const AudioCompareMultitrack = forwardRef<
   const [peaksReady, setPeaksReady] = useState(false);
   const [peaksError, setPeaksError] = useState<string | null>(null);
   const [trackPeaks, setTrackPeaks] = useState<TrackPeaks | null>(null);
+  const [driveTime, setDriveTime] = useState(0);
   const [scrollMetrics, setScrollMetrics] = useState({
     scrollLeft: 0,
     clientWidth: 0,
@@ -142,13 +145,15 @@ export const AudioCompareMultitrack = forwardRef<
   const hasOptimized = Boolean(optimizedUrl);
   const resolvedOptimized = optimizedUrl || null;
   const waveformUrl = optimizedOnly ? resolvedOptimized : resolvedOriginal;
+  const isDriveMedia = isGoogleDriveMediaUrl(waveformUrl);
   const hasUploadedAudio = optimizedOnly
     ? hasOptimized
     : hasOriginal || hasOptimized;
   const laneCount = optimizedOnly ? 1 : hasOptimized ? 2 : 1;
 
   const peaksLoading =
-    loading || (hasUploadedAudio && (!peaksReady || !trackPeaks));
+    !isDriveMedia &&
+    (loading || (hasUploadedAudio && (!peaksReady || !trackPeaks)));
 
   const syncScrollMetrics = useCallback(() => {
     const container = containerRef.current;
@@ -183,6 +188,15 @@ export const AudioCompareMultitrack = forwardRef<
   }, []);
 
   const pollTime = useCallback(() => {
+    const drive = driveAudioRef.current;
+    if (drive) {
+      onTimeUpdateRef.current?.(drive.currentTime);
+      setDriveTime(drive.currentTime);
+      if (!drive.paused && !drive.ended) {
+        rafRef.current = requestAnimationFrame(pollTime);
+      }
+      return;
+    }
     const mt = multitrackRef.current;
     if (!mt) return;
     onTimeUpdateRef.current?.(mt.getCurrentTime());
@@ -195,26 +209,54 @@ export const AudioCompareMultitrack = forwardRef<
     ref,
     () => ({
       play: () => {
+        const drive = driveAudioRef.current;
+        if (drive) {
+          void drive.play();
+          stopPoll();
+          rafRef.current = requestAnimationFrame(pollTime);
+          return;
+        }
         multitrackRef.current?.play();
         stopPoll();
         rafRef.current = requestAnimationFrame(pollTime);
       },
       pause: () => {
+        driveAudioRef.current?.pause();
         multitrackRef.current?.pause();
         stopPoll();
       },
       seek: (time: number) => {
+        const drive = driveAudioRef.current;
+        if (drive) {
+          drive.currentTime = Math.max(0, time);
+          setDriveTime(drive.currentTime);
+          onTimeUpdateRef.current?.(drive.currentTime);
+          return;
+        }
         multitrackRef.current?.setTime(time);
         onTimeUpdateRef.current?.(time);
       },
-      getCurrentTime: () => multitrackRef.current?.getCurrentTime() ?? 0,
-      isPlaying: () => multitrackRef.current?.isPlaying() ?? false,
+      getCurrentTime: () =>
+        driveAudioRef.current?.currentTime ??
+        multitrackRef.current?.getCurrentTime() ??
+        0,
+      isPlaying: () => {
+        const drive = driveAudioRef.current;
+        if (drive) return !drive.paused && !drive.ended;
+        return multitrackRef.current?.isPlaying() ?? false;
+      },
     }),
     [pollTime, stopPoll],
   );
 
   // Precompute peaks before Multitrack mounts (one fetch/decode per URL).
   useEffect(() => {
+    if (isDriveMedia) {
+      setPeaksReady(true);
+      setTrackPeaks(null);
+      setPeaksError(null);
+      return;
+    }
     if (loading || !waveformUrl) {
       setPeaksReady(false);
       setTrackPeaks(null);
@@ -287,6 +329,7 @@ export const AudioCompareMultitrack = forwardRef<
 
     return () => controller.abort();
   }, [
+    isDriveMedia,
     loading,
     waveformUrl,
     optimizedOnly,
@@ -477,6 +520,10 @@ export const AudioCompareMultitrack = forwardRef<
   ]);
 
   useEffect(() => {
+    const drive = driveAudioRef.current;
+    if (drive) {
+      drive.volume = Math.max(0, Math.min(1, volume));
+    }
     const mt = multitrackRef.current;
     if (!mt) return;
     const level = Math.max(0, Math.min(1, volume));
@@ -489,6 +536,18 @@ export const AudioCompareMultitrack = forwardRef<
   }, [activeSource, hasOptimized, optimizedOnly, volume]);
 
   useEffect(() => {
+    const drive = driveAudioRef.current;
+    if (drive) {
+      if (playing) {
+        void drive.play();
+        stopPoll();
+        rafRef.current = requestAnimationFrame(pollTime);
+      } else {
+        drive.pause();
+        stopPoll();
+      }
+      return;
+    }
     const mt = multitrackRef.current;
     if (!mt) return;
     if (playing) {
@@ -502,7 +561,16 @@ export const AudioCompareMultitrack = forwardRef<
   }, [playing, pollTime, stopPoll]);
 
   useEffect(() => {
+    setDriveTime(0);
+  }, [waveformUrl]);
+
+  useEffect(() => {
     const id = window.setInterval(() => {
+      const drive = driveAudioRef.current;
+      if (drive) {
+        if (playing && drive.ended) onFinishRef.current?.();
+        return;
+      }
       const mt = multitrackRef.current;
       if (!mt || !playing) return;
       const t = mt.getCurrentTime();
@@ -512,6 +580,26 @@ export const AudioCompareMultitrack = forwardRef<
     }, 500);
     return () => window.clearInterval(id);
   }, [playing]);
+
+  const driveDuration =
+    durationSeconds && durationSeconds > 0
+      ? durationSeconds
+      : driveAudioRef.current?.duration && Number.isFinite(driveAudioRef.current.duration)
+        ? driveAudioRef.current.duration
+        : 0;
+  const driveProgress =
+    driveDuration > 0 ? Math.min(1, Math.max(0, driveTime / driveDuration)) : 0;
+
+  const onDriveSeekPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDriveMedia || driveDuration <= 0) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    const time = ratio * driveDuration;
+    const drive = driveAudioRef.current;
+    if (drive) drive.currentTime = time;
+    setDriveTime(time);
+    onTimeUpdateRef.current?.(time);
+  };
 
   const { scrollLeft, clientWidth, scrollWidth } = scrollMetrics;
   const canPan = scrollWidth > clientWidth + 1;
@@ -638,7 +726,49 @@ export const AudioCompareMultitrack = forwardRef<
         </div>
       )}
       <div className="audio-compare-scroll min-w-0 flex-1 overflow-hidden rounded-md border border-cream/10 bg-[#0e1110]">
-        {!hasUploadedAudio && !loading ? (
+        {isDriveMedia && waveformUrl ? (
+          <>
+            <audio
+              ref={driveAudioRef}
+              src={waveformUrl}
+              preload="metadata"
+              onCanPlay={() => onReadyRef.current?.()}
+              onTimeUpdate={(event) => {
+                const time = event.currentTarget.currentTime;
+                setDriveTime(time);
+                onTimeUpdateRef.current?.(time);
+              }}
+              onEnded={() => onFinishRef.current?.()}
+            />
+            <button
+              type="button"
+              className="relative flex w-full items-center px-3 text-left"
+              style={{ height: trackHeight }}
+              onClick={(event) => {
+                if (driveDuration <= 0) return;
+                const rect = event.currentTarget.getBoundingClientRect();
+                const ratio = Math.min(
+                  1,
+                  Math.max(0, (event.clientX - rect.left) / rect.width),
+                );
+                const time = ratio * driveDuration;
+                const drive = driveAudioRef.current;
+                if (drive) drive.currentTime = time;
+                setDriveTime(time);
+                onTimeUpdateRef.current?.(time);
+              }}
+              aria-label="Seek mastered audio"
+            >
+              <span
+                className="absolute inset-y-0 left-0 bg-[#9fb5aa]/20"
+                style={{ width: `${driveProgress * 100}%` }}
+              />
+              <span className="relative font-mono text-[10px] uppercase tracking-[0.18em] text-cream/55">
+                Mastered · Google Drive · MP3
+              </span>
+            </button>
+          </>
+        ) : !hasUploadedAudio && !loading ? (
           <div
             className="flex items-center px-3 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/35"
             style={{ height: trackHeight }}
@@ -668,31 +798,37 @@ export const AudioCompareMultitrack = forwardRef<
         <div className="border-t border-cream/8 px-3 py-2">
           <div
             className={`relative h-1 w-full rounded-full bg-cream/15 ${
-              canPan ? 'cursor-pointer' : 'opacity-40'
+              isDriveMedia || canPan ? 'cursor-pointer' : 'opacity-40'
             }`}
             role="scrollbar"
-            aria-label="Pan waveform"
+            aria-label={isDriveMedia ? 'Seek mastered audio' : 'Pan waveform'}
             aria-orientation="horizontal"
             aria-controls="audio-compare-waveform"
             aria-valuemin={0}
-            aria-valuemax={Math.round(maxScroll)}
-            aria-valuenow={Math.round(scrollLeft)}
-            onPointerDown={onPanTrackPointerDown}
+            aria-valuemax={isDriveMedia ? Math.round(driveDuration) : Math.round(maxScroll)}
+            aria-valuenow={
+              isDriveMedia ? Math.round(driveTime) : Math.round(scrollLeft)
+            }
+            onPointerDown={isDriveMedia ? onDriveSeekPointerDown : onPanTrackPointerDown}
           >
             <div
               className={`absolute top-0 h-1 rounded-full ${
-                canPan
-                  ? 'cursor-grab bg-cream/45 active:cursor-grabbing'
-                  : 'bg-cream/25'
+                isDriveMedia
+                  ? 'bg-[#9fb5aa]/70'
+                  : canPan
+                    ? 'cursor-grab bg-cream/45 active:cursor-grabbing'
+                    : 'bg-cream/25'
               }`}
               style={{
-                width: `${thumbWidthPct}%`,
-                left: `${thumbLeftPct}%`,
+                width: isDriveMedia
+                  ? `${Math.max(driveProgress * 100, 2)}%`
+                  : `${thumbWidthPct}%`,
+                left: isDriveMedia ? '0%' : `${thumbLeftPct}%`,
               }}
-              onPointerDown={onPanThumbPointerDown}
-              onPointerMove={onPanThumbPointerMove}
-              onPointerUp={onPanThumbPointerUp}
-              onPointerCancel={onPanThumbPointerUp}
+              onPointerDown={isDriveMedia ? undefined : onPanThumbPointerDown}
+              onPointerMove={isDriveMedia ? undefined : onPanThumbPointerMove}
+              onPointerUp={isDriveMedia ? undefined : onPanThumbPointerUp}
+              onPointerCancel={isDriveMedia ? undefined : onPanThumbPointerUp}
             />
           </div>
         </div>

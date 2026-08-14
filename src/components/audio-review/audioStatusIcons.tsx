@@ -1,7 +1,7 @@
 import { Check, Circle, Mic, Timer } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import type { AudioChapterStatus } from '@/data/audioReviewMock';
+import type { AudioChapterStatus } from '@/data/audioBook';
 
 /** Shared status icons for progress legend + chapter lists. */
 export function audioChapterStatusIcon(

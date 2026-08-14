@@ -8,7 +8,7 @@ import {
   formatAudioTime,
   formatChapterIndex,
   type AudioChapter,
-} from '@/data/audioReviewMock';
+} from '@/data/audioBook';
 
 const EASE_SHEET = [0.32, 0.72, 0, 1] as const;
 

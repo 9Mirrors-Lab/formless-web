@@ -19,6 +19,27 @@ export function isInternalAccessEmail(email: string | null | undefined): boolean
 }
 
 /**
+ * Local/dev-only skip for Brand Studio auth.
+ * Hard-gated on Vite DEV so production builds never bypass, even if the env var
+ * is mistakenly set on a host. Opt in with `VITE_BYPASS_INTERNAL_AUTH=true` or
+ * `?bypassInternalAuth=1` (dev server only).
+ */
+export function isInternalAuthBypassEnabled(search?: string): boolean {
+  if (!import.meta.env.DEV) return false;
+
+  const fromEnv = import.meta.env.VITE_BYPASS_INTERNAL_AUTH;
+  if (fromEnv === 'true' || fromEnv === '1') return true;
+
+  if (typeof window !== 'undefined' || search !== undefined) {
+    const params = new URLSearchParams(search ?? window.location.search);
+    const fromQuery = params.get('bypassInternalAuth');
+    if (fromQuery === '1' || fromQuery === 'true') return true;
+  }
+
+  return false;
+}
+
+/**
  * Hub and Brand Studio destinations (sidebar materials + overview).
  */
 export function isInternalAuthPath(pathname: string): boolean {

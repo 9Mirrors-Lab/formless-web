@@ -4,7 +4,7 @@ import {
   chapterProgressSummary,
   type AudioChapter,
   type AudioChapterStatus,
-} from '@/data/audioReviewMock';
+} from '@/data/audioBook';
 
 export type FormlessCoverDirection = {
   id: 'a' | 'b' | 'c' | 'd' | 'e';

@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatChapterIndex } from '@/data/audioReviewMock';
+import { formatChapterIndex } from '@/data/audioBook';
 import {
   MASTER_PHASE_CATALOG,
   MASTER_TRACK_RUNS,
@@ -79,8 +79,18 @@ function phaseForRun(run: MasterTrackRun, id: MasterPhaseId): MasterPhaseRecord 
   );
 }
 
-function PhaseDetail({ phase }: { phase: MasterPhaseRecord }) {
+function PhaseDetail({
+  phase,
+  variant,
+}: {
+  phase: MasterPhaseRecord;
+  variant: MasterPhasesVariant;
+}) {
   const empty = phase.status === 'pending' && !phase.summary;
+  const valueClass =
+    variant === 'studio'
+      ? 'mt-1 text-base tabular-nums text-cream'
+      : 'mt-1 font-serif text-lg italic text-cream';
 
   if (empty) {
     return (
@@ -103,7 +113,7 @@ function PhaseDetail({ phase }: { phase: MasterPhaseRecord }) {
               <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream/35">
                 {metric.label}
               </dt>
-              <dd className="mt-1 font-serif text-lg italic text-cream">{metric.value}</dd>
+              <dd className={valueClass}>{metric.value}</dd>
             </div>
           ))}
         </dl>
@@ -135,14 +145,20 @@ function PhaseDetail({ phase }: { phase: MasterPhaseRecord }) {
   );
 }
 
+export type MasterPhasesVariant = 'editorial' | 'studio';
+
 type MasterPhasesWorkspaceProps = {
   focusTrackId: number | null;
   onSelectWorkspaceTab: (tab: AnalysisWorkspaceTab) => void;
+  variant?: MasterPhasesVariant;
+  onListen?: () => void;
 };
 
 export function MasterPhasesWorkspace({
   focusTrackId,
   onSelectWorkspaceTab,
+  variant = 'editorial',
+  onListen,
 }: MasterPhasesWorkspaceProps) {
   const [expandedTrackId, setExpandedTrackId] = useState<number | null>(focusTrackId);
   const [openPhase, setOpenPhase] = useState<string | undefined>(
@@ -173,15 +189,36 @@ export function MasterPhasesWorkspace({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-[#0d100e]">
-      <header className="shrink-0 border-b border-cream/10 px-6 py-8 md:px-10">
+      <header className="shrink-0 border-b border-cream/10 px-5 py-4 md:px-8">
         <AnalysisWorkspaceTabs
           value="master-phases"
           onValueChange={onSelectWorkspaceTab}
         />
-        <h2 className="mt-3 max-w-3xl font-serif text-4xl italic leading-[1.12] text-cream md:text-5xl">
+        {onListen ? (
+          <button
+            type="button"
+            onClick={onListen}
+            className="mt-3 min-h-11 text-sm text-cream/50 transition-colors hover:text-cream"
+          >
+            Back to listen
+          </button>
+        ) : null}
+        <h2
+          className={
+            variant === 'studio'
+              ? 'mt-2 max-w-3xl text-xl font-medium leading-tight tracking-tight text-cream'
+              : 'mt-3 max-w-3xl font-serif text-4xl italic leading-[1.12] text-cream md:text-5xl'
+          }
+        >
           Same six phases. Every track.
         </h2>
-        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-cream/55">
+        <p
+          className={
+            variant === 'studio'
+              ? 'mt-2 max-w-2xl text-[13px] leading-relaxed text-cream/50'
+              : 'mt-4 max-w-2xl text-lg leading-relaxed text-cream/55'
+          }
+        >
           Scan status in the table. Expand a row, then open a phase for that track’s notes,
           metrics, and files. After phase six the track is Ready for Final QC.
         </p>
@@ -234,7 +271,13 @@ export function MasterPhasesWorkspace({
                             <span className="mr-2 font-mono text-[11px] tabular-nums text-cream/35">
                               {formatChapterIndex(run.chapterId)}
                             </span>
-                            <span className="font-serif text-base italic text-cream">
+                            <span
+                              className={
+                                variant === 'studio'
+                                  ? 'text-base font-medium text-cream'
+                                  : 'font-serif text-base italic text-cream'
+                              }
+                            >
                               {run.chapterTitle}
                             </span>
                           </span>
@@ -293,7 +336,13 @@ export function MasterPhasesWorkspace({
                                         <span className="font-mono text-[11px] tabular-nums tracking-[0.18em] text-cream/35">
                                           {String(phase.id).padStart(2, '0')}
                                         </span>
-                                        <span className="font-serif text-xl italic">
+                                        <span
+                                          className={
+                                            variant === 'studio'
+                                              ? 'text-xl font-medium'
+                                              : 'font-serif text-xl italic'
+                                          }
+                                        >
                                           {phase.name}
                                         </span>
                                         <Badge
@@ -305,7 +354,7 @@ export function MasterPhasesWorkspace({
                                       </span>
                                     </AccordionTrigger>
                                     <AccordionContent className="pb-5">
-                                      <PhaseDetail phase={record} />
+                                      <PhaseDetail phase={record} variant={variant} />
                                     </AccordionContent>
                                   </AccordionItem>
                                 );

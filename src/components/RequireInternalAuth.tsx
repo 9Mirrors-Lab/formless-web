@@ -6,7 +6,10 @@ import {
   AuthPagePanel,
   AuthPageShell,
 } from '@/components/auth/AuthPageShell';
-import { isInternalAccessEmail } from '@/config/internalAccess';
+import {
+  isInternalAccessEmail,
+  isInternalAuthBypassEnabled,
+} from '@/config/internalAccess';
 import { useAuth } from '@/context/AuthContext';
 
 type RequireInternalAuthProps = {
@@ -34,12 +37,36 @@ function InternalStatusScreen({
   );
 }
 
+function AuthBypassBanner() {
+  return (
+    <div
+      className="pointer-events-none fixed bottom-3 left-3 z-[99998] rounded-md border border-amber-200/25 bg-[#121614]/95 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-200/85 shadow-md"
+      role="status"
+    >
+      Dev auth bypass
+    </div>
+  );
+}
+
 /**
  * Requires a signed-in Supabase user whose email is on the internal allowlist.
  * Unauthenticated visitors see a login modal instead of Brand Studio or its nav.
+ *
+ * Local testing can skip the gate when `isInternalAuthBypassEnabled()` is true
+ * (Vite DEV + explicit env/query). Production builds never bypass.
  */
 export function RequireInternalAuth({ children }: RequireInternalAuthProps) {
   const { status, user, signOut } = useAuth();
+  const bypass = isInternalAuthBypassEnabled();
+
+  if (bypass) {
+    return (
+      <>
+        {children}
+        <AuthBypassBanner />
+      </>
+    );
+  }
 
   if (status === 'loading') {
     return (

@@ -1,5 +1,5 @@
 /**
- * Audio mockup A — Studio compare
+ * Studio compare for Formless chapter audio.
  *
  * Visual thesis: Dark production desk; moss accent; waveform is the primary visual;
  * Formless identity stays quiet in the sidebar.
@@ -35,7 +35,7 @@ import {
 } from '@/data/audioBook';
 import { useAudiobookReview } from '@/hooks/useAudiobookReview';
 
-export default function AudioStudioMockupPage() {
+export default function AudioStudioPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
   const [volume, setVolume] = useState(0.85);
   const onSeek = useCallback((time: number) => {

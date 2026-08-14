@@ -1,11 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   isInternalAccessEmail,
+  isInternalAuthBypassEnabled,
   isInternalAuthPath,
 } from '@/config/internalAccess';
 
 describe('internalAccess', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('allows only the approved emails', () => {
     expect(isInternalAccessEmail('sonikacottman@gmail.com')).toBe(true);
     expect(isInternalAccessEmail('Riles4@Gmail.com')).toBe(true);
@@ -30,5 +35,24 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/')).toBe(false);
     expect(isInternalAuthPath('/book')).toBe(false);
     expect(isInternalAuthPath('/login')).toBe(false);
+  });
+
+  it('keeps auth bypass off by default', () => {
+    vi.stubEnv('VITE_BYPASS_INTERNAL_AUTH', undefined);
+    expect(isInternalAuthBypassEnabled('')).toBe(false);
+  });
+
+  it('enables auth bypass from env only while Vite DEV is on', () => {
+    vi.stubEnv('VITE_BYPASS_INTERNAL_AUTH', 'true');
+    // Vitest runs under Vite DEV; production builds hard-gate this in source.
+    expect(isInternalAuthBypassEnabled('')).toBe(import.meta.env.DEV);
+  });
+
+  it('enables auth bypass from query in DEV', () => {
+    vi.stubEnv('VITE_BYPASS_INTERNAL_AUTH', undefined);
+    expect(isInternalAuthBypassEnabled('?bypassInternalAuth=1')).toBe(
+      import.meta.env.DEV,
+    );
+    expect(isInternalAuthBypassEnabled('?bypassInternalAuth=0')).toBe(false);
   });
 });

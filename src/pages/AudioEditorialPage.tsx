@@ -1,8 +1,8 @@
 /**
- * Audio mockup B — Editorial listen + analysis (Audible Master)
+ * Editorial listen + analysis (Audible Master)
  *
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
- * audio compare stays spare, not DAW chrome. Analysis is editorial report, not DAW meters.
+ * audio compare stays spare, not DAW chrome. Analysis is per-track, not a sample report.
  * Recording Companion opens as a right tray (same width as Read along).
  * Listen = Audible Master; Analysis / Master phases = in-page tabs under Analysis nav.
  */
@@ -58,7 +58,7 @@ function statusTone(status: AudioChapterStatus): string {
   }
 }
 
-export default function AudioEditorialMockupPage() {
+export default function AudioEditorialPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
   const [volume, setVolume] = useState(0.85);
   const [mode, setMode] = useState<EditorialView>(() =>

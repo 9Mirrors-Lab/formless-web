@@ -41,8 +41,9 @@ import ClientReviewHeroClassicPage from './pages/ClientReviewHeroClassicPage';
 import ClientReviewHelixLockupPage from './pages/ClientReviewHelixLockupPage';
 import ClientReviewHelixDustPage from './pages/ClientReviewHelixDustPage';
 import SiteHubPage from './pages/SiteHubPage';
-import AudioStudioMockupPage from './pages/AudioStudioMockupPage';
-import AudioEditorialMockupPage from './pages/AudioEditorialMockupPage';
+import AudioStudioPage from './pages/AudioStudioPage';
+import AudioEditorialPage from './pages/AudioEditorialPage';
+import AudioEditorial2Page from './pages/AudioEditorial2Page';
 import AdvanceListenPage from './pages/AdvanceListenPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
@@ -137,6 +138,7 @@ export function Root({ path }: { path: string }) {
   const isClientReviewHelixDust = path === '/client/review/helix-dust';
   const isAudioStudio = path === '/audio';
   const isAudioEditorial = path === '/audio/editorial';
+  const isAudioEditorial2 = path === '/audio/editorial2';
   const isAudioAdvanceListen = path === '/advance-listen';
   const isAudioEditorialV2Legacy = path === '/audio/editorial-v2';
   const isAudioCompanion = path === '/audio/companion';
@@ -182,8 +184,9 @@ export function Root({ path }: { path: string }) {
   if (isClientReviewHeroClassic) return <ClientReviewHeroClassicPage />;
   if (isClientReviewHelixLockup) return <ClientReviewHelixLockupPage />;
   if (isClientReviewHelixDust) return <ClientReviewHelixDustPage />;
-  if (isAudioStudio) return <AudioStudioMockupPage />;
-  if (isAudioEditorial) return <AudioEditorialMockupPage />;
+  if (isAudioStudio) return <AudioStudioPage />;
+  if (isAudioEditorial) return <AudioEditorialPage />;
+  if (isAudioEditorial2) return <AudioEditorial2Page />;
   if (isAudioAdvanceListen) return <AdvanceListenPage />;
   if (isAudioEditorialV2Legacy) return <EditorialV2LegacyRedirect />;
   if (isAudioCompanion) return <AudioCompanionKitPage />;
@@ -225,6 +228,7 @@ function isUnrestrictedPath(path: string): boolean {
     path.startsWith('/client/review/') ||
     path === '/audio' ||
     path === '/audio/editorial' ||
+    path === '/audio/editorial2' ||
     path === '/advance-listen' ||
     path === '/audio/editorial-v2' ||
     path === '/audio/companion' ||
