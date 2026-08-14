@@ -731,7 +731,7 @@ export const AudioCompareMultitrack = forwardRef<
             <audio
               ref={driveAudioRef}
               src={waveformUrl}
-              preload="metadata"
+              preload="auto"
               onCanPlay={() => onReadyRef.current?.()}
               onTimeUpdate={(event) => {
                 const time = event.currentTarget.currentTime;
@@ -757,15 +757,12 @@ export const AudioCompareMultitrack = forwardRef<
                 setDriveTime(time);
                 onTimeUpdateRef.current?.(time);
               }}
-              aria-label="Seek mastered audio"
+              aria-label="Seek audio"
             >
               <span
                 className="absolute inset-y-0 left-0 bg-[#9fb5aa]/20"
                 style={{ width: `${driveProgress * 100}%` }}
               />
-              <span className="relative font-mono text-[10px] uppercase tracking-[0.18em] text-cream/55">
-                Mastered · Google Drive · MP3
-              </span>
             </button>
           </>
         ) : !hasUploadedAudio && !loading ? (
@@ -801,7 +798,7 @@ export const AudioCompareMultitrack = forwardRef<
               isDriveMedia || canPan ? 'cursor-pointer' : 'opacity-40'
             }`}
             role="scrollbar"
-            aria-label={isDriveMedia ? 'Seek mastered audio' : 'Pan waveform'}
+            aria-label={isDriveMedia ? 'Seek audio' : 'Pan waveform'}
             aria-orientation="horizontal"
             aria-controls="audio-compare-waveform"
             aria-valuemin={0}

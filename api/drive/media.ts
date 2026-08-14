@@ -1,4 +1,15 @@
 const FILE_ID_PATTERN = /^[A-Za-z0-9_-]{20,80}$/;
+const BYTE_RANGE_PATTERN = /^bytes=(\d+)-(\d+)?$/i;
+const AUDIO_LISTEN_CHUNK_BYTES = 1024 * 1024;
+
+function capByteRange(rangeHeader: string | undefined): string {
+  const match = BYTE_RANGE_PATTERN.exec(rangeHeader?.trim() ?? '');
+  const start = match ? Number(match[1]) : 0;
+  const requestedEnd =
+    match?.[2] != null ? Number(match[2]) : start + AUDIO_LISTEN_CHUNK_BYTES - 1;
+  const end = Math.min(requestedEnd, start + AUDIO_LISTEN_CHUNK_BYTES - 1);
+  return `bytes=${start}-${end}`;
+}
 
 function parseGoogleDriveFileId(value: string | null | undefined): string | null {
   const id = value?.trim() ?? '';
@@ -50,11 +61,11 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       return;
     }
 
-    const range = headerValue(req.headers.range);
+    const range = capByteRange(headerValue(req.headers.range));
     const upstream = await fetch(googleDriveUpstreamUrl(fileId), {
       headers: {
         Accept: 'audio/mpeg,application/octet-stream,*/*',
-        ...(range ? { Range: range } : {}),
+        Range: range,
       },
       redirect: 'follow',
     });

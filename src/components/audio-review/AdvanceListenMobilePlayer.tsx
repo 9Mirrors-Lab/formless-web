@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronUp, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 import { useState } from 'react';
 
+import { AdvanceListenRuntime } from '@/components/audio-review/AdvanceListenRuntime';
 import { ShaderBackdrop } from '@/components/shader/ShaderBackdrop';
 import {
   AUDIO_BOOK,
@@ -55,6 +56,9 @@ export function AdvanceListenMobilePlayer({
         <p className="font-serif text-[1.65rem] italic leading-[1.15] text-cream">
           {AUDIO_BOOK.title} · Advance Listening Edition
         </p>
+        <div className="mt-3">
+          <AdvanceListenRuntime align="center" size="quiet" />
+        </div>
       </header>
 
       <div className="flex min-h-0 flex-1 items-center justify-center bg-[#060807] py-3">
@@ -193,15 +197,16 @@ export function AdvanceListenMobilePlayer({
               <button
                 type="button"
                 onClick={closeChapters}
-                className="relative flex shrink-0 items-center justify-center px-6 py-5"
+                className="relative flex shrink-0 flex-col items-center justify-center gap-2 px-6 py-5"
               >
                 <span className="font-serif text-2xl font-bold italic leading-none text-cream">
                   Chapters
                 </span>
+                <AdvanceListenRuntime align="center" size="quiet" />
                 <ChevronUp
                   size={22}
                   strokeWidth={1.5}
-                  className="absolute right-6 rotate-180 text-cream/80"
+                  className="absolute right-6 top-5 rotate-180 text-cream/80"
                   aria-hidden
                 />
               </button>

@@ -54,7 +54,7 @@ import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
 import { RequireInternalAuth } from './components/RequireInternalAuth';
-import { isInternalAuthPath } from './config/internalAccess';
+import { isAdvanceListenPath, isInternalAuthPath } from './config/internalAccess';
 import { hasAuthCallbackCode } from './lib/auth';
 
 const publicSiteRestricted = isPublicSiteRestricted();
@@ -250,7 +250,11 @@ function AppContentShell({ path }: { path: string }) {
   if (isInternalAuthPath(path)) {
     return (
       <>
-        <RequireInternalAuth>{page}</RequireInternalAuth>
+        <RequireInternalAuth
+          gate={isAdvanceListenPath(path) ? 'advance-listen' : 'internal'}
+        >
+          {page}
+        </RequireInternalAuth>
         <DevMenu path={path} />
       </>
     );

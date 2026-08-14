@@ -29,17 +29,24 @@ describe('audiobook public URLs', () => {
     );
   });
 
-  it('plays optimized masters through the Drive proxy even if the bucket is mislabeled', () => {
+  it('plays optimized masters through the Drive proxy when the path is a Drive id', () => {
     expect(
       audiobookTrackPublicUrl('optimized', 'audiobook', DRIVE_FILE_ID),
     ).toBe(googleDriveMediaUrl(DRIVE_FILE_ID));
+  });
+
+  it('plays optimized masters from public storage when the path is an object key', () => {
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co');
     expect(
       audiobookTrackPublicUrl(
         'optimized',
         'audiobook',
         'formless/chapter-01/optimized.mp3',
       ),
-    ).toBe('');
+    ).toBe(
+      'https://example.supabase.co/storage/v1/object/public/audiobook/formless/chapter-01/optimized.mp3',
+    );
+    vi.unstubAllEnvs();
   });
 
   it('keeps Supabase public object URLs for original takes', () => {

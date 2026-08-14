@@ -1,6 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
-import { googleDriveUpstreamUrl, parseGoogleDriveFileId } from './googleDriveMedia';
+import {
+  capByteRange,
+  googleDriveUpstreamUrl,
+  parseGoogleDriveFileId,
+} from './googleDriveMedia';
 
 function headerValue(value: string | string[] | undefined): string | undefined {
   if (Array.isArray(value)) return value[0];
@@ -48,11 +52,11 @@ export async function fetchGoogleDriveMedia(request: Request): Promise<Response>
     return textResponse(400, 'Invalid Drive file id.');
   }
 
-  const range = request.headers.get('range');
+  const range = capByteRange(request.headers.get('range'));
   const upstream = await fetch(googleDriveUpstreamUrl(fileId), {
     headers: {
       Accept: 'audio/mpeg,application/octet-stream,*/*',
-      ...(range ? { Range: range } : {}),
+      Range: range,
     },
     redirect: 'follow',
   });

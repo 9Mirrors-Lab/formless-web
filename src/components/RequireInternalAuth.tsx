@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
 
-import { InternalLoginModal } from '@/components/auth/InternalLoginModal';
+import {
+  InternalLoginModal,
+  type InternalLoginGate,
+} from '@/components/auth/InternalLoginModal';
 import {
   authLinkClassName,
   AuthPagePanel,
@@ -14,12 +17,15 @@ import { useAuth } from '@/context/AuthContext';
 
 type RequireInternalAuthProps = {
   children: ReactNode;
+  gate?: InternalLoginGate;
 };
 
 function InternalStatusScreen({
+  eyebrow,
   title,
   description,
 }: {
+  eyebrow: string;
   title: string;
   description: string;
 }) {
@@ -28,7 +34,7 @@ function InternalStatusScreen({
       <div className="noise-overlay-dark" aria-hidden />
       <div className="relative max-w-md">
         <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-cream/45">
-          Member access
+          {eyebrow}
         </p>
         <h1 className="mt-3 font-serif text-4xl italic text-cream">{title}</h1>
         <p className="mt-4 font-sans text-sm leading-relaxed text-cream/65">{description}</p>
@@ -37,40 +43,32 @@ function InternalStatusScreen({
   );
 }
 
-function AuthBypassBanner() {
-  return (
-    <div
-      className="pointer-events-none fixed bottom-3 left-3 z-[99998] rounded-md border border-amber-200/25 bg-[#121614]/95 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-200/85 shadow-md"
-      role="status"
-    >
-      Dev auth bypass
-    </div>
-  );
-}
-
 /**
- * Requires a signed-in Supabase user whose email is on the internal allowlist.
- * Unauthenticated visitors see a login modal instead of Brand Studio or its nav.
+ * Requires a signed-in Supabase user.
+ * Brand Studio and hub routes also require an allowlisted email.
+ * Advance listen lets any signed-in account through.
  *
+ * Unauthenticated visitors see a login modal instead of the protected page.
  * Local testing can skip the gate when `isInternalAuthBypassEnabled()` is true
  * (Vite DEV + explicit env/query). Production builds never bypass.
  */
-export function RequireInternalAuth({ children }: RequireInternalAuthProps) {
+export function RequireInternalAuth({
+  children,
+  gate = 'internal',
+}: RequireInternalAuthProps) {
   const { status, user, signOut } = useAuth();
   const bypass = isInternalAuthBypassEnabled();
+  const eyebrow =
+    gate === 'advance-listen' ? 'Advance Listening Access' : 'Member access';
 
   if (bypass) {
-    return (
-      <>
-        {children}
-        <AuthBypassBanner />
-      </>
-    );
+    return children;
   }
 
   if (status === 'loading') {
     return (
       <InternalStatusScreen
+        eyebrow={eyebrow}
         title="Loading"
         description="Checking your access…"
       />
@@ -80,6 +78,7 @@ export function RequireInternalAuth({ children }: RequireInternalAuthProps) {
   if (status === 'misconfigured') {
     return (
       <InternalStatusScreen
+        eyebrow={eyebrow}
         title="Unavailable"
         description="Sign-in is not configured yet. Add your Supabase URL and anon key to the environment."
       />
@@ -87,10 +86,10 @@ export function RequireInternalAuth({ children }: RequireInternalAuthProps) {
   }
 
   if (!user) {
-    return <InternalLoginModal />;
+    return <InternalLoginModal gate={gate} />;
   }
 
-  if (!isInternalAccessEmail(user.email)) {
+  if (gate === 'internal' && !isInternalAccessEmail(user.email)) {
     return (
       <AuthPageShell>
         <AuthPagePanel

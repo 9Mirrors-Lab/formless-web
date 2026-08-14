@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  isAdvanceListenPath,
   isInternalAccessEmail,
   isInternalAuthBypassEnabled,
   isInternalAuthPath,
@@ -35,6 +36,13 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/')).toBe(false);
     expect(isInternalAuthPath('/book')).toBe(false);
     expect(isInternalAuthPath('/login')).toBe(false);
+  });
+
+  it('treats advance listen as a signed-in room, not an allowlisted studio', () => {
+    expect(isAdvanceListenPath('/advance-listen')).toBe(true);
+    expect(isAdvanceListenPath('/Advance-Listen/')).toBe(true);
+    expect(isAdvanceListenPath('/audio')).toBe(false);
+    expect(isAdvanceListenPath('/brand')).toBe(false);
   });
 
   it('keeps auth bypass off by default', () => {

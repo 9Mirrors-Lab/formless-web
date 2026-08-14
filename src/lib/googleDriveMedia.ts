@@ -1,6 +1,10 @@
 export const GOOGLE_DRIVE_MEDIA_API_PATH = '/api/drive/media';
 
+/** ~43 s of 192 kbps audio. Keeps Vercel from buffering the rest of a chapter on seek. */
+export const AUDIO_LISTEN_CHUNK_BYTES = 1024 * 1024;
+
 const FILE_ID_PATTERN = /^[A-Za-z0-9_-]{20,80}$/;
+const BYTE_RANGE_PATTERN = /^bytes=(\d+)-(\d+)?$/i;
 
 export function parseGoogleDriveFileId(value: string | null | undefined): string | null {
   const id = value?.trim() ?? '';
@@ -38,4 +42,17 @@ export function isGoogleDriveMediaUrl(url: string | null | undefined): boolean {
   } catch {
     return false;
   }
+}
+
+/** Close open-ended or oversized Range headers so a seek does not download to EOF. */
+export function capByteRange(
+  rangeHeader: string | null | undefined,
+  chunkBytes = AUDIO_LISTEN_CHUNK_BYTES,
+): string {
+  const match = BYTE_RANGE_PATTERN.exec(rangeHeader?.trim() ?? '');
+  const start = match ? Number(match[1]) : 0;
+  const requestedEnd =
+    match?.[2] != null ? Number(match[2]) : start + chunkBytes - 1;
+  const end = Math.min(requestedEnd, start + chunkBytes - 1);
+  return `bytes=${start}-${end}`;
 }

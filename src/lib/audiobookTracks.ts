@@ -10,6 +10,7 @@ import { manuscriptForChapter } from '@/data/audioManuscripts';
 import {
   googleDriveMediaUrl,
   isGoogleDriveMediaUrl,
+  parseGoogleDriveFileId,
 } from '@/lib/googleDriveMedia';
 import { GOOGLE_DRIVE_STORAGE_PROVIDER } from '@/lib/googleDriveUpload';
 import { getBrowserSupabaseClient, hasSupabaseEnv } from '@/lib/supabase';
@@ -56,7 +57,7 @@ const TRACK_SELECT =
   'id, book_slug, chapter_number, chapter_title, source, storage_bucket, storage_path, mime_type, duration_seconds, file_size_bytes, original_filename';
 
 export function audiobookPublicUrl(bucket: string, path: string): string {
-  if (bucket === GOOGLE_DRIVE_STORAGE_PROVIDER) {
+  if (bucket === GOOGLE_DRIVE_STORAGE_PROVIDER || parseGoogleDriveFileId(path)) {
     return googleDriveMediaUrl(path);
   }
   const base = import.meta.env.VITE_SUPABASE_URL?.replace(/\/$/, '');
@@ -64,7 +65,7 @@ export function audiobookPublicUrl(bucket: string, path: string): string {
   return `${base}/storage/v1/object/public/${bucket}/${path}`;
 }
 
-/** Masters always play through Drive. Originals keep their catalog storage URL. */
+/** Drive ids play through the same-origin proxy. Object keys use public storage. */
 export function audiobookTrackPublicUrl(
   source: AudiobookTrackSource,
   bucket: string,
@@ -72,7 +73,6 @@ export function audiobookTrackPublicUrl(
 ): string {
   switch (source) {
     case 'optimized':
-      return googleDriveMediaUrl(path);
     case 'original':
       return audiobookPublicUrl(bucket, path);
     default: {
