@@ -419,7 +419,7 @@ export default function AudioEditorialPage() {
                     <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-cream/40">
                       Read along
                     </p>
-                    <p className="mt-1 font-serif text-2xl italic text-cream">Manuscript</p>
+                    <p className="mt-1 font-serif text-xl italic text-cream">Manuscript</p>
                   </div>
                   <button
                     type="button"
@@ -431,10 +431,10 @@ export default function AudioEditorialPage() {
                   </button>
                 </div>
                 <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-                  <p className="mb-6 text-sm leading-relaxed text-cream/40">
+                  <p className="mb-4 text-[12px] leading-relaxed text-cream/40">
                     Follow the spoken line as the playhead moves. Tap a sentence to jump.
                   </p>
-                  <div className="space-y-5">
+                  <div className="space-y-3">
                     {review.chapter.manuscript.map((sentence) => {
                       const active =
                         review.currentTime >= sentence.start &&
@@ -449,8 +449,8 @@ export default function AudioEditorialPage() {
                           }`}
                         >
                           <span
-                            className={`font-sans text-lg leading-relaxed md:text-xl ${
-                              active ? 'underline decoration-[#9fb5aa]/50 underline-offset-8' : ''
+                            className={`font-sans text-[14px] leading-relaxed ${
+                              active ? 'underline decoration-[#9fb5aa]/50 underline-offset-4' : ''
                             }`}
                           >
                             {sentence.text}

@@ -24,6 +24,8 @@ export const AUDIO_BOOK = {
   author: 'Sonika Cottman',
   imprint: 'Eyes Closed',
   format: 'Audible chapter recordings',
+  /** Mastered ACX total from Final QC, 14 Aug 2026. */
+  runtimeSeconds: 6 * 3600 + 51 * 60 + 39,
 } as const;
 
 /** Listen order: Opening Credits, Introduction, chapters 1–9, Acknowledgments. */
@@ -103,6 +105,18 @@ export function formatAudioTime(totalSeconds: number): string {
   const m = Math.floor(safe / 60);
   const s = Math.floor(safe % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+/** Book-length runtime for edition chrome (e.g. 6h 51m 39s). */
+export function formatAudioRuntime(totalSeconds: number): string {
+  const safe = Math.max(0, Math.floor(totalSeconds));
+  const hours = Math.floor(safe / 3600);
+  const minutes = Math.floor((safe % 3600) / 60);
+  const seconds = safe % 60;
+  if (hours === 0) {
+    return `${minutes}m ${seconds}s`;
+  }
+  return `${hours}h ${minutes}m ${seconds}s`;
 }
 
 export function formatAudioPrecise(totalSeconds: number): string {

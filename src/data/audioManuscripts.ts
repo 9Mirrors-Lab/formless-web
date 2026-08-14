@@ -1,6 +1,16 @@
 /** Timed read-along cues aligned to published chapter audio. */
 
 import type { AudioSentence } from '@/data/audioBook';
+import { CHAPTER_0_CUES } from '@/data/manuscripts/cues-0';
+import { CHAPTER_1_CUES } from '@/data/manuscripts/cues-1';
+import { CHAPTER_2_CUES } from '@/data/manuscripts/cues-2';
+import { CHAPTER_3_CUES } from '@/data/manuscripts/cues-3';
+import { CHAPTER_4_CUES } from '@/data/manuscripts/cues-4';
+import { CHAPTER_5_CUES } from '@/data/manuscripts/cues-5';
+import { CHAPTER_6_CUES } from '@/data/manuscripts/cues-6';
+import { CHAPTER_7_CUES } from '@/data/manuscripts/cues-7';
+import { CHAPTER_8_CUES } from '@/data/manuscripts/cues-8';
+import { CHAPTER_9_CUES } from '@/data/manuscripts/cues-9';
 
 function sentences(
   chapterId: number,
@@ -13,123 +23,6 @@ function sentences(
     end: line.end,
   }));
 }
-
-/** Chapter 1 read-along cues aligned to the uploaded original master (whisper-timed). */
-const CHAPTER_1_MANUSCRIPT = sentences(1, [
-  {
-    text: 'Chapter 1. The Feeling of Wholeness.',
-    start: 0,
-    end: 5.66,
-  },
-  {
-    text: 'You’ve made it in life. You have the house, the family, the career, the steady routine that signals success.',
-    start: 5.66,
-    end: 14.5,
-  },
-  {
-    text: 'The life you once imagined has mostly unfolded.',
-    start: 14.5,
-    end: 18.0,
-  },
-  {
-    text: 'And yet, a familiar emptiness lingers. A quiet unease. A sense of not feeling whole, not having arrived.',
-    start: 18.0,
-    end: 28.76,
-  },
-  {
-    text: 'No matter what you achieve, something in you keeps wanting more.',
-    start: 28.76,
-    end: 34.24,
-  },
-  {
-    text: 'If it’s not this house, maybe a bigger one will finally make you happy. If it’s not this relationship, perhaps the next one will bring you back to life.',
-    start: 34.24,
-    end: 44.92,
-  },
-  {
-    text: 'Maybe it’s a new job. A different city. A fresh start. Then you think everything will feel right.',
-    start: 44.92,
-    end: 53.2,
-  },
-  {
-    text: 'Your mind convinces you that fulfillment is just one change away.',
-    start: 53.2,
-    end: 58.5,
-  },
-  {
-    text: 'That if the outer picture can be changed, the inner emptiness will disappear.',
-    start: 58.5,
-    end: 66.8,
-  },
-  {
-    text: 'Yet, no matter how many times you rearrange the furniture of your life, the quiet ache returns, reminding you that what you seek cannot be found in the next thing, the next place, or the next person.',
-    start: 66.8,
-    end: 78.84,
-  },
-  {
-    text: 'You begin to question it. How can you have accomplished so much and still feel like something is missing?',
-    start: 78.84,
-    end: 88.0,
-  },
-  {
-    text: 'The struggle continues. The finish line keeps moving. You wait for the world to reflect your happiness back to you, expecting it to tell you who you are to make you feel complete.',
-    start: 88.0,
-    end: 104.48,
-  },
-  {
-    text: 'You believe peace and wholeness live somewhere outside of you, and you just have to find them.',
-    start: 104.48,
-    end: 111.64,
-  },
-  {
-    text: 'And so the search goes on as you continue wanting something more, something different.',
-    start: 111.64,
-    end: 119.4,
-  },
-  {
-    text: 'You haven’t yet realized that what you’re searching for has never been missing.',
-    start: 119.4,
-    end: 127.12,
-  },
-  {
-    text: 'It isn’t out there in the world. It’s here, alive within you, beneath the noise of wanting.',
-    start: 127.12,
-    end: 136.24,
-  },
-  {
-    text: 'Every moment you’ve been chasing, every desire you’ve tried to fulfill has been leading you back to this, the stillness inside, the wholeness that has never left.',
-    start: 136.24,
-    end: 150.16,
-  },
-]);
-
-const CHAPTER_4_MANUSCRIPT = sentences(4, [
-  {
-    text: 'Resistance is the mind’s attempt to keep the known world intact.',
-    start: 0,
-    end: 6.4,
-  },
-  {
-    text: 'It tightens around what feels threatening, and calls that tightness protection.',
-    start: 6.4,
-    end: 13.8,
-  },
-  {
-    text: 'Surrender is not collapse. It is the willingness to see without defending.',
-    start: 13.8,
-    end: 21.2,
-  },
-  {
-    text: 'When you stop fighting the moment, space opens around the thought.',
-    start: 21.2,
-    end: 28.0,
-  },
-  {
-    text: 'In that space, you are no longer the resistance. You are the awareness that notices it.',
-    start: 28.0,
-    end: 37.5,
-  },
-]);
 
 /** Opening Credits read-along cues aligned to the optimized ACX master (whisper-timed). */
 const CHAPTER_13_MANUSCRIPT = sentences(13, [
@@ -440,10 +333,18 @@ const CHAPTER_12_MANUSCRIPT = sentences(12, [
 ]);
 
 const MANUSCRIPTS: Record<number, AudioSentence[]> = {
-  1: CHAPTER_1_MANUSCRIPT,
-  4: CHAPTER_4_MANUSCRIPT,
-  12: CHAPTER_12_MANUSCRIPT,
   13: CHAPTER_13_MANUSCRIPT,
+  0: sentences(0, CHAPTER_0_CUES),
+  1: sentences(1, CHAPTER_1_CUES),
+  2: sentences(2, CHAPTER_2_CUES),
+  3: sentences(3, CHAPTER_3_CUES),
+  4: sentences(4, CHAPTER_4_CUES),
+  5: sentences(5, CHAPTER_5_CUES),
+  6: sentences(6, CHAPTER_6_CUES),
+  7: sentences(7, CHAPTER_7_CUES),
+  8: sentences(8, CHAPTER_8_CUES),
+  9: sentences(9, CHAPTER_9_CUES),
+  12: CHAPTER_12_MANUSCRIPT,
 };
 
 export function manuscriptForChapter(chapterId: number): AudioSentence[] {

@@ -14,8 +14,11 @@ import {
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
 import { AdvanceListenMobilePlayer } from '@/components/audio-review/AdvanceListenMobilePlayer';
+import { AdvanceListenRuntime } from '@/components/audio-review/AdvanceListenRuntime';
 import { FORMLESS_COVER } from '@/components/audio-review/FormlessBookCoverPanel';
 import {
+  AUDIO_BOOK,
+  formatAudioRuntime,
   formatAudioTime,
   formatChapterIndex,
 } from '@/data/audioBook';
@@ -113,7 +116,7 @@ export default function AdvanceListenPage() {
               transition={{ duration: 0.9, ease: EASE_HEAVY, delay: 0.08 }}
               className="relative flex min-h-0 min-w-0 flex-1 flex-col rounded-sm bg-[#080a09]/78 px-3 py-3 shadow-[inset_0_1px_0_rgba(242,240,233,0.06)] backdrop-blur-[10px] md:px-5 md:py-4"
             >
-              <header className="flex shrink-0 items-start justify-between gap-4">
+              <header className="flex shrink-0 items-start justify-between gap-6">
                 <div className="min-w-0">
                   <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/55">
                     Chapter {formatChapterIndex(review.chapter.id)} · Advance Listening Edition
@@ -126,16 +129,19 @@ export default function AdvanceListenPage() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => review.setReadAlongOpen(true)}
-                  className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-cream/20 bg-cream/[0.04] px-4 py-2 text-sm text-cream transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-[#9fb5aa]/45 hover:bg-cream/[0.08] active:scale-[0.98]"
-                >
-                  Read along
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-cream/10 text-xs text-cream/85 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:scale-105">
-                    ↗
-                  </span>
-                </button>
+                <div className="flex shrink-0 flex-col items-end gap-3">
+                  <AdvanceListenRuntime />
+                  <button
+                    type="button"
+                    onClick={() => review.setReadAlongOpen(true)}
+                    className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-cream/20 bg-cream/[0.04] px-4 py-2 text-sm text-cream transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-[#9fb5aa]/45 hover:bg-cream/[0.08] active:scale-[0.98]"
+                  >
+                    Read along
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-cream/10 text-xs text-cream/85 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:scale-105">
+                      ↗
+                    </span>
+                  </button>
+                </div>
               </header>
 
               <div className="mt-4 shrink-0">
@@ -227,9 +233,14 @@ export default function AdvanceListenPage() {
                 aria-label="Chapters"
                 className="scrollbar-cream mt-5 min-h-0 flex-1 overflow-y-auto border-t border-cream/15 pt-3"
               >
-                <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.28em] text-cream/50">
-                  Chapters
-                </p>
+                <div className="mb-1.5 flex items-baseline justify-between gap-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/50">
+                    Chapters
+                  </p>
+                  <p className="font-mono text-[10px] tabular-nums uppercase tracking-[0.18em] text-cream/50">
+                    {formatAudioRuntime(AUDIO_BOOK.runtimeSeconds)}
+                  </p>
+                </div>
                 <ol className="list-none">
                   {review.chapters.map((chapter) => {
                     const active = chapter.id === review.chapterId;
@@ -305,7 +316,7 @@ export default function AdvanceListenPage() {
                     <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-cream/40">
                       Read along
                     </p>
-                    <p className="mt-1 font-serif text-2xl italic text-cream">Manuscript</p>
+                    <p className="mt-1 font-serif text-xl italic text-cream">Manuscript</p>
                   </div>
                   <button
                     type="button"
@@ -317,10 +328,10 @@ export default function AdvanceListenPage() {
                   </button>
                 </div>
                 <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-                  <p className="mb-6 text-sm leading-relaxed text-cream/40">
+                  <p className="mb-4 text-[12px] leading-relaxed text-cream/40">
                     Follow the spoken line as the playhead moves. Tap a sentence to jump.
                   </p>
-                  <div className="space-y-5">
+                  <div className="space-y-3">
                     {review.chapter.manuscript.map((sentence) => {
                       const active =
                         review.currentTime >= sentence.start &&
@@ -335,9 +346,9 @@ export default function AdvanceListenPage() {
                           }`}
                         >
                           <span
-                            className={`font-sans text-lg leading-relaxed md:text-xl ${
+                            className={`font-sans text-[14px] leading-relaxed ${
                               active
-                                ? 'underline decoration-[#9fb5aa]/50 underline-offset-8'
+                                ? 'underline decoration-[#9fb5aa]/50 underline-offset-4'
                                 : ''
                             }`}
                           >
