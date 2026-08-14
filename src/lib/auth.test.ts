@@ -52,4 +52,32 @@ describe('auth helpers', () => {
     expect(safeAuthNextPath('//evil.example')).toBe('/account');
     expect(safeAuthNextPath(null, '/brand')).toBe('/brand');
   });
+
+  it('uses an existing session if the PKCE code was already exchanged', async () => {
+    const exchangeCodeForSession = vi.fn().mockResolvedValue({
+      data: { session: null, user: null },
+      error: { message: 'invalid request: both auth code and code verifier should be non-empty' },
+    });
+    const getSession = vi.fn().mockResolvedValue({
+      data: { session: { access_token: 'tok' } },
+      error: null,
+    });
+
+    vi.resetModules();
+    vi.doMock('@/lib/supabase', () => ({
+      getBrowserSupabaseClient: () => ({
+        auth: { exchangeCodeForSession, getSession },
+      }),
+    }));
+    vi.stubGlobal('window', {
+      location: { origin: 'https://www.eyesclosed.love', search: '?code=abc' },
+    });
+
+    const { completeAuthCallback } = await import('@/lib/auth');
+    const result = await completeAuthCallback();
+
+    expect(exchangeCodeForSession).toHaveBeenCalledWith('abc');
+    expect(result.error).toBeNull();
+    expect(result.data.session).toEqual({ access_token: 'tok' });
+  });
 });

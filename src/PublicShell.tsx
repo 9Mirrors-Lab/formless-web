@@ -241,6 +241,8 @@ function AppContentShell({ path }: { path: string }) {
   const { status, errorMessage } = useContentStatus();
   const page = <Root path={path} />;
 
+  // Must not wait on CMS content: Google OAuth is a full-page return, and
+  // AuthCallbackPage is built without Navbar/Footer (those call useContent).
   if (path === '/auth/callback' || hasAuthCallbackCode(window.location.search)) {
     return <AuthCallbackPage />;
   }

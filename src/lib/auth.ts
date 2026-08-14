@@ -116,7 +116,18 @@ export async function completeAuthCallback() {
   const code = params.get('code');
 
   if (code) {
-    return supabase.auth.exchangeCodeForSession(code);
+    const exchanged = await supabase.auth.exchangeCodeForSession(code);
+    if (!exchanged.error) {
+      return exchanged;
+    }
+
+    // detectSessionInUrl may already have consumed the PKCE code.
+    const existing = await supabase.auth.getSession();
+    if (existing.data.session) {
+      return { data: existing.data, error: null };
+    }
+
+    return exchanged;
   }
 
   return supabase.auth.getSession();
