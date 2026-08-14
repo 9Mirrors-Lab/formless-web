@@ -119,6 +119,28 @@ export function formatAudioRuntime(totalSeconds: number): string {
   return `${hours}h ${minutes}m ${seconds}s`;
 }
 
+/** Seconds left in the current chapter plus every chapter after it. */
+export function audiobookRemainingSeconds(
+  chapters: readonly Pick<AudioChapter, 'id' | 'length'>[],
+  chapterId: number,
+  currentTime: number,
+): number {
+  if (chapters.length === 0) {
+    return Math.max(0, AUDIO_BOOK.runtimeSeconds - Math.max(0, currentTime));
+  }
+
+  const index = chapters.findIndex((item) => item.id === chapterId);
+  if (index < 0) {
+    return chapters.reduce((sum, item) => sum + item.length, 0);
+  }
+
+  const remainingHere = Math.max(0, (chapters[index]?.length ?? 0) - currentTime);
+  const remainingAfter = chapters
+    .slice(index + 1)
+    .reduce((sum, item) => sum + item.length, 0);
+  return remainingHere + remainingAfter;
+}
+
 export function formatAudioPrecise(totalSeconds: number): string {
   const safe = Math.max(0, totalSeconds);
   const m = Math.floor(safe / 60);

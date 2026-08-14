@@ -5,6 +5,10 @@ import { getBackgroundOption, isShaderBackground } from './backgroundOptions';
 
 type ShaderBackdropProps = {
   theme?: BackgroundId;
+  /** Overrides the theme palette. Used by listen-field tones that are not site backgrounds. */
+  palette?: ThemePalette;
+  /** Stable id for mesh remounts when palette is overridden. */
+  shaderId?: string;
   /** Fixed covers the viewport; absolute fills the positioned parent. */
   position?: 'fixed' | 'absolute';
   className?: string;
@@ -49,22 +53,24 @@ function ShaderCssFallback({ p }: { p: ThemePalette }) {
 
 export function ShaderBackdrop({
   theme = 'forest',
+  palette,
+  shaderId,
   position = 'absolute',
   className = '',
   overlay = true,
 }: ShaderBackdropProps) {
   const [webgl2Supported, setWebgl2Supported] = useState<boolean | null>(null);
   const option = getBackgroundOption(theme);
+  const p = palette ?? (isShaderBackground(option) ? option.palette : null);
+  const meshKey = shaderId ?? theme;
 
   useEffect(() => {
     setWebgl2Supported(probeWebGL2Support());
   }, []);
 
-  if (!isShaderBackground(option)) {
+  if (!p) {
     return null;
   }
-
-  const p = option.palette;
 
   const positionClass = position === 'fixed' ? 'fixed' : 'absolute';
 
@@ -90,7 +96,7 @@ export function ShaderBackdrop({
       ) : webgl2Supported === true ? (
         <>
           <MeshGradient
-            key={`mesh-a-${theme}`}
+            key={`mesh-a-${meshKey}`}
             className="transition-opacity duration-700"
             style={meshStyle}
             colors={[...p.meshPrimary]}
@@ -100,7 +106,7 @@ export function ShaderBackdrop({
           />
           {overlay ? (
             <MeshGradient
-              key={`mesh-b-${theme}`}
+              key={`mesh-b-${meshKey}`}
               className="opacity-45 mix-blend-soft-light transition-opacity duration-700"
               style={meshStyle}
               colors={[...p.meshOverlay]}

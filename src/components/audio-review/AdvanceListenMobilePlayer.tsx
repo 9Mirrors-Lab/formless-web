@@ -1,17 +1,21 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronUp, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
+import { ChevronUp, Pause, Play, RotateCcw, RotateCw, SkipBack, SkipForward } from 'lucide-react';
 import { useState } from 'react';
 
 import { AdvanceListenRuntime } from '@/components/audio-review/AdvanceListenRuntime';
-import { ShaderBackdrop } from '@/components/shader/ShaderBackdrop';
+import { listenLockup } from '@/components/audio-review/advanceListenType';
+import { ListenFieldBackdrop } from '@/components/audio-review/ListenFieldBackdrop';
 import {
   AUDIO_BOOK,
+  audiobookRemainingSeconds,
+  formatAudioRuntime,
   formatAudioTime,
   formatChapterIndex,
   type AudioChapter,
 } from '@/data/audioBook';
 
 const EASE_SHEET = [0.32, 0.72, 0, 1] as const;
+const SKIP_SECONDS = 30;
 
 type AdvanceListenMobilePlayerProps = {
   chapter: AudioChapter;
@@ -41,6 +45,7 @@ export function AdvanceListenMobilePlayer({
   const canPrev = chapterIndex > 0;
   const canNext = chapterIndex >= 0 && chapterIndex < chapters.length - 1;
   const remaining = Math.max(0, chapter.length - currentTime);
+  const bookRemaining = audiobookRemainingSeconds(chapters, chapterId, currentTime);
   const progress = chapter.length > 0 ? Math.min(1, currentTime / chapter.length) : 0;
 
   const closeChapters = () => setChaptersOpen(false);
@@ -51,42 +56,36 @@ export function AdvanceListenMobilePlayer({
   };
 
   return (
-    <div className="relative flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[#060807] px-5 pt-5 md:hidden">
-      <header className="shrink-0 text-center">
-        <p className="font-serif text-[1.65rem] italic leading-[1.15] text-cream">
-          {AUDIO_BOOK.title} · Advance Listening Edition
+    <div className="relative flex h-full min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden bg-[#060807] md:hidden">
+      <header className="shrink-0 px-5 pt-5 pb-3 text-center">
+        <p className="flex flex-wrap items-baseline justify-center gap-x-2 text-cream">
+          <span className={`${listenLockup.book} text-[1.65rem] leading-none`}>
+            {AUDIO_BOOK.title}
+          </span>
+          <span className="text-cream/35" aria-hidden>
+            ·
+          </span>
+          <span className={`${listenLockup.chrome} text-[11px] text-cream/70`}>
+            Advance Listening
+          </span>
         </p>
-        <div className="mt-3">
-          <AdvanceListenRuntime align="center" size="quiet" />
-        </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 items-center justify-center bg-[#060807] py-3">
-        <motion.div
-          className="aspect-square w-[min(88vw,22.5rem)] shrink-0"
-          animate={{ scale: playing ? 1 : 0.96 }}
-          transition={{ duration: 0.7, ease: EASE_SHEET }}
-        >
-          <div className="relative h-full w-full overflow-hidden rounded-full bg-[#060807] isolate [clip-path:circle(50%)]">
-            <ShaderBackdrop
-              theme="forest"
-              position="absolute"
-              overlay={false}
-              className="rounded-full bg-[#060807]"
-            />
-          </div>
-        </motion.div>
+      <div className="relative min-h-0 flex-1 overflow-hidden bg-[#060807]">
+        <ListenFieldBackdrop chapterId={chapterId} />
       </div>
 
-      <div className="shrink-0 pb-[6.5rem]">
+      <div className="relative z-10 shrink-0 bg-[#060807] px-5 pt-4 pb-20">
         <div className="min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cream/45">
+          <p className={`${listenLockup.chrome} text-[10px] text-cream/45`}>
             Chapter {formatChapterIndex(chapter.id)}
           </p>
-          <h1 className="mt-1.5 font-serif text-[1.85rem] italic leading-[1.15] text-cream">
+          <h1 className={`${listenLockup.title} mt-1.5 line-clamp-2 h-[calc(1.85rem*1.15*2)] min-w-0 text-[1.85rem] leading-[1.15] text-cream`}>
             {chapter.title}
           </h1>
-          <p className="mt-1.5 text-sm text-cream/55">{AUDIO_BOOK.imprint}</p>
+          <p className={`${listenLockup.org} mt-2 text-[11px] text-cream/55`}>
+            {AUDIO_BOOK.imprint}
+          </p>
         </div>
 
         <div className="mt-5">
@@ -114,24 +113,41 @@ export function AdvanceListenMobilePlayer({
           </div>
           <div className="mt-1 flex items-center justify-between font-mono text-[11px] tabular-nums text-cream/50">
             <span>{formatAudioTime(currentTime)}</span>
+            <p
+              className="font-sans text-sm tabular-nums leading-none text-cream/75"
+              aria-label={`Total time remaining ${formatAudioRuntime(bookRemaining)}`}
+            >
+              {formatAudioRuntime(bookRemaining)}
+            </p>
             <span>-{formatAudioTime(remaining)}</span>
           </div>
         </div>
 
-        <div className="mt-4 mb-2 flex items-center justify-center gap-10">
+        <div className="mt-4 mb-2 flex h-[4.5rem] w-full items-center justify-between">
           <button
             type="button"
             onClick={() => onJumpChapter(-1)}
             disabled={!canPrev}
-            className="inline-flex h-12 w-12 items-center justify-center text-cream disabled:text-cream/25"
+            className="inline-flex h-12 w-12 shrink-0 items-center justify-center text-cream disabled:text-cream/25"
             aria-label="Previous chapter"
           >
-            <SkipBack size={28} strokeWidth={1.5} />
+            <SkipBack size={26} strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            onClick={() => onSeek(currentTime - SKIP_SECONDS)}
+            className="relative inline-flex h-12 w-12 shrink-0 items-center justify-center text-cream"
+            aria-label={`Back ${SKIP_SECONDS} seconds`}
+          >
+            <RotateCcw size={30} strokeWidth={1.5} aria-hidden />
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-sans text-[10px] font-medium tabular-nums leading-none">
+              {SKIP_SECONDS}
+            </span>
           </button>
           <button
             type="button"
             onClick={onPlayPause}
-            className="inline-flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-cream text-[#080a09] transition-transform active:scale-[0.96]"
+            className="inline-flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-full bg-cream text-[#080a09] transition-transform active:scale-[0.96]"
             aria-label={playing ? 'Pause' : 'Play'}
           >
             {playing ? (
@@ -142,12 +158,23 @@ export function AdvanceListenMobilePlayer({
           </button>
           <button
             type="button"
+            onClick={() => onSeek(currentTime + SKIP_SECONDS)}
+            className="relative inline-flex h-12 w-12 shrink-0 items-center justify-center text-cream"
+            aria-label={`Forward ${SKIP_SECONDS} seconds`}
+          >
+            <RotateCw size={30} strokeWidth={1.5} aria-hidden />
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center pt-px font-sans text-[10px] font-medium tabular-nums leading-none">
+              {SKIP_SECONDS}
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={() => onJumpChapter(1)}
             disabled={!canNext}
-            className="inline-flex h-12 w-12 items-center justify-center text-cream disabled:text-cream/25"
+            className="inline-flex h-12 w-12 shrink-0 items-center justify-center text-cream disabled:text-cream/25"
             aria-label="Next chapter"
           >
-            <SkipForward size={28} strokeWidth={1.5} />
+            <SkipForward size={26} strokeWidth={1.5} />
           </button>
         </div>
       </div>
@@ -155,17 +182,17 @@ export function AdvanceListenMobilePlayer({
       <button
         type="button"
         onClick={() => setChaptersOpen(true)}
-        className="absolute inset-x-0 bottom-0 z-10 flex h-[4.25rem] items-center justify-center rounded-t-[1.75rem] bg-[#4A5239] px-6 pb-[env(safe-area-inset-bottom)]"
+        className="absolute inset-x-0 bottom-0 z-10 grid min-h-12 grid-cols-[1fr_auto_1fr] items-center rounded-t-[1.75rem] bg-[#4A5239] px-6 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]"
         aria-expanded={chaptersOpen}
         aria-controls="advance-listen-chapters-sheet"
       >
-        <span className="font-serif text-2xl font-bold italic leading-none text-cream">
+        <span className="col-start-2 font-sans text-base font-semibold uppercase tracking-[0.16em] leading-none text-cream">
           Chapters
         </span>
         <ChevronUp
-          size={22}
-          strokeWidth={1.5}
-          className="absolute right-6 text-cream/80"
+          size={28}
+          strokeWidth={2}
+          className="col-start-3 justify-self-end text-cream/80"
           aria-hidden
         />
       </button>
@@ -199,14 +226,14 @@ export function AdvanceListenMobilePlayer({
                 onClick={closeChapters}
                 className="relative flex shrink-0 flex-col items-center justify-center gap-2 px-6 py-5"
               >
-                <span className="font-serif text-2xl font-bold italic leading-none text-cream">
+                <span className="font-sans text-base font-semibold uppercase tracking-[0.16em] leading-none text-cream">
                   Chapters
                 </span>
                 <AdvanceListenRuntime align="center" size="quiet" />
                 <ChevronUp
-                  size={22}
-                  strokeWidth={1.5}
-                  className="absolute right-6 top-5 rotate-180 text-cream/80"
+                  size={28}
+                  strokeWidth={2}
+                  className="absolute right-6 top-4 rotate-180 text-cream/80"
                   aria-hidden
                 />
               </button>

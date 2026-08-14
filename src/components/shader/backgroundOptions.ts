@@ -39,13 +39,13 @@ export type ImageBackgroundOption = BackgroundOptionBase & {
 
 export type BackgroundOption = ShaderBackgroundOption | ImageBackgroundOption;
 
-const FOREST_PALETTE: ThemePalette = {
+export const FOREST_PALETTE: ThemePalette = {
   baseBg: '#080A08',
   meshPrimary: ['#080A08', '#1B241B', '#26211A', '#4A5239', '#8C7A5A'],
   meshOverlay: ['#080A08', '#26211A', '#8C7A5A', '#4A5239'],
 };
 
-const SUNSET_PALETTE: ThemePalette = {
+export const SUNSET_PALETTE: ThemePalette = {
   baseBg: '#0c0a14',
   meshPrimary: ['#0c0a14', '#1e1b4b', '#5b21b6', '#c2410c', '#fbbf24'],
   meshOverlay: ['#0c0a14', '#312e81', '#ea580c', '#fde68a'],

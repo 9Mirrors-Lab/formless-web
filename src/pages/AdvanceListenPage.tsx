@@ -15,6 +15,7 @@ import {
 } from '@/components/audio-review/AudioCompareMultitrack';
 import { AdvanceListenMobilePlayer } from '@/components/audio-review/AdvanceListenMobilePlayer';
 import { AdvanceListenRuntime } from '@/components/audio-review/AdvanceListenRuntime';
+import { listenLockup } from '@/components/audio-review/advanceListenType';
 import { FORMLESS_COVER } from '@/components/audio-review/FormlessBookCoverPanel';
 import {
   AUDIO_BOOK,
@@ -118,10 +119,10 @@ export default function AdvanceListenPage() {
             >
               <header className="flex shrink-0 items-start justify-between gap-6">
                 <div className="min-w-0">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/55">
+                  <p className={`${listenLockup.chrome} text-[10px] text-cream/55`}>
                     Chapter {formatChapterIndex(review.chapter.id)} · Advance Listening Edition
                   </p>
-                  <h2 className="mt-1.5 font-serif text-3xl italic leading-tight text-cream md:text-[2.35rem]">
+                  <h2 className={`${listenLockup.title} mt-1.5 text-3xl leading-tight text-cream md:text-[2.35rem]`}>
                     {review.chapter.title}
                   </h2>
                   <p className="mt-2 font-mono text-[11px] uppercase tracking-wider text-cream/55">
@@ -157,7 +158,7 @@ export default function AdvanceListenPage() {
                   durationSeconds={review.chapter.length}
                   onTimeUpdate={review.setCurrentTime}
                   onReady={() => review.setAudioReady(true)}
-                  onFinish={() => review.setPlaying(false)}
+                  onFinish={review.finishChapter}
                 />
               </div>
 
@@ -234,7 +235,7 @@ export default function AdvanceListenPage() {
                 className="scrollbar-cream mt-5 min-h-0 flex-1 overflow-y-auto border-t border-cream/15 pt-3"
               >
                 <div className="mb-1.5 flex items-baseline justify-between gap-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/50">
+                  <p className={`${listenLockup.chrome} text-[10px] text-cream/50`}>
                     Chapters
                   </p>
                   <p className="font-mono text-[10px] tabular-nums uppercase tracking-[0.18em] text-cream/50">
@@ -316,7 +317,7 @@ export default function AdvanceListenPage() {
                     <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-cream/40">
                       Read along
                     </p>
-                    <p className="mt-1 font-serif text-xl italic text-cream">Manuscript</p>
+                    <p className={`${listenLockup.book} mt-1 text-xl text-cream`}>Manuscript</p>
                   </div>
                   <button
                     type="button"

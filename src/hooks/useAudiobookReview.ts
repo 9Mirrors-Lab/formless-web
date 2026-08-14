@@ -76,11 +76,12 @@ export function useAudiobookReview({
     };
   }, []);
 
+  const advancingRef = useRef(false);
+
   useEffect(() => {
     if (!catalogReady) return;
     setAudioReady(false);
     setAudioLoading(true);
-    setPlaying(false);
     setCurrentTime(0);
     if (optimizedUrl) {
       setSource('optimized');
@@ -88,6 +89,7 @@ export function useAudiobookReview({
       setSource('original');
     }
     setAudioLoading(false);
+    advancingRef.current = false;
   }, [catalogReady, chapterId, originalUrl, optimizedUrl]);
 
   const toggleSource = useCallback(() => {
@@ -161,12 +163,25 @@ export function useAudiobookReview({
     });
   }, [chapters]);
 
+  const finishChapter = useCallback(() => {
+    if (advancingRef.current) return;
+    const order = chapters.length > 0 ? chapters.map((item) => item.id) : [...AUDIO_LISTEN_ORDER];
+    const index = order.indexOf(chapterId);
+    if (index < 0 || index >= order.length - 1) {
+      setPlaying(false);
+      return;
+    }
+    advancingRef.current = true;
+    setChapterId(order[index + 1]!);
+  }, [chapters, chapterId]);
+
   return {
     chapters,
     chapter,
     chapterId,
     selectChapter,
     jumpChapter,
+    finishChapter,
     source,
     setSource: selectSource,
     toggleSource,

@@ -1,3 +1,4 @@
+import { listenLockup } from '@/components/audio-review/advanceListenType';
 import {
   AUDIO_BOOK,
   formatAudioRuntime,
@@ -23,14 +24,14 @@ export function AdvanceListenRuntime({
 
   return (
     <p className={ALIGN_CLASS[align]} aria-label={`Runtime ${runtime}`}>
-      <span className="block font-mono text-[10px] uppercase tracking-[0.28em] text-cream/55">
+      <span className={`${listenLockup.chrome} block text-[10px] text-cream/55`}>
         Runtime
       </span>
       <span
         className={
           isFolio
-            ? 'mt-1.5 block font-serif text-[1.65rem] italic tabular-nums leading-none text-cream md:text-[1.85rem]'
-            : 'mt-1 block font-serif text-lg italic tabular-nums leading-none text-cream/85'
+            ? `${listenLockup.book} mt-1.5 block text-[1.65rem] tabular-nums leading-none text-cream md:text-[1.85rem]`
+            : `${listenLockup.book} mt-1 block text-lg tabular-nums leading-none text-cream/85`
         }
       >
         {runtime}
