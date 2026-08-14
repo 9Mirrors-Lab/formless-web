@@ -7,7 +7,11 @@ function headerValue(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
-function textResponse(status: number, message: string, extra?: HeadersInit): Response {
+function textResponse(
+  status: number,
+  message: string,
+  extra?: Record<string, string>,
+): Response {
   return new Response(message, {
     status,
     headers: {
