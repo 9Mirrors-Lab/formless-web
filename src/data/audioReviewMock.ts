@@ -525,7 +525,7 @@ function placeholderManuscript(chapterId: number, title: string): AudioSentence[
 }
 
 /**
- * Opening Credits + Intro + chapters 1–11 + Acknowledgments.
+ * Opening Credits + Introduction + chapters 1–9 + Acknowledgments.
  * Opening Credits (id 13) + Acknowledgments (id 12): original + optimized (status ready).
  * Intro + chapters 1–9: originals recorded; not optimized yet.
  */
@@ -553,75 +553,59 @@ export const AUDIO_CHAPTERS: AudioChapter[] = [
   },
   {
     id: 2,
-    title: 'Awareness and The Ego',
+    title: 'Awareness and the Ego',
     length: 1618,
     status: 'recorded',
-    manuscript: placeholderManuscript(2, 'Awareness and The Ego'),
+    manuscript: placeholderManuscript(2, 'Awareness and the Ego'),
   },
   {
     id: 3,
-    title: 'Past Pain & Present Moment',
+    title: 'Past Pain, Time and the Present Moment',
     length: 2026,
     status: 'recorded',
-    manuscript: placeholderManuscript(3, 'Past Pain & Present Moment'),
+    manuscript: placeholderManuscript(3, 'Past Pain, Time and the Present Moment'),
   },
   {
     id: 4,
-    title: 'Resistance & Surrender',
+    title: 'Resistance and Surrender',
     length: 2413,
     status: 'recorded',
     manuscript: CHAPTER_4_MANUSCRIPT,
   },
   {
     id: 5,
-    title: 'The Observer and The Observed',
+    title: 'Conscious Relationships',
     length: 3147,
     status: 'recorded',
-    manuscript: placeholderManuscript(5, 'The Observer and The Observed'),
+    manuscript: placeholderManuscript(5, 'Conscious Relationships'),
   },
   {
     id: 6,
-    title: 'Thought, Story, and Identity',
+    title: 'Work, Identity and Purpose',
     length: 2956,
     status: 'recorded',
-    manuscript: placeholderManuscript(6, 'Thought, Story, and Identity'),
+    manuscript: placeholderManuscript(6, 'Work, Identity and Purpose'),
   },
   {
     id: 7,
-    title: 'Nature, Animals & Their Wisdom',
+    title: 'Nature, Animals and Presence',
     length: 2519,
     status: 'recorded',
-    manuscript: placeholderManuscript(7, 'Nature, Animals & Their Wisdom'),
+    manuscript: placeholderManuscript(7, 'Nature, Animals and Presence'),
   },
   {
     id: 8,
-    title: 'Love Without Possession',
+    title: 'Science, Spirituality and Consciousness',
     length: 3604,
     status: 'recorded',
-    manuscript: placeholderManuscript(8, 'Love Without Possession'),
+    manuscript: placeholderManuscript(8, 'Science, Spirituality and Consciousness'),
   },
   {
     id: 9,
-    title: 'Work and Daily Life',
+    title: 'Living in Freedom',
     length: 2917,
     status: 'recorded',
-    manuscript: placeholderManuscript(9, 'Work and Daily Life'),
-  },
-  {
-    id: 10,
-    title: 'The End of Seeking',
-    length: 16 * 60 + 10,
-    status: 'pending',
-    provisional: true,
-    manuscript: placeholderManuscript(10, 'The End of Seeking'),
-  },
-  {
-    id: 11,
-    title: 'Living From Stillness',
-    length: 13 * 60 + 48,
-    status: 'pending',
-    provisional: true,
-    manuscript: placeholderManuscript(11, 'Living From Stillness'),
+    manuscript: placeholderManuscript(9, 'Living in Freedom'),
   },
   {
     id: 12,
@@ -631,6 +615,18 @@ export const AUDIO_CHAPTERS: AudioChapter[] = [
     manuscript: CHAPTER_12_MANUSCRIPT,
   },
 ];
+
+/** Locked listen-order titles. Use these names on every audio rack. */
+export const AUDIO_CHAPTER_TITLE_BY_ID: Record<number, string> = Object.fromEntries(
+  AUDIO_CHAPTERS.map((chapter) => [chapter.id, chapter.title]),
+);
+
+export function canonicalChapterTitle(
+  chapterNumber: number,
+  fallback?: string,
+): string {
+  return AUDIO_CHAPTER_TITLE_BY_ID[chapterNumber] ?? fallback ?? `Chapter ${chapterNumber}`;
+}
 
 /** Sidebar / transport label for chapter index (0 = Int, 12 = Ack, 13 = OC). */
 export function formatChapterIndex(id: number): string {

@@ -1,3 +1,7 @@
+import {
+  AUDIO_CHAPTER_TITLE_BY_ID,
+  canonicalChapterTitle,
+} from '@/data/audioReviewMock';
 import { getBrowserSupabaseClient, hasSupabaseEnv } from '@/lib/supabase';
 
 export type AudiobookTrackSource = 'original' | 'optimized';
@@ -60,7 +64,7 @@ function mapRow(row: AudiobookTrackRow): AudiobookTrack {
     id: row.id,
     bookSlug: row.book_slug,
     chapterNumber: row.chapter_number,
-    chapterTitle: row.chapter_title,
+    chapterTitle: canonicalChapterTitle(row.chapter_number, row.chapter_title),
     source: row.source,
     storageBucket: row.storage_bucket,
     storagePath: row.storage_path,
@@ -110,6 +114,7 @@ export async function listPublishedAudiobookTracks(
   }
 
   const tracks = ((data as AudiobookTrackRow[] | null) ?? [])
+    .filter((row) => AUDIO_CHAPTER_TITLE_BY_ID[row.chapter_number] != null)
     .map(mapRow)
     .sort((a, b) => {
       const order = audiobookListenOrderRank(a.chapterNumber)
