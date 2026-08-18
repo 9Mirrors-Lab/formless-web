@@ -23,6 +23,7 @@ import ComponentsPage from './pages/ComponentsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import BrandPage from './pages/BrandPage';
+import BrandSignupsPage from './pages/BrandSignupsPage';
 import SpeakerSheetPage from './pages/SpeakerSheetPage';
 import ZoomBackgroundsPage from './pages/ZoomBackgroundsPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
@@ -124,6 +125,7 @@ export function Root({ path }: { path: string }) {
     path === '/design/eyes-closed-logo-variations/04-options.html';
   const isBrandKitExport = path === '/brand-kit-export';
   const isBrand = path === '/brand';
+  const isBrandSignups = path === '/brand/signups';
   const isSpeakerSheet = path === '/speaker-sheet';
   const isZoomBackgrounds = path === '/zoom-backgrounds';
   const isLayoutTests = path === '/layout-tests';
@@ -175,6 +177,7 @@ export function Root({ path }: { path: string }) {
   if (isComponents) return <ComponentsPage />;
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;
+  if (isBrandSignups) return <BrandSignupsPage />;
   if (isBrand) return <BrandPage />;
   if (isSpeakerSheet) return <SpeakerSheetPage />;
   if (isZoomBackgrounds) return <ZoomBackgroundsPage />;
@@ -225,6 +228,7 @@ function isUnrestrictedPath(path: string): boolean {
   return (
     path === '/hub' ||
     path === '/brand' ||
+    path === '/brand/signups' ||
     path === '/speaker-sheet' ||
     path === '/zoom-backgrounds' ||
     path === '/brand-kit-export' ||
@@ -267,6 +271,7 @@ function AppContentShell({ path }: { path: string }) {
       <>
         <RequireInternalAuth
           gate={isAdvanceListenPath(path) ? 'advance-listen' : 'internal'}
+          allowBypass={path !== '/brand/signups'}
         >
           {page}
         </RequireInternalAuth>

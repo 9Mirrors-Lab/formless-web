@@ -185,8 +185,16 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     title: 'Brand',
     path: '/brand',
     category: 'design',
-    description: 'Brand Toolkit landing. Placeholder until brand content is ready.',
+    description: 'Owner desk: signups, Audible progress, and production materials.',
     source: 'src/pages/BrandPage.tsx',
+  },
+  {
+    id: 'brand-signups',
+    title: 'Signups',
+    path: '/brand/signups',
+    category: 'design',
+    description: 'Brand Studio list of emails from the book waitlist, newsletter, and advance listen.',
+    source: 'src/pages/BrandSignupsPage.tsx, src/lib/siteSignups.ts',
   },
   {
     id: 'speaker-sheet',

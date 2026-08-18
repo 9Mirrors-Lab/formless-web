@@ -1,0 +1,221 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import {
+  filterSignups,
+  mergeSignupsByEmail,
+  signupListLabel,
+  signupListPath,
+  signupMetricHelp,
+  signupsToCsv,
+  summarizeSignups,
+  type SiteSignup,
+} from '@/lib/siteSignups';
+
+const rows: SiteSignup[] = [
+  {
+    id: 'book_release:1',
+    email: 'ada@house.com',
+    source: 'book_page',
+    list: 'book_release',
+    createdAt: '2026-08-14T12:00:00.000Z',
+  },
+  {
+    id: 'newsletter:2',
+    email: 'ada@house.com',
+    source: 'about_stay_close',
+    list: 'newsletter',
+    createdAt: '2026-08-13T12:00:00.000Z',
+  },
+  {
+    id: 'account:3',
+    email: 'new@house.com',
+    source: 'account',
+    list: 'account',
+    createdAt: '2026-08-12T12:00:00.000Z',
+  },
+];
+
+describe('siteSignups', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.resetModules();
+  });
+
+  it('labels each list', () => {
+    expect(signupListLabel('book_release')).toBe('Book waitlist');
+    expect(signupListLabel('newsletter')).toBe('Newsletter');
+    expect(signupListLabel('advance_listen')).toBe('Advance listen');
+    expect(signupListLabel('account')).toBe('Account');
+    expect(signupListPath('book_release')).toBe('/book');
+  });
+
+  it('explains each count tile', () => {
+    expect(signupMetricHelp('people')).toMatch(/unique email/i);
+    expect(signupMetricHelp('entries')).toMatch(/twice/i);
+    expect(signupMetricHelp('book_release')).toMatch(/book/i);
+    expect(signupMetricHelp('newsletter')).toMatch(/stay close/i);
+    expect(signupMetricHelp('advance_listen')).toMatch(/listen/i);
+    expect(signupMetricHelp('account')).toMatch(/advance listen/i);
+  });
+
+  it('counts unique people and overlap across lists', () => {
+    expect(summarizeSignups(rows)).toEqual({
+      total: 3,
+      uniqueEmails: 2,
+      overlapCount: 1,
+      byList: {
+        book_release: 1,
+        newsletter: 1,
+        advance_listen: 0,
+        account: 1,
+      },
+    });
+  });
+
+  it('filters by list and search', () => {
+    expect(filterSignups(rows, { list: 'newsletter', query: '' })).toEqual([
+      rows[1],
+    ]);
+    expect(filterSignups(rows, { list: 'all', query: 'NEW@' })).toEqual([
+      rows[2],
+    ]);
+    expect(filterSignups(rows, { list: 'all', query: 'waitlist' })).toEqual([
+      rows[0],
+    ]);
+  });
+
+  it('exports a csv of the visible rows', () => {
+    const csv = signupsToCsv(rows.slice(0, 1));
+    expect(csv).toBe(
+      [
+        'email,list,source,page,created_at',
+        'ada@house.com,Book waitlist,book_page,/book,2026-08-14T12:00:00.000Z',
+      ].join('\n'),
+    );
+  });
+
+  it('loads all four signup sources', async () => {
+    const from = vi.fn((table: string) => {
+      const data =
+        table === 'book_release_signups'
+          ? [
+              {
+                id: '1',
+                email: 'Ada@House.com',
+                source: 'book_page',
+                created_at: '2026-08-14T12:00:00.000Z',
+              },
+            ]
+          : table === 'profiles'
+            ? [
+                {
+                  id: '3',
+                  email: 'new@house.com',
+                  created_at: '2026-08-12T12:00:00.000Z',
+                },
+              ]
+            : [];
+
+      return {
+        select: () => ({
+          order: async () => ({ data, error: null }),
+        }),
+      };
+    });
+
+    vi.doMock('@/lib/supabase', () => ({
+      hasSupabaseEnv: () => true,
+      getBrowserSupabaseClient: () => ({ from }),
+    }));
+
+    const { fetchSiteSignups } = await import('@/lib/siteSignups');
+    const result = await fetchSiteSignups();
+
+    expect(result).toEqual({
+      ok: true,
+      rows: [
+        {
+          id: 'book_release:1',
+          email: 'ada@house.com',
+          source: 'book_page',
+          list: 'book_release',
+          createdAt: '2026-08-14T12:00:00.000Z',
+        },
+        {
+          id: 'advance_listen:3',
+          email: 'new@house.com',
+          source: 'advance_listen',
+          list: 'advance_listen',
+          createdAt: '2026-08-12T12:00:00.000Z',
+        },
+      ],
+    });
+    expect(from).toHaveBeenCalledWith('book_release_signups');
+    expect(from).toHaveBeenCalledWith('newsletter_signups');
+    expect(from).toHaveBeenCalledWith('advance_listen_signups');
+    expect(from).toHaveBeenCalledWith('profiles');
+  });
+
+  it('skips a missing signup table instead of failing the whole list', async () => {
+    const from = vi.fn((table: string) => {
+      if (table === 'advance_listen_signups') {
+        return {
+          select: () => ({
+            order: async () => ({
+              data: null,
+              error: {
+                message: "Could not find the table 'public.advance_listen_signups' in the schema cache",
+              },
+            }),
+          }),
+        };
+      }
+
+      return {
+        select: () => ({
+          order: async () => ({ data: [], error: null }),
+        }),
+      };
+    });
+
+    vi.doMock('@/lib/supabase', () => ({
+      hasSupabaseEnv: () => true,
+      getBrowserSupabaseClient: () => ({ from }),
+    }));
+
+    const { fetchSiteSignups } = await import('@/lib/siteSignups');
+    const result = await fetchSiteSignups();
+
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.rows).toEqual([]);
+  });
+
+  it('keeps one advance-listen row per email', () => {
+    expect(
+      mergeSignupsByEmail([
+        {
+          id: 'advance_listen:table',
+          email: 'ada@house.com',
+          source: 'advance_listen',
+          list: 'advance_listen',
+          createdAt: '2026-08-14T12:00:00.000Z',
+        },
+        {
+          id: 'advance_listen:profile',
+          email: 'ada@house.com',
+          source: 'advance_listen',
+          list: 'advance_listen',
+          createdAt: '2026-08-01T12:00:00.000Z',
+        },
+      ]),
+    ).toEqual([
+      {
+        id: 'advance_listen:profile',
+        email: 'ada@house.com',
+        source: 'advance_listen',
+        list: 'advance_listen',
+        createdAt: '2026-08-01T12:00:00.000Z',
+      },
+    ]);
+  });
+});

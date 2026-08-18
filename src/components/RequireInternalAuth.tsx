@@ -18,6 +18,8 @@ import { useAuth } from '@/context/AuthContext';
 type RequireInternalAuthProps = {
   children: ReactNode;
   gate?: InternalLoginGate;
+  /** Local-only skip. Keep false on pages that read private signup data. */
+  allowBypass?: boolean;
 };
 
 function InternalStatusScreen({
@@ -55,9 +57,10 @@ function InternalStatusScreen({
 export function RequireInternalAuth({
   children,
   gate = 'internal',
+  allowBypass = true,
 }: RequireInternalAuthProps) {
   const { status, user, signOut } = useAuth();
-  const bypass = isInternalAuthBypassEnabled();
+  const bypass = allowBypass && isInternalAuthBypassEnabled();
   const eyebrow =
     gate === 'advance-listen' ? 'Advance Listening Access' : 'Member access';
 

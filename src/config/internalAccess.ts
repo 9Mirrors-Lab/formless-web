@@ -46,7 +46,7 @@ export function isInternalAuthPath(pathname: string): boolean {
   const path = pathname.replace(/\/+$/, '').toLowerCase() || '/';
 
   if (path === '/hub') return true;
-  if (path === '/brand') return true;
+  if (path === '/brand' || path.startsWith('/brand/')) return true;
   if (path === '/speaker-sheet') return true;
   if (path === '/zoom-backgrounds') return true;
   if (path === '/brand-kit-export') return true;

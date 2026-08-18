@@ -15,7 +15,7 @@ import {
 
 function Cue({ children }: { children: string }) {
   return (
-    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#9fb5aa]/70">
+    <p className="text-[12px] font-medium tracking-[0.04em] text-[#9fb5aa]">
       {children}
     </p>
   );
@@ -23,11 +23,11 @@ function Cue({ children }: { children: string }) {
 
 function SpokenLines({ lines }: { lines: string[] }) {
   return (
-    <div className="mt-3 space-y-5">
+    <div className="mt-4 space-y-4">
       {lines.map((line, index) => (
         <p
           key={`${index}-${line.slice(0, 24)}`}
-          className="font-serif text-[1.2rem] font-light leading-[1.55] tracking-[-0.015em] text-cream sm:text-[1.35rem] sm:leading-[1.5]"
+          className="font-sans text-[1.125rem] font-normal leading-[1.65] tracking-[0.01em] text-cream"
         >
           {line}
         </p>
@@ -50,23 +50,20 @@ function SessionMeta({ session }: { session: RecordSession }) {
     <aside className="lg:sticky lg:top-14 lg:col-start-2 lg:row-start-1 lg:row-span-2">
       <section
         id="re-record"
-        className="w-full rounded-lg border border-cream/10 bg-[#0a0e0c] px-3 py-3"
+        className="w-full rounded-lg border border-cream/10 bg-[#0a0e0c] px-5 py-5"
       >
-        <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#9fb5aa]/70">
-          {session.sectionTitle}
-        </p>
-        <h2 className="mt-1 font-serif text-[1.25rem] italic leading-none tracking-[-0.03em] text-cream">
+        <h2 className="font-serif text-[1.45rem] italic leading-[1.12] tracking-[-0.03em] text-cream">
           {session.track}
         </h2>
-        <p className="mt-2 text-[11px] font-light leading-snug text-cream/60">
+        <p className="mt-3 text-[0.9375rem] font-normal leading-[1.5] text-cream/80">
           {session.why}
         </p>
 
-        <ul className="mt-2.5 space-y-1 border-t border-cream/10 pt-2.5">
+        <ul className="mt-4 space-y-2.5 border-t border-cream/10 pt-4">
           {session.reminders.map((item) => (
             <li
               key={item.text}
-              className="flex gap-1.5 text-[10px] font-light leading-tight text-cream/55"
+              className="flex gap-2 text-[13px] font-normal leading-[1.45] text-cream/75"
             >
               <span
                 className="mt-1 h-1 w-1 shrink-0 rounded-full bg-[#9fb5aa]"
@@ -94,13 +91,13 @@ function SessionMeta({ session }: { session: RecordSession }) {
 function SessionScript({ session }: { session: RecordSession }) {
   return (
     <section id="script" className="min-w-0 lg:col-start-1">
-      <div className="sticky top-10 z-10 border-b border-cream/10 bg-[#080a09]/92 py-3 backdrop-blur-md">
+      <div className="sticky top-10 z-10 border-b border-cream/10 bg-[#080a09]/92 px-4 py-3 backdrop-blur-md">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <p className="font-serif text-[1.15rem] italic tracking-[-0.02em] text-cream">
             Script
             <span className="ml-2 not-italic text-moss">{session.track}</span>
           </p>
-          <p className="font-mono text-[11px] text-cream/40">
+          <p className="text-[13px] font-normal text-cream/70">
             Save as {session.saveAs}
           </p>
         </div>
@@ -111,9 +108,9 @@ function SessionScript({ session }: { session: RecordSession }) {
           <Cue>Room</Cue>
           <p className="mt-3 font-companion text-[2.25rem] font-semibold leading-none tracking-[-0.04em] text-cream">
             {session.roomSeconds}
-            <span className="ml-1 text-[1rem] font-medium text-cream/35">s</span>
+            <span className="ml-1 text-[1rem] font-medium text-cream/55">s</span>
           </p>
-          <p className="mt-3 text-[0.95rem] font-light leading-relaxed text-cream/75">
+          <p className="mt-3 text-[1.05rem] font-normal leading-relaxed text-cream/90">
             {session.roomCue}
           </p>
         </div>
@@ -129,7 +126,7 @@ function SessionScript({ session }: { session: RecordSession }) {
           className="mt-4 rounded-xl border border-clay/40 bg-clay/[0.07] px-5 py-6 md:px-6"
         >
           <Cue>{session.closing.cue}</Cue>
-          <p className="mt-2 text-[13px] font-light leading-relaxed text-cream/55">
+          <p className="mt-2 text-[15px] font-normal leading-relaxed text-cream/80">
             {session.closing.note}
           </p>
           <SpokenLines lines={session.closing.lines} />
@@ -139,7 +136,7 @@ function SessionScript({ session }: { session: RecordSession }) {
           <p className="font-serif text-[clamp(1.35rem,2.2vw,1.75rem)] italic leading-none tracking-[-0.02em] text-cream">
             Stop <span className="not-italic text-moss">recording</span>
           </p>
-          <p className="mt-3 text-[13px] font-light text-cream/40">
+          <p className="mt-3 text-[15px] font-normal text-cream/70">
             {session.stopCue}
           </p>
         </div>

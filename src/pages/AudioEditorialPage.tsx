@@ -4,7 +4,7 @@
  * Visual thesis: Dark reading room; cream type on charcoal; Formless brand leads;
  * audio compare stays spare, not DAW chrome. Analysis is per-track, not a sample report.
  * Recording Companion opens as a right tray (same width as Read along).
- * Listen = Audible Master; Analysis / Master phases = in-page tabs under Analysis nav.
+ * Listen = Audible Master. Analysis / Master phases stay as in-page tabs.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
@@ -119,8 +119,7 @@ export default function AudioEditorialPage() {
     setEditorialViewInUrl(view, trackId);
   }, []);
 
-  const shellActiveId =
-    mode === 'analysis' || mode === 'master-phases' ? 'audible-analysis' : 'audible';
+  const shellActiveId = 'audible';
 
   return (
     <BrandShell
