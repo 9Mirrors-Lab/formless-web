@@ -31,7 +31,6 @@ export function BrandMobileCurtain({
   onOpen,
   onClose,
 }: BrandMobileCurtainProps) {
-  const titleId = useId();
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -161,7 +160,7 @@ export function BrandMobileCurtain({
         }}
         role={open ? "dialog" : undefined}
         aria-modal={open || undefined}
-        aria-labelledby={titleId}
+        aria-label="Brand toolkit"
         aria-hidden={!open}
         inert={!open}
       >
@@ -174,29 +173,42 @@ export function BrandMobileCurtain({
           }}
         />
 
-        <div className="relative flex items-end justify-between px-5 pb-3 pt-6">
-          <a
-            href="/brand"
-            id={titleId}
-            className={`min-h-11 min-w-0 ${focusRing} curtain-link`}
-            onClick={onClose}
-            tabIndex={open ? 0 : -1}
-          >
-            <span className="block font-serif text-[2rem] font-light italic leading-none tracking-tight text-cream">
-              Eyes Closed
-            </span>
-          </a>
-        </div>
-
         <nav
           ref={linksRef}
-          className="relative flex-1 overflow-y-auto overscroll-contain px-2 pb-4"
+          className="relative flex-1 overflow-y-auto overscroll-contain px-2 pb-4 pt-10"
           aria-label="Brand toolkit"
         >
-          <ul className="flex flex-col gap-7">
+          <ul className="flex flex-col gap-5">
+            <li>
+              <a
+                href="/brand"
+                aria-current={activeId === "brand" ? "page" : undefined}
+                className={[
+                  "curtain-link group flex min-h-11 flex-col justify-center rounded-lg px-4 py-3 transition-colors duration-200",
+                  focusRing,
+                  activeId === "brand"
+                    ? "bg-cream/[0.05] text-cream"
+                    : "text-cream/80 hover:bg-cream/[0.03] hover:text-cream",
+                ].join(" ")}
+                onClick={onClose}
+                tabIndex={open ? 0 : -1}
+              >
+                <span className="font-serif text-[1.85rem] font-light italic leading-none tracking-tight">
+                  Eyes Closed
+                </span>
+                <span
+                  className={[
+                    "mt-1.5 text-[0.8125rem] leading-snug",
+                    activeId === "brand" ? "text-cream/55" : "text-cream/45",
+                  ].join(" ")}
+                >
+                  Brand Toolkit
+                </span>
+              </a>
+            </li>
             {NAV_ROOMS.map((room) => (
               <li key={room.id}>
-                <p className="px-4 pb-1 font-serif text-[1.15rem] italic leading-none text-cream/40">
+                <p className="px-4 pb-1 font-serif text-[1.15rem] italic leading-none text-[#9fb5aa]">
                   {room.title}
                 </p>
                 <ul className="flex flex-col">
@@ -223,7 +235,7 @@ export function BrandMobileCurtain({
                           <span
                             className={[
                               "mt-0.5 text-[0.8125rem] leading-snug",
-                              isActive ? "text-cream/45" : "text-cream/28",
+                              isActive ? "text-cream/55" : "text-cream/45",
                             ].join(" ")}
                           >
                             {item.description}
@@ -263,7 +275,9 @@ export function BrandMobileCurtain({
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={
-          open ? `Close menu. ${place.title}` : `Open menu. ${place.title}`
+          open
+            ? `Close menu. ${place.title}`
+            : `Open menu. ${place.room}. ${place.title}`
         }
         onClick={() => (open ? onClose() : onOpen())}
       >

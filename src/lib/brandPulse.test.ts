@@ -57,7 +57,7 @@ describe('brandPulse', () => {
       },
     };
     const pulse = signupPulse('ready', summary, latest, now);
-    expect(pulse.headline).toBe('47 people have asked to stay close.');
+    expect(pulse.headline).toBe('47 people have signed up.');
     expect(pulse.detail).toMatch(/last arrived yesterday/i);
     expect(pulse.href).toBe('/brand/signups');
   });
@@ -73,7 +73,7 @@ describe('brandPulse', () => {
       },
     };
     expect(signupPulse('ready', summary, null).headline).toBe(
-      '1 person has asked to stay close.',
+      '1 person has signed up.',
     );
   });
 

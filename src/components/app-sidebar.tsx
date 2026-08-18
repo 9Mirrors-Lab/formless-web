@@ -60,7 +60,7 @@ function BrandNavPanel({
         aria-hidden
       />
 
-      <div className="relative flex min-h-[135px] flex-col items-start justify-center px-3 pb-5 pt-5">
+      <div className="relative flex min-h-[135px] flex-col items-start justify-center px-2 pb-5 pt-5">
         <a
           href="/brand"
           className="group block w-full min-w-0 px-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
@@ -79,7 +79,7 @@ function BrandNavPanel({
       </div>
 
       <nav
-        className="relative flex-1 overflow-y-auto px-3 pb-6"
+        className="relative flex-1 overflow-y-auto px-2 pb-6"
         aria-labelledby={labelledBy}
       >
         <ul className="flex flex-col gap-6">
@@ -110,21 +110,30 @@ function BrandNavPanel({
                           href={item.href}
                           aria-current={isActive ? "page" : undefined}
                           className={[
-                            "group relative block rounded-lg px-3 py-2 transition-colors duration-300",
+                            "group relative block rounded-lg px-3 py-2.5 transition-colors duration-300",
                             "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]",
                             isActive
-                              ? "bg-cream/[0.05] text-cream"
-                              : "text-cream/50 hover:bg-cream/[0.03] hover:text-cream/80",
+                              ? "bg-cream/[0.05]"
+                              : "hover:bg-cream/[0.03]",
                           ].join(" ")}
                           onClick={onClose}
                         >
-                          <span className="block text-[12px] font-normal tracking-wide">
+                          <span
+                            className={[
+                              "block text-[16px] font-semibold leading-snug tracking-normal",
+                              isActive
+                                ? "text-cream"
+                                : "text-cream/90 group-hover:text-cream",
+                            ].join(" ")}
+                          >
                             {item.title}
                           </span>
                           <span
                             className={[
-                              "mt-0.5 block text-[12px] leading-[1.4]",
-                              isActive ? "text-cream/55" : "text-cream/40",
+                              "mt-1 block text-[12px] font-normal leading-none whitespace-nowrap",
+                              isActive
+                                ? "text-cream/45"
+                                : "text-cream/35 group-hover:text-cream/45",
                             ].join(" ")}
                           >
                             {item.description}
@@ -149,7 +158,7 @@ function BrandNavPanel({
       <div className="relative mt-auto border-t border-cream/[0.08] px-3 py-5">
         <a
           href="/hub"
-          className="inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.12em] text-cream/55 transition-colors hover:text-[#9fb5aa]"
+          className="inline-flex items-center gap-2 px-3 text-[12px] font-medium uppercase tracking-[0.12em] text-cream/55 transition-colors hover:text-[#9fb5aa]"
           onClick={onClose}
         >
           <span aria-hidden>←</span>
@@ -165,7 +174,7 @@ export function BrandNav({ activeId, onClose }: BrandNavProps) {
 
   return (
     <aside
-      className="brand-nav-rail relative z-30 hidden w-[15.5rem] shrink-0 border-r border-cream/[0.08] bg-[#060807] md:flex md:flex-col"
+      className="brand-nav-rail relative z-30 hidden w-[19rem] shrink-0 border-r border-cream/[0.08] bg-[#060807] md:flex md:flex-col"
       aria-label="Brand navigation"
     >
       <BrandNavPanel
@@ -218,7 +227,11 @@ export function BrandShell({
         onClose={() => setOpen(false)}
       />
 
-      <div className="relative flex min-w-0 flex-1 flex-col">
+      <div
+        className="relative flex min-w-0 flex-1 flex-col"
+        aria-hidden={open || undefined}
+        inert={open || undefined}
+      >
         <div className="relative flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
           {children}
         </div>

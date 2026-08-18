@@ -54,8 +54,8 @@ export function formatPulseWhen(iso: string, now = new Date()): string {
 }
 
 function peoplePhrase(count: number): string {
-  if (count === 1) return '1 person has asked to stay close.';
-  return `${count} people have asked to stay close.`;
+  if (count === 1) return '1 person has signed up.';
+  return `${count} people have signed up.`;
 }
 
 export function signupPulse(
@@ -66,7 +66,7 @@ export function signupPulse(
 ): BrandPulse {
   if (state === 'loading') {
     return {
-      headline: 'People who asked to stay close.',
+      headline: 'People on the lists.',
       detail: 'Loading the lists.',
       href: SIGNUP_HREF,
     };
@@ -74,7 +74,7 @@ export function signupPulse(
 
   if (state === 'error') {
     return {
-      headline: 'People who asked to stay close.',
+      headline: 'People on the lists.',
       detail: 'Could not load signups.',
       href: SIGNUP_HREF,
     };

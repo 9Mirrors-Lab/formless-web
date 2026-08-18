@@ -2,8 +2,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   filterSignups,
+  isExcludedSignupEmail,
   mergeSignupsByEmail,
   signupListLabel,
+  signupListMeaning,
   signupListPath,
   signupMetricHelp,
   signupsToCsv,
@@ -47,6 +49,13 @@ describe('siteSignups', () => {
     expect(signupListLabel('advance_listen')).toBe('Advance listen');
     expect(signupListLabel('account')).toBe('Account');
     expect(signupListPath('book_release')).toBe('/book');
+  });
+
+  it('names what each list is asking for', () => {
+    expect(signupListMeaning('book_release')).toBe('Tell me when the book is out.');
+    expect(signupListMeaning('newsletter')).toBe('Keep me on the about-page list.');
+    expect(signupListMeaning('advance_listen')).toBe('I signed in to hear audio.');
+    expect(signupListMeaning('account')).toMatch(/advance listen/i);
   });
 
   it('explains each count tile', () => {
@@ -188,6 +197,82 @@ describe('siteSignups', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.rows).toEqual([]);
+  });
+
+  it('drops internal and test emails from every list', () => {
+    expect(isExcludedSignupEmail('riles4@gmail.com')).toBe(true);
+    expect(isExcludedSignupEmail('RilesTrade@house.com')).toBe(true);
+    expect(isExcludedSignupEmail('riles@example.com')).toBe(true);
+    expect(isExcludedSignupEmail('soni@house.com')).toBe(true);
+    expect(isExcludedSignupEmail('sonikacottman@gmial.com')).toBe(true);
+    expect(isExcludedSignupEmail('testing@gmail.com')).toBe(true);
+    expect(isExcludedSignupEmail('ada@house.com')).toBe(false);
+  });
+
+  it('omits excluded emails when loading signup sources', async () => {
+    const from = vi.fn((table: string) => {
+      const data =
+        table === 'book_release_signups'
+          ? [
+              {
+                id: 'keep',
+                email: 'ada@house.com',
+                source: 'book_page',
+                created_at: '2026-08-14T12:00:00.000Z',
+              },
+              {
+                id: 'drop',
+                email: 'riles4@gmail.com',
+                source: 'book_page',
+                created_at: '2026-08-14T11:00:00.000Z',
+              },
+            ]
+          : table === 'newsletter_signups'
+            ? [
+                {
+                  id: 'soni',
+                  email: 'sonikacottman@gmail.com',
+                  source: 'about_stay_close',
+                  created_at: '2026-08-13T12:00:00.000Z',
+                },
+              ]
+            : table === 'profiles'
+              ? [
+                  {
+                    id: 'test',
+                    email: 'testing@gmail.com',
+                    created_at: '2026-08-12T12:00:00.000Z',
+                  },
+                ]
+              : [];
+
+      return {
+        select: () => ({
+          order: async () => ({ data, error: null }),
+        }),
+      };
+    });
+
+    vi.doMock('@/lib/supabase', () => ({
+      hasSupabaseEnv: () => true,
+      getBrowserSupabaseClient: () => ({ from }),
+    }));
+
+    const { fetchSiteSignups } = await import('@/lib/siteSignups');
+    const result = await fetchSiteSignups();
+
+    expect(result).toEqual({
+      ok: true,
+      rows: [
+        {
+          id: 'book_release:keep',
+          email: 'ada@house.com',
+          source: 'book_page',
+          list: 'book_release',
+          createdAt: '2026-08-14T12:00:00.000Z',
+        },
+      ],
+    });
   });
 
   it('keeps one advance-listen row per email', () => {

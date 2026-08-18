@@ -54,6 +54,23 @@ export function signupListLabel(list: SignupList): string {
   }
 }
 
+export function signupListMeaning(list: SignupList): string {
+  switch (list) {
+    case 'book_release':
+      return 'Tell me when the book is out.';
+    case 'newsletter':
+      return 'Keep me on the about-page list.';
+    case 'advance_listen':
+      return 'I signed in to hear audio.';
+    case 'account':
+      return 'Counted under Advance listen.';
+    default: {
+      const _exhaustive: never = list;
+      return _exhaustive;
+    }
+  }
+}
+
 export function signupMetricHelp(key: SignupMetricKey): string {
   switch (key) {
     case 'people':
@@ -61,13 +78,13 @@ export function signupMetricHelp(key: SignupMetricKey): string {
     case 'entries':
       return 'Total rows. The same person on two lists counts twice.';
     case 'book_release':
-      return 'Emails from the notify form on the book page.';
+      return `${signupListMeaning('book_release')} Emails from the notify form on the book page.`;
     case 'newsletter':
-      return 'Emails from Stay Close on the about page.';
+      return `${signupListMeaning('newsletter')} Emails from Stay Close on the about page.`;
     case 'advance_listen':
-      return 'People who signed in to listen. Includes Auth accounts from /advance-listen.';
+      return `${signupListMeaning('advance_listen')} Includes Auth accounts from /advance-listen.`;
     case 'account':
-      return 'The public /signup page. Those accounts now count under Advance listen, so this stays at zero.';
+      return 'The public /signup page. Those emails now count under Advance listen.';
     default: {
       const _exhaustive: never = key;
       return _exhaustive;
@@ -187,6 +204,21 @@ function queryRows(
   return { ok: false, error: result.error.message };
 }
 
+/** Internal and test addresses that should never appear on signup lists. */
+const EXCLUDED_SIGNUP_EMAIL_NEEDLES = [
+  'riles',
+  'rilestrade',
+  'soni',
+  'sonikacottman',
+  'testing@gmail',
+] as const;
+
+export function isExcludedSignupEmail(email: string): boolean {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return false;
+  return EXCLUDED_SIGNUP_EMAIL_NEEDLES.some((needle) => normalized.includes(needle));
+}
+
 function mapSignupRows(
   rows: SignupRow[] | null,
   list: SignupList,
@@ -195,7 +227,7 @@ function mapSignupRows(
   const mapped: SiteSignup[] = [];
   for (const row of rows ?? []) {
     const email = row.email?.trim().toLowerCase();
-    if (!email) continue;
+    if (!email || isExcludedSignupEmail(email)) continue;
     mapped.push({
       id: `${list}:${row.id}`,
       email,

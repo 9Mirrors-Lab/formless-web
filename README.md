@@ -1,3 +1,12 @@
+# formless-web
+
+> **Wrong checkout for day-to-day work.**  
+> This folder (`/Users/m4/formless-web`) is a secondary clone. Do not treat it as the active project.  
+> **Use instead:** `/Volumes/Fulcrum/Develop/formless-site/formless-web`  
+> Same GitHub remote (`9Mirrors-Lab/formless-web`); Fulcrum is the copy that has been used most and holds the newer local work. Open Cursor there and run `npm run dev` from that path.
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

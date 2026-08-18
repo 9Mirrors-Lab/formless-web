@@ -4,13 +4,10 @@ import { BrandAudienceCharts } from "@/components/BrandAudienceCharts";
 import { BrandShell } from "@/components/app-sidebar";
 import { ShaderBackdrop } from "@/components/shader/ShaderBackdrop";
 import { RECORD_SESSION_LIST } from "@/data/audioRecordSessions";
-import {
-  studioBookProgress,
-  studioCatalogForTracks,
-} from "@/data/audiobookStudioCatalog";
+import { studioCatalogForTracks } from "@/data/audiobookStudioCatalog";
 import { collectBrandNeeds } from "@/lib/brandNeeds";
 import { useStudioApprovals } from "@/hooks/useStudioApprovals";
-import { audiblePulse, signupPulse, type PulseLoad } from "@/lib/brandPulse";
+import { signupPulse, type PulseLoad } from "@/lib/brandPulse";
 import {
   listPublishedAudiobookTracks,
   type AudiobookTrack,
@@ -82,10 +79,6 @@ export default function BrandPage() {
 
   const records = studioCatalogForTracks(tracks, approvedIds);
   const audience = signupPulse(signupState, signupSummary, signupRows[0] ?? null);
-  const production = audiblePulse(
-    studioBookProgress(records),
-    RECORD_SESSION_LIST.length,
-  );
   const needs = collectBrandNeeds(RECORD_SESSION_LIST, records);
 
   return (
@@ -142,10 +135,10 @@ export default function BrandPage() {
                       href={need.href}
                       className="group flex min-h-11 items-baseline justify-between gap-6 py-3.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]"
                     >
-                      <span className="min-w-0 text-[13px] leading-snug tracking-wide text-cream/[0.92] transition-colors group-hover:text-cream">
+                      <span className="min-w-0 text-[12px] leading-snug text-cream/80 transition-colors group-hover:text-cream">
                         {need.sentence}
                       </span>
-                      <span className="shrink-0 text-[11px] leading-snug text-cream/55">
+                      <span className="shrink-0 text-[11px] leading-snug text-cream/45">
                         {need.door}
                       </span>
                     </a>
@@ -154,18 +147,6 @@ export default function BrandPage() {
               </ul>
             )}
           </section>
-
-          <a
-            href={production.href}
-            className="group mt-8 block max-w-[34rem] rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]"
-          >
-            <p className="font-serif text-[1.45rem] font-light italic leading-[1.12] tracking-[-0.02em] text-cream/92 transition-colors group-hover:text-cream sm:text-[1.7rem]">
-              {production.headline}
-            </p>
-            <p className="mt-2.5 max-w-[46ch] text-[0.8125rem] leading-relaxed text-cream/55 md:text-sm">
-              {production.detail}
-            </p>
-          </a>
 
           <ul className="mt-14 max-w-[34rem] divide-y divide-cream/10 border-t border-cream/12">
             {MATERIALS.map((item) => (

@@ -37,7 +37,7 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         id: "signups",
         title: "Signups",
         href: "/brand/signups",
-        description: "People who asked to stay close",
+        description: "Book waitlist, Stay Close, and advance listen",
       },
     ],
   },

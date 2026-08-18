@@ -25,6 +25,8 @@ import {
   type SiteSignup,
 } from '@/lib/siteSignups';
 
+const DISPLAY_LISTS = SIGNUP_LISTS.filter((list) => list !== 'account');
+
 type LoadState = 'loading' | 'ready' | 'error';
 type ListFilter = SignupList | 'all';
 
@@ -112,7 +114,7 @@ export default function BrandSignupsPage() {
   }> = [
     { key: 'people', label: 'People', value: summary.uniqueEmails },
     { key: 'entries', label: 'Entries', value: summary.total },
-    ...SIGNUP_LISTS.map((list) => ({
+    ...DISPLAY_LISTS.map((list) => ({
       key: list,
       label: signupListLabel(list),
       value: summary.byList[list],
@@ -159,16 +161,16 @@ export default function BrandSignupsPage() {
               initial={reduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-2 border-y border-cream/10 sm:grid-cols-3 lg:grid-cols-6"
+              className="grid grid-cols-2 border-y border-cream/10 sm:grid-cols-3 lg:grid-cols-5"
             >
               {metrics.map((metric) => (
                 <Tooltip key={metric.key}>
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      className="flex cursor-help flex-col gap-1 px-3 py-4 text-left transition-colors hover:bg-cream/[0.035] md:px-5"
+                      className="flex h-full cursor-help flex-col gap-1 px-3 py-4 text-left transition-colors hover:bg-cream/[0.035] md:px-5"
                     >
-                      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/40">
+                      <span className="truncate whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.16em] text-cream/40">
                         {metric.label}
                       </span>
                       <span className="font-serif text-[1.65rem] leading-none text-cream md:text-[1.85rem]">
@@ -206,7 +208,7 @@ export default function BrandSignupsPage() {
               {(
                 [
                   { id: 'all' as const, label: 'All' },
-                  ...SIGNUP_LISTS.map((list) => ({
+                  ...DISPLAY_LISTS.map((list) => ({
                     id: list,
                     label: signupListLabel(list),
                   })),

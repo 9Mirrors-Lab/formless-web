@@ -9,6 +9,7 @@ import {
 } from '@/lib/brandPulse';
 import {
   emptySignupSummary,
+  signupListMeaning,
   type SignupSummary,
   type SiteSignup,
 } from '@/lib/siteSignups';
@@ -75,14 +76,22 @@ export function BrandAudienceCharts({
       {series.map((item, index) => (
         <li
           key={item.list}
-          className="grid grid-cols-[7.5rem_minmax(0,1fr)_1.75rem] items-center gap-3"
+          className="grid grid-cols-[minmax(0,1fr)_1.75rem] items-start gap-x-3 gap-y-1.5 py-2"
         >
-          <span className="truncate font-sans text-[11px] text-cream/45">
-            {item.label}
+          <span className="min-w-0">
+            <span className="block font-sans text-[11px] text-cream/70">
+              {item.label}
+            </span>
+            <span className="mt-0.5 block font-sans text-[10px] leading-snug text-cream/38">
+              {signupListMeaning(item.list)}
+            </span>
+          </span>
+          <span className="pt-0.5 text-right font-serif text-[1.05rem] leading-none text-cream">
+            {state === 'loading' ? '—' : item.total}
           </span>
           <svg
             viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-            className="h-7 w-full overflow-visible"
+            className="col-span-2 h-7 w-full overflow-visible"
             role="img"
             aria-hidden
           >
@@ -114,9 +123,6 @@ export function BrandAudienceCharts({
               />
             </g>
           </svg>
-          <span className="text-right font-serif text-[1.05rem] leading-none text-cream">
-            {state === 'loading' ? '—' : item.total}
-          </span>
         </li>
       ))}
     </ul>

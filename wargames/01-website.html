@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battle Plan · 01-website — Eyes Closed Client Room</title>
+<style>
+:root{
+  --void:#0A0A09; --canvas:#141413; --panel:#1C1C1A;
+  --ink:#EDEBE6; --muted:#A8A7A0; --subtle:#6B6A65;
+  --clay:#D97757; --clay-h:#E8956F; --clay-d:#B85C3E;
+  --olive:#8FA876; --line:#2A2A27; --line-hi:#3D3D3A;
+  --serif:ui-serif, Georgia, "Times New Roman", serif;
+  --sans:system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:48px 32px 64px;display:grid;grid-template-columns:220px 1fr;gap:48px}
+@media(max-width:880px){.wrap{grid-template-columns:1fr;padding:32px 20px 48px}}
+
+/* TOC */
+nav.toc{position:sticky;top:32px;align-self:start;font-size:13px}
+@media(max-width:880px){nav.toc{position:static;border-bottom:1.5px solid var(--line);padding-bottom:20px}}
+nav.toc .eyebrow{margin-bottom:14px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid var(--line);transition:color .15s,border-color .15s}
+nav.toc a:hover{color:var(--ink);border-left-color:var(--clay)}
+
+/* headings */
+.eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--clay);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:24px;height:2px;background:var(--clay)}
+h1{font-family:var(--serif);font-size:clamp(34px,4.6vw,52px);line-height:1.06;letter-spacing:-.018em;font-weight:500;margin:18px 0 14px}
+h1 em{color:var(--clay-h);font-style:italic}
+h2{font-family:var(--serif);font-size:clamp(24px,3vw,32px);line-height:1.1;letter-spacing:-.012em;font-weight:500;margin:0 0 18px}
+h2 .n{font-family:var(--mono);font-size:14px;color:var(--subtle);margin-right:10px;letter-spacing:0}
+h3{font-size:15px;font-weight:600;margin:26px 0 8px}
+p.lede{color:var(--muted);font-size:16.5px;max-width:62ch}
+section{border-bottom:1.5px solid var(--line);padding:52px 0}
+section:first-of-type{padding-top:8px}
+section:last-of-type{border-bottom:none}
+p{color:var(--muted);max-width:70ch;margin-bottom:12px}
+strong{color:var(--ink)}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--ink)}
+pre{background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--muted);margin:14px 0}
+pre code{background:none;border:none;padding:0}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0}
+th{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle);text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--line-hi)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+td:first-child{color:var(--ink);white-space:nowrap}
+td.wide{white-space:normal}
+
+/* cards */
+.move{background:var(--canvas);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin:16px 0}
+.move h3{margin:0 0 10px;font-family:var(--serif);font-size:19px;font-weight:500}
+.move h3 .n{font-family:var(--mono);font-size:12px;color:var(--clay);margin-right:8px}
+.row{display:grid;grid-template-columns:84px 1fr;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.row:first-of-type{border-top:none}
+.tag{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding-top:3px}
+.tag.do{color:var(--ink)}.tag.exp{color:var(--olive)}.tag.fail{color:var(--clay)}
+.row div{color:var(--muted)}
+.row div b{color:var(--ink);font-weight:600}
+
+.callout{background:var(--panel);border-left:3px solid var(--clay);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0;max-width:74ch}
+.callout p{margin:0;color:var(--ink);font-size:14.5px}
+.callout .k{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--clay);display:block;margin-bottom:6px}
+
+ol.directives{counter-reset:d;list-style:none;max-width:76ch}
+ol.directives li{counter-increment:d;padding:14px 0 14px 44px;position:relative;border-bottom:1px solid var(--line);color:var(--muted);font-size:14.5px}
+ol.directives li::before{content:counter(d,decimal-leading-zero);position:absolute;left:0;top:16px;font-family:var(--mono);font-size:12px;color:var(--clay)}
+ol.directives li b{color:var(--ink)}
+
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:14px}
+.grade div{background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--muted)}
+.grade div b{display:block;color:var(--olive);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+
+.meta{font-family:var(--mono);font-size:11px;color:var(--subtle);text-transform:uppercase;letter-spacing:.08em;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="eyebrow">Battle plan</div>
+  <a href="#recon">0 · Settled recon</a>
+  <a href="#directives">1 · Design directives</a>
+  <a href="#files">2 · File map</a>
+  <a href="#moves">3 · Moves</a>
+  <a href="#forks">4 · Forks</a>
+  <a href="#recon-needed">5 · Recon needed</a>
+  <a href="#abort">6 · Abort conditions</a>
+  <a href="#verify">7 · Verification runs</a>
+  <a href="#redteam">8 · Red-team record</a>
+  <a href="#grade">Ledger self-grade</a>
+</nav>
+
+<main>
+<header style="padding-bottom:40px;border-bottom:1.5px solid var(--line)">
+  <div class="eyebrow">Wargame · 01-website · Eyes Closed</div>
+  <h1>Client Room prototype — the <em>wargamed</em> route</h1>
+  <p class="lede">A cheaper executor builds a static prototype of the Eyes Closed Client Section in <code>./site</code>. This plan is the route it follows blind: every move with its expected observation, every failure with its counter, every fork with its trigger. Canonical file: <code>wargames/01-website.md</code>.</p>
+  <p class="meta">Wargamed 2026-07-16 · Executor: Sonnet-class · Repo: /Users/m4/formless-web</p>
+</header>
+
+<section id="recon">
+  <h2><span class="n">0</span>Settled recon — cite as fact, do not re-derive</h2>
+  <table>
+    <tr><th>Fact</th><th>Source</th></tr>
+    <tr><td class="wide"><b>Catalog:</b> 8 entries, 4 groups. In progress: Hero &amp; section templates. Directions: Science (external specimen), About layouts (external specimen), Supporting page themes. Foundations: Design foundations, Iconography, Moodboard. Atmosphere: Backgrounds. Reuse each entry's <code>intent</code> line verbatim as client-facing copy.</td><td><code>src/data/designLabCatalog.ts</code></td></tr>
+    <tr><td class="wide"><b>Nav to kill:</b> 48px fixed bottom-right flask button (z-90) opening a 20rem listbox. The prototype must never reproduce a corner icon as primary wayfinding.</td><td><code>DesignLabPicker.tsx</code></td></tr>
+    <tr><td class="wide"><b>Tokens:</b> dark <code>#050806</code>/<code>#080a09</code>, panel <code>#0e120f</code>, cream <code>#f2f0e9</code>, clay <code>#d46544</code>–<code>#e07852</code> on dark, moss <code>#2e4036</code>, sage <code>#9fb5aa</code>, hairline <code>rgba(242,240,233,.12)</code>.</td><td><code>src/index.css</code>, about specimen</td></tr>
+    <tr><td class="wide"><b>Fonts:</b> Cormorant Garamond (serif display, italic light), Plus Jakarta Sans (body/UI), ui-monospace (eyebrows, uppercase, tracked). Google Fonts link to copy sits in the about specimen's head. Inter/Roboto/Arial banned.</td><td><code>index.html</code>, <code>DESIGN.md</code> §4</td></tr>
+    <tr><td class="wide"><b>Motion:</b> easing <code>cubic-bezier(0.16,1,0.3,1)</code>, heavy and soft, 300–500ms. Banned: bounce, glow, purple gradients, bento grids, spinners, horizontal mobile scroll.</td><td><code>DESIGN.md</code> §8 §13</td></tr>
+    <tr><td class="wide"><b>About specimen</b> = 35KB plain HTML, four boards (Editorial Split / Portrait Hero / Centered Manifesto / Magazine Sidebar) behind its OWN sticky nav — the competing-chrome anti-pattern. Safe to read.</td><td><code>public/design/about-page-layouts.html</code></td></tr>
+    <tr><td class="wide"><b>Science specimen</b> = 1.8MB self-unpacking JS bundle. <b>DO NOT read as text</b> — browser view only, or Fork A. Directions: Vault / Atelier / Observatory Press.</td><td>file size check, catalog intent</td></tr>
+    <tr><td class="wide"><b>Three dark palettes</b> exist as <code>--ex-*</code> variable blocks — the content for the Themes stage.</td><td><code>src/index.css</code> ~30–85</td></tr>
+    <tr><td class="wide"><b><code>./site</code> does not exist</b> — clean destination. <code>public/client/</code> is unrelated (one SEO deck).</td><td>dir listing 2026-07-16</td></tr>
+  </table>
+  <div class="callout"><span class="k">Operator directive · 2026-07-16</span><p>Primary wayfinding must be BIG. A full-viewport overlay for the direction map is explicitly welcomed — "we have full real estate, we don't need to be shy." Clarity beats quietness whenever they conflict.</p></div>
+</section>
+
+<section id="directives">
+  <h2><span class="n">1</span>Design directives — check every page against these</h2>
+  <ol class="directives">
+    <li><b>Chrome is a top rail, on every page, always visible.</b> Left: orbit logomark + "Eyes Closed" + mono CLIENT ROOM label. Right: Index · All directions · Exit site ↗. Stage pages add a centered YOU ARE HERE + direction name. Sticky, 44px targets, hairline bottom border.</li>
+    <li><b>"All directions" opens a full-viewport overlay</b> — the room's map. Four groups, large serif targets (≥1.5rem mobile / ≥2rem desktop) with intent line + status chip, current direction marked. Close: visible ✕ (44px) + Escape + backdrop click. This replaces the flask forever.</li>
+    <li><b>Stages, not dumps.</b> Chrome rail → title block (group eyebrow, serif italic title, intent, status) → work inside a frame. Three frame types only: <code>frame-viewport</code> (browser-chrome plate), <code>frame-plate</code> (matted plate), <code>frame-boards</code> (sequenced plates + switcher).</li>
+    <li><b>Multi-board directions live in ONE stage page.</b> Labeled plate-tabs (<code>01 — Vault</code>), ~400ms crossfade inside the same frame, transform+opacity only. No hash navigation, no scroll jump, no per-board files.</li>
+    <li><b>Graphic discipline.</b> Science / Icons / Moodboard / Backgrounds may lead with SVG marks and atmosphere. Hero / About / Themes / Foundations stay type-and-space only. Zero decorative filler: if a quiet stage "needs something", it needs nothing.</li>
+    <li><b>Motion budget: 2–3 moments per view.</b> Enter reveal chrome → title → content (≤900ms total); index plate stagger; board crossfade. <code>prefers-reduced-motion</code>: everything instant.</li>
+    <li><b>Mobile first — 375px is the contract.</b> Rail collapses to mark + label + All directions (the overlay IS mobile nav). No horizontal scroll, no hidden floating buttons.</li>
+    <li><b>Semantics.</b> Landmarks, one h1 per page, labeled SVGs, overlay as <code>role="dialog" aria-modal="true"</code> with focus moved on open, returned on close.</li>
+  </ol>
+</section>
+
+<section id="files">
+  <h2><span class="n">2</span>File map — create exactly this, nothing more</h2>
+<pre><code>site/
+  index.html                 client room hub
+  css/room.css               tokens, chrome, frames, motion
+  js/room.js                 plain script (NO type="module")
+  stages/
+    hero-templates.html      In progress · composition-led
+    science.html             Directions · graphic-led · 3 boards
+    about-layouts.html       Directions · composition-led · 4 boards
+    themes.html              Directions · composition-led · 3 boards
+    foundations.html         Foundations · composition-led
+    icons.html               Foundations · graphic-led
+    moodboard.html           Foundations · graphic-led
+    backgrounds.html         Atmosphere · graphic-led</code></pre>
+  <p>Every link relative. One Google Fonts <code>&lt;link&gt;</code> per page with full fallback stacks. No fetch, no imports, no build step. <code>Exit site ↗</code> → <code>https://eyesclosed.love</code>.</p>
+</section>
+
+<section id="moves">
+  <h2><span class="n">3</span>Moves — do · expect · if-instead / because / then</h2>
+
+  <div class="move"><h3><span class="n">M1</span>Recon the two specimens in a browser (read-only)</h3>
+    <div class="row"><span class="tag do">Do</span><div>Open both specimens in a browser; note board compositions, hero treatments, accents. Read <code>DESIGN.md</code> §2–§11 once. Never read the science HTML as text.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>About shows 4 studies behind its own nav. Science unpacks into 3 dark directions.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Science stuck on "Unpacking…" or errors → the bundle needs more than <code>file://</code> grants → <b>take Fork A</b>.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M2</span>Scaffold <code>site/</code> + build <code>room.css</code></h3>
+    <div class="row"><span class="tag do">Do</span><div>Create the §2 file map. Define <code>:root</code> tokens from recon (bg, panel, cream, clay, sage, hairlines, three font stacks, <code>--ease</code>). Noise texture only if trivial via inline SVG feTurbulence data-URI; otherwise skip.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>Any stub opened via <code>file://</code> renders dark cream-on-ink with correct serif.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Fonts render as Times → fonts link missing or offline → verify link matches the about specimen head; offline is acceptable with fallbacks, note it and continue.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M3</span>Build the shared chrome (rail + overlay) once</h3>
+    <div class="row"><span class="tag do">Do</span><div>Build rail + overlay in <code>index.html</code> per directives 1–2; behavior in <code>room.js</code> (Escape, backdrop, focus move/restore, body scroll lock). Paste into each stage changing only the YOU ARE HERE label, current marker, and <code>../</code> prefixes.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>Rail on every page; overlay fills viewport; ✕, Escape and backdrop all close; focus returns to trigger.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Page scrolls behind overlay → missing scroll lock → toggle <code>.overlay-open</code> on body. Links 404 from stages → root-relative paths survived the paste → <b>audit every href/src in <code>stages/*</code> for the <code>../</code> prefix — the single most likely mechanical failure of the mission.</b></div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M4</span>Build the index hub</h3>
+    <div class="row"><span class="tag do">Do</span><div>Rail → intro (eyebrow, serif italic h1, 3-sentence how-to: enter → sit with the framed work → return and tell us which feels true) → 4 groups as labeled sections of large entry plates. Framed SVG-sketch thumbs only where a real visual is trivially recreatable (science orbit, icons dots, moodboard field, backgrounds gradient); the rest get calm typographic plates. No fake thumbs.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>1200px: generous editorial grid, scannable across a room. 375px: single column, no horizontal scroll.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Reads as a dashboard card grid → equal boxes in a uniform grid (banned) → vary scale: In-progress plate full-width, Directions two-up, Foundations/Atmosphere tighter.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M5</span>Stage template + the two single-board quiet stages</h3>
+    <div class="row"><span class="tag do">Do</span><div><code>hero-templates.html</code>: frame-viewport with a recreated dark hero (eyebrow, two-line serif display, one quiet CTA pill) + a section-rhythm type study. <code>foundations.html</code>: token swatches, type ramp, one motion note with a hover-demo chip. Both stay quiet.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>Curated presentations: chrome, title, framed work, back-link. Nothing full-bleed.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Hero looks empty → decoration temptation → increase type scale and whitespace instead; quiet stages prove themselves with type and space.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M6</span>The three multi-board stages</h3>
+    <div class="row"><span class="tag do">Do</span><div><b>About</b>: 4 condensed recreations (Editorial Split, Portrait Hero, Centered Manifesto, Magazine Sidebar), specimen's own nav stripped. <b>Science</b>: Vault / Atelier / Observatory Press, each a dark frame-viewport with its accent key + ONE hero SVG (orbit/field/torus) — the graphic-led showcase. <b>Themes</b>: 3 boards from the <code>--ex-*</code> palettes as mini page-mocks + swatch rows.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>Tabs swap boards with a crossfade inside one persistent frame; chrome never moves; reload lands on board 1.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Layout jump on switch → unequal board heights → set frame <code>min-height</code> to tallest board. Science boards are guesses (Fork A taken) → label each <code>Interpretive board — from direction notes</code>; do not fake fidelity.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M7</span>Remaining graphic-led stages</h3>
+    <div class="row"><span class="tag do">Do</span><div><b>Icons</b>: 8–12 line-drawn teaching marks (1.5px strokes, mono captions). <b>Moodboard</b>: Field / Torus / Dissolve as three large plates with serif captions. <b>Backgrounds</b>: three CSS-gradient atmosphere plates in frame-viewports — no animation loops.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>Clearly graphic-led yet framed with chrome intact — with M5 this proves both modes.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>A mark reads as clip-art → filled shapes / detail overload → strokes only, one accent color max.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M8</span>Motion pass</h3>
+    <div class="row"><span class="tag do">Do</span><div><code>.enter</code> class on DOMContentLoaded drives the 3-step reveal via transition delays; <code>--i</code> stagger on index plates; reduced-motion block zeroes all transitions and makes board swaps instant.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>Chrome → title → content in ≤900ms; with reduced-motion emulated everything is instant.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Content flashes before reveal → hidden state applied by JS after first paint → put initial hidden state in CSS gated by a <code>.js</code> class added in <code>&lt;head&gt;</code>, so no-JS users still see everything.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M9</span>Mobile pass at 375px</h3>
+    <div class="row"><span class="tag do">Do</span><div>Walk every page at 375px: rail per directive 7, overlay full-screen and scrollable, single-column index, board tabs wrap vertically, 44px targets.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div><code>document.documentElement.scrollWidth === 375</code> on every page.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Tab row overflows → serif labels too wide → stack tabs as a 2×2 grid of small plates.</div></div>
+  </div>
+
+  <div class="move"><h3><span class="n">M10</span>Accessibility + link audit</h3>
+    <div class="row"><span class="tag do">Do</span><div>Landmarks, one h1, heading order, real anchors/buttons with visible focus, dialog semantics, labeled SVGs. Then click EVERY link and tab on EVERY page.</div></div>
+    <div class="row"><span class="tag exp">Expect</span><div>Zero dead links; keyboard-only traversal reaches index → overlay → any stage → boards → exit.</div></div>
+    <div class="row"><span class="tag fail">Fail</span><div>Switcher not keyboard-operable → tabs built as divs → rebuild as buttons in a <code>role="tablist"</code> with <code>aria-selected</code>.</div></div>
+  </div>
+</section>
+
+<section id="forks">
+  <h2><span class="n">4</span>Forks</h2>
+  <table>
+    <tr><th>Fork</th><th>Trigger (observation)</th><th>Route</th></tr>
+    <tr><td>A</td><td class="wide">Science bundle won't render: "Unpacking…" &gt;30s, error banner, or blank</td><td class="wide">Serve <code>public/</code> once (<code>python3 -m http.server 8000</code>) and retry. Still failing → build the 3 boards interpretively from intent + <code>--ex-*</code> palettes, label them, log RECON NEEDED #1.</td></tr>
+    <tr><td>B</td><td class="wide">Google Fonts unreachable — serif renders as Georgia everywhere</td><td class="wide">Continue on fallbacks; note in report. Do NOT vendor font files.</td></tr>
+    <tr><td>C</td><td class="wide">375px rail wraps to 2 lines or causes horizontal scroll</td><td class="wide">Drop Index + Exit from the rail on mobile; move both into the overlay as first and last items. Rail keeps mark + label + All directions.</td></tr>
+    <tr><td>D</td><td class="wide">The urge to add an icon/diagram to a quiet stage</td><td class="wide">The urge IS the failure. Bigger type, more whitespace, better matting. Decorating quiet stages is a graded defect.</td></tr>
+    <tr><td>E</td><td class="wide">A board recreation takes disproportionate effort</td><td class="wide">Reduce fidelity, keep composition: skeleton + palette + one hero element, max.</td></tr>
+  </table>
+</section>
+
+<section id="recon-needed">
+  <h2><span class="n">5</span>Recon needed</h2>
+  <table>
+    <tr><th>#</th><th>Unsettled</th><th>The exact check that settles it</th></tr>
+    <tr><td>1</td><td class="wide">Actual visuals of the Science bundle (Vault / Atelier / Observatory Press)</td><td class="wide">Render in a browser per M1 / Fork A and note each board's palette + hero composition. Never rendered → boards ship labeled interpretive.</td></tr>
+    <tr><td>2</td><td class="wide">Whether the overlay/rail pattern gets ported back into the React app</td><td class="wide">Operator answer after prototype review. Out of scope — do not touch <code>src/</code>.</td></tr>
+  </table>
+</section>
+
+<section id="abort">
+  <h2><span class="n">6</span>Abort conditions — stop, report, don't improvise</h2>
+  <ol class="directives">
+    <li>Any step would require editing outside <code>site/</code> (anything in <code>src/</code>, <code>public/</code>, root <code>index.html</code>).</li>
+    <li><code>site/</code> already exists with non-trivial content — someone else is working here.</li>
+    <li>The mobile contract would force removing persistent chrome from any page even after Fork C.</li>
+    <li>No browser available at all — verification is browser-based; never "verify" by re-reading your own code.</li>
+  </ol>
+</section>
+
+<section id="verify">
+  <h2><span class="n">7</span>Verification runs — all must pass, via <code>file://</code></h2>
+  <table>
+    <tr><th>#</th><th>Run</th><th>Pass looks like</th></tr>
+    <tr><td>V1</td><td class="wide">Open index; click every plate; from each stage exercise every rail, overlay, and back link</td><td class="wide">All 9 pages reachable, zero dead links, chrome present everywhere</td></tr>
+    <tr><td>V2</td><td class="wide">Click every tab on each multi-board stage</td><td class="wide">Crossfade in the same frame; no scroll jump or layout shift beyond the frame</td></tr>
+    <tr><td>V3</td><td class="wide">Overlay drill: Escape · backdrop · ✕ · tab-through</td><td class="wide">All three close paths work; focus in on open, back to trigger on close; no background scroll</td></tr>
+    <tr><td>V4</td><td class="wide">Emulate <code>prefers-reduced-motion</code>; reload; switch a board</td><td class="wide">No stagger, no reveal, no crossfade — instant content</td></tr>
+    <tr><td>V5</td><td class="wide">375px on all 9 pages; check <code>scrollWidth</code></td><td class="wide"><code>375</code> everywhere; rail usable; 44px targets</td></tr>
+    <tr><td>V6</td><td class="wide">Orphan check from science + about stages</td><td class="wide">No route out of the room except <code>Exit site ↗</code></td></tr>
+    <tr><td>V7</td><td class="wide">Mode proof: science vs about + hero side by side</td><td class="wide">Graphic-led leads with marks in-frame; quiet stages contain zero decorative SVG</td></tr>
+    <tr><td>V8</td><td class="wide">Accessibility tree on index, one multi-board stage, the overlay</td><td class="wide">banner/nav/main present; dialog modal; no unlabeled controls</td></tr>
+    <tr><td>V9</td><td class="wide">Final report audit</td><td class="wide">Every claim names the run or file that proves it</td></tr>
+  </table>
+</section>
+
+<section id="redteam">
+  <h2><span class="n">8</span>Red-team record</h2>
+  <div class="callout"><span class="k">Attack 1 · landed → patched</span><p>"Executor reads the 1.8MB science bundle as text and burns its context." → DO-NOT-READ guard, byte size stated, browser-only viewing, Fork A.</p></div>
+  <div class="callout"><span class="k">Attack 2 · landed → patched</span><p>"Verified by re-reading source; ships with file://-broken module scripts and root-relative links." → module ban, relative-link audit in M3, file:// as primary verification, Abort 4.</p></div>
+  <div class="callout"><span class="k">Attack 3 · landed → patched</span><p>"Overlay leaks scroll/focus — the confusing nav reborn at full size." → focus move/restore, body scroll lock, three tested close paths (V3).</p></div>
+  <div class="callout"><span class="k">Attack 4 · failed → still yielded Fork D</span><p>"Executor pads quiet stages with decorative SVG." Directive 5 already blocked it, but no fork named the urge itself — Fork D now does.</p></div>
+  <div class="callout"><span class="k">Attack 5 · landed → patched</span><p>"Unequal board heights make the crossfade jump; executor 'fixes' it with hash links, breaking scroll." → hash navigation banned outright; min-height matting prescribed.</p></div>
+</section>
+
+<section id="grade">
+  <h2>Ledger self-grade vs SUCCESS.md</h2>
+  <div class="grade">
+    <div><b>1 · Expected observations</b>Every move M1–M10 has an explicit Expect line.</div>
+    <div><b>2 · Failure / cause / counter</b>Every move carries at least one; M3 and M6 carry two.</div>
+    <div><b>3 · Fork triggers</b>Forks A–E keyed to concrete observations; no judgment calls.</div>
+    <div><b>4 · Recon needed</b>Two items, each with the exact settling check.</div>
+    <div><b>5 · Abort conditions</b>Four: scope escape, pre-existing site/, chrome-vs-mobile conflict, no browser.</div>
+    <div><b>6 · Verification</b>V1–V9 with environment and pass criteria; V9 audits the report itself.</div>
+    <div><b>7 · Red-team pass</b>Five attacks recorded; four landed and produced patches, one failed and still yielded Fork D.</div>
+    <div><b>8 · Executable blind</b>Recon table pins every path, token, and size; the one open judgment (board fidelity) is bounded by Fork E.</div>
+  </div>
+  <p class="meta" style="margin-top:22px">Canonical: wargames/01-website.md · Ledger: wargames/03-Ledger.md · Grade: 8 / 8</p>
+</section>
+</main>
+</div>
+</body>
+</html>
