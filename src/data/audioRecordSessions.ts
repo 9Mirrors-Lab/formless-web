@@ -2,7 +2,6 @@
 
 export const RECORD_SESSIONS = {
   title: 'Record Sessions',
-  lede: 'Open this page while you record. Read only the large lines. Small labels are cues, not speech.',
   companionHref: '/audio/companion',
   companionLabel: 'Companion',
 } as const;
@@ -36,21 +35,13 @@ export const ACKNOWLEDGMENTS_RERECORD: RecordSession = {
   why: 'Acknowledgments currently end at gratitude with no closing credits. The official ACX closing must signal finality, and best practice includes a spoken title line plus “The End.” We also add a short copyright line so the last file matches the listing.',
   reminders: [
     {
-      text: 'Same setup as Companion: template open, 44100 Hz, mono, playhead at 0, no effects.',
-      href: '/audio/companion',
-      hrefLabel: 'Companion steps',
-    },
-    {
-      text: 'Do not forget 10 seconds of room noise at the head. Stay still. Do not speak.',
+      text: 'Do not forget 10 seconds of room noise at the head.',
     },
     {
       text: 'Keep the same mic distance as the approved chapters.',
     },
     {
       text: 'After “The End,” stay quiet a couple of seconds, then stop.',
-    },
-    {
-      text: 'Export as WAV, 44.1 kHz, mono. Save as 12_Acknowledgments.wav.',
     },
   ],
   roomSeconds: 10,

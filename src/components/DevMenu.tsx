@@ -64,9 +64,12 @@ export const DevMenu = ({ path }: DevMenuProps) => {
 
   if (!import.meta.env.DEV) return null;
 
-  // Stay out of the companion recording page so it does not float over the ritual UI.
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/audio/companion')) {
-    return null;
+  // Stay out of recording pages so the dock does not cover the script or notes tray.
+  if (typeof window !== 'undefined') {
+    const here = window.location.pathname;
+    if (here.startsWith('/audio/companion') || here.startsWith('/audio/record-sessions')) {
+      return null;
+    }
   }
 
   return (
