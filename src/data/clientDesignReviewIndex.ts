@@ -158,6 +158,26 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/AudioEditorialPage.tsx',
   },
   {
+    id: 'audio-process',
+    title: 'Audible process',
+    href: '/audio/process',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'What ACX needs to submit: chapter masters, cover art, ID3 tags, and review gates.',
+    source: 'src/pages/AudibleProcessPage.tsx, public/audible-process.html',
+  },
+  {
+    id: 'audio-record-sessions',
+    title: 'Record Sessions',
+    href: '/audio/record-sessions',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Author re-record scripts. Acknowledgments plus ACX closing credits.',
+    source: 'src/pages/AudioRecordSessionsPage.tsx',
+  },
+  {
     id: 'audio-editorial-2',
     title: 'Audiobook review · Studio ladder',
     href: '/audio/editorial2',

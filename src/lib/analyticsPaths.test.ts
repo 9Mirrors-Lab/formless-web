@@ -15,6 +15,8 @@ describe('analyticsPaths', () => {
   it('flags internal tooling routes', () => {
     expect(isInternalAnalyticsPath('/design-system')).toBe(true);
     expect(isInternalAnalyticsPath('/brand')).toBe(true);
+    expect(isInternalAnalyticsPath('/audio/process')).toBe(true);
+    expect(isInternalAnalyticsPath('/audio/record-sessions')).toBe(true);
     expect(isInternalAnalyticsPath('/components')).toBe(true);
     expect(isInternalAnalyticsPath('/design-lab')).toBe(true);
     expect(isInternalAnalyticsPath('/revised')).toBe(true);

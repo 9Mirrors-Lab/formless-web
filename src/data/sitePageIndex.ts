@@ -329,6 +329,24 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/AudioEditorialPage.tsx',
   },
   {
+    id: 'audio-process',
+    title: 'Audible process',
+    path: '/audio/process',
+    category: 'design',
+    description:
+      'ACX submit guide: track specs, cover art, ID3 tags, and the upload review path.',
+    source: 'src/pages/AudibleProcessPage.tsx, public/audible-process.html',
+  },
+  {
+    id: 'audio-record-sessions',
+    title: 'Record Sessions',
+    path: '/audio/record-sessions',
+    category: 'design',
+    description:
+      'Author re-record scripts. Acknowledgments plus ACX closing credits.',
+    source: 'src/pages/AudioRecordSessionsPage.tsx',
+  },
+  {
     id: 'audio-editorial-2',
     title: 'Audiobook review · Studio ladder',
     path: '/audio/editorial2',

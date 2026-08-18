@@ -20,6 +20,7 @@ export const INTERNAL_ANALYTICS_PATH_PREFIXES = [
   '/brand',
   '/speaker-sheet',
   '/zoom-backgrounds',
+  '/audio',
   '/eyes-closed-logo-options',
   '/pattern-mirror',
   '/about-magazine',

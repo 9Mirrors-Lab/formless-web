@@ -10,6 +10,8 @@ export type BrandNavId =
     | "brand"
     | "speaker-sheet"
     | "audible"
+    | "audible-process"
+    | "record-sessions"
     | "audible-analysis"
     | "audible-studio"
     | "zoom-backgrounds"
@@ -48,6 +50,18 @@ const NAV_ITEMS: NavItem[] = [
     description: "Audible master",
     children: [
       {
+        id: "audible-process",
+        title: "Audible process",
+        href: "/audio/process",
+        description: "What ACX needs to submit",
+      },
+      {
+        id: "record-sessions",
+        title: "Record Sessions",
+        href: "/audio/record-sessions",
+        description: "Scripts for re-records",
+      },
+      {
         id: "audible-analysis",
         title: "Analysis",
         href: "/audio/editorial?view=analysis",
@@ -85,6 +99,15 @@ function navIdFromPath(
   }
   if (pathname === "/advance-listen" || pathname.startsWith("/advance-listen")) {
     return "audible";
+  }
+  if (pathname === "/audio/process" || pathname.startsWith("/audio/process")) {
+    return "audible-process";
+  }
+  if (
+    pathname === "/audio/record-sessions" ||
+    pathname.startsWith("/audio/record-sessions")
+  ) {
+    return "record-sessions";
   }
   if (pathname === "/audio/editorial2" || pathname.startsWith("/audio/editorial2")) {
     return "audible-studio";
