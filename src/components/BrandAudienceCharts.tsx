@@ -91,6 +91,7 @@ export function BrandAudienceCharts({
           </span>
           <svg
             viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+            preserveAspectRatio="none"
             className="col-span-2 h-7 w-full overflow-visible"
             role="img"
             aria-hidden
