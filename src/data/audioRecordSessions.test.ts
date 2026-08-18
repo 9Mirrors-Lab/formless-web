@@ -9,7 +9,7 @@ describe('audioRecordSessions', () => {
       'Copyright 2026 Sonika Cottman.',
       'The End.',
     ]);
-    expect(ACKNOWLEDGMENTS_RERECORD.roomSeconds).toBe(10);
-    expect(ACKNOWLEDGMENTS_RERECORD.beats[0]?.lines[0]).toBe('Acknowledgments.');
+    expect(ACKNOWLEDGMENTS_RERECORD.closing.cue).toBe('Closing credits · new');
+    expect(ACKNOWLEDGMENTS_RERECORD.saveAs).toBe('12_Acknowledgments.wav');
   });
 });

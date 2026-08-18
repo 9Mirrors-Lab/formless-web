@@ -174,7 +174,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Author re-record scripts. Acknowledgments plus ACX closing credits.',
+      'Author re-record scripts. ACX closing credits for Acknowledgments.',
     source: 'src/pages/AudioRecordSessionsPage.tsx',
   },
   {
