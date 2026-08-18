@@ -171,7 +171,7 @@ export function Footer() {
     ...SOCIAL_LINKS,
     {
       href: contactLink.href,
-      label: contactLink.text,
+      label: 'Email',
       Icon: EmailGlyph,
       external: false,
     },

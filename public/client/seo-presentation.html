@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eyes Closed — How we help people find you</title>
+<link rel="icon" type="image/svg+xml" href="/formless-favicon.svg?v=3" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" />
+<style>
+:root {
+  --cream: #f2f0e9;
+  --charcoal: #1a1a1a;
+  --moss: #2e4036;
+  --clay: #cc5833;
+  --moss-soft: rgba(46, 64, 54, 0.12);
+  --clay-soft: rgba(204, 88, 51, 0.14);
+  --bg: var(--cream);
+  --text: var(--charcoal);
+  --text-dim: rgba(26, 26, 26, 0.62);
+  --accent: var(--clay);
+  --accent-glow: rgba(204, 88, 51, 0.22);
+  --moss-glow: rgba(46, 64, 54, 0.18);
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --title-size: clamp(2.4rem, 7vw, 5.5rem);
+  --h2-size: clamp(1.2rem, 2.4vw, 2rem);
+  --body-size: clamp(0.95rem, 1.35vw, 1.15rem);
+  --slide-padding: clamp(2rem, 5vw, 5rem);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-scale: 1.5;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.slide.dark {
+  background: var(--charcoal);
+  color: var(--cream);
+  --text: var(--cream);
+  --text-dim: rgba(242, 240, 233, 0.68);
+}
+.slide-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-height: 100%;
+  overflow: hidden;
+  padding: var(--slide-padding);
+  padding-top: calc(var(--slide-padding) + 1rem);
+}
+#hexBg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.slide > * { position: relative; z-index: 1; }
+.noise {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+.kicker, .section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--moss);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+.slide.dark .kicker, .slide.dark .section-label { color: rgba(242, 240, 233, 0.45); }
+h1.display {
+  font-family: var(--font-display);
+  font-size: var(--title-size);
+  line-height: 1.05;
+  font-weight: 500;
+  max-width: 16ch;
+}
+h1.display em, h1.display .accent { font-style: italic; color: var(--clay); }
+.slide.dark h1.display em { color: #e8a88a; }
+.subtitle {
+  margin-top: 1.25rem;
+  font-size: var(--h2-size);
+  line-height: 1.45;
+  color: var(--text-dim);
+  max-width: 38ch;
+  font-weight: 300;
+}
+.slide.lead .slide-content { align-items: center; text-align: center; }
+.slide.lead h1.display { max-width: 18ch; margin: 0 auto; }
+.slide.lead .subtitle { margin-left: auto; margin-right: auto; }
+.hl em {
+  font-style: italic;
+  background: linear-gradient(90deg, var(--clay-soft), rgba(204, 88, 51, 0.28));
+  background-size: 0% 72%;
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  padding: 0 6px;
+  animation: hlSweep calc(5s * var(--motion-scale)) ease infinite;
+  animation-play-state: paused;
+}
+.slide.visible .hl em { animation-play-state: running; }
+@keyframes hlSweep {
+  0% { background-size: 0% 72%; }
+  40%, 80% { background-size: 100% 72%; }
+  100% { background-size: 0% 72%; }
+}
+.buckets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+  width: min(100%, 1100px);
+}
+@media (max-width: 900px) { .buckets { grid-template-columns: repeat(2, 1fr); } }
+.bucket {
+  border: 1px solid rgba(26, 26, 26, 0.1);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.55);
+  min-height: 200px;
+}
+.bucket .num {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--moss);
+  margin-bottom: 0.5rem;
+}
+.bucket h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-style: italic;
+  margin-bottom: 0.6rem;
+}
+.bucket p { font-size: 0.82rem; line-height: 1.55; color: var(--text-dim); }
+.bucket.moss { border-color: rgba(46, 64, 54, 0.25); }
+.bucket.clay { border-color: rgba(204, 88, 51, 0.25); }
+.cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+  width: min(100%, 1000px);
+}
+@media (max-width: 800px) { .cols-3 { grid-template-columns: 1fr; } }
+.col-card {
+  border-radius: 1rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(26, 26, 26, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+}
+.col-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+.col-card p, .col-card li { font-size: 0.85rem; line-height: 1.55; color: var(--text-dim); }
+.col-card ul { margin-top: 0.75rem; padding-left: 1.1rem; }
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  max-width: 900px;
+}
+.status-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+.status-pill .dot {
+  width: 8px; height: 8px; border-radius: 50%; margin-top: 0.35rem; flex-shrink: 0;
+}
+.dot.live { background: var(--moss); }
+.dot.soon { background: var(--clay); }
+.dot.planned { background: rgba(26, 26, 26, 0.25); }
+.footer-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0.85rem 1.5rem;
+  background: var(--charcoal);
+  color: var(--cream);
+  font-size: 0.82rem;
+  text-align: center;
+}
+.footer-bar em { font-style: italic; color: #e8a88a; }
+.bullets { list-style: none; margin-top: 1.5rem; max-width: 640px; }
+.bullets li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-bottom: 0.85rem;
+  font-size: var(--body-size);
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+.bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.55em;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--moss);
+  animation: pulse calc(3s * var(--motion-scale)) ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+.reveal {
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(24px) scale(0.98);
+  transition: opacity calc(0.9s * var(--motion-scale)) var(--ease),
+    filter calc(0.9s * var(--motion-scale)) var(--ease),
+    transform calc(0.9s * var(--motion-scale)) var(--ease);
+}
+.slide.visible .reveal {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+.slide.visible .reveal:nth-child(2) { transition-delay: calc(0.08s * var(--motion-scale)); }
+.slide.visible .reveal:nth-child(3) { transition-delay: calc(0.16s * var(--motion-scale)); }
+.slide.visible .reveal:nth-child(4) { transition-delay: calc(0.24s * var(--motion-scale)); }
+#progressBar {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: linear-gradient(90deg, var(--moss), var(--clay));
+  z-index: 100; transition: width 0.3s var(--ease);
+}
+#navDots {
+  position: fixed; right: 1.25rem; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 0.45rem; z-index: 100;
+}
+#navDots button {
+  width: 8px; height: 8px; border-radius: 50%; border: none;
+  background: rgba(26, 26, 26, 0.18); cursor: pointer; padding: 0;
+  transition: transform 0.2s, background 0.2s;
+}
+#navDots button.active { background: var(--clay); transform: scale(1.35); }
+.slide-counter {
+  position: fixed; bottom: 1.25rem; right: 1.5rem;
+  font-size: 0.72rem; letter-spacing: 0.15em;
+  color: rgba(26, 26, 26, 0.45); z-index: 100;
+}
+.watermark {
+  position: fixed; bottom: 1.25rem; left: 1.5rem;
+  font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.35); z-index: 100;
+}
+.nav-arrows {
+  position: fixed; bottom: 1.15rem; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 0.5rem; z-index: 100;
+}
+.nav-arrows button {
+  border: 1px solid rgba(26, 26, 26, 0.12);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--charcoal);
+}
+.nav-arrows button:disabled { opacity: 0.35; cursor: default; }
+.brand-mark {
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  margin-top: 2rem; padding: 0.75rem 1.25rem;
+  border-radius: 999px; border: 1px solid rgba(26, 26, 26, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+<canvas id="hexBg" aria-hidden="true"></canvas>
+<div id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+<nav id="navDots" aria-label="Slide navigation"></nav>
+<div class="slide-counter"><span id="slideCurr">01</span> / <span id="slideTotal">12</span></div>
+<div class="watermark">Eyes Closed · private preview</div>
+<div class="nav-arrows">
+  <button type="button" id="navPrev" aria-label="Previous slide">← Prev</button>
+  <button type="button" id="navNext" aria-label="Next slide">Next →</button>
+</div>
+
+<section class="slide lead" data-title="Welcome">
+  <div class="slide-content">
+    <p class="kicker reveal">For Sonika & the Eyes Closed team</p>
+    <h1 class="display reveal">Helping more people <em>find you</em></h1>
+    <p class="subtitle reveal">A quiet walkthrough of what we are building behind the scenes so the right people discover your work.</p>
+    <div class="brand-mark reveal">
+      <img src="/formless-favicon.svg" alt="" width="28" height="28" />
+      <span>eyesclosed.love</span>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Four buckets">
+  <div class="slide-content">
+    <p class="section-label reveal">The big picture</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 5vw, 3.5rem);">SEO is <span class="hl"><em>four buckets</em></span></h1>
+    <p class="subtitle reveal" style="max-width: 52ch;">Get the basics right across all four, and trustworthy discovery follows. Skip one, and growth gets harder.</p>
+    <div class="buckets reveal">
+      <div class="bucket moss">
+        <p class="num">Bucket 1</p>
+        <h3>Finding the right words</h3>
+        <p>What people search when they are looking for peace, clarity, or inner work.</p>
+      </div>
+      <div class="bucket">
+        <p class="num">Bucket 2</p>
+        <h3>On the page</h3>
+        <p>Titles, structure, and copy that welcome both humans and search tools.</p>
+      </div>
+      <div class="bucket clay">
+        <p class="num">Bucket 3</p>
+        <h3>Under the hood</h3>
+        <p>Speed, maps for crawlers, and files that explain your site to AI assistants.</p>
+      </div>
+      <div class="bucket">
+        <p class="num">Bucket 4</p>
+        <h3>Reputation</h3>
+        <p>Mentions, reviews, and shares earned over time. Slow, real, and lasting.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">For Eyes Closed, buckets 2 and 3 are where most of our current work lives.</div>
+</section>
+
+<section class="slide" data-title="AI search">
+  <div class="slide-content">
+    <p class="section-label reveal">Reality check</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 5vw, 3.5rem);">AI search is <em>mostly</em> good SEO</h1>
+    <div class="cols-3 reveal">
+      <div class="col-card">
+        <p class="kicker" style="margin:0">Under the hood</p>
+        <h3>Where AI looks</h3>
+        <p>ChatGPT, Perplexity, and Google AI draw from search indexes and live pages that already rank and read clearly.</p>
+      </div>
+      <div class="col-card">
+        <p class="kicker" style="margin:0">Same foundation</p>
+        <h3>Already ranking?</h3>
+        <ul>
+          <li>Clear, honest content</li>
+          <li>Trustworthy site structure</li>
+          <li>Real expertise on the page</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <p class="kicker" style="margin:0">What's new</p>
+        <h3>AI-friendly guides</h3>
+        <p>Short index files (llms.txt) that introduce Eyes Closed in your voice and point to the right pages.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">Do the fundamentals well. AI assistants benefit from the same clarity Google does.</div>
+</section>
+
+<section class="slide" data-title="Our work">
+  <div class="slide-content">
+    <p class="section-label reveal">What we are doing</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 5vw, 3.2rem);">Built for <em>discovery</em>, not noise</h1>
+    <div class="status-grid reveal">
+      <div class="status-pill"><span class="dot live"></span><span><strong>Browser title & favicon</strong> — a clear invitation in every tab</span></div>
+      <div class="status-pill"><span class="dot live"></span><span><strong>robots.txt</strong> — guides crawlers to public teaching pages</span></div>
+      <div class="status-pill"><span class="dot soon"></span><span><strong>llms.txt</strong> — welcome guide for AI assistants</span></div>
+      <div class="status-pill"><span class="dot soon"></span><span><strong>llms-full.txt</strong> — full public copy in one calm document</span></div>
+      <div class="status-pill"><span class="dot live"></span><span><strong>Content system</strong> — update copy without rebuilding the site</span></div>
+      <div class="status-pill"><span class="dot live"></span><span><strong>Gentle analytics</strong> — learn what resonates, privately</span></div>
+      <div class="status-pill"><span class="dot live"></span><span><strong>Waitlists & legal pages</strong> — trust when people stay close</span></div>
+      <div class="status-pill"><span class="dot planned"></span><span><strong>Sitemap</strong> — a table of contents for search engines</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="First impression">
+  <div class="slide-content" style="max-width: 800px;">
+    <p class="section-label reveal">On the page</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 4.5vw, 3rem);">A clear <em>first impression</em></h1>
+    <ul class="bullets reveal">
+      <li><strong>Tab title</strong> — “Remembering Who You Are Beyond The Mind” sets the tone before a word is read.</li>
+      <li><strong>Favicon</strong> — the Eyes Closed mark feels intentional in a sea of open tabs.</li>
+      <li><strong>Calm structure</strong> — headings and sections that scan easily on phone and desktop.</li>
+      <li><strong>Your voice</strong> — copy that sounds like Sonika, not a template.</li>
+    </ul>
+  </div>
+  <div class="footer-bar">Small details signal care. Care builds trust before someone reads a single paragraph.</div>
+</section>
+
+<section class="slide" data-title="Crawlers">
+  <div class="slide-content" style="max-width: 820px;">
+    <p class="section-label reveal">Under the hood</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 4.5vw, 3rem);">Guidance for <em>crawlers</em></h1>
+    <ul class="bullets reveal">
+      <li><strong>robots.txt</strong> — tells search tools which pages matter (Home, Practice, Book, Science, About) and which to skip (sign-in, internal design pages).</li>
+      <li><strong>Sitemap</strong> — coming soon: a simple list of every public URL worth indexing.</li>
+      <li><strong>Private previews</strong> — pages like this one stay out of public search on purpose.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide" data-title="AI welcome">
+  <div class="slide-content" style="max-width: 820px;">
+    <p class="section-label reveal">Rolling out</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 4.5vw, 3rem);">A welcome guide for <em>AI</em></h1>
+    <ul class="bullets reveal">
+      <li><strong>llms.txt</strong> — a short index at eyesclosed.love/llms.txt: who you are, which pages matter, and how to describe the work accurately.</li>
+      <li><strong>llms-full.txt</strong> — the full public teaching copy, organized by page, so AI answers stay aligned with the live site.</li>
+      <li><strong>Updated on deploy</strong> — when your words change, the guides refresh automatically.</li>
+    </ul>
+  </div>
+  <div class="footer-bar">Think of it as a calm front door for assistants, not a trick to game rankings.</div>
+</section>
+
+<section class="slide" data-title="Listening">
+  <div class="slide-content" style="max-width: 800px;">
+    <p class="section-label reveal">Listening with care</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 4.5vw, 3rem);">Learning what <em>resonates</em></h1>
+    <ul class="bullets reveal">
+      <li>Privacy-conscious analytics show which pages people visit and how they move through the site.</li>
+      <li>No change to how visitors experience Eyes Closed — this is a quiet layer for the team.</li>
+      <li>Insights inform better structure and copy over time, always in service of clarity.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide dark lead" data-title="Long game">
+  <div class="slide-content">
+    <p class="kicker reveal">Reality check</p>
+    <h1 class="display reveal">SEO rewards pages that <em>answer the question</em></h1>
+    <p class="subtitle reveal">Nobody knows every detail of Google's algorithm. What we do know: helpful, trustworthy pages that people actually read tend to rise over time.</p>
+  </div>
+  <div class="footer-bar" style="background: #0d0d0d;">For Eyes Closed, that means depth, honesty, and a site that feels as calm as the teaching.</div>
+</section>
+
+<section class="slide" data-title="What we avoid">
+  <div class="slide-content" style="max-width: 820px;">
+    <p class="section-label reveal">What we are not doing</p>
+    <h1 class="display reveal" style="font-size: clamp(2rem, 4.5vw, 3rem);">No tricks. <em>No spam.</em></h1>
+    <ul class="bullets reveal">
+      <li>No flooding the site with hundreds of thin pages overnight.</li>
+      <li>No buying cheap backlinks or “guaranteed ranking” packages.</li>
+      <li>No keyword stuffing or copy that sounds like a machine wrote it.</li>
+      <li>No pressure tactics — discovery should feel like an invitation, not a funnel.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide lead" data-title="Next steps">
+  <div class="slide-content">
+    <p class="kicker reveal">Gentle next steps</p>
+    <h1 class="display reveal">Slow, steady, <em>real</em></h1>
+    <p class="subtitle reveal">When you are ready: claim Google Search Console, submit the sitemap, and watch impressions grow over months — not days.</p>
+    <p class="subtitle reveal" style="margin-top: 1rem; font-size: 1rem;">The site remains the source of truth. Everything we add simply helps that truth travel further.</p>
+    <p class="kicker reveal" style="margin-top: 2.5rem; color: var(--clay);">Questions welcome · 9Mirrors</p>
+  </div>
+</section>
+
+<script>
+const BG_CONFIG = { hexAlphaMax: 0.06, hexCellSize: 28, hexLineWidth: 0.5, hexFadeExponent: 2.5, hexRotationSpeed: 0.00006 };
+class SlidePresentation {
+  constructor() {
+    this.slides = [...document.querySelectorAll('.slide')];
+    this.navDots = document.getElementById('navDots');
+    this.progressBar = document.getElementById('progressBar');
+    this.currSpan = document.getElementById('slideCurr');
+    this.totalSpan = document.getElementById('slideTotal');
+    this.navPrev = document.getElementById('navPrev');
+    this.navNext = document.getElementById('navNext');
+    this.current = 0;
+    this.totalSpan.textContent = String(this.slides.length).padStart(2, '0');
+    this.buildNavDots();
+    this.attachObserver();
+    this.attachKeyboard();
+    this.attachTouch();
+    this.attachScroll();
+    this.navPrev?.addEventListener('click', () => this.goTo(this.current - 1));
+    this.navNext?.addEventListener('click', () => this.goTo(this.current + 1));
+  }
+  buildNavDots() {
+    this.slides.forEach((slide, i) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', `Slide ${i + 1}: ${slide.dataset.title || ''}`);
+      btn.addEventListener('click', () => this.goTo(i));
+      this.navDots.appendChild(btn);
+    });
+  }
+  attachObserver() {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.intersectionRatio < 0.55) return;
+        entry.target.classList.add('visible');
+        const i = this.slides.indexOf(entry.target);
+        if (i !== -1) this.setCurrent(i);
+      });
+    }, { threshold: [0, 0.55, 0.9] });
+    this.slides.forEach((s) => io.observe(s));
+  }
+  setCurrent(i) {
+    this.current = i;
+    [...this.navDots.children].forEach((b, j) => b.classList.toggle('active', j === i));
+    this.currSpan.textContent = String(i + 1).padStart(2, '0');
+    this.progressBar.style.width = ((i + 1) / this.slides.length * 100) + '%';
+    if (this.navPrev) this.navPrev.disabled = i <= 0;
+    if (this.navNext) this.navNext.disabled = i >= this.slides.length - 1;
+  }
+  goTo(i) {
+    if (i < 0 || i >= this.slides.length) return;
+    this.slides[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  attachKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea')) return;
+      const keys = { ArrowDown: 1, ArrowRight: 1, PageDown: 1, ' ': 1, j: 1, ArrowUp: -1, ArrowLeft: -1, PageUp: -1, k: -1, Home: -Infinity, End: Infinity };
+      if (!(e.key in keys)) return;
+      e.preventDefault();
+      const d = keys[e.key];
+      if (d === -Infinity) this.goTo(0);
+      else if (d === Infinity) this.goTo(this.slides.length - 1);
+      else this.goTo(this.current + d);
+    });
+  }
+  attachTouch() {
+    let startY = 0;
+    document.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      const diff = startY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) < 50) return;
+      this.goTo(this.current + (diff > 0 ? 1 : -1));
+    }, { passive: true });
+  }
+  attachScroll() {
+    document.addEventListener('scroll', () => {
+      const sh = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = sh > 0 ? (window.scrollY / sh) * 100 : 0;
+      this.progressBar.style.width = pct + '%';
+    }, { passive: true });
+  }
+}
+function initHexBg() {
+  const canvas = document.getElementById('hexBg');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let angle = 0;
+  function draw() {
+    const W = canvas.width = window.innerWidth;
+    const H = canvas.height = window.innerHeight;
+    ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.translate(W / 2, H / 2);
+    ctx.rotate(angle);
+    ctx.translate(-W / 2, -H / 2);
+    const size = BG_CONFIG.hexCellSize;
+    const hSpacing = size * Math.sqrt(3);
+    const vSpacing = size * 1.5;
+    const cx0 = W / 2, cy0 = H / 2;
+    const maxDist = Math.hypot(cx0, cy0);
+    for (let row = -1; row < H / vSpacing + 2; row++) {
+      for (let col = -1; col < W / hSpacing + 2; col++) {
+        const hx = col * hSpacing + (row % 2 ? hSpacing / 2 : 0);
+        const hy = row * vSpacing;
+        let fade = Math.max(0, 1 - (Math.hypot(hx - cx0, hy - cy0) / maxDist) * 0.65);
+        for (let f = 1; f < BG_CONFIG.hexFadeExponent; f++) fade *= fade;
+        const alpha = BG_CONFIG.hexAlphaMax * fade;
+        if (alpha < 0.004) continue;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const a = Math.PI / 3 * i - Math.PI / 6;
+          const px = hx + size * Math.cos(a);
+          const py = hy + size * Math.sin(a);
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = `rgba(46, 64, 54, ${alpha})`;
+        ctx.lineWidth = BG_CONFIG.hexLineWidth;
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+  (function loop() { angle += BG_CONFIG.hexRotationSpeed; draw(); requestAnimationFrame(loop); })();
+  window.addEventListener('resize', draw);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  new SlidePresentation();
+  document.querySelector('.slide')?.classList.add('visible');
+  initHexBg();
+});
+</script>
+</body>
+</html>

@@ -48,7 +48,10 @@ import AdvanceListenPage from './pages/AdvanceListenPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
 import AudioFilesPage from './pages/AudioFilesPage';
+import DesignLabPage from './pages/DesignLabPage';
 import { applyClientFeedbackRevision } from './data/clientFeedbackRevisionContent';
+import { isDesignLabPath } from './data/designLabCatalog';
+import { DesignLabPicker } from './components/design-lab/DesignLabPicker';
 import { PostHogPageView } from './components/PostHogPageView';
 import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
@@ -149,12 +152,14 @@ export function Root({ path }: { path: string }) {
   const isBrief2 = path === '/brief2';
   const isMoodboard = path === '/moodboard';
   const isDesignSystem = path === '/design-system';
+  const isDesignLab = path === '/design-lab';
   const isShader = path === '/shader';
   const isBackgrounds = path === '/backgrounds' || path === '/shaderEC';
   const isDesignFramework = path === '/design-framework';
   const isIcons = path === '/icons';
   const isHub = path === '/hub';
 
+  if (isDesignLab) return <DesignLabPage />;
   if (isWork) return <WorkPage />;
   if (isWork2) return <Work2Page />;
   if (isBook) return <BookPage />;
@@ -226,6 +231,8 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/client/site-updates' ||
     path === '/client/review' ||
     path.startsWith('/client/review/') ||
+    path === '/design-lab' ||
+    path.startsWith('/design/') ||
     path === '/audio' ||
     path === '/audio/editorial' ||
     path === '/audio/editorial2' ||
@@ -284,6 +291,7 @@ function AppContentShell({ path }: { path: string }) {
       ) : (
         page
       )}
+      {isDesignLabPath(path) ? <DesignLabPicker /> : null}
       <DevMenu path={path} />
     </>
   );

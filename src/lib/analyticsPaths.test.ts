@@ -16,6 +16,7 @@ describe('analyticsPaths', () => {
     expect(isInternalAnalyticsPath('/design-system')).toBe(true);
     expect(isInternalAnalyticsPath('/brand')).toBe(true);
     expect(isInternalAnalyticsPath('/components')).toBe(true);
+    expect(isInternalAnalyticsPath('/design-lab')).toBe(true);
     expect(isInternalAnalyticsPath('/revised')).toBe(true);
     expect(isInternalAnalyticsPath('/book')).toBe(false);
   });
