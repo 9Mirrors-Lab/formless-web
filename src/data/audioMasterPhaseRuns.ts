@@ -1546,8 +1546,173 @@ const CHAPTER_9_RUN: MasterTrackRun = {
   ],
 };
 
+/** Introduction 5-minute ACX retail sample — 2026-08-19. */
+const INTRODUCTION_RUN: MasterTrackRun = {
+  chapterId: 0,
+  chapterTitle: 'Introduction',
+  status: 'ready-for-final-qc',
+  updatedAt: '2026-08-19',
+  phases: [
+    {
+      id: 1,
+      name: 'Pre-flight',
+      short: 'Measure',
+      status: 'complete',
+      summary:
+        'Older take: no dedicated 10 s head. Speech starts at 1.45 s. Quiet even capture; peaks healthy; longest clean mid-file gap already passes ACX noise.',
+      startedAt: '2026-08-19T10:21:00',
+      completedAt: '2026-08-19T10:23:00',
+      metrics: [
+        { label: 'RMS', value: '−30.7 dBFS' },
+        { label: 'LUFS / LRA', value: '−29.9 / 4.6 LU' },
+        { label: 'True peak', value: '−9.4 dBFS' },
+        { label: 'Noise (gap 271.50–272.70)', value: '−71.4 dB mean / −61.1 max' },
+        { label: 'Crest factor', value: '21.3 dB' },
+        { label: 'Silence share', value: '25.3%' },
+        { label: 'Source duration', value: '14:34.50' },
+        { label: 'Retail body cut', value: '1.45–297.68 s' },
+      ],
+      notes: [
+        'No dedicated 10 s head. First silence is 0–1.35 s only. First phoneme at 1.45 s (room ~−65 → speech ~−21).',
+        'Profile region: inner of 270.977–273.154 s gap (2.18 s). Other long gaps were hotter (43.7 s max −51.7).',
+        'RMS below ACX window (too quiet). Peak and gap noise already pass.',
+        'Source: need-to-master/02_Introduction.wav. This pass is the 5-minute retail sample, not the full intro master.',
+      ],
+    },
+    {
+      id: 2,
+      name: 'Editorial',
+      short: 'Assess',
+      status: 'complete',
+      summary:
+        'Hold the even delivery, gap noise, and healthy peaks. Polish RMS up with loudnorm. Guide light NR from the mid-file gap, HPF, and 2:1 compression. Scenario: county-fair quietest pie-judging contest.',
+      notes: [
+        'Scenario: a county-fair “quietest pie-judging” contest where the only audible crime is a fork that clinks.',
+        '01 LUFS HOLD — How loud the whole recording feels. Integrated −29.9 LUFS; quiet capture, even. Raise in mastering, do not re-perform.',
+        '02 LRA HOLD — How dramatic the narration is. LRA 4.6 LU; already controlled. Lightest compression only.',
+        '03 RMS POLISH — Legacy ACX average. −30.7 dBFS fails the −23 to −18 window as too quiet. Loudnorm to ~−20 fixes it without changing the read.',
+        '04 Peak HOLD — Loudest instant. True peak −9.4 dBFS; healthy headroom. Limiter is a safety net only.',
+        '05 Crest HOLD — Peak minus average. 21.3 dB crest; life left in the performance. Do not squash.',
+        '06 Noise HOLD — What remains when narration stops. Gap floor −71.4 dB already beats −60. Own-gap profile only; do not use the 1.3 s file start.',
+        '07 Silence HOLD — Pause share 25.3%; natural audiobook pacing.',
+        '08 Spectral GUIDE — Warm voice: low −35.7 / mid −34.7 / high −51.5 on a speech window. Highs already quiet; skip de-ess.',
+        '09 HPF GUIDE — 80 Hz / 12 dB (FREQUENCY/ROLLOFF) removes sub-rumble without thinning the voice.',
+        '10 Compression GUIDE — 2:1 peak compressor, normalize off. Finishing touch for an LRA already at 4.6.',
+        '11 Limiter GUIDE — Ceiling at −3.5 dBFS after loudnorm. Surgical spikes only; peaks start at −9.4.',
+      ],
+    },
+    {
+      id: 3,
+      name: 'Restoration',
+      short: 'Restore',
+      status: 'complete',
+      summary:
+        'Own-gap noise profile (271.50–272.70), 6 dB NR plus a second 6 dB pass for loudnorm survival, click removal, 80 Hz HPF, light 2:1 compression. De-ess skipped.',
+      startedAt: '2026-08-19T10:24:00',
+      completedAt: '2026-08-19T10:27:00',
+      notes: [
+        'Restored a 310 s working copy covering the retail cut (not the full 14:34 intro).',
+        'After first 6 dB NR, cleaned gap max −66.2; expected loudnorm gain ~+12 dB would miss −55. Recaptured cleaned gap and applied a second 6 dB NR. Gap then −83.3 / −71.2.',
+        'HPF must use FREQUENCY=80 and ROLLOFF=dB12 (uppercase). Lowercase frequency/rolloff is a no-op on this Audacity build.',
+        'De-ess skipped: 4–8 kHz means −52 to −46; spectrograms show speech formants, not piercing S.',
+        'Listen gate PASS: cleaned gap is empty room; first phoneme intact at 1.45 s; mid passage clean; last word ends 297.65 s.',
+        'Audacity WAV export path avoided; exported AIFF then converted to RIFF WAV.',
+      ],
+      artifacts: [
+        {
+          label: 'Restored AIFF export',
+          path: '.cache/audiobook-takes/02_Introduction_retail_restored.aiff',
+        },
+      ],
+    },
+    {
+      id: 4,
+      name: 'Mastering',
+      short: 'Encode',
+      status: 'complete',
+      summary:
+        'conform_and_master.py fallback-gap (inner 271.2+1.4 s), then +0.5 s extra tail so MP3 last-2 s stays room. Two-pass loudnorm I=−20 / TP=−3.5 / LRA=4 (linear), alimiter −3.5 dBFS, MP3 192k CBR mono 44.1 kHz.',
+      startedAt: '2026-08-19T10:27:00',
+      completedAt: '2026-08-19T10:30:00',
+      metrics: [
+        { label: 'loudnorm input_i', value: '−31.55' },
+        { label: 'loudnorm input_tp', value: '−7.57' },
+        { label: 'loudnorm input_lra', value: '4.60' },
+        { label: 'loudnorm offset', value: '0.33' },
+        { label: 'speech_start / body_end', value: '1.45 / 297.68' },
+        { label: 'Delivered duration', value: '4:59.48' },
+      ],
+      notes: [
+        'First conform pass failed the tail gate because a 1.20 s gap made a 1.5 s tail; last 2 s still had speech. Re-ran with --gap-start 271.00 --gap-duration 2.00.',
+        'MP3 encoder smeared the last word into the first 100 ms of a 2.0 s tail (max −38). Padded +0.5 s of the same inner gap so last 2 s max is −61.4. Still under ACX 5:00.',
+      ],
+      artifacts: [
+        {
+          label: 'Room-toned WAV',
+          path: '.cache/audiobook-takes/02_Introduction_retail_restored.wav',
+        },
+        {
+          label: 'Loudnorm WAV',
+          path: '.cache/audiobook-takes/02_Introduction_retail_loudnorm.wav',
+        },
+        {
+          label: 'ACX master',
+          path: '.cache/audiobook-takes/02_Introduction_retail_acx_master.mp3',
+        },
+        {
+          label: 'QC sidecar',
+          path: '.cache/audiobook-takes/02_Introduction_retail_master_qc.json',
+        },
+      ],
+    },
+    {
+      id: 5,
+      name: 'Post-flight',
+      short: 'Verify',
+      status: 'complete',
+      summary:
+        'Retail master passes RMS, true peak, head noise, and tail room. ACX green. Length 4:59.48, under the 5-minute retail cap.',
+      startedAt: '2026-08-19T10:30:00',
+      completedAt: '2026-08-19T10:31:00',
+      metrics: [
+        { label: 'Pre RMS → Post RMS', value: '−30.7 → −21.2 dBFS' },
+        { label: 'Pre Peak → Post Peak', value: '−9.4 → −3.7 dBFS' },
+        { label: 'Pre Noise → Post Noise (head)', value: '−71.4 → −74.6 dB (max −62.4)' },
+        { label: 'LUFS / LRA', value: '−20.3 / 4.3 LU' },
+        { label: 'Head', value: '0.75 s' },
+        { label: 'Tail', value: '2.5 s' },
+        { label: '0.75–1.5 s', value: 'speech, mean −17.9' },
+        { label: 'Last 2.0 s', value: 'room, −74.3 / −61.4' },
+        { label: 'Format', value: 'MP3 192k CBR mono 44.1 kHz, 4:59.48' },
+        { label: 'ACX', value: 'PASS' },
+      ],
+    },
+    {
+      id: 6,
+      name: 'Record',
+      short: 'Deliver',
+      status: 'complete',
+      summary:
+        'Phase record written to audioMasterPhaseRuns.ts. Track marked Ready for Final QC. Final QC skill was not run.',
+      completedAt: '2026-08-19T10:31:00',
+      artifacts: [
+        {
+          label: 'ACX master (local)',
+          path: '.cache/audiobook-takes/02_Introduction_retail_acx_master.mp3',
+        },
+      ],
+      notes: [
+        'Retail sample only. Full Introduction chapter master was not re-encoded in this run.',
+        'Not published to Supabase in this run.',
+        'Quiet-capture pattern continues (RMS −30.7, same neighborhood as later chapters). Peaks are healthy (−9.4). Loudnorm handles it. Mic gain is not hot.',
+      ],
+    },
+  ],
+};
+
 const RUNS_BY_CHAPTER = new Map<number, MasterTrackRun>([
   [OPENING_CREDITS_RUN.chapterId, OPENING_CREDITS_RUN],
+  [INTRODUCTION_RUN.chapterId, INTRODUCTION_RUN],
   [CHAPTER_1_RUN.chapterId, CHAPTER_1_RUN],
   [CHAPTER_2_RUN.chapterId, CHAPTER_2_RUN],
   [CHAPTER_3_RUN.chapterId, CHAPTER_3_RUN],

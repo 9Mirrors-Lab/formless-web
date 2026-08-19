@@ -276,68 +276,38 @@
     border-radius: 999px;
     border: 1px solid var(--line);
     color: var(--muted);
+    white-space: nowrap;
   }
   .pill.hold { border-color: var(--clay-d); color: var(--clay-h); }
   .pill.ok { border-color: var(--olive); color: var(--olive); }
   .pill.req { border-color: var(--clay); color: var(--clay-h); }
+  table.tracks th:last-child,
+  table.tracks td:last-child {
+    white-space: nowrap;
+    width: 1%;
+  }
 
   .cover-layout {
     display: grid;
-    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
     gap: 24px;
     align-items: start;
+    max-width: 100%;
   }
-  @media (max-width: 720px) { .cover-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .cover-layout { grid-template-columns: minmax(0, 1fr); } }
   .cover-sq {
-    aspect-ratio: 1;
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
     border: 1.5px solid var(--line);
     border-radius: 8px;
-    background:
-      radial-gradient(ellipse at 30% 20%, rgba(217,119,87,0.18), transparent 55%),
-      radial-gradient(ellipse at 80% 90%, rgba(143,168,118,0.16), transparent 50%),
-      var(--canvas);
-    position: relative;
-    overflow: hidden;
+    object-fit: cover;
+    background: var(--canvas);
   }
-  .cover-sq .title {
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    top: 22%;
-    font-family: var(--serif);
-    font-size: 28px;
-    letter-spacing: -0.02em;
-  }
-  .cover-sq .by {
-    position: absolute;
-    left: 16px;
-    bottom: 18%;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-  }
-  .cover-sq .badge {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 41%;
-    height: 41%;
-    border-left: 1px dashed rgba(217,119,87,0.45);
-    border-top: 1px dashed rgba(217,119,87,0.45);
-  }
-  .cover-sq .badge span {
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--clay-h);
-    width: 72px;
-    text-align: right;
-  }
-  .cover-notes { display: grid; gap: 10px; }
+  .cover-notes { display: grid; gap: 10px; min-width: 0; }
+  .cover-notes a.path { overflow-wrap: anywhere; }
   .cover-notes li {
     list-style: none;
     font-size: 13.5px;
@@ -396,6 +366,71 @@
     text-underline-offset: 3px;
   }
   a.path:hover { color: var(--clay-h); }
+
+  .assets {
+    border: 1.5px solid var(--olive);
+    border-radius: 14px;
+    background: var(--panel);
+    padding: 18px 20px 16px;
+    margin-bottom: 28px;
+  }
+  .assets .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin-bottom: 8px;
+  }
+  .assets h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .assets .folder {
+    display: block;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--olive);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    word-break: break-all;
+    margin-bottom: 14px;
+  }
+  .assets .folder:hover { color: var(--clay-h); }
+  .assets-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  @media (max-width: 760px) { .assets-grid { grid-template-columns: 1fr; } }
+  .assets-grid a {
+    display: block;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--canvas);
+  }
+  .assets-grid a:hover { border-color: var(--clay); }
+  .assets-grid .lab {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 6px;
+  }
+  .assets-grid .fn {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--olive);
+    word-break: break-word;
+  }
 </style>
 </head>
 <body>
@@ -407,12 +442,32 @@
         <div class="eyebrow">KDP · ACX · Formless · Eyes Closed</div>
         <h1>What you need to <em>submit</em></h1>
         <p class="lead">
-          Kindle first. ACX cannot find Formless until a public Amazon ebook listing exists. Create that listing in KDP, copy the Kindle ASIN, then claim the title. Audio, cover, and tags come after.
+          Kindle first. ACX cannot find Formless until a public Amazon ebook listing exists. Create that listing in KDP, copy the Kindle ASIN, then claim the title. Audio, cover, and tags come after. Submit files: <a href="#assets" style="color:var(--clay-h)">Final assets</a>.
         </p>
       </div>
       <button id="copyBtn" class="primary" type="button">Copy as checklist</button>
     </div>
   </header>
+
+  <section class="assets" id="assets">
+    <div class="k">Submit folder</div>
+    <h2>Final assets</h2>
+    <a class="folder" href="file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/">file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/</a>
+    <div class="assets-grid">
+      <a href="file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/">
+        <div class="lab">Chapter masters</div>
+        <div class="fn">01–12 *_acx_master.mp3</div>
+      </a>
+      <a href="file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/02_Introduction_retail_acx_master.mp3">
+        <div class="lab">Retail sample</div>
+        <div class="fn">02_Introduction_retail_acx_master.mp3</div>
+      </a>
+      <a href="file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/Formless.png">
+        <div class="lab">Cover</div>
+        <div class="fn">Formless.png</div>
+      </a>
+    </div>
+  </section>
 
   <div class="layout">
     <div>
@@ -613,7 +668,7 @@ Then wait for a public Amazon page</pre>
       <div class="spec"><div class="k">Room tone</div><div class="v">0.5–1 s head · 1–5 s tail</div><div class="n">We deliver 0.75 s / 2 s. No dead-zero silence. No gap &gt; 5 s mid-file.</div></div>
     </div>
 
-    <table>
+    <table class="tracks">
       <thead>
         <tr>
           <th>#</th>
@@ -635,7 +690,14 @@ Then wait for a public Amazon page</pre>
           <td>2</td>
           <td>Introduction</td>
           <td><code>02_Introduction_acx_master.mp3</code></td>
-          <td>Complete intro. Prefer this as the retail sample if credits are under a minute.</td>
+          <td>Complete intro. Full chapter file for the book, not the store sample.</td>
+          <td><span class="pill ok">On disk</span></td>
+        </tr>
+        <tr>
+          <td>—</td>
+          <td>Retail sample</td>
+          <td><code>02_Introduction_retail_acx_master.mp3</code></td>
+          <td>4:59 cut from Introduction. ACX sample slot only. Same folder as the chapter masters.</td>
           <td><span class="pill ok">On disk</span></td>
         </tr>
         <tr>
@@ -715,22 +777,17 @@ Then wait for a public Amazon page</pre>
   <section class="block" id="cover">
     <h2>Cover art</h2>
     <p class="sec-lead">
-      ACX quality-checks the square independently of the audio, often up to 10 business days. Title and author on the image must match the claim exactly. Official spec: <a href="https://help.acx.com/s/article/cover-art-requirements" style="color:var(--clay-h)">ACX cover art requirements</a>.
+      Submit file is ready: <code>Formless.png</code> sits with the chapter masters. ACX quality-checks the square independently of the audio, often up to 10 business days. Title and author on the image must match the claim exactly. Official spec: <a href="https://help.acx.com/s/article/cover-art-requirements" style="color:var(--clay-h)">ACX cover art requirements</a>.
     </p>
     <div class="cover-layout">
-      <div class="cover-sq" aria-hidden="true">
-        <div class="title">Formless</div>
-        <div class="by">Sonika Cottman</div>
-        <div class="badge"><span>Keep this corner clear if exclusive</span></div>
-      </div>
+      <img class="cover-sq" src="/book-covers/formless-audible.png" width="220" height="220" alt="Formless audiobook cover. Title Formless, subtitle Who You Truly Are Beyond the Mind, author Sonika Cottman.">
       <ul class="cover-notes">
-        <li>True square, at least 2400 × 2400 px. No letterbox bars to fake a square.</li>
-        <li>JPG, PNG, or TIF. RGB, 24-bit, ≥ 72 dpi. File under 8 MB.</li>
-        <li>Title and author readable at thumbnail size. No blur, no pixelated type.</li>
-        <li>Filename: condensed title, alphanumeric only. Example <code>Formless.jpg</code>.</li>
-        <li class="no">No Audible logos, watermarks, barcodes, QR codes, prices, runtimes, or other storefronts.</li>
-        <li class="no">No CD jewel case, cellophane, print jacket (front+back), or photos of physical media.</li>
-        <li>Exclusive deals: Audible may add an “Only from Audible” triangle 41% in from the bottom-right. Leave that corner quiet.</li>
+        <li><span class="pill ok">On disk</span> Upload this file: <code>Formless.png</code></li>
+        <li>Folder: <a class="path" href="file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/Formless.png">file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/Formless.png</a></li>
+        <li>2400 × 2400, true square, PNG, 24-bit RGB, 96 dpi, 4.2 MB (cap is 8 MB).</li>
+        <li>Title <strong>FORMLESS</strong> and author <strong>SONIKA COTTMAN</strong> on the image. ACX title record must be Formless / Sonika Cottman.</li>
+        <li>No logos, barcodes, print jackets, letterbox bars, or physical-media mockups.</li>
+        <li>Exclusive deals: Audible may add an “Only from Audible” triangle 41% in from the bottom-right. The author line sits on that bottom band.</li>
       </ul>
     </div>
   </section>
@@ -766,7 +823,7 @@ Then wait for a public Amazon page</pre>
           <li>Short description (store blurb). Same story as the print listing.</li>
           <li>Distribution: exclusive (higher royalty, Audible corner badge) or non-exclusive.</li>
           <li>Territory rights you actually own.</li>
-          <li>Retail sample: 1–5 minutes. Set it from Introduction if Opening Credits is too short.</li>
+          <li>Retail sample: 1–5 minutes. File: <code>02_Introduction_retail_acx_master.mp3</code> (4:59 from Introduction). Opening Credits is 42 s, too short for this slot.</li>
           <li>No music bed unless the manuscript calls for it.</li>
         </ul>
       </div>
@@ -830,15 +887,15 @@ const DETAIL = {
   },
   cover: {
     title: "Cover art",
-    meta: "ACX · Produce audiobook",
-    body: "<p>Upload the square after the title is claimed. Spec stays 2400² RGB, title and author on the image, lower-right kept clear if exclusive.</p><ol class=\"steps\"><li>Log in at <a href=\"https://www.acx.com\" target=\"_blank\" rel=\"noopener\">acx.com</a>.</li><li>Top left: <strong>My Projects</strong>.</li><li>Open the <strong>In Production</strong> tab.</li><li>Click the blue title <strong>Formless</strong>.</li><li>At the top of that project page, click the large <strong>+</strong> button (cover art).</li><li>Click <strong>Browse</strong>, choose <code>Formless.jpg</code>, then <strong>Save</strong>.</li></ol>",
-    code: "My Projects → In Production → Formless\n+ (cover) → Browse → Save\nFormless.jpg · 2400×2400+ · RGB · ≤ 8 MB"
+    meta: "ready · Formless.png",
+    body: "<p>The Audible square is on disk as <code>Formless.png</code> in the masters folder. Upload it after the title is claimed. Title and author on the image must match the ACX claim: Formless, Sonika Cottman.</p><ol class=\"steps\"><li>Log in at <a href=\"https://www.acx.com\" target=\"_blank\" rel=\"noopener\">acx.com</a>.</li><li>Top left: <strong>My Projects</strong>.</li><li>Open the <strong>In Production</strong> tab.</li><li>Click the blue title <strong>Formless</strong>.</li><li>At the top of that project page, click the large <strong>+</strong> button (cover art).</li><li>Click <strong>Browse</strong>, choose <code>Formless.png</code>, then <strong>Save</strong>.</li></ol>",
+    code: "My Projects → In Production → Formless\n+ (cover) → Browse → Save\nFormless.png · 2400×2400 · RGB PNG · 4.2 MB"
   },
   tracks: {
     title: "12 chapter MP3s",
     meta: "package · listen order",
-    body: "<p>These are the files ACX will receive. Grab them from the masters folder, then upload on the Produce audiobook tab in listen order. Same spec on every file: MP3 192k CBR, mono, 44.1 kHz, RMS −23 to −18, peak ≤ −3.0, noise ≤ −60 on the head.</p><ol class=\"steps\"><li>Open the masters folder (link under Audio tracks).</li><li>Confirm all twelve <code>*_acx_master.mp3</code> files are there.</li><li>Keep Finder sorted by filename so 01 Opening Credits is first and 12 Acknowledgments is last.</li></ol>",
-    code: "file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/\n01_Opening_Credits_acx_master.mp3\n…\n12_Acknowledgments_acx_master.mp3"
+    body: "<p>These are the files ACX will receive. Grab them from the masters folder, then upload on the Produce audiobook tab in listen order. Same spec on every file: MP3 192k CBR, mono, 44.1 kHz, RMS −23 to −18, peak ≤ −3.0, noise ≤ −60 on the head.</p><ol class=\"steps\"><li>Open the masters folder (link under Audio tracks).</li><li>Confirm all twelve chapter <code>*_acx_master.mp3</code> files plus <code>02_Introduction_retail_acx_master.mp3</code>.</li><li>Keep Finder sorted by filename so 01 Opening Credits is first and 12 Acknowledgments is last. The retail sample sits next to Introduction.</li></ol>",
+    code: "file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/\n01_Opening_Credits_acx_master.mp3\n02_Introduction_acx_master.mp3\n02_Introduction_retail_acx_master.mp3\n…\n12_Acknowledgments_acx_master.mp3"
   },
   tags: {
     title: "ID3 tags + credits",
@@ -861,8 +918,8 @@ const DETAIL = {
   upload: {
     title: "Upload on ACX.com",
     meta: "Produce audiobook tab",
-    body: "<p>This is the page where the twelve MP3s go. Files show to reviewers via ID3, not the filename.</p><ol class=\"steps\"><li>Log in at <a href=\"https://www.acx.com\" target=\"_blank\" rel=\"noopener\">acx.com</a>.</li><li>Top left: <strong>My Projects</strong>.</li><li>Open the <strong>In Production</strong> tab.</li><li>Click the blue title <strong>Formless</strong>.</li><li>Stay on the <strong>Produce audiobook</strong> tab. That is the upload section.</li><li>Upload one file per section, in listen order, starting with Opening Credits and ending with Acknowledgments.</li><li>Set the retail sample here. Prefer a 1–5 minute cut from Introduction if Opening Credits is too short.</li><li>When every slot is filled, click <strong>I’m Done</strong> to send the book to review. Do not submit until cover art is also saved.</li></ol>",
-    code: "My Projects → In Production → Formless\nProduce audiobook tab\nUpload 01 … 12, then I’m Done"
+    body: "<p>This is the page where the twelve MP3s go. Files show to reviewers via ID3, not the filename.</p><ol class=\"steps\"><li>Log in at <a href=\"https://www.acx.com\" target=\"_blank\" rel=\"noopener\">acx.com</a>.</li><li>Top left: <strong>My Projects</strong>.</li><li>Open the <strong>In Production</strong> tab.</li><li>Click the blue title <strong>Formless</strong>.</li><li>Stay on the <strong>Produce audiobook</strong> tab. That is the upload section.</li><li>Upload one file per section, in listen order, starting with Opening Credits and ending with Acknowledgments.</li><li>Set the retail sample to <code>02_Introduction_retail_acx_master.mp3</code> (4:59 from Introduction). Do not use Opening Credits; it is 42 s.</li><li>When every slot is filled, click <strong>I’m Done</strong> to send the book to review. Do not submit until cover art is also saved.</li></ol>",
+    code: "My Projects → In Production → Formless\nProduce audiobook tab\nUpload 01 … 12\nRetail sample: 02_Introduction_retail_acx_master.mp3\nI’m Done"
   },
   auto: {
     title: "Automated QC",
@@ -945,20 +1002,23 @@ const CHECKLIST = `# Formless · Audible / ACX submit checklist
 - [ ] Store blurb
 - [ ] Language English + categories
 - [ ] Exclusive or non-exclusive
-- [ ] Retail sample (prefer Introduction if Opening Credits is short)
+- [x] Retail sample: 02_Introduction_retail_acx_master.mp3 (4:59 from Introduction)
 
 ## Cover
-- [ ] Square ≥ 2400×2400, RGB, JPG/PNG/TIF, ≤ 8 MB
-- [ ] Title + author on the image, matching the claim
-- [ ] No logos, barcodes, print jackets, letterbox bars
-- [ ] Lower-right kept clear if exclusive
-- [ ] Filename alphanumeric (Formless.jpg)
+- [x] Square 2400×2400, RGB PNG, 4.2 MB
+- [x] Title FORMLESS + author SONIKA COTTMAN on the image
+- [x] No logos, barcodes, print jackets, letterbox bars
+- [x] Filename Formless.png
+- [x] File: file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/Formless.png
+- [ ] Lower-right kept clear if exclusive (author line sits on the bottom band)
 - [ ] My Projects → In Production → Formless → + → Browse → Save
 
 ## Tracks (listen order)
 Folder: file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiobook-takes/
 - [ ] 01 Opening Credits — spoken credit line
-- [ ] 02 Introduction
+- [ ] 02 Introduction — full chapter
+- [x] Retail sample — 02_Introduction_retail_acx_master.mp3 (4:59)
+- [ ] 03 Chapter 1 The Feeling of Wholeness
 - [ ] 03 Chapter 1 The Feeling of Wholeness
 - [ ] 04 Chapter 2 Awareness and the Ego
 - [ ] 05 Chapter 3 Past Pain, Time and the Present Moment
@@ -982,6 +1042,7 @@ Folder: file:///Volumes/Fulcrum/Develop/formless-site/formless-web/.cache/audiob
 ## Portal
 - [ ] My Projects → In Production → Formless → Produce audiobook
 - [ ] Upload 01–12 in listen order
+- [ ] Retail sample slot: 02_Introduction_retail_acx_master.mp3
 - [ ] I’m Done
 - [ ] Auto QC pass
 - [ ] Human review pass on all 12 + cover

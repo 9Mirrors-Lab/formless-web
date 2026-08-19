@@ -31,6 +31,7 @@ export const STUDIO_LOCAL_ROOTS = {
   aup3: '',
   wavExport: 'need-to-master',
   acxMaster: '.cache/audiobook-takes',
+  retailSample: '.cache/audiobook-takes/02_Introduction_retail_acx_master.mp3',
 } as const;
 
 export type StudioLocalArtifact = {
@@ -42,6 +43,10 @@ export type StudioLocalArtifact = {
 const LOCAL_ARTIFACTS: Partial<Record<AudioChapterId, StudioLocalArtifact>> = {
   13: {
     acxMasterPath: `${STUDIO_LOCAL_ROOTS.acxMaster}/01_Opening_Credits_acx_master.mp3`,
+  },
+  0: {
+    wavExportPath: `${STUDIO_LOCAL_ROOTS.wavExport}/02_Introduction.wav`,
+    acxMasterPath: `${STUDIO_LOCAL_ROOTS.acxMaster}/02_Introduction_acx_master.mp3`,
   },
   1: {
     wavExportPath: `${STUDIO_LOCAL_ROOTS.wavExport}/03_Chapter 1.wav`,
