@@ -42,7 +42,7 @@ export type StudioLocalArtifact = {
 
 const LOCAL_ARTIFACTS: Partial<Record<AudioChapterId, StudioLocalArtifact>> = {
   13: {
-    acxMasterPath: `${STUDIO_LOCAL_ROOTS.acxMaster}/01_Opening_Credits_acx_master.mp3`,
+    acxMasterPath: `${STUDIO_LOCAL_ROOTS.acxMaster}/01_Opening_Credits_2_acx_master.mp3`,
   },
   0: {
     wavExportPath: `${STUDIO_LOCAL_ROOTS.wavExport}/02_Introduction.wav`,

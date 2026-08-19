@@ -128,7 +128,7 @@ const OPENING_CREDITS_RUN: MasterTrackRun = {
       short: 'Encode',
       status: 'complete',
       summary: 'Two-pass loudnorm I=−20 / TP=−3.5, alimiter, MP3 192k CBR mono 44.1 kHz.',
-      artifacts: [{ label: 'ACX master', path: '.cache/audiobook-takes/01_Opening_Credits_acx_master.mp3' }],
+      artifacts: [{ label: 'ACX master', path: '.cache/audiobook-takes/01_Opening_Credits_2_acx_master.mp3' }],
     },
     {
       id: 5,
