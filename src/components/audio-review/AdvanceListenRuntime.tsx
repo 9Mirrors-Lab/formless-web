@@ -30,7 +30,7 @@ export function AdvanceListenRuntime({
       <span
         className={
           isFolio
-            ? `${listenLockup.book} mt-1.5 block text-[1.65rem] tabular-nums leading-none text-cream md:text-[1.85rem]`
+            ? 'mt-1 block font-mono text-[12px] tabular-nums leading-none tracking-wide text-cream/70'
             : `${listenLockup.book} mt-1 block text-lg tabular-nums leading-none text-cream/85`
         }
       >

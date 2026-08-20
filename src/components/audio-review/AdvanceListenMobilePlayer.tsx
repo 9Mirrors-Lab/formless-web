@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronUp, Pause, Play, RotateCcw, RotateCw, SkipBack, SkipForward } from 'lucide-react';
 import { useState } from 'react';
 
+import { AdvanceListenCoverJacket } from '@/components/audio-review/AdvanceListenCoverJacket';
 import { AdvanceListenRuntime } from '@/components/audio-review/AdvanceListenRuntime';
 import { listenLockup } from '@/components/audio-review/advanceListenType';
 import { ListenFieldBackdrop } from '@/components/audio-review/ListenFieldBackdrop';
@@ -57,7 +58,12 @@ export function AdvanceListenMobilePlayer({
 
   return (
     <div className="relative flex h-full min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden bg-[#060807] md:hidden">
-      <header className="shrink-0 px-5 pt-5 pb-3 text-center">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <ListenFieldBackdrop chapterId={chapterId} />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#060807]/50 via-transparent to-[#060807]/78" />
+      </div>
+
+      <header className="relative z-10 shrink-0 px-5 pt-5 pb-3 text-center">
         <p className="flex flex-wrap items-baseline justify-center gap-x-2 text-cream">
           <span className={`${listenLockup.book} text-[1.65rem] leading-none`}>
             {AUDIO_BOOK.title}
@@ -71,11 +77,12 @@ export function AdvanceListenMobilePlayer({
         </p>
       </header>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden bg-[#060807]">
-        <ListenFieldBackdrop chapterId={chapterId} />
+      <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-6 py-3">
+        {/* Shared jacket; capped at 381px on every breakpoint. */}
+        <AdvanceListenCoverJacket />
       </div>
 
-      <div className="relative z-10 shrink-0 bg-[#060807] px-5 pt-4 pb-20">
+      <div className="relative z-10 shrink-0 px-5 pt-4 pb-20">
         <div className="min-w-0">
           <p className={`${listenLockup.chrome} text-[10px] text-cream/45`}>
             Chapter {formatChapterIndex(chapter.id)}

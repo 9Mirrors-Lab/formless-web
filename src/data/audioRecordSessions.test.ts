@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { CHAPTER_9_PRODUCTIVITY_PUNCH, RECORD_SESSION_LIST } from '@/data/audioRecordSessions';
+import {
+  CHAPTER_9_PRODUCTIVITY_PUNCH,
+  RECORD_SESSION_LIST,
+  RECORD_SESSIONS,
+  WAV_EXPORT_STEPS,
+} from '@/data/audioRecordSessions';
 
 describe('audioRecordSessions', () => {
   it('lists only the Chapter 9 productivity punch', () => {
@@ -19,5 +24,11 @@ describe('audioRecordSessions', () => {
       ],
     ]);
     expect(CHAPTER_9_PRODUCTIVITY_PUNCH.stopCue).toContain('When I am still');
+  });
+
+  it('keeps the shared Drive folder and Audacity WAV export steps', () => {
+    expect(RECORD_SESSIONS.uploadFolderHref).toContain('drive.google.com/drive/folders/');
+    expect(WAV_EXPORT_STEPS[0]).toContain('Export Audio');
+    expect(WAV_EXPORT_STEPS).toHaveLength(4);
   });
 });

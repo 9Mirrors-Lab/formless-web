@@ -1834,3 +1834,25 @@
   animation: teaching-space-right 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
 }
 
+/* Record session WAV helper: clay well breathes so the steps control is findable. */
+@keyframes record-helper-breathe {
+  0%,
+  100% {
+    border-color: rgb(204 88 51 / 0.4);
+  }
+  50% {
+    border-color: rgb(204 88 51 / 0.9);
+  }
+}
+
+.record-helper-breathe {
+  animation: record-helper-breathe 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .record-helper-breathe {
+    animation: none;
+    border-color: rgb(204 88 51 / 0.75);
+  }
+}
+

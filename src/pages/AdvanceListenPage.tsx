@@ -1,22 +1,24 @@
 /**
  * Advance listen — Immersive Formless listen world
  *
- * Visual thesis: Void Light cover is the room.
- * Player and track list sit open in that field; optimized master only.
+ * Visual thesis: Shader is the room. The approved jacket sits on that field
+ * as a square object, never larger than the mobile well (381px).
+ * Player and track list sit open beside it on desktop; optimized master only.
  * Standalone listen page. Not wrapped in BrandShell; no toolkit nav.
  */
 import { AnimatePresence, motion } from 'framer-motion';
-import { Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2, X } from 'lucide-react';
+import { ChevronDown, Pause, Play, RotateCcw, RotateCw, SkipBack, Volume2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   AudioCompareMultitrack,
   type AudioCompareHandle,
 } from '@/components/audio-review/AudioCompareMultitrack';
+import { AdvanceListenCoverJacket } from '@/components/audio-review/AdvanceListenCoverJacket';
 import { AdvanceListenMobilePlayer } from '@/components/audio-review/AdvanceListenMobilePlayer';
 import { AdvanceListenRuntime } from '@/components/audio-review/AdvanceListenRuntime';
 import { listenLockup } from '@/components/audio-review/advanceListenType';
-import { FORMLESS_COVER } from '@/components/audio-review/FormlessBookCoverPanel';
+import { ListenFieldBackdrop } from '@/components/audio-review/ListenFieldBackdrop';
 import {
   AUDIO_BOOK,
   formatAudioRuntime,
@@ -26,9 +28,6 @@ import {
 import { useAudiobookReview } from '@/hooks/useAudiobookReview';
 
 const EASE_HEAVY = [0.32, 0.72, 0, 1] as const;
-
-/** Locked cover direction for editorial v2 atmosphere. */
-const VOID_LIGHT_COVER = FORMLESS_COVER;
 
 export default function AdvanceListenPage() {
   const playerRef = useRef<AudioCompareHandle>(null);
@@ -57,37 +56,10 @@ export default function AdvanceListenPage() {
   return (
     <div className="min-h-[100dvh] bg-[#080a09] text-cream selection:bg-clay/30 selection:text-cream">
       <div className="relative flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#060807] font-sans text-cream antialiased">
-        {/* Atmosphere — Void Light only (desktop listen world) */}
+        {/* Atmosphere — chapter shader only (desktop listen world) */}
         <div className="pointer-events-none absolute inset-0 hidden md:block" aria-hidden>
-          <motion.img
-            src={VOID_LIGHT_COVER.src}
-            alt=""
-            initial={{ opacity: 0, scale: 1.08 }}
-            animate={{
-              opacity: review.playing ? 0.52 : 0.4,
-              scale: review.playing ? 1.04 : 1.02,
-            }}
-            transition={{ duration: 1.1, ease: EASE_HEAVY }}
-            className="absolute inset-0 h-full w-full scale-105 object-cover object-[50%_28%] blur-[3px]"
-          />
-          <div className="absolute inset-0 bg-[#060807]/55" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_48%_38%,rgba(159,181,170,0.14)_0%,transparent_52%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_85%,rgba(242,240,233,0.04)_0%,transparent_42%)]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#060807] via-[#060807]/65 to-[#060807]/70" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#060807]/80 via-transparent to-[#060807]/65" />
-          <div className="absolute inset-0 opacity-[0.45]">
-            {[12, 28, 44, 61, 77, 19, 53, 88, 33, 69].map((left, i) => (
-              <span
-                key={`${left}-${i}`}
-                className="absolute h-0.5 w-0.5 rounded-full bg-cream/50"
-                style={{
-                  left: `${left}%`,
-                  top: `${14 + ((i * 19) % 70)}%`,
-                  opacity: 0.18 + (i % 4) * 0.1,
-                }}
-              />
-            ))}
-          </div>
+          <ListenFieldBackdrop chapterId={review.chapterId} />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060807]/50 via-transparent to-[#060807]/78" />
         </div>
 
         <AdvanceListenMobilePlayer
@@ -109,7 +81,77 @@ export default function AdvanceListenPage() {
           aria-hidden={isMobile}
           inert={isMobile || undefined}
         >
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col">
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6 md:flex-row md:gap-8">
+            <div className="flex h-full min-h-0 w-full shrink-0 flex-col md:w-[381px]">
+              <div className="flex shrink-0 justify-center md:justify-start">
+                <AdvanceListenCoverJacket />
+              </div>
+              <button
+                type="button"
+                aria-expanded={review.readAlongOpen}
+                aria-controls="advance-listen-read-along"
+                onClick={() => review.setReadAlongOpen(!review.readAlongOpen)}
+                className="mt-4 flex w-full shrink-0 items-center justify-between rounded-sm border border-cream/20 bg-cream/[0.04] px-4 py-2.5 text-sm text-cream transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-[#9fb5aa]/45 hover:bg-cream/[0.08]"
+              >
+                Read along
+                <ChevronDown
+                  size={16}
+                  strokeWidth={1.5}
+                  className={`text-cream/70 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                    review.readAlongOpen ? 'rotate-180' : ''
+                  }`}
+                  aria-hidden
+                />
+              </button>
+              <AnimatePresence initial={false}>
+                {review.readAlongOpen ? (
+                  <motion.div
+                    id="advance-listen-read-along"
+                    key="read-along"
+                    role="region"
+                    aria-label="Manuscript"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.45, ease: EASE_HEAVY }}
+                    className="mt-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-sm border border-cream/12 bg-[#080a09]/78 shadow-[inset_0_1px_0_rgba(242,240,233,0.06)] backdrop-blur-[10px]"
+                  >
+                    <p className="shrink-0 px-4 pt-3 pb-1 text-[12px] leading-relaxed text-cream/40">
+                      Follow the spoken line as the playhead moves. Tap a sentence to jump.
+                    </p>
+                    <div className="scrollbar-cream min-h-0 flex-1 overflow-y-auto px-4 py-3">
+                      <div className="space-y-3">
+                        {review.chapter.manuscript.map((sentence) => {
+                          const active =
+                            review.currentTime >= sentence.start &&
+                            review.currentTime < sentence.end;
+                          return (
+                            <button
+                              key={sentence.id}
+                              type="button"
+                              onClick={() => review.seek(sentence.start)}
+                              className={`block w-full text-left transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                                active ? 'text-cream' : 'text-cream/35 hover:text-cream/70'
+                              }`}
+                            >
+                              <span
+                                className={`font-sans text-[14px] leading-relaxed ${
+                                  active
+                                    ? 'underline decoration-[#9fb5aa]/50 underline-offset-4'
+                                    : ''
+                                }`}
+                              >
+                                {sentence.text}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </div>
             {/* Listen column — quiet work slab so type is not fighting the atmosphere */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -129,20 +171,7 @@ export default function AdvanceListenPage() {
                     {formatAudioTime(review.chapter.length)}
                   </p>
                 </div>
-
-                <div className="flex shrink-0 flex-col items-end gap-3">
-                  <AdvanceListenRuntime />
-                  <button
-                    type="button"
-                    onClick={() => review.setReadAlongOpen(true)}
-                    className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-cream/20 bg-cream/[0.04] px-4 py-2 text-sm text-cream transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-[#9fb5aa]/45 hover:bg-cream/[0.08] active:scale-[0.98]"
-                  >
-                    Read along
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-cream/10 text-xs text-cream/85 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:scale-105">
-                      ↗
-                    </span>
-                  </button>
-                </div>
+                <AdvanceListenRuntime />
               </header>
 
               <div className="mt-4 shrink-0">
@@ -290,80 +319,6 @@ export default function AdvanceListenPage() {
             </motion.div>
           </div>
         </div>
-
-        {/* Read along overlay */}
-        <AnimatePresence>
-          {review.readAlongOpen && !isMobile ? (
-            <>
-              <motion.button
-                type="button"
-                aria-label="Close read along"
-                className="absolute inset-0 z-20 bg-black/55"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.45, ease: EASE_HEAVY }}
-                onClick={() => review.setReadAlongOpen(false)}
-              />
-              <motion.aside
-                initial={{ opacity: 0, y: 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 16 }}
-                transition={{ duration: 0.55, ease: EASE_HEAVY }}
-                className="absolute inset-x-3 bottom-3 top-12 z-30 mx-auto flex max-w-xl flex-col overflow-hidden border border-cream/12 bg-[#121614]/96 md:inset-y-6 md:right-8 md:left-auto md:w-full"
-              >
-                <div className="flex items-center justify-between border-b border-cream/10 px-6 py-5">
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-cream/40">
-                      Read along
-                    </p>
-                    <p className={`${listenLockup.book} mt-1 text-xl text-cream`}>Manuscript</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => review.setReadAlongOpen(false)}
-                    className="rounded-full p-2 text-cream/45 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-cream/5 hover:text-cream"
-                    aria-label="Close"
-                  >
-                    <X size={18} strokeWidth={1.5} />
-                  </button>
-                </div>
-                <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-                  <p className="mb-4 text-[12px] leading-relaxed text-cream/40">
-                    Follow the spoken line as the playhead moves. Tap a sentence to jump.
-                  </p>
-                  <div className="space-y-3">
-                    {review.chapter.manuscript.map((sentence) => {
-                      const active =
-                        review.currentTime >= sentence.start &&
-                        review.currentTime < sentence.end;
-                      return (
-                        <button
-                          key={sentence.id}
-                          type="button"
-                          onClick={() => review.seek(sentence.start)}
-                          className={`block w-full text-left transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                            active ? 'text-cream' : 'text-cream/35 hover:text-cream/70'
-                          }`}
-                        >
-                          <span
-                            className={`font-sans text-[14px] leading-relaxed ${
-                              active
-                                ? 'underline decoration-[#9fb5aa]/50 underline-offset-4'
-                                : ''
-                            }`}
-                          >
-                            {sentence.text}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </motion.aside>
-            </>
-          ) : null}
-        </AnimatePresence>
       </div>
     </div>
   );

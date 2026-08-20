@@ -12,7 +12,8 @@ import MultiTrack from 'wavesurfer-multitrack';
 import {
   WAVE_GRADIENTS,
 } from '@/components/audio-review/waveformTheme';
-import { extractAudioPeaks } from '@/lib/extractAudioPeaks';
+import { DriveWaveformLane } from '@/components/audio-review/DriveWaveformLane';
+import { extractAudioPeaks, extractOverviewPeaks } from '@/lib/extractAudioPeaks';
 import { isGoogleDriveMediaUrl } from '@/lib/audiobookTracks';
 
 export type AudioCompareHandle = {
@@ -129,6 +130,8 @@ export const AudioCompareMultitrack = forwardRef<
   const [peaksError, setPeaksError] = useState<string | null>(null);
   const [trackPeaks, setTrackPeaks] = useState<TrackPeaks | null>(null);
   const [driveTime, setDriveTime] = useState(0);
+  const [drivePeaks, setDrivePeaks] = useState<number[]>([]);
+  const [drivePeaksLoading, setDrivePeaksLoading] = useState(false);
   const [scrollMetrics, setScrollMetrics] = useState({
     scrollLeft: 0,
     clientWidth: 0,
@@ -561,6 +564,38 @@ export const AudioCompareMultitrack = forwardRef<
   }, [playing, pollTime, stopPoll]);
 
   useEffect(() => {
+    if (!isDriveMedia || !waveformUrl) {
+      setDrivePeaks([]);
+      setDrivePeaksLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setDrivePeaks([]);
+    setDrivePeaksLoading(true);
+
+    void extractOverviewPeaks(waveformUrl, {
+      barCount: 320,
+      durationSeconds,
+      signal: controller.signal,
+    })
+      .then((peaks) => {
+        if (controller.signal.aborted) return;
+        setDrivePeaks(peaks);
+        setDrivePeaksLoading(false);
+      })
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        console.error('drive waveform peaks failed', error);
+        setDrivePeaks([]);
+        setDrivePeaksLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [durationSeconds, isDriveMedia, waveformUrl]);
+
+  useEffect(() => {
     setDriveTime(0);
   }, [waveformUrl]);
 
@@ -740,30 +775,20 @@ export const AudioCompareMultitrack = forwardRef<
               }}
               onEnded={() => onFinishRef.current?.()}
             />
-            <button
-              type="button"
-              className="relative flex w-full items-center px-3 text-left"
-              style={{ height: trackHeight }}
-              onClick={(event) => {
+            <DriveWaveformLane
+              peaks={drivePeaks}
+              progress={driveProgress}
+              height={trackHeight}
+              loading={drivePeaksLoading}
+              onSeekRatio={(ratio) => {
                 if (driveDuration <= 0) return;
-                const rect = event.currentTarget.getBoundingClientRect();
-                const ratio = Math.min(
-                  1,
-                  Math.max(0, (event.clientX - rect.left) / rect.width),
-                );
                 const time = ratio * driveDuration;
                 const drive = driveAudioRef.current;
                 if (drive) drive.currentTime = time;
                 setDriveTime(time);
                 onTimeUpdateRef.current?.(time);
               }}
-              aria-label="Seek audio"
-            >
-              <span
-                className="absolute inset-y-0 left-0 bg-[#9fb5aa]/20"
-                style={{ width: `${driveProgress * 100}%` }}
-              />
-            </button>
+            />
           </>
         ) : !hasUploadedAudio && !loading ? (
           <div
@@ -827,6 +852,12 @@ export const AudioCompareMultitrack = forwardRef<
               onPointerUp={isDriveMedia ? undefined : onPanThumbPointerUp}
               onPointerCancel={isDriveMedia ? undefined : onPanThumbPointerUp}
             />
+            {isDriveMedia ? (
+              <div
+                className="pointer-events-none absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cream"
+                style={{ left: `${driveProgress * 100}%` }}
+              />
+            ) : null}
           </div>
         </div>
       </div>

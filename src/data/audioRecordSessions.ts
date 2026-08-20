@@ -6,7 +6,16 @@ export const RECORD_SESSIONS = {
   companionLabel: 'Companion',
   uploadFolderHref:
     'https://drive.google.com/drive/folders/1rJIHMxtvbK9qd9mxHdmNYADxbWEsihjB?usp=sharing',
+  uploadFolderLabel: 'Open Drive folder',
 } as const;
+
+/** Audacity 3 export path for the WAV Ryan needs. */
+export const WAV_EXPORT_STEPS = [
+  'In Audacity, choose File → Export Audio…',
+  'Set Format to WAV (Microsoft)',
+  'Set Encoding to Signed 16-bit PCM',
+  'Set Channels to Mono and Sample Rate to 44100 Hz',
+] as const;
 
 export type ScriptBeat = {
   id: string;
