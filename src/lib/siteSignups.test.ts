@@ -206,7 +206,11 @@ describe('siteSignups', () => {
     expect(isExcludedSignupEmail('soni@house.com')).toBe(true);
     expect(isExcludedSignupEmail('sonikacottman@gmial.com')).toBe(true);
     expect(isExcludedSignupEmail('testing@gmail.com')).toBe(true);
+    expect(isExcludedSignupEmail('publisher.preview@example.com')).toBe(true);
+    expect(isExcludedSignupEmail('advance-listen-verify@example.com')).toBe(true);
+    expect(isExcludedSignupEmail('qa@Example.ORG')).toBe(true);
     expect(isExcludedSignupEmail('ada@house.com')).toBe(false);
+    expect(isExcludedSignupEmail('rimproving@gmail.com')).toBe(false);
   });
 
   it('omits excluded emails when loading signup sources', async () => {
@@ -236,6 +240,21 @@ describe('siteSignups', () => {
                   created_at: '2026-08-13T12:00:00.000Z',
                 },
               ]
+            : table === 'advance_listen_signups'
+              ? [
+                  {
+                    id: 'preview',
+                    email: 'publisher.preview@example.com',
+                    source: 'advance_listen',
+                    created_at: '2026-08-14T08:37:00.000Z',
+                  },
+                  {
+                    id: 'verify',
+                    email: 'advance-listen-verify@example.com',
+                    source: 'advance_listen',
+                    created_at: '2026-08-14T08:35:00.000Z',
+                  },
+                ]
             : table === 'profiles'
               ? [
                   {

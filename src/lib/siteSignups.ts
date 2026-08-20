@@ -213,9 +213,32 @@ const EXCLUDED_SIGNUP_EMAIL_NEEDLES = [
   'testing@gmail',
 ] as const;
 
+const EXCLUDED_SIGNUP_EMAIL_DOMAINS = [
+  'example.com',
+  'example.net',
+  'example.org',
+  'localhost',
+  'invalid',
+  'test',
+] as const;
+
+function signupEmailDomain(email: string): string {
+  const at = email.lastIndexOf('@');
+  if (at < 0) return '';
+  return email.slice(at + 1);
+}
+
+function isExcludedSignupDomain(domain: string): boolean {
+  if (!domain) return false;
+  return EXCLUDED_SIGNUP_EMAIL_DOMAINS.some(
+    (suffix) => domain === suffix || domain.endsWith(`.${suffix}`),
+  );
+}
+
 export function isExcludedSignupEmail(email: string): boolean {
   const normalized = email.trim().toLowerCase();
   if (!normalized) return false;
+  if (isExcludedSignupDomain(signupEmailDomain(normalized))) return true;
   return EXCLUDED_SIGNUP_EMAIL_NEEDLES.some((needle) => normalized.includes(needle));
 }
 
