@@ -9,12 +9,6 @@ import { BrandPageBody, BrandPageHeader } from '@/components/BrandPageHeader';
 import { BrandShell } from '@/components/app-sidebar';
 import { TeachingIconMark } from '@/components/iconography/TeachingIconMark';
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
   RECORD_SESSION_LIST,
   RECORD_SESSIONS,
   WAV_EXPORT_STEPS,
@@ -102,20 +96,17 @@ function DriveFolderLink({
   );
 }
 
-function SaveHelperMark({ open }: { open: boolean }) {
+function SaveHelperMark() {
   return (
     <span
-      className={[
-        'record-helper-mark inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-visible rounded-full border bg-clay/[0.12] transition-colors group-hover:bg-clay/[0.2] group-hover:border-clay/80',
-        open ? 'border-clay/25' : 'border-clay/55 record-helper-breathe',
-      ].join(' ')}
+      className="record-helper-mark inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-visible rounded-full border border-clay/25 bg-clay/[0.12]"
       aria-hidden
     >
       <TeachingIconMark
         id="space"
         theme="dark"
         size={44}
-        animate={!open}
+        animate={false}
         className="pointer-events-none"
       />
     </span>
@@ -123,47 +114,23 @@ function SaveHelperMark({ open }: { open: boolean }) {
 }
 
 function SaveBlock({ fileName }: { fileName: string }) {
-  const [openItem, setOpenItem] = useState('');
-  const wavOpen = openItem === 'wav-export';
-
   return (
-    <div className="mt-4 max-w-3xl border-t border-cream/12 pt-4">
-      <Accordion
-        type="single"
-        collapsible
-        value={openItem}
-        onValueChange={(value) => setOpenItem(value ?? '')}
-        className="w-full"
-      >
-        <AccordionItem value="wav-export" className="overflow-visible border-cream/12">
-          <AccordionTrigger className="group items-center justify-start gap-4 overflow-visible py-3 font-sans text-sm text-cream hover:no-underline hover:text-cream [&>svg]:hidden">
-            <SaveHelperMark open={wavOpen} />
-            <span className="min-w-0 text-left">
-              <span
-                className={`block font-mono text-[10px] uppercase tracking-[0.25em] ${
-                  wavOpen ? 'text-cream/40' : 'text-clay'
-                }`}
-              >
-                {wavOpen ? 'Hide steps' : 'Export steps'}
-              </span>
-              <span className="mt-1 block">Save as WAV in Audacity</span>
-              <span className={`mt-0.5 block font-mono text-sm ${wavOpen ? 'text-cream/55' : 'text-cream/70'}`}>
-                {fileName}
-              </span>
-            </span>
-          </AccordionTrigger>
-          <AccordionContent>
-            <ol className={`${BODY_CLASS} list-decimal space-y-2 pl-5 text-cream/70`}>
-              {WAV_EXPORT_STEPS.map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-              <li>
-                Name the file <span className="font-mono text-cream">{fileName}</span>
-              </li>
-            </ol>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+    <div className="mt-10 mb-20 max-w-3xl border-t border-cream/12 pt-6">
+      <div className="flex items-center gap-4 py-3">
+        <SaveHelperMark />
+        <div className="min-w-0">
+          <p className="font-sans text-sm text-cream">Save as WAV in Audacity</p>
+          <p className="mt-0.5 font-mono text-sm text-cream/55">{fileName}</p>
+        </div>
+      </div>
+      <ol className={`${BODY_CLASS} mt-1 list-decimal space-y-2 pl-5 text-cream/70`}>
+        {WAV_EXPORT_STEPS.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+        <li>
+          Name the file <span className="font-mono text-cream">{fileName}</span>
+        </li>
+      </ol>
       <DriveFolderLink className={`mt-4 ${DRIVE_BUTTON_CLASS}`} />
     </div>
   );
@@ -186,7 +153,6 @@ function SessionScript({ session }: { session: RecordSession }) {
         <h2 className="mt-1 font-serif text-lg italic leading-snug tracking-[-0.02em] text-cream">
           {session.track}
         </h2>
-        <SaveBlock fileName={session.saveAs} />
       </div>
 
       <div className="max-w-3xl pt-4">
@@ -205,10 +171,12 @@ function SessionScript({ session }: { session: RecordSession }) {
           </article>
         ) : null}
 
-        <div className="mt-10 mb-20 text-right">
+        <div className="mt-10 text-right">
           <p className={LABEL_CLASS}>Stop recording</p>
           <p className={`mt-2 ${BODY_CLASS} text-cream/55`}>{session.stopCue}</p>
         </div>
+
+        <SaveBlock fileName={session.saveAs} />
       </div>
     </section>
   );

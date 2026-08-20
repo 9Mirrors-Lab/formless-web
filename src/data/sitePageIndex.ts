@@ -360,7 +360,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio/editorial2',
     category: 'design',
     description:
-      'Editorial2: six-rung file ladder toward Audible, master-phase results, no serif.',
+      'Studio ladder opens on master phases: six-phase log per track, no listen player.',
     source: 'src/pages/AudioEditorial2Page.tsx',
   },
   {

@@ -193,7 +193,7 @@ export function audiblePulse(
 
   const detail =
     parts.length === 0
-      ? 'Open the studio ladder to scan each chapter.'
+      ? 'Open the studio ladder to scan master phases.'
       : `${parts.join('. ')}.`;
 
   return {

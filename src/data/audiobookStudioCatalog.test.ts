@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { studioChapterRecord } from '@/data/audiobookStudioCatalog';
+import {
+  STUDIO_LOCAL_ROOTS,
+  studioChapterRecord,
+} from '@/data/audiobookStudioCatalog';
 import type { AudiobookTrack } from '@/lib/audiobookTracks';
 
 function track(
@@ -24,6 +27,10 @@ function track(
 }
 
 describe('audiobookStudioCatalog', () => {
+  it('keeps masters and restoration keepers out of cache', () => {
+    expect(STUDIO_LOCAL_ROOTS.acxMaster).toBe('masters');
+    expect(STUDIO_LOCAL_ROOTS.restoration).toBe('masters/restoration');
+  });
   it('treats a published optimized file as Published, not a vague mastered badge', () => {
     const record = studioChapterRecord(
       13,
@@ -38,7 +45,9 @@ describe('audiobookStudioCatalog', () => {
   it('uses local ACX evidence as Mastered when nothing is published yet', () => {
     const record = studioChapterRecord(1, [], new Set());
     expect(record.current).toBe('mastered');
-    expect(record.local.acxMasterPath).toContain('03_Chapter_1_acx_master.mp3');
+    expect(record.local.acxMasterPath).toBe(
+      'masters/03_Chapter_1_acx_master.mp3',
+    );
   });
 
   it('lights Approved only after sign-off', () => {

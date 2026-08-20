@@ -67,7 +67,7 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         id: "audible-studio",
         title: "Studio ladder",
         href: "/audio/editorial2",
-        description: "File status toward Audible",
+        description: "Master phases toward Audible",
       },
     ],
   },

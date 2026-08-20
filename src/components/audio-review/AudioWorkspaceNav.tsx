@@ -43,10 +43,15 @@ export function companionOpenFromSearch(
   return new URLSearchParams(search).get('companion') === '1';
 }
 
-export function setCompanionOpenInUrl(open: boolean): void {
+export function setCompanionOpenInUrl(
+  open: boolean,
+  keepView = false,
+): void {
   const url = new URL(window.location.href);
   if (open) {
-    url.searchParams.set('view', 'listen');
+    if (!keepView) {
+      url.searchParams.set('view', 'listen');
+    }
     url.searchParams.set('companion', '1');
   } else {
     url.searchParams.delete('companion');

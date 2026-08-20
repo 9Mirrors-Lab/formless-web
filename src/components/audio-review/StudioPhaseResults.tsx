@@ -7,6 +7,10 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
+  ExplainedMetricList,
+  PhaseMeaning,
+} from '@/components/audio-review/MasterPhaseMeaning';
+import {
   MASTER_PHASE_CATALOG,
   masterPhaseStatusLabel,
   masterTrackRunFor,
@@ -172,46 +176,30 @@ export function StudioPhaseResults({
 
       {openPhase ? (
         <div className={hud ? 'mt-3 border-t border-cream/10 pt-3' : 'mt-4 border-t border-cream/10 pt-4'}>
+          <PhaseMeaning phaseId={openPhase.id} />
           {openPhase.summary ? (
             <p
               className={
                 hud
-                  ? 'max-w-3xl text-[13px] leading-relaxed text-cream/55'
-                  : 'max-w-3xl text-sm leading-relaxed text-cream/60'
+                  ? 'mt-3 max-w-3xl text-[13px] leading-relaxed text-cream/55'
+                  : 'mt-4 max-w-3xl text-sm leading-relaxed text-cream/60'
               }
             >
               {openPhase.summary}
             </p>
           ) : (
-            <p className={hud ? 'text-[13px] text-cream/40' : 'text-sm text-cream/40'}>
+            <p className={hud ? 'mt-3 text-[13px] text-cream/40' : 'mt-4 text-sm text-cream/40'}>
               Waiting for this phase to be written.
             </p>
           )}
           {openPhase.metrics?.length ? (
-            <dl
-              className={
-                hud
-                  ? 'mt-3 grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-4'
-                  : 'mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3'
-              }
-            >
-              {openPhase.metrics.map((metric) => (
-                <div key={`${openPhase.id}-${metric.label}`}>
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/35">
-                    {metric.label}
-                  </dt>
-                  <dd
-                    className={
-                      hud
-                        ? 'mt-0.5 text-[12px] tabular-nums text-cream'
-                        : 'mt-1 text-sm tabular-nums text-cream'
-                    }
-                  >
-                    {metric.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            <div className="mt-3">
+              <ExplainedMetricList
+                metrics={openPhase.metrics}
+                phaseId={openPhase.id}
+                compact={hud}
+              />
+            </div>
           ) : null}
           {!hud && openPhase.artifacts?.length ? (
             <ul className="mt-4 space-y-1">

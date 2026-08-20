@@ -85,12 +85,12 @@ export function emptyTrackRun(chapterId: number): MasterTrackRun {
   };
 }
 
-/** Opening Credits sample from the 2026-08-01 mastering pass. Replace when re-run. */
+/** Opening Credits master on disk. Re-measured 2026-08-20. */
 const OPENING_CREDITS_RUN: MasterTrackRun = {
   chapterId: 13,
   chapterTitle: 'Opening Credits',
   status: 'ready-for-final-qc',
-  updatedAt: '2026-08-01',
+  updatedAt: '2026-08-20',
   phases: [
     {
       id: 1,
@@ -98,60 +98,94 @@ const OPENING_CREDITS_RUN: MasterTrackRun = {
       short: 'Measure',
       status: 'complete',
       summary:
-        'Source WAV measured before restoration. Peaks hot; room floor already close to studio target once a quiet gap is used.',
+        'Older take: no dedicated 10 s head. Current local master is 43.15 s, MP3 192k CBR mono 44.1 kHz.',
       metrics: [
-        { label: 'RMS', value: 'in ACX window' },
-        { label: 'True peak', value: 'at ceiling' },
-        { label: 'Noise (gap)', value: 'near −60 dB' },
+        { label: 'Master duration', value: '0:43.15' },
+        { label: 'Format', value: 'MP3 192k CBR mono 44.1 kHz' },
       ],
-      notes: ['No dedicated 10 s head on this older take. Profile from a mid-file quiet gap.'],
+      notes: [
+        'No dedicated 10 s head on this older take. Profile from a mid-file quiet gap.',
+        'Replaced the 2026-08-01 sample numbers. This row now tracks masters/01_Opening_Credits_2_acx_master.mp3.',
+      ],
     },
     {
       id: 2,
       name: 'Editorial',
       short: 'Assess',
       status: 'complete',
-      summary: 'Hold the performance. Polish peaks and conform head length. Guide a light high-pass.',
-      notes: ['Client editorial lives on the Analysis page. This phase records the processing call.'],
+      summary:
+        'Hold the read. Polish loudness already landed. Guide a head-trim pass: delivered room is still longer than 0.75 s.',
+      notes: [
+        'Scenario: a title sting that has to whisper the book name without ringing the bell.',
+        'RMS and true peak are already in the ACX window. The leftover job is head geometry, not loudness.',
+      ],
     },
     {
       id: 3,
       name: 'Restoration',
       short: 'Restore',
       status: 'complete',
-      summary: 'Own-gap noise profile, click removal, 80 Hz high-pass, light 2:1 compression. Head/tail room inserted from cleaned quiet.',
-      artifacts: [{ label: 'Restored WAV', path: '.cache/audiobook-takes/01_Opening_Credits_restored.wav' }],
+      summary:
+        'Restored WAV is in the restoration folder. Own-gap profile, click removal, 80 Hz high-pass, light 2:1 compression.',
+      artifacts: [
+        {
+          label: 'Restored WAV',
+          path: 'masters/restoration/01_Opening_Credits_2_restored.wav',
+        },
+      ],
     },
     {
       id: 4,
       name: 'Mastering',
       short: 'Encode',
       status: 'complete',
-      summary: 'Two-pass loudnorm I=−20 / TP=−3.5, alimiter, MP3 192k CBR mono 44.1 kHz.',
-      artifacts: [{ label: 'ACX master', path: '.cache/audiobook-takes/01_Opening_Credits_2_acx_master.mp3' }],
+      summary:
+        'Two-pass loudnorm I=-20 / TP=-3.5, alimiter, MP3 192k CBR mono 44.1 kHz. Local master dated 2026-08-18.',
+      artifacts: [
+        {
+          label: 'ACX master',
+          path: 'masters/01_Opening_Credits_2_acx_master.mp3',
+        },
+      ],
     },
     {
       id: 5,
       name: 'Post-flight',
       short: 'Verify',
       status: 'complete',
-      summary: 'Master passes RMS, true peak, and noise. Head room was long on this pass (1.77 s vs 0.5–1 s).',
+      summary:
+        'RMS and true peak pass. Head mean passes ACX. Head max and first-word window still fail geometry: 0.75-1.5 s is still room.',
       metrics: [
-        { label: 'RMS', value: '−21.7 dBFS' },
-        { label: 'True peak', value: '−3.7 dBFS' },
-        { label: 'LUFS / LRA', value: '−20.3 / 4.2 LU' },
-        { label: 'Noise floor', value: '−67.9 dB' },
-        { label: 'Head', value: '1.77 s' },
-        { label: 'Tail', value: '2.6 s' },
+        { label: 'RMS', value: '-21.7 dBFS' },
+        { label: 'True peak', value: '-3.7 dBFS' },
+        { label: 'LUFS / LRA', value: '-20.3 / 4.2 LU' },
+        { label: 'Head 0-0.75 s', value: '-67.1 / max -53.4 dB' },
+        { label: '0.75-1.5 s', value: 'room, -68.6 / -56.3' },
+        { label: 'Last 2.0 s', value: '-68.5 / -56.2' },
+        { label: 'Format', value: 'MP3 192k CBR mono 44.1 kHz, 0:43.15' },
+        { label: 'ACX', value: 'RMS and peak PASS; head max FAIL' },
       ],
-      notes: ['Trim head to ~0.75 s on the next pass. Audio quality is studio-grade.'],
+      notes: [
+        'Head max -53.4 dB is a click or speech edge in the bed. Target max is -55.',
+        '0.75-1.5 s is still room, so the delivered head is still longer than 0.75 s. Trim on the next pass.',
+      ],
     },
     {
       id: 6,
       name: 'Record',
       short: 'Deliver',
       status: 'complete',
-      summary: 'Phase record written. Track marked Ready for Final QC. Final QC skill was not run.',
+      summary:
+        'Phase record rewritten from the current local master. Track stays Ready for Final QC. Final QC skill was not run.',
+      artifacts: [
+        {
+          label: 'ACX master (local)',
+          path: 'masters/01_Opening_Credits_2_acx_master.mp3',
+        },
+      ],
+      notes: [
+        'Removed the 2026-08-01 sample dossier (1.77 s head, vague RMS/peak labels).',
+      ],
     },
   ],
 };
@@ -227,11 +261,11 @@ const CHAPTER_1_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Restored WAV (room-toned)',
-          path: '.cache/audiobook-takes/03_Chapter_1_restored.wav',
+          path: 'masters/restoration/03_Chapter_1_restored.wav',
         },
         {
           label: 'Restored AIFF export',
-          path: '.cache/audiobook-takes/03_Chapter_1_restored.aiff',
+          path: 'masters/restoration/03_Chapter_1_restored.aiff',
         },
       ],
     },
@@ -257,7 +291,7 @@ const CHAPTER_1_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/03_Chapter_1_acx_master.mp3',
+          path: 'masters/03_Chapter_1_acx_master.mp3',
         },
       ],
     },
@@ -292,7 +326,7 @@ const CHAPTER_1_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/03_Chapter_1_acx_master.mp3',
+          path: 'masters/03_Chapter_1_acx_master.mp3',
         },
       ],
       notes: [
@@ -383,7 +417,7 @@ const CHAPTER_2_RUN: MasterTrackRun = {
         },
         {
           label: 'Restored AIFF export',
-          path: '.cache/audiobook-takes/04_Chapter_2_restored.aiff',
+          path: 'masters/restoration/04_Chapter_2_restored.aiff',
         },
       ],
     },
@@ -413,7 +447,7 @@ const CHAPTER_2_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/04_Chapter_2_restored.wav',
+          path: 'masters/restoration/04_Chapter_2_restored.wav',
         },
         {
           label: 'Loudnorm WAV',
@@ -421,11 +455,11 @@ const CHAPTER_2_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/04_Chapter_2_acx_master.mp3',
+          path: 'masters/04_Chapter_2_acx_master.mp3',
         },
         {
           label: 'QC sidecar',
-          path: '.cache/audiobook-takes/04_Chapter_2_master_qc.json',
+          path: 'masters/04_Chapter_2_master_qc.json',
         },
       ],
     },
@@ -463,7 +497,7 @@ const CHAPTER_2_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/04_Chapter_2_acx_master.mp3',
+          path: 'masters/04_Chapter_2_acx_master.mp3',
         },
       ],
       notes: [
@@ -557,7 +591,7 @@ const CHAPTER_3_RUN: MasterTrackRun = {
         },
         {
           label: 'Restored AIFF export (2nd NR)',
-          path: '.cache/audiobook-takes/05_Chapter_3_restored_nr2.aiff',
+          path: 'masters/restoration/05_Chapter_3_restored_nr2.aiff',
         },
       ],
     },
@@ -588,7 +622,7 @@ const CHAPTER_3_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/05_Chapter_3_restored.wav',
+          path: 'masters/restoration/05_Chapter_3_restored.wav',
         },
         {
           label: 'Loudnorm WAV',
@@ -596,11 +630,11 @@ const CHAPTER_3_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/05_Chapter_3_acx_master.mp3',
+          path: 'masters/05_Chapter_3_acx_master.mp3',
         },
         {
           label: 'QC sidecar',
-          path: '.cache/audiobook-takes/05_Chapter_3_master_qc.json',
+          path: 'masters/05_Chapter_3_master_qc.json',
         },
       ],
     },
@@ -638,13 +672,167 @@ const CHAPTER_3_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/05_Chapter_3_acx_master.mp3',
+          path: 'masters/05_Chapter_3_acx_master.mp3',
         },
       ],
       notes: [
         'Not published to Supabase in this run.',
         'Quiet-capture pattern continues from Chapters 1–2 (RMS ~−28, peaks ~−6.7). Loudnorm handles it. Mic gain is healthy, not hot.',
         'Chapter 3 head started noisier than 1–2 (−65.9 vs −70-ish). Second NR pass was required so the loudnorm boost would not lift the delivered bed.',
+      ],
+    },
+  ],
+};
+
+/** Chapter 4 mastering pass — dedicated 10 s head, 2026-08-13. */
+const CHAPTER_4_RUN: MasterTrackRun = {
+  chapterId: 4,
+  chapterTitle: 'Resistance and Surrender',
+  status: 'ready-for-final-qc',
+  updatedAt: '2026-08-13',
+  phases: [
+    {
+      id: 1,
+      name: 'Pre-flight',
+      short: 'Measure',
+      status: 'complete',
+      summary:
+        'Mono 44.1 kHz WAV with a clean dedicated ~9.5 s room head. Delivery is quiet and even; peaks are healthy; head mean already passes ACX, with a few small transients in the bed.',
+      startedAt: '2026-08-13T22:28:00',
+      completedAt: '2026-08-13T22:29:30',
+      metrics: [
+        { label: 'RMS', value: '−28.6 dBFS' },
+        { label: 'LUFS / LRA', value: '−27.7 / 4.2 LU' },
+        { label: 'True peak', value: '−5.8 dBFS' },
+        { label: 'Noise (head 0.5–9.4 s)', value: '−65.7 dB' },
+        { label: 'Head max', value: '−53.7 dB' },
+        { label: 'Crest factor', value: '22.8 dB' },
+        { label: 'Silence share', value: '23.5%' },
+        { label: 'Duration', value: '40:29.67' },
+      ],
+      notes: [
+        'Dedicated head: silence 0.00–9.52 s (9.52 s). Tiny −46.7 dB blip at 9.52 s is not speech.',
+        'Listen-confirmed first phoneme at 9.75 s. Used speech_start 9.68.',
+        'Profile region 0.5–9.40 s. RMS below ACX window. Peak and noise mean already pass.',
+        'Source: need-to-master/06_Chapter 4.wav',
+      ],
+    },
+    {
+      id: 2,
+      name: 'Editorial',
+      short: 'Assess',
+      status: 'complete',
+      summary:
+        'Hold the even delivery, head noise mean, and healthy peaks. Polish RMS up with loudnorm. Guide light NR, HPF, and 2:1 compression. Scenario: a ferry terminal that will not lower the gangplank until every suitcase handle is released.',
+      notes: [
+        'Scenario: a ferry terminal where the gangplank stays locked until every suitcase handle is released. The only audible crime is one latch that snaps.',
+        '01 LUFS HOLD — How loud the whole recording feels. Integrated −27.7 LUFS; quiet capture, same family as Chapters 1–3. Raise in mastering, do not re-perform.',
+        '02 LRA HOLD — How dramatic the narration is. LRA 4.2 LU; already controlled. Lightest compression only.',
+        '03 RMS POLISH — Legacy ACX average. −28.6 dBFS fails the −23 to −18 window as too quiet. Loudnorm to ~−20 fixes it without changing the read.',
+        '04 Peak HOLD — Loudest instant. True peak −5.8 dBFS; healthy headroom. Limiter is a safety net only.',
+        '05 Crest HOLD — Peak minus average. 22.8 dB crest; life left in the performance. Do not squash.',
+        '06 Noise HOLD — What remains when narration stops. Head mean −65.7 dB already beats −60. Small bed transients (max −53.7) get click removal plus light NR.',
+        '07 Silence HOLD — Pause share 23.5%; natural audiobook pacing.',
+        '08 Spectral GUIDE — Warm voice: low −31.6 / mid −28.7 / high −41.9. Skip de-ess unless the listen gate says otherwise.',
+        '09 HPF GUIDE — 80 Hz / 12 dB removes HVAC rumble without thinning the voice.',
+        '10 Compression GUIDE — 2:1 peak compressor, normalize off. Finishing touch for an LRA already at 4.2.',
+        '11 Limiter GUIDE — Ceiling at −3.5 dBFS after loudnorm. Surgical spikes only; peaks start at −5.8.',
+      ],
+    },
+    {
+      id: 3,
+      name: 'Restoration',
+      short: 'Restore',
+      status: 'complete',
+      summary:
+        'Own-head noise profile (0.5–9.40 s), 6 dB NR, click removal, 80 Hz HPF, light 2:1 compression, then a second 6 dB NR so loudnorm would not lift the delivered head.',
+      startedAt: '2026-08-13T22:30:00',
+      completedAt: '2026-08-13T22:33:00',
+      notes: [
+        'De-ess skipped. Listen gate found no harsh sibilance.',
+        'First NR left cleaned head at −73.3 / −60.5. Second 6 dB NR applied so loudnorm would not lift the bed.',
+        'After second NR: head 0.5–9.0 s −81.9 / −68.7. First phoneme intact at 9.75 s.',
+        'Listen gate PASS: cleaned head room, first word, S-lines, mid passage, last word.',
+      ],
+      artifacts: [
+        {
+          label: 'Restored WAV (full, 10 s head still on)',
+          path: 'masters/restoration/06_Chapter_4_restored.wav',
+        },
+        {
+          label: 'Restored AIFF (2nd NR)',
+          path: 'masters/restoration/06_Chapter_4_restored_nr2.aiff',
+        },
+      ],
+    },
+    {
+      id: 4,
+      name: 'Mastering',
+      short: 'Encode',
+      status: 'complete',
+      summary:
+        'conform_and_master.py: inner room 1.0–3.5 s, 0.75 s head / 2.0 s tail, two-pass loudnorm I=−20 / TP=−3.5 / LRA=4 (linear), alimiter −3.5 dBFS, MP3 192k CBR mono 44.1 kHz.',
+      startedAt: '2026-08-13T22:33:50',
+      completedAt: '2026-08-13T22:35:00',
+      metrics: [
+        { label: 'speech_start', value: '9.68 s' },
+        { label: 'body_end', value: '2428.70 s' },
+        { label: 'room window', value: '1.0–3.5 s, −81.9 / −69.5 dB' },
+        { label: 'loudnorm target I', value: '−20' },
+      ],
+      notes: [
+        'Script: scripts/conform_and_master.py. Dedicated-head mode. Inner-slice room, not last 0.75 s before speech.',
+        'Delivered room gate (WAV): head/tail mean −81.9, max −69.5. 0.75–1.5 s speech mean −26.6.',
+      ],
+      artifacts: [
+        {
+          label: 'ACX master',
+          path: 'masters/06_Chapter_4_acx_master.mp3',
+        },
+        {
+          label: 'QC sidecar',
+          path: 'masters/06_Chapter_4_master_qc.json',
+        },
+      ],
+    },
+    {
+      id: 5,
+      name: 'Post-flight',
+      short: 'Verify',
+      status: 'complete',
+      summary:
+        'Master passes RMS, true peak, and head noise. Delivered head 0.81 s and tail 2.00 s. ACX green on all three checks.',
+      startedAt: '2026-08-13T22:35:00',
+      completedAt: '2026-08-13T22:35:20',
+      metrics: [
+        { label: 'Pre RMS → Post RMS', value: '−28.6 → −21.3 dBFS' },
+        { label: 'Pre Peak → Post Peak', value: '−5.8 → −3.7 dBFS' },
+        { label: 'Pre Noise → Post Noise (head)', value: '−65.7 → −74.2 dB' },
+        { label: 'Head max', value: '−62.7 dB' },
+        { label: 'LUFS / LRA', value: '−20.3 / 3.4 LU' },
+        { label: 'Head', value: '0.81 s' },
+        { label: 'Tail', value: '2.00 s' },
+        { label: 'Format', value: 'MP3 192k CBR mono 44.1 kHz, 40:21.77' },
+        { label: 'ACX', value: 'PASS' },
+      ],
+    },
+    {
+      id: 6,
+      name: 'Record',
+      short: 'Deliver',
+      status: 'complete',
+      summary:
+        'Phase record written to audioMasterPhaseRuns.ts. Track marked Ready for Final QC. Final QC skill was not run.',
+      completedAt: '2026-08-13T22:36:00',
+      artifacts: [
+        {
+          label: 'ACX master (local)',
+          path: 'masters/06_Chapter_4_acx_master.mp3',
+        },
+      ],
+      notes: [
+        'This dossier was missing from the studio ladder page even though the master was on disk.',
+        'Quiet-capture pattern continues from Chapters 1–3 (RMS ~−28, peaks ~−6). Loudnorm handles it.',
       ],
     },
   ],
@@ -735,7 +923,7 @@ const CHAPTER_5_RUN: MasterTrackRun = {
         },
         {
           label: 'Restored AIFF export (2nd NR)',
-          path: '.cache/audiobook-takes/07_Chapter_5_restored_nr2.aiff',
+          path: 'masters/restoration/07_Chapter_5_restored_nr2.aiff',
         },
       ],
     },
@@ -765,7 +953,7 @@ const CHAPTER_5_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/07_Chapter_5_restored.wav',
+          path: 'masters/restoration/07_Chapter_5_restored.wav',
         },
         {
           label: 'Loudnorm WAV',
@@ -773,11 +961,11 @@ const CHAPTER_5_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/07_Chapter_5_acx_master.mp3',
+          path: 'masters/07_Chapter_5_acx_master.mp3',
         },
         {
           label: 'QC sidecar',
-          path: '.cache/audiobook-takes/07_Chapter_5_master_qc.json',
+          path: 'masters/07_Chapter_5_master_qc.json',
         },
       ],
     },
@@ -815,7 +1003,7 @@ const CHAPTER_5_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/07_Chapter_5_acx_master.mp3',
+          path: 'masters/07_Chapter_5_acx_master.mp3',
         },
       ],
       notes: [
@@ -911,7 +1099,7 @@ const CHAPTER_6_RUN: MasterTrackRun = {
         },
         {
           label: 'Restored AIFF export (2nd NR)',
-          path: '.cache/audiobook-takes/08_Chapter_6_restored_nr2.aiff',
+          path: 'masters/restoration/08_Chapter_6_restored_nr2.aiff',
         },
       ],
     },
@@ -941,7 +1129,7 @@ const CHAPTER_6_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/08_Chapter_6_restored.wav',
+          path: 'masters/restoration/08_Chapter_6_restored.wav',
         },
         {
           label: 'Loudnorm WAV',
@@ -949,11 +1137,11 @@ const CHAPTER_6_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/08_Chapter_6_acx_master.mp3',
+          path: 'masters/08_Chapter_6_acx_master.mp3',
         },
         {
           label: 'QC sidecar',
-          path: '.cache/audiobook-takes/08_Chapter_6_master_qc.json',
+          path: 'masters/08_Chapter_6_master_qc.json',
         },
       ],
     },
@@ -991,7 +1179,7 @@ const CHAPTER_6_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/08_Chapter_6_acx_master.mp3',
+          path: 'masters/08_Chapter_6_acx_master.mp3',
         },
       ],
       notes: [
@@ -1087,7 +1275,7 @@ const CHAPTER_7_RUN: MasterTrackRun = {
         },
         {
           label: 'Restored AIFF export (2nd NR)',
-          path: '.cache/audiobook-takes/09_Chapter_7_restored_nr2.aiff',
+          path: 'masters/restoration/09_Chapter_7_restored_nr2.aiff',
         },
       ],
     },
@@ -1117,7 +1305,7 @@ const CHAPTER_7_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/09_Chapter_7_restored.wav',
+          path: 'masters/restoration/09_Chapter_7_restored.wav',
         },
         {
           label: 'Loudnorm WAV',
@@ -1125,11 +1313,11 @@ const CHAPTER_7_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/09_Chapter_7_acx_master.mp3',
+          path: 'masters/09_Chapter_7_acx_master.mp3',
         },
         {
           label: 'QC sidecar',
-          path: '.cache/audiobook-takes/09_Chapter_7_master_qc.json',
+          path: 'masters/09_Chapter_7_master_qc.json',
         },
       ],
     },
@@ -1167,7 +1355,7 @@ const CHAPTER_7_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/09_Chapter_7_acx_master.mp3',
+          path: 'masters/09_Chapter_7_acx_master.mp3',
         },
       ],
       notes: [
@@ -1266,11 +1454,11 @@ const CHAPTER_8_RUN: MasterTrackRun = {
         },
         {
           label: 'NR1 WAV (6 dB afftdn)',
-          path: '.cache/audiobook-takes/ch8_ffmpeg/nr1.wav',
+          path: 'masters/restoration/ch8_ffmpeg/nr1.wav',
         },
         {
           label: 'NR2 WAV (second 6 dB)',
-          path: '.cache/audiobook-takes/ch8_ffmpeg/nr2.wav',
+          path: 'masters/restoration/ch8_ffmpeg/nr2.wav',
         },
       ],
     },
@@ -1300,7 +1488,7 @@ const CHAPTER_8_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/10_Chapter_8_restored.wav',
+          path: 'masters/restoration/10_Chapter_8_restored.wav',
         },
         {
           label: 'Loudnorm WAV',
@@ -1308,11 +1496,11 @@ const CHAPTER_8_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/10_Chapter_8_acx_master.mp3',
+          path: 'masters/10_Chapter_8_acx_master.mp3',
         },
         {
           label: 'QC sidecar',
-          path: '.cache/audiobook-takes/10_Chapter_8_master_qc.json',
+          path: 'masters/10_Chapter_8_master_qc.json',
         },
       ],
     },
@@ -1350,7 +1538,7 @@ const CHAPTER_8_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/10_Chapter_8_acx_master.mp3',
+          path: 'masters/10_Chapter_8_acx_master.mp3',
         },
       ],
       notes: [
@@ -1445,7 +1633,7 @@ const CHAPTER_9_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Restored AIFF (full, untrimmed)',
-          path: '.cache/audiobook-takes/11_Chapter_9_restored.aiff',
+          path: 'masters/restoration/11_Chapter_9_restored.aiff',
         },
         {
           label: 'Restored WAV (full, untrimmed)',
@@ -1453,7 +1641,7 @@ const CHAPTER_9_RUN: MasterTrackRun = {
         },
         {
           label: 'NR1 AIFF (6 dB)',
-          path: '.cache/audiobook-takes/11_Chapter_9_nr1.aiff',
+          path: 'masters/restoration/11_Chapter_9_nr1.aiff',
         },
       ],
     },
@@ -1483,7 +1671,7 @@ const CHAPTER_9_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/11_Chapter_9_restored.wav',
+          path: 'masters/restoration/11_Chapter_9_restored.wav',
         },
         {
           label: 'Loudnorm WAV',
@@ -1491,11 +1679,11 @@ const CHAPTER_9_RUN: MasterTrackRun = {
         },
         {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/11_Chapter_9_acx_master.mp3',
+          path: 'masters/11_Chapter_9_acx_master.mp3',
         },
         {
           label: 'QC sidecar',
-          path: '.cache/audiobook-takes/11_Chapter_9_master_qc.json',
+          path: 'masters/11_Chapter_9_master_qc.json',
         },
       ],
     },
@@ -1533,7 +1721,7 @@ const CHAPTER_9_RUN: MasterTrackRun = {
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/11_Chapter_9_acx_master.mp3',
+          path: 'masters/11_Chapter_9_acx_master.mp3',
         },
       ],
       notes: [
@@ -1546,12 +1734,12 @@ const CHAPTER_9_RUN: MasterTrackRun = {
   ],
 };
 
-/** Introduction 5-minute ACX retail sample — 2026-08-19. */
+/** Introduction full-chapter master on disk. Retail sample is a separate file. */
 const INTRODUCTION_RUN: MasterTrackRun = {
   chapterId: 0,
   chapterTitle: 'Introduction',
   status: 'ready-for-final-qc',
-  updatedAt: '2026-08-19',
+  updatedAt: '2026-08-20',
   phases: [
     {
       id: 1,
@@ -1559,24 +1747,18 @@ const INTRODUCTION_RUN: MasterTrackRun = {
       short: 'Measure',
       status: 'complete',
       summary:
-        'Older take: no dedicated 10 s head. Speech starts at 1.45 s. Quiet even capture; peaks healthy; longest clean mid-file gap already passes ACX noise.',
-      startedAt: '2026-08-19T10:21:00',
-      completedAt: '2026-08-19T10:23:00',
+        'Older take: no dedicated 10 s head. Speech starts at 1.45 s. Quiet even capture; peaks healthy. Source is 14:34.50.',
       metrics: [
         { label: 'RMS', value: '−30.7 dBFS' },
         { label: 'LUFS / LRA', value: '−29.9 / 4.6 LU' },
         { label: 'True peak', value: '−9.4 dBFS' },
         { label: 'Noise (gap 271.50–272.70)', value: '−71.4 dB mean / −61.1 max' },
-        { label: 'Crest factor', value: '21.3 dB' },
-        { label: 'Silence share', value: '25.3%' },
         { label: 'Source duration', value: '14:34.50' },
-        { label: 'Retail body cut', value: '1.45–297.68 s' },
       ],
       notes: [
-        'No dedicated 10 s head. First silence is 0–1.35 s only. First phoneme at 1.45 s (room ~−65 → speech ~−21).',
-        'Profile region: inner of 270.977–273.154 s gap (2.18 s). Other long gaps were hotter (43.7 s max −51.7).',
-        'RMS below ACX window (too quiet). Peak and gap noise already pass.',
-        'Source: need-to-master/02_Introduction.wav. This pass is the 5-minute retail sample, not the full intro master.',
+        'No dedicated 10 s head. First phoneme at 1.45 s.',
+        'Source: need-to-master/02_Introduction.wav.',
+        'Removed the 5-minute retail-sample dossier from this row. That file still exists as 02_Introduction_retail_acx_master.mp3.',
       ],
     },
     {
@@ -1585,20 +1767,12 @@ const INTRODUCTION_RUN: MasterTrackRun = {
       short: 'Assess',
       status: 'complete',
       summary:
-        'Hold the even delivery, gap noise, and healthy peaks. Polish RMS up with loudnorm. Guide light NR from the mid-file gap, HPF, and 2:1 compression. Scenario: county-fair quietest pie-judging contest.',
+        'Hold the even delivery, gap noise, and healthy peaks. Polish RMS up with loudnorm. Guide light NR from the mid-file gap, HPF, and 2:1 compression.',
       notes: [
-        'Scenario: a county-fair “quietest pie-judging” contest where the only audible crime is a fork that clinks.',
-        '01 LUFS HOLD — How loud the whole recording feels. Integrated −29.9 LUFS; quiet capture, even. Raise in mastering, do not re-perform.',
-        '02 LRA HOLD — How dramatic the narration is. LRA 4.6 LU; already controlled. Lightest compression only.',
-        '03 RMS POLISH — Legacy ACX average. −30.7 dBFS fails the −23 to −18 window as too quiet. Loudnorm to ~−20 fixes it without changing the read.',
-        '04 Peak HOLD — Loudest instant. True peak −9.4 dBFS; healthy headroom. Limiter is a safety net only.',
-        '05 Crest HOLD — Peak minus average. 21.3 dB crest; life left in the performance. Do not squash.',
-        '06 Noise HOLD — What remains when narration stops. Gap floor −71.4 dB already beats −60. Own-gap profile only; do not use the 1.3 s file start.',
-        '07 Silence HOLD — Pause share 25.3%; natural audiobook pacing.',
-        '08 Spectral GUIDE — Warm voice: low −35.7 / mid −34.7 / high −51.5 on a speech window. Highs already quiet; skip de-ess.',
-        '09 HPF GUIDE — 80 Hz / 12 dB (FREQUENCY/ROLLOFF) removes sub-rumble without thinning the voice.',
-        '10 Compression GUIDE — 2:1 peak compressor, normalize off. Finishing touch for an LRA already at 4.6.',
-        '11 Limiter GUIDE — Ceiling at −3.5 dBFS after loudnorm. Surgical spikes only; peaks start at −9.4.',
+        'Scenario: a county-fair quietest pie-judging contest where the only audible crime is a fork that clinks.',
+        '01 LUFS HOLD — How loud the whole recording feels. Integrated −29.9 LUFS; quiet capture. Raise in mastering, do not re-perform.',
+        '03 RMS POLISH — −30.7 dBFS is too quiet for ACX. Loudnorm to ~−20 fixes it without changing the read.',
+        '04 Peak HOLD — True peak −9.4 dBFS; limiter is a safety net only.',
       ],
     },
     {
@@ -1607,21 +1781,15 @@ const INTRODUCTION_RUN: MasterTrackRun = {
       short: 'Restore',
       status: 'complete',
       summary:
-        'Own-gap noise profile (271.50–272.70), 6 dB NR plus a second 6 dB pass for loudnorm survival, click removal, 80 Hz HPF, light 2:1 compression. De-ess skipped.',
-      startedAt: '2026-08-19T10:24:00',
-      completedAt: '2026-08-19T10:27:00',
-      notes: [
-        'Restored a 310 s working copy covering the retail cut (not the full 14:34 intro).',
-        'After first 6 dB NR, cleaned gap max −66.2; expected loudnorm gain ~+12 dB would miss −55. Recaptured cleaned gap and applied a second 6 dB NR. Gap then −83.3 / −71.2.',
-        'HPF must use FREQUENCY=80 and ROLLOFF=dB12 (uppercase). Lowercase frequency/rolloff is a no-op on this Audacity build.',
-        'De-ess skipped: 4–8 kHz means −52 to −46; spectrograms show speech formants, not piercing S.',
-        'Listen gate PASS: cleaned gap is empty room; first phoneme intact at 1.45 s; mid passage clean; last word ends 297.65 s.',
-        'Audacity WAV export path avoided; exported AIFF then converted to RIFF WAV.',
-      ],
+        'Restored AIFF and WAV for the full introduction live in the restoration folder. Head/tail conform left to ffmpeg.',
       artifacts: [
         {
-          label: 'Restored AIFF export',
-          path: '.cache/audiobook-takes/02_Introduction_retail_restored.aiff',
+          label: 'Restored AIFF',
+          path: 'masters/restoration/02_Introduction_restored.aiff',
+        },
+        {
+          label: 'Restored WAV',
+          path: 'masters/restoration/02_Introduction_restored.wav',
         },
       ],
     },
@@ -1631,37 +1799,11 @@ const INTRODUCTION_RUN: MasterTrackRun = {
       short: 'Encode',
       status: 'complete',
       summary:
-        'conform_and_master.py fallback-gap (inner 271.2+1.4 s), then +0.5 s extra tail so MP3 last-2 s stays room. Two-pass loudnorm I=−20 / TP=−3.5 / LRA=4 (linear), alimiter −3.5 dBFS, MP3 192k CBR mono 44.1 kHz.',
-      startedAt: '2026-08-19T10:27:00',
-      completedAt: '2026-08-19T10:30:00',
-      metrics: [
-        { label: 'loudnorm input_i', value: '−31.55' },
-        { label: 'loudnorm input_tp', value: '−7.57' },
-        { label: 'loudnorm input_lra', value: '4.60' },
-        { label: 'loudnorm offset', value: '0.33' },
-        { label: 'speech_start / body_end', value: '1.45 / 297.68' },
-        { label: 'Delivered duration', value: '4:59.48' },
-      ],
-      notes: [
-        'First conform pass failed the tail gate because a 1.20 s gap made a 1.5 s tail; last 2 s still had speech. Re-ran with --gap-start 271.00 --gap-duration 2.00.',
-        'MP3 encoder smeared the last word into the first 100 ms of a 2.0 s tail (max −38). Padded +0.5 s of the same inner gap so last 2 s max is −61.4. Still under ACX 5:00.',
-      ],
+        'Full-chapter ACX master on disk. MP3 192k CBR mono 44.1 kHz, 14:33.79. Local file dated 2026-08-18.',
       artifacts: [
         {
-          label: 'Room-toned WAV',
-          path: '.cache/audiobook-takes/02_Introduction_retail_restored.wav',
-        },
-        {
-          label: 'Loudnorm WAV',
-          path: '.cache/audiobook-takes/02_Introduction_retail_loudnorm.wav',
-        },
-        {
           label: 'ACX master',
-          path: '.cache/audiobook-takes/02_Introduction_retail_acx_master.mp3',
-        },
-        {
-          label: 'QC sidecar',
-          path: '.cache/audiobook-takes/02_Introduction_retail_master_qc.json',
+          path: 'masters/02_Introduction_acx_master.mp3',
         },
       ],
     },
@@ -1671,19 +1813,15 @@ const INTRODUCTION_RUN: MasterTrackRun = {
       short: 'Verify',
       status: 'complete',
       summary:
-        'Retail master passes RMS, true peak, head noise, and tail room. ACX green. Length 4:59.48, under the 5-minute retail cap.',
-      startedAt: '2026-08-19T10:30:00',
-      completedAt: '2026-08-19T10:31:00',
+        'Full introduction master passes RMS, true peak, head noise, first-word window, and tail room. ACX green.',
       metrics: [
-        { label: 'Pre RMS → Post RMS', value: '−30.7 → −21.2 dBFS' },
-        { label: 'Pre Peak → Post Peak', value: '−9.4 → −3.7 dBFS' },
-        { label: 'Pre Noise → Post Noise (head)', value: '−71.4 → −74.6 dB (max −62.4)' },
-        { label: 'LUFS / LRA', value: '−20.3 / 4.3 LU' },
-        { label: 'Head', value: '0.75 s' },
-        { label: 'Tail', value: '2.5 s' },
-        { label: '0.75–1.5 s', value: 'speech, mean −17.9' },
-        { label: 'Last 2.0 s', value: 'room, −74.3 / −61.4' },
-        { label: 'Format', value: 'MP3 192k CBR mono 44.1 kHz, 4:59.48' },
+        { label: 'RMS', value: '−21.0 dBFS' },
+        { label: 'True peak', value: '−3.7 dBFS' },
+        { label: 'LUFS / LRA', value: '−20.2 / 3.9 LU' },
+        { label: 'Head 0–0.75 s', value: '−69.5 / max −57.8 dB' },
+        { label: '0.75–1.5 s', value: 'speech, mean −17.5' },
+        { label: 'Last 2.0 s', value: 'room, −68.8 / −57.1' },
+        { label: 'Format', value: 'MP3 192k CBR mono 44.1 kHz, 14:33.79' },
         { label: 'ACX', value: 'PASS' },
       ],
     },
@@ -1693,18 +1831,106 @@ const INTRODUCTION_RUN: MasterTrackRun = {
       short: 'Deliver',
       status: 'complete',
       summary:
-        'Phase record written to audioMasterPhaseRuns.ts. Track marked Ready for Final QC. Final QC skill was not run.',
-      completedAt: '2026-08-19T10:31:00',
+        'Phase record rewritten to the full introduction master. Track marked Ready for Final QC. Final QC skill was not run.',
       artifacts: [
         {
           label: 'ACX master (local)',
-          path: '.cache/audiobook-takes/02_Introduction_retail_acx_master.mp3',
+          path: 'masters/02_Introduction_acx_master.mp3',
         },
       ],
       notes: [
-        'Retail sample only. Full Introduction chapter master was not re-encoded in this run.',
-        'Not published to Supabase in this run.',
-        'Quiet-capture pattern continues (RMS −30.7, same neighborhood as later chapters). Peaks are healthy (−9.4). Loudnorm handles it. Mic gain is not hot.',
+        'A 4:59 retail sample also exists at masters/02_Introduction_retail_acx_master.mp3. It is not this track.',
+      ],
+    },
+  ],
+};
+
+/** Acknowledgments master on disk. Re-measured 2026-08-20. */
+const ACKNOWLEDGMENTS_RUN: MasterTrackRun = {
+  chapterId: 12,
+  chapterTitle: 'Acknowledgments',
+  status: 'ready-for-final-qc',
+  updatedAt: '2026-08-20',
+  phases: [
+    {
+      id: 1,
+      name: 'Pre-flight',
+      short: 'Measure',
+      status: 'complete',
+      summary:
+        'Older take: no dedicated 10 s head. Source WAV sits at the takeout root, not in Need-to-master. Current master is 7:10.73.',
+      notes: [
+        'Source: /Volumes/Fulcrum/gdrive-takeout/Formless-audible-tracks/12_Acknowledgments.wav',
+        'This row was idle on the studio ladder page even though the master was on disk.',
+      ],
+    },
+    {
+      id: 2,
+      name: 'Editorial',
+      short: 'Assess',
+      status: 'complete',
+      summary:
+        'Hold the closing thanks. Polish is already on the master. Guide a later head-clean if Final QC flags the bed.',
+      notes: [
+        'RMS and true peak already sit in the ACX window. Head max is the leftover issue.',
+      ],
+    },
+    {
+      id: 3,
+      name: 'Restoration',
+      short: 'Restore',
+      status: 'complete',
+      summary:
+        'Earlier restoration pass. Keepers were not copied into formless-web/masters/restoration for this track.',
+    },
+    {
+      id: 4,
+      name: 'Mastering',
+      short: 'Encode',
+      status: 'complete',
+      summary:
+        'ACX master on disk. MP3 192k CBR mono 44.1 kHz, 7:10.73. Local file dated 2026-08-18.',
+      artifacts: [
+        {
+          label: 'ACX master',
+          path: 'masters/12_Acknowledgments_acx_master.mp3',
+        },
+      ],
+    },
+    {
+      id: 5,
+      name: 'Post-flight',
+      short: 'Verify',
+      status: 'complete',
+      summary:
+        'RMS and true peak pass. Head mean passes ACX −60. Head max and tail max are still hot, and 0.75–1.5 s is quiet rather than full speech.',
+      metrics: [
+        { label: 'RMS', value: '−20.9 dBFS' },
+        { label: 'True peak', value: '−3.7 dBFS' },
+        { label: 'LUFS / LRA', value: '−20.2 / 3.8 LU' },
+        { label: 'Head 0–0.75 s', value: '−63.0 / max −50.1 dB' },
+        { label: '0.75–1.5 s', value: 'quiet, mean −55.3' },
+        { label: 'Last 2.0 s', value: '−64.8 / max −52.1' },
+        { label: 'Format', value: 'MP3 192k CBR mono 44.1 kHz, 7:10.73' },
+        { label: 'ACX', value: 'RMS and peak PASS; head max FAIL' },
+      ],
+      notes: [
+        'Head max −50.1 dB is a click or speech edge in the bed. Target max is −55.',
+        'This is still the local master. Do not leave the track as Not started.',
+      ],
+    },
+    {
+      id: 6,
+      name: 'Record',
+      short: 'Deliver',
+      status: 'complete',
+      summary:
+        'Phase record written from the current local master. Track marked Ready for Final QC. Final QC skill was not run.',
+      artifacts: [
+        {
+          label: 'ACX master (local)',
+          path: 'masters/12_Acknowledgments_acx_master.mp3',
+        },
       ],
     },
   ],
@@ -1716,11 +1942,13 @@ const RUNS_BY_CHAPTER = new Map<number, MasterTrackRun>([
   [CHAPTER_1_RUN.chapterId, CHAPTER_1_RUN],
   [CHAPTER_2_RUN.chapterId, CHAPTER_2_RUN],
   [CHAPTER_3_RUN.chapterId, CHAPTER_3_RUN],
+  [CHAPTER_4_RUN.chapterId, CHAPTER_4_RUN],
   [CHAPTER_5_RUN.chapterId, CHAPTER_5_RUN],
   [CHAPTER_6_RUN.chapterId, CHAPTER_6_RUN],
   [CHAPTER_7_RUN.chapterId, CHAPTER_7_RUN],
   [CHAPTER_8_RUN.chapterId, CHAPTER_8_RUN],
   [CHAPTER_9_RUN.chapterId, CHAPTER_9_RUN],
+  [ACKNOWLEDGMENTS_RUN.chapterId, ACKNOWLEDGMENTS_RUN],
 ]);
 
 export function masterTrackRunFor(chapterId: number): MasterTrackRun {
@@ -1748,6 +1976,24 @@ export function acxMasterPathFromRun(run: MasterTrackRun): string | null {
 }
 
 export const MASTER_TRACK_RUNS: MasterTrackRun[] = AUDIO_LISTEN_ORDER.map(masterTrackRunFor);
+
+export function masterBookProgress(runs: readonly MasterTrackRun[] = MASTER_TRACK_RUNS) {
+  const counts = {
+    idle: 0,
+    'in-progress': 0,
+    'ready-for-final-qc': 0,
+  } satisfies Record<MasterTrackRunStatus, number>;
+
+  for (const run of runs) {
+    counts[run.status] += 1;
+  }
+
+  return {
+    total: runs.length,
+    counts,
+    ready: counts['ready-for-final-qc'],
+  };
+}
 
 export function findMasterTrackRun(chapterId: number): MasterTrackRun | null {
   if (!isAudioChapterId(chapterId)) return null;

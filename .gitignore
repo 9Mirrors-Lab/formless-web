@@ -9,3 +9,7 @@ docs/supabase-access.local.md
 .vercel
 dist-moodboard
 .tmp
+
+# Local ACX masters (binaries). Paths are tracked in audiobookStudioCatalog.ts.
+/masters/*
+!/masters/README.md

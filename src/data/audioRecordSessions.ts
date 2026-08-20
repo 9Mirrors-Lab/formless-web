@@ -12,7 +12,7 @@ export const RECORD_SESSIONS = {
 /** Audacity 3 export path for the WAV Ryan needs. */
 export const WAV_EXPORT_STEPS = [
   'In Audacity, choose File → Export Audio…',
-  'Set Format to WAV (Microsoft)',
+  'Set Format to WAV',
   'Set Encoding to Signed 16-bit PCM',
   'Set Channels to Mono and Sample Rate to 44100 Hz',
 ] as const;

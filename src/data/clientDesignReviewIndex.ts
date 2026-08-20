@@ -184,7 +184,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Editorial2: six-rung file ladder toward Audible, master-phase results, cover flagged off.',
+      'Studio ladder opens on master phases: six-phase log per track, no listen player.',
     source: 'src/pages/AudioEditorial2Page.tsx',
   },
   {
