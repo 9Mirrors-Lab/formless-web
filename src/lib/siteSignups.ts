@@ -82,7 +82,7 @@ export function signupMetricHelp(key: SignupMetricKey): string {
     case 'newsletter':
       return `${signupListMeaning('newsletter')} Emails from Stay Close on the about page.`;
     case 'advance_listen':
-      return `${signupListMeaning('advance_listen')} Includes Auth accounts from /advance-listen.`;
+      return `${signupListMeaning('advance_listen')} Emails from the gate on /advance-listen.`;
     case 'account':
       return 'The public /signup page. Those emails now count under Advance listen.';
     default: {

@@ -35,7 +35,7 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/audio/editorial')).toBe(true);
     expect(isInternalAuthPath('/audio/process')).toBe(true);
     expect(isInternalAuthPath('/audio/record-sessions')).toBe(true);
-    expect(isInternalAuthPath('/advance-listen')).toBe(true);
+    expect(isInternalAuthPath('/advance-listen')).toBe(false);
     expect(isInternalAuthPath('/audio/files')).toBe(true);
     expect(isInternalAuthPath('/eyes-closed-logo-options')).toBe(true);
     expect(isInternalAuthPath('/')).toBe(false);
@@ -43,7 +43,7 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/login')).toBe(false);
   });
 
-  it('treats advance listen as a signed-in room, not an allowlisted studio', () => {
+  it('treats advance listen as an email-gated room, not Brand Studio auth', () => {
     expect(isAdvanceListenPath('/advance-listen')).toBe(true);
     expect(isAdvanceListenPath('/Advance-Listen/')).toBe(true);
     expect(isAdvanceListenPath('/audio')).toBe(false);

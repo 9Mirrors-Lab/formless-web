@@ -34,6 +34,7 @@ import {
   type EndorsementVoiceFilter,
 } from '@/data/endorsements';
 import {
+  ENDORSEMENT_DESIGNER_DOC_EDIT_URL,
   ENDORSEMENT_DOC_EDIT_URL,
   fetchLiveEndorsements,
 } from '@/lib/endorsementDoc';
@@ -219,6 +220,15 @@ export default function BrandEndorsementsPage() {
                   className="text-cream/40 underline decoration-cream/20 underline-offset-4 transition-colors hover:text-cream/70"
                 >
                   {source === 'live' ? 'Google Doc' : 'Saved copy'}
+                </a>
+                {' · '}
+                <a
+                  href={ENDORSEMENT_DESIGNER_DOC_EDIT_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-cream/40 underline decoration-cream/20 underline-offset-4 transition-colors hover:text-cream/70"
+                >
+                  Designer share
                 </a>
               </p>
 

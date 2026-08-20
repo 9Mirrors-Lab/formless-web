@@ -48,11 +48,12 @@ function InternalStatusScreen({
 /**
  * Requires a signed-in Supabase user.
  * Brand Studio and hub routes also require an allowlisted email.
- * Advance listen lets any signed-in account through.
  *
  * Unauthenticated visitors see a login modal instead of the protected page.
  * Local testing can skip the gate when `isInternalAuthBypassEnabled()` is true
  * (Vite DEV + explicit env/query). Production builds never bypass.
+ *
+ * Advance listen uses RequireAdvanceListenEmail instead of this gate.
  */
 export function RequireInternalAuth({
   children,

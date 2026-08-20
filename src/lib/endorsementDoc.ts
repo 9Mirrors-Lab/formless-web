@@ -16,6 +16,10 @@ import {
 export const ENDORSEMENT_DOC_ID = '1JkeEdciMh2ytvVM-uh-rvSio374oiajUA-G26wI6eps';
 export const ENDORSEMENT_DOC_EDIT_URL = `https://docs.google.com/document/d/${ENDORSEMENT_DOC_ID}/edit`;
 export const ENDORSEMENT_DOC_EXPORT_URL = `https://docs.google.com/document/d/${ENDORSEMENT_DOC_ID}/export?format=txt`;
+/** Shared with designer for cover / layout review. */
+export const ENDORSEMENT_DESIGNER_DOC_ID =
+  '1lPGjDkTj3XIC3OUyWYXnhSxln64jjem3cLBzWMs1-T0';
+export const ENDORSEMENT_DESIGNER_DOC_EDIT_URL = `https://docs.google.com/document/d/${ENDORSEMENT_DESIGNER_DOC_ID}/edit`;
 export const ENDORSEMENT_API_PATH = '/api/endorsements';
 
 const CACHE_TTL_MS = 45_000;

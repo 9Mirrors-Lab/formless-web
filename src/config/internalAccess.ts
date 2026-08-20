@@ -53,13 +53,12 @@ export function isInternalAuthPath(pathname: string): boolean {
   if (path === '/eyes-closed-logo-options') return true;
   if (path === '/design/eyes-closed-logo-variations/04-options.html') return true;
 
-  if (isAdvanceListenPath(path)) return true;
   if (path === '/audio' || path.startsWith('/audio/')) return true;
 
   return false;
 }
 
-/** Public early-listen room. Any signed-in account can enter; not allowlisted. */
+/** Public early-listen room. Email gate only; not Brand Studio auth. */
 export function isAdvanceListenPath(pathname: string): boolean {
   const path = pathname.replace(/\/+$/, '').toLowerCase() || '/';
   return path === '/advance-listen';

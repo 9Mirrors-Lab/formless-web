@@ -61,6 +61,7 @@ import { PostHogPageView } from './components/PostHogPageView';
 import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
+import { RequireAdvanceListenEmail } from './components/RequireAdvanceListenEmail';
 import { RequireInternalAuth } from './components/RequireInternalAuth';
 import { isAdvanceListenPath, isInternalAuthPath } from './config/internalAccess';
 import { hasAuthCallbackCode } from './lib/auth';
@@ -274,11 +275,20 @@ function AppContentShell({ path }: { path: string }) {
     return <AuthCallbackPage />;
   }
 
+  if (isAdvanceListenPath(path)) {
+    return (
+      <>
+        <RequireAdvanceListenEmail>{page}</RequireAdvanceListenEmail>
+        <DevMenu path={path} />
+      </>
+    );
+  }
+
   if (isInternalAuthPath(path)) {
     return (
       <>
         <RequireInternalAuth
-          gate={isAdvanceListenPath(path) ? 'advance-listen' : 'internal'}
+          gate="internal"
           allowBypass={path !== '/brand/signups'}
         >
           {page}

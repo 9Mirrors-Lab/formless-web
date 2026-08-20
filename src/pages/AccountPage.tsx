@@ -1,32 +1,11 @@
-import { useEffect, useState } from 'react';
-
 import { AuthPagePanel, AuthPageShell } from '@/components/auth/AuthPageShell';
 import { useAuth } from '@/context/AuthContext';
-import { fetchCurrentUserIsAdmin } from '@/lib/audiobookSessionTakes';
 
 const signOutButtonClassName =
   'mt-10 w-full rounded-full border border-cream/15 bg-charcoal/60 px-5 py-3.5 font-sans text-xs font-semibold uppercase tracking-[0.18em] text-cream transition-colors hover:border-cream/30 hover:bg-charcoal/80';
 
-const adminLinkClassName =
-  'mt-4 inline-flex w-full items-center justify-center rounded-full border border-moss/40 bg-moss/15 px-5 py-3.5 font-sans text-xs font-semibold uppercase tracking-[0.18em] text-cream transition-colors hover:border-moss hover:bg-moss/25';
-
 export function AccountPage() {
   const { status, user, signOut } = useAuth();
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    if (!user) {
-      setIsAdmin(false);
-      return;
-    }
-    void fetchCurrentUserIsAdmin().then((admin) => {
-      if (!cancelled) setIsAdmin(admin);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [user]);
 
   if (status === 'loading') {
     return (
@@ -75,11 +54,6 @@ export function AccountPage() {
           </>
         }
       >
-        {isAdmin ? (
-          <a href="/audio/files" className={adminLinkClassName}>
-            Manage uploaded files
-          </a>
-        ) : null}
         <button
           type="button"
           onClick={async () => {
