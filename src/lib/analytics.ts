@@ -2,7 +2,11 @@ import posthog from 'posthog-js';
 import { shouldCaptureAnalytics } from '@/lib/analyticsPaths';
 import { isPostHogConfigured } from '@/lib/posthog';
 
-export type SignupSource = 'home_invitation' | 'about_stay_close' | 'book_page';
+export type SignupSource =
+  | 'home_invitation'
+  | 'about_stay_close'
+  | 'book_page'
+  | 'advance_listen';
 
 export type SignupFailureReason = 'invalid_email' | 'server_error';
 
