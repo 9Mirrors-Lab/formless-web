@@ -174,7 +174,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Author re-record scripts. Chapter 9 productivity punch, plus Acknowledgments closing credits.',
+      'Author re-record scripts. Chapter 9 productivity punch.',
     source: 'src/pages/AudioRecordSessionsPage.tsx',
   },
   {

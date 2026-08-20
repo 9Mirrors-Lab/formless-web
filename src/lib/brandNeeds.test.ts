@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ACKNOWLEDGMENTS_RERECORD } from '@/data/audioRecordSessions';
+import { CHAPTER_9_PRODUCTIVITY_PUNCH } from '@/data/audioRecordSessions';
 import {
   emptyStudioEvidence,
   studioRungById,
@@ -26,21 +26,25 @@ function record(chapterId: number, current: StudioRungId): StudioChapterRecord {
 
 describe('collectBrandNeeds', () => {
   it('leads with author re-records from Record Sessions', () => {
-    const needs = collectBrandNeeds([ACKNOWLEDGMENTS_RERECORD], []);
+    const needs = collectBrandNeeds([CHAPTER_9_PRODUCTIVITY_PUNCH], []);
     expect(needs[0]).toMatchObject({
-      sentence: 'Author needs to re-record Acknowledgments.',
-      href: '/audio/record-sessions#re-record',
+      sentence: 'Author needs to re-record Chapter 9 · productivity.',
+      href: '/audio/record-sessions#chapter-9-productivity',
       door: 'Record Sessions',
     });
   });
 
   it('does not also ask for a take when that track already has a re-record script', () => {
+    const livingFreedom: typeof CHAPTER_9_PRODUCTIVITY_PUNCH = {
+      ...CHAPTER_9_PRODUCTIVITY_PUNCH,
+      track: 'Living in Freedom',
+    };
     const needs = collectBrandNeeds(
-      [ACKNOWLEDGMENTS_RERECORD],
-      [record(12, 'not-recorded')],
+      [livingFreedom],
+      [record(9, 'not-recorded')],
     );
     expect(needs).toHaveLength(1);
-    expect(needs[0].sentence).toMatch(/Acknowledgments/);
+    expect(needs[0].sentence).toMatch(/Living in Freedom/);
   });
 
   it('names a single unpublished master and sign-off work', () => {

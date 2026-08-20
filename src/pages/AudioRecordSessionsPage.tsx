@@ -153,6 +153,7 @@ export default function AudioRecordSessionsPage() {
         <BrandPageBody>
           <div className="min-w-0">
             <BrandPageHeader title={RECORD_SESSIONS.title} />
+            {RECORD_SESSION_LIST.length > 1 ? (
             <nav
               aria-label="Sessions"
               className="mt-3 flex flex-wrap gap-x-4 gap-y-2"
@@ -167,6 +168,7 @@ export default function AudioRecordSessionsPage() {
                 </a>
               ))}
             </nav>
+            ) : null}
           </div>
           {RECORD_SESSION_LIST.map((session) => (
             <div

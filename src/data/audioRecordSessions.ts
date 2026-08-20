@@ -52,26 +52,4 @@ export const CHAPTER_9_PRODUCTIVITY_PUNCH: RecordSession = {
     'Stay quiet for a couple of seconds. Then stop. Do not continue into “When I am still.”',
 };
 
-export const ACKNOWLEDGMENTS_RERECORD: RecordSession = {
-  id: 'acknowledgments-2026-08',
-  sectionTitle: 'Re-record',
-  track: 'Acknowledgments',
-  saveAs: '12_Acknowledgments.wav',
-  why: 'The Acknowledgments take is already recorded. This session is only the ACX closing credits: title line, copyright, and The End.',
-  closing: {
-    id: 'closing',
-    cue: 'Closing credits · new',
-    note: 'Read these three lines exactly.',
-    lines: [
-      'You have been listening to Formless, written by Sonika Cottman, narrated by Sonika Cottman.',
-      'Copyright 2026 Sonika Cottman.',
-      'The End.',
-    ],
-  },
-  stopCue: 'Stay quiet for a couple of seconds. Then stop recording.',
-};
-
-export const RECORD_SESSION_LIST: RecordSession[] = [
-  CHAPTER_9_PRODUCTIVITY_PUNCH,
-  ACKNOWLEDGMENTS_RERECORD,
-];
+export const RECORD_SESSION_LIST: RecordSession[] = [CHAPTER_9_PRODUCTIVITY_PUNCH];

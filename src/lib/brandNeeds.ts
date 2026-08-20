@@ -9,7 +9,7 @@ export type BrandNeed = {
   door: string;
 };
 
-const RECORD_HREF = '/audio/record-sessions#re-record';
+const RECORD_HREF = '/audio/record-sessions';
 const LADDER_HREF = '/audio/editorial2';
 
 function titleList(records: StudioChapterRecord[]): string {
@@ -30,7 +30,7 @@ export function collectBrandNeeds(
     needs.push({
       id: `rerecord:${session.id}`,
       sentence: `Author needs to re-record ${session.track}.`,
-      href: RECORD_HREF,
+      href: `${RECORD_HREF}#${session.id}`,
       door: 'Record Sessions',
     });
   }

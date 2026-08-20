@@ -767,8 +767,8 @@ Then wait for a public Amazon page</pre>
           <td>12</td>
           <td>Acknowledgments</td>
           <td><code>12_Acknowledgments_acx_master.mp3</code></td>
-          <td>Last file must end with closing credits. Re-record script: <a href="/audio/record-sessions" style="color:var(--clay-h)">Record Sessions</a>.</td>
-          <td><span class="pill hold">Re-record</span></td>
+          <td>Last file. Closing credits are on the master.</td>
+          <td><span class="pill ok">In Drive</span></td>
         </tr>
       </tbody>
     </table>
@@ -900,7 +900,7 @@ const DETAIL = {
   tags: {
     title: "ID3 tags + credits",
     meta: "inside the MP3 + spoken copy",
-    body: "<p>ACX reviewers see ID3 tags, not the Finder name. All twelve masters already have TIT2 (chapter name), TPE1 Sonika Cottman, TALB Formless, TRCK 1/12–12/12, TDRC 2026, plus album artist, composer, and genre Audiobook. Opening and closing spoken credits must still match the title metadata and cover.</p><ol class=\"steps\"><li>ID3 on the masters is done. Do not retag unless a file is re-exported.</li><li>Opening Credits file must speak title, author, and narrator.</li><li>Acknowledgments needs a re-record so it ends with closing credits. Read the script on <a href=\"/audio/record-sessions\">Record Sessions</a>.</li></ol>",
+    body: "<p>ACX reviewers see ID3 tags, not the Finder name. All twelve masters already have TIT2 (chapter name), TPE1 Sonika Cottman, TALB Formless, TRCK 1/12–12/12, TDRC 2026, plus album artist, composer, and genre Audiobook. Opening and closing spoken credits must still match the title metadata and cover.</p><ol class=\"steps\"><li>ID3 on the masters is done. Do not retag unless a file is re-exported.</li><li>Opening Credits file must speak title, author, and narrator.</li><li>Acknowledgments already ends with closing credits on the master.</li></ol>",
     code: "TIT2 chapter · TPE1 narrator\nTALB Formless · TRCK 1–12 · 2026"
   },
   qc: {
@@ -1028,7 +1028,7 @@ Folder: https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH
 - [ ] 09 Chapter 7 Nature, Animals and Presence
 - [ ] 10 Chapter 8 Science, Spirituality and Consciousness
 - [ ] 11 Chapter 9 Living in Freedom
-- [ ] 12 Acknowledgments — re-record closing credit + copyright (Record Sessions)
+- [ ] 12 Acknowledgments
 
 ## Every MP3
 - [ ] MP3 192 kbps CBR, 44100 Hz, mono
