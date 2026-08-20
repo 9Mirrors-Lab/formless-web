@@ -25,17 +25,21 @@ function record(chapterId: number, current: StudioRungId): StudioChapterRecord {
 }
 
 describe('collectBrandNeeds', () => {
-  it('leads with manuscript comparison results for open re-records', () => {
+  it('only lists the open re-record manuscript finding, not ARC alignment diffs', () => {
     const needs = collectBrandNeeds([CHAPTER_9_PRODUCTIVITY_PUNCH], []);
     expect(needs[0]).toMatchObject({
       sentence:
-        'Chapter 9 manuscript: “productivity” is rushed at 2:32 in the source take.',
+        'Re-record the “productivity” line; delivery is rushed at 2:32 in the Chapter 9 take.',
       href: '/audio/record-sessions#chapter-9-productivity',
       door: 'Record Sessions',
     });
     expect(needs.map((need) => need.sentence)).not.toContain(
       'Author needs to re-record Chapter 9 · productivity.',
     );
+    expect(
+      needs.some((need) => /diverges from the ARC|Final script|embedded itself/i.test(need.sentence)),
+    ).toBe(false);
+    expect(needs.filter((need) => need.door === 'Record Sessions')).toHaveLength(1);
   });
 
   it('still lists a re-record when there is no manuscript finding for it', () => {
