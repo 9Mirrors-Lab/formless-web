@@ -92,6 +92,25 @@ export function signupMetricHelp(key: SignupMetricKey): string {
   }
 }
 
+export const SIGNUP_DESK_PATH = '/brand/signups';
+
+export type SignupDeskList = Exclude<SignupList, 'account'>;
+
+export function isSignupDeskList(value: string | null): value is SignupDeskList {
+  return value === 'book_release' || value === 'newsletter' || value === 'advance_listen';
+}
+
+export function signupDeskHref(list?: SignupDeskList | 'all'): string {
+  if (!list || list === 'all') return SIGNUP_DESK_PATH;
+  return `${SIGNUP_DESK_PATH}?list=${list}`;
+}
+
+export function signupDeskListFromSearch(search: string): SignupDeskList | 'all' {
+  const query = search.startsWith('?') ? search : `?${search}`;
+  const value = new URLSearchParams(query).get('list');
+  return isSignupDeskList(value) ? value : 'all';
+}
+
 export function signupListPath(list: SignupList): string {
   switch (list) {
     case 'book_release':

@@ -83,7 +83,7 @@ export function signupPulse(
   if (summary.uniqueEmails === 0) {
     return {
       headline: 'No one has signed up yet.',
-      detail: 'Book waitlist, Stay Close, and advance listen will land here.',
+      detail: '',
       href: SIGNUP_HREF,
     };
   }

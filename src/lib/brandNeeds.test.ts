@@ -25,11 +25,29 @@ function record(chapterId: number, current: StudioRungId): StudioChapterRecord {
 }
 
 describe('collectBrandNeeds', () => {
-  it('leads with author re-records from Record Sessions', () => {
+  it('leads with manuscript comparison results for open re-records', () => {
     const needs = collectBrandNeeds([CHAPTER_9_PRODUCTIVITY_PUNCH], []);
     expect(needs[0]).toMatchObject({
-      sentence: 'Author needs to re-record Chapter 9 · productivity.',
+      sentence:
+        'Chapter 9 manuscript: “productivity” is rushed at 2:32 in the source take.',
       href: '/audio/record-sessions#chapter-9-productivity',
+      door: 'Record Sessions',
+    });
+    expect(needs.map((need) => need.sentence)).not.toContain(
+      'Author needs to re-record Chapter 9 · productivity.',
+    );
+  });
+
+  it('still lists a re-record when there is no manuscript finding for it', () => {
+    const credits: typeof CHAPTER_9_PRODUCTIVITY_PUNCH = {
+      ...CHAPTER_9_PRODUCTIVITY_PUNCH,
+      id: 'closing-credits',
+      track: 'Closing Credits',
+    };
+    const needs = collectBrandNeeds([credits], [], []);
+    expect(needs[0]).toMatchObject({
+      sentence: 'Author needs to re-record Closing Credits.',
+      href: '/audio/record-sessions#closing-credits',
       door: 'Record Sessions',
     });
   });
@@ -44,13 +62,14 @@ describe('collectBrandNeeds', () => {
       [record(9, 'not-recorded')],
     );
     expect(needs).toHaveLength(1);
-    expect(needs[0].sentence).toMatch(/Living in Freedom/);
+    expect(needs[0].sentence).toMatch(/productivity/);
   });
 
   it('names a single unpublished master and sign-off work', () => {
     const needs = collectBrandNeeds(
       [],
       [record(1, 'mastered'), record(2, 'published'), record(3, 'published')],
+      [],
     );
     expect(needs.map((need) => need.sentence)).toEqual([
       'The Feeling of Wholeness has a local master that is not published yet.',
@@ -59,6 +78,6 @@ describe('collectBrandNeeds', () => {
   });
 
   it('returns nothing when the book is signed off and no scripts are open', () => {
-    expect(collectBrandNeeds([], [record(1, 'approved')])).toEqual([]);
+    expect(collectBrandNeeds([], [record(1, 'approved')], [])).toEqual([]);
   });
 });

@@ -1,4 +1,8 @@
 import { canonicalChapterTitle } from '@/data/audioBook';
+import {
+  MANUSCRIPT_FINDINGS,
+  type ManuscriptFinding,
+} from '@/data/audioManuscriptFindings';
 import type { RecordSession } from '@/data/audioRecordSessions';
 import type { StudioChapterRecord } from '@/data/audiobookStudioCatalog';
 
@@ -22,11 +26,28 @@ function titleList(records: StudioChapterRecord[]): string {
 export function collectBrandNeeds(
   sessions: readonly RecordSession[],
   records: readonly StudioChapterRecord[],
+  findings: readonly ManuscriptFinding[] = MANUSCRIPT_FINDINGS,
 ): BrandNeed[] {
   const needs: BrandNeed[] = [];
   const rerecordTracks = new Set(sessions.map((session) => session.track));
+  const sessionsById = new Map(sessions.map((session) => [session.id, session]));
+  const coveredSessionIds = new Set<string>();
+
+  for (const finding of findings) {
+    const session = finding.sessionId
+      ? sessionsById.get(finding.sessionId)
+      : undefined;
+    if (finding.sessionId) coveredSessionIds.add(finding.sessionId);
+    needs.push({
+      id: `manuscript:${finding.id}`,
+      sentence: finding.sentence,
+      href: session ? `${RECORD_HREF}#${session.id}` : finding.href,
+      door: finding.door,
+    });
+  }
 
   for (const session of sessions) {
+    if (coveredSessionIds.has(session.id)) continue;
     needs.push({
       id: `rerecord:${session.id}`,
       sentence: `Author needs to re-record ${session.track}.`,

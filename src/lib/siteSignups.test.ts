@@ -4,6 +4,8 @@ import {
   filterSignups,
   isExcludedSignupEmail,
   mergeSignupsByEmail,
+  signupDeskHref,
+  signupDeskListFromSearch,
   signupListLabel,
   signupListMeaning,
   signupListPath,
@@ -49,6 +51,14 @@ describe('siteSignups', () => {
     expect(signupListLabel('advance_listen')).toBe('Advance listen');
     expect(signupListLabel('account')).toBe('Account');
     expect(signupListPath('book_release')).toBe('/book');
+  });
+
+  it('opens a signup desk tab from a brand metric', () => {
+    expect(signupDeskHref()).toBe('/brand/signups');
+    expect(signupDeskHref('all')).toBe('/brand/signups');
+    expect(signupDeskHref('newsletter')).toBe('/brand/signups?list=newsletter');
+    expect(signupDeskListFromSearch('?list=advance_listen')).toBe('advance_listen');
+    expect(signupDeskListFromSearch('?list=account')).toBe('all');
   });
 
   it('names what each list is asking for', () => {

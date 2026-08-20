@@ -9,7 +9,7 @@ import {
 } from '@/lib/brandPulse';
 import {
   emptySignupSummary,
-  signupListMeaning,
+  signupDeskHref,
   type SignupSummary,
   type SiteSignup,
 } from '@/lib/siteSignups';
@@ -74,19 +74,15 @@ export function BrandAudienceCharts({
       aria-label="Signups by list since the first arrival"
     >
       {series.map((item, index) => (
-        <li
-          key={item.list}
-          className="grid grid-cols-[minmax(0,1fr)_1.75rem] items-start gap-x-3 gap-y-1.5 py-2"
-        >
-          <span className="min-w-0">
-            <span className="block font-sans text-[11px] text-cream/70">
+        <li key={item.list}>
+          <a
+            href={signupDeskHref(item.list)}
+            className="grid grid-cols-[minmax(0,1fr)_1.75rem] items-baseline gap-x-3 gap-y-1.5 py-2 text-cream/70 transition-colors hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]"
+          >
+            <span className="min-w-0 font-sans text-[11px]">
               {item.label}
             </span>
-            <span className="mt-0.5 block font-sans text-[10px] leading-snug text-cream/38">
-              {signupListMeaning(item.list)}
-            </span>
-          </span>
-          <span className="pt-0.5 text-right font-serif text-[1.05rem] leading-none text-cream">
+          <span className="text-right font-serif text-[1.05rem] leading-none text-cream">
             {state === 'loading' ? '—' : item.total}
           </span>
           <svg
@@ -124,6 +120,7 @@ export function BrandAudienceCharts({
               />
             </g>
           </svg>
+          </a>
         </li>
       ))}
     </ul>

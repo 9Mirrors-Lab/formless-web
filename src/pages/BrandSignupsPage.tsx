@@ -15,12 +15,13 @@ import {
   SIGNUP_LISTS,
   fetchSiteSignups,
   filterSignups,
+  signupDeskListFromSearch,
   signupListLabel,
   signupListPath,
   signupMetricHelp,
   signupsToCsv,
   summarizeSignups,
-  type SignupList,
+  type SignupDeskList,
   type SignupMetricKey,
   type SiteSignup,
 } from '@/lib/siteSignups';
@@ -28,7 +29,14 @@ import {
 const DISPLAY_LISTS = SIGNUP_LISTS.filter((list) => list !== 'account');
 
 type LoadState = 'loading' | 'ready' | 'error';
-type ListFilter = SignupList | 'all';
+type ListFilter = SignupDeskList | 'all';
+
+function setSignupListInUrl(list: ListFilter) {
+  const url = new URL(window.location.href);
+  if (list === 'all') url.searchParams.delete('list');
+  else url.searchParams.set('list', list);
+  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
 
 function formatWhen(iso: string): string {
   const date = new Date(iso);
@@ -61,7 +69,9 @@ export default function BrandSignupsPage() {
   const [state, setState] = useState<LoadState>('loading');
   const [error, setError] = useState<string | null>(null);
   const [rows, setRows] = useState<SiteSignup[]>([]);
-  const [listFilter, setListFilter] = useState<ListFilter>('all');
+  const [listFilter, setListFilter] = useState<ListFilter>(() =>
+    signupDeskListFromSearch(window.location.search),
+  );
   const [query, setQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -127,7 +137,6 @@ export default function BrandSignupsPage() {
         <div className="flex flex-col gap-6 md:gap-8">
           <BrandPageHeader
             title="Signups"
-            description="Emails collected from the book waitlist, newsletter, and advance listen accounts."
             actions={
               <div className="flex flex-wrap items-center gap-2">
                 <button
@@ -221,7 +230,10 @@ export default function BrandSignupsPage() {
                     type="button"
                     role="tab"
                     aria-selected={active}
-                    onClick={() => setListFilter(item.id)}
+                    onClick={() => {
+                      setListFilter(item.id);
+                      setSignupListInUrl(item.id);
+                    }}
                     className={[
                       'h-10 rounded-full px-3.5 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors',
                       active

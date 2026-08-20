@@ -81,6 +81,7 @@ describe('brandPulse', () => {
     expect(signupPulse('loading', emptySignupSummary(), null).detail).toMatch(/loading/i);
     expect(signupPulse('error', emptySignupSummary(), null).detail).toMatch(/could not load/i);
     expect(signupPulse('ready', emptySignupSummary(), null).headline).toMatch(/no one/i);
+    expect(signupPulse('ready', emptySignupSummary(), null).detail).toBe('');
   });
 
   it('leads audible copy with masters toward upload, then what is open', () => {
