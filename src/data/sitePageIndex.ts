@@ -351,7 +351,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio/record-sessions',
     category: 'design',
     description:
-      'Author re-record scripts. ACX closing credits for Acknowledgments.',
+      'Author re-record scripts. Chapter 9 productivity punch, plus Acknowledgments closing credits.',
     source: 'src/pages/AudioRecordSessionsPage.tsx',
   },
   {

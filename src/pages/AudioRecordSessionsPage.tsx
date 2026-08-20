@@ -2,7 +2,7 @@
  * Record Sessions — scripts for author re-records.
  * Keep spoken lines large and cues readable so this page can sit beside the mic.
  */
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { Layers, X } from 'lucide-react';
 
 import { BrandPageBody, BrandPageHeader } from '@/components/BrandPageHeader';
@@ -89,9 +89,18 @@ function SessionToast({
   );
 }
 
+function BeatBlock({ beat }: { beat: { id: string; cue: string; lines: string[] } }) {
+  return (
+    <article className="border-b border-cream/[0.08] py-7 last:border-b-0">
+      <Cue>{beat.cue}</Cue>
+      <SpokenLines lines={beat.lines} />
+    </article>
+  );
+}
+
 function SessionScript({ session }: { session: RecordSession }) {
   return (
-    <section id="script" className="min-w-0">
+    <section id={`${session.id}-script`} className="min-w-0">
       <div className="flex max-w-3xl flex-wrap items-baseline gap-x-4 gap-y-1">
         <p className="font-serif text-[1.75rem] italic leading-[1.12] tracking-[-0.02em] text-cream">
           Script
@@ -103,16 +112,22 @@ function SessionScript({ session }: { session: RecordSession }) {
       </div>
 
       <div className="max-w-3xl pt-5">
-        <article
-          id="closing"
-          className="rounded-xl border border-clay/40 bg-clay/[0.07] px-5 py-6 md:px-6"
-        >
-          <Cue>{session.closing.cue}</Cue>
-          <p className="mt-2 text-[1.0625rem] font-medium leading-relaxed text-cream/85">
-            {session.closing.note}
-          </p>
-          <SpokenLines lines={session.closing.lines} />
-        </article>
+        {session.beats?.map((beat) => (
+          <BeatBlock key={beat.id} beat={beat} />
+        ))}
+
+        {session.closing ? (
+          <article
+            id={`${session.id}-closing`}
+            className="rounded-xl border border-clay/40 bg-clay/[0.07] px-5 py-6 md:px-6"
+          >
+            <Cue>{session.closing.cue}</Cue>
+            <p className="mt-2 text-[1.0625rem] font-medium leading-relaxed text-cream/85">
+              {session.closing.note}
+            </p>
+            <SpokenLines lines={session.closing.lines} />
+          </article>
+        ) : null}
 
         <div className="mt-10 mb-20 text-right">
           <p className="font-serif text-[clamp(1.5rem,2.2vw,1.85rem)] italic leading-[1.12] tracking-[-0.02em] text-cream">
@@ -136,19 +151,36 @@ export default function AudioRecordSessionsPage() {
           folderHref={RECORD_SESSIONS.uploadFolderHref}
         />
         <BrandPageBody>
-          {RECORD_SESSION_LIST.map((session) => (
-            <Fragment key={session.id}>
-              <div className="min-w-0">
-                <BrandPageHeader title={RECORD_SESSIONS.title} />
-                <p
-                  id="re-record"
-                  className="mt-2 max-w-xl text-sm leading-relaxed text-cream/70"
+          <div className="min-w-0">
+            <BrandPageHeader title={RECORD_SESSIONS.title} />
+            <nav
+              aria-label="Sessions"
+              className="mt-3 flex flex-wrap gap-x-4 gap-y-2"
+            >
+              {RECORD_SESSION_LIST.map((session) => (
+                <a
+                  key={session.id}
+                  href={`#${session.id}`}
+                  className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#c5d9cf] underline decoration-[#c5d9cf]/40 underline-offset-4 hover:text-cream"
                 >
-                  {session.why}
-                </p>
+                  {session.track}
+                </a>
+              ))}
+            </nav>
+          </div>
+          {RECORD_SESSION_LIST.map((session) => (
+            <div
+              key={session.id}
+              id={session.id}
+              className="scroll-mt-16"
+            >
+              <p className="mt-6 max-w-xl text-sm leading-relaxed text-cream/70">
+                {session.why}
+              </p>
+              <div className="mt-4">
+                <SessionScript session={session} />
               </div>
-              <SessionScript session={session} />
-            </Fragment>
+            </div>
           ))}
         </BrandPageBody>
       </div>
