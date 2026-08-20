@@ -27,7 +27,7 @@ export function AuthCallbackPage() {
           return;
         }
 
-        window.location.replace(takeAuthNextPath('/account'));
+        window.location.replace(takeAuthNextPath());
       } catch (error) {
         if (!active) return;
         setState('error');

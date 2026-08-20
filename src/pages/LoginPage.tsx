@@ -3,12 +3,12 @@ import { useEffect } from 'react';
 import { AuthForm } from '@/components/AuthForm';
 import { authLinkClassName, AuthPageShell } from '@/components/auth/AuthPageShell';
 import { useAuth } from '@/context/AuthContext';
-import { safeAuthNextPath, stashAuthNextPath } from '@/lib/auth';
+import { DEFAULT_POST_LOGIN_PATH, safeAuthNextPath, stashAuthNextPath } from '@/lib/auth';
 
 function nextPathFromQuery(): string {
   return safeAuthNextPath(
     new URLSearchParams(window.location.search).get('next'),
-    '/account',
+    DEFAULT_POST_LOGIN_PATH,
   );
 }
 

@@ -1,6 +1,8 @@
 export type BrandNavId =
   | "brand"
   | "signups"
+  | "endorsements"
+  | "book-launch"
   | "speaker-sheet"
   | "audible"
   | "audible-process"
@@ -38,6 +40,18 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         title: "Signups",
         href: "/brand/signups",
         description: "Book waitlist, Stay Close, and advance listen",
+      },
+      {
+        id: "endorsements",
+        title: "Endorsements",
+        href: "/brand/endorsements",
+        description: "Reader quotes",
+      },
+      {
+        id: "book-launch",
+        title: "Book launch campaign",
+        href: "/brand/book-launch-campaign",
+        description: "Warm, professional, and LinkedIn sequences",
       },
     ],
   },
@@ -132,6 +146,18 @@ export function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/brand/signups" || pathname.startsWith("/brand/signups")) {
     return "signups";
   }
+  if (
+    pathname === "/brand/endorsements" ||
+    pathname.startsWith("/brand/endorsements")
+  ) {
+    return "endorsements";
+  }
+  if (
+    pathname === "/brand/book-launch-campaign" ||
+    pathname.startsWith("/brand/book-launch-campaign")
+  ) {
+    return "book-launch";
+  }
   if (pathname === "/brand") return "brand";
   return "brand";
 }
@@ -153,6 +179,8 @@ export function brandNavPlace(activeId: BrandNavId): {
     case "client-review":
       return { title: "Client review", room: "Toolkit" };
     case "signups":
+    case "endorsements":
+    case "book-launch":
     case "speaker-sheet":
     case "audible":
     case "audible-process":

@@ -7,6 +7,7 @@ import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
+import { loadEndorsementDoc } from "./src/lib/endorsementDoc";
 import { streamGoogleDriveMedia } from "./src/lib/streamGoogleDriveMedia";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -38,6 +39,52 @@ function repoStaticPlugin(mount: string, rootDir: string): Plugin {
         res.setHeader("Content-Type", types[ext] ?? "application/octet-stream");
         fs.createReadStream(file).pipe(res);
       });
+    },
+  };
+}
+
+function endorsementDocProxy(): Plugin {
+  const attach = (middlewares: {
+    use: (
+      path: string,
+      fn: (req: IncomingMessage, res: ServerResponse) => void,
+    ) => void;
+  }) => {
+    middlewares.use("/api/endorsements", (req: IncomingMessage, res: ServerResponse) => {
+      const refresh =
+        new URL(req.url ?? "", "http://localhost/api/endorsements").searchParams.get(
+          "refresh",
+        ) === "1";
+      void loadEndorsementDoc({ refresh })
+        .then((payload) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json; charset=utf-8");
+          res.setHeader("Cache-Control", "private, max-age=0, must-revalidate");
+          res.end(JSON.stringify(payload));
+        })
+        .catch((error: unknown) => {
+          if (res.headersSent) return;
+          res.statusCode = 502;
+          res.setHeader("Content-Type", "application/json; charset=utf-8");
+          res.end(
+            JSON.stringify({
+              error:
+                error instanceof Error
+                  ? error.message
+                  : "Endorsement doc proxy failed.",
+            }),
+          );
+        });
+    });
+  };
+
+  return {
+    name: "endorsement-doc-proxy",
+    configureServer(server) {
+      attach(server.middlewares);
+    },
+    configurePreviewServer(server) {
+      attach(server.middlewares);
     },
   };
 }
@@ -74,6 +121,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     googleDriveMediaProxy(),
+    endorsementDocProxy(),
     repoStaticPlugin("/repo-docs", "docs"),
     repoStaticPlugin("/repo-design", "design"),
   ],

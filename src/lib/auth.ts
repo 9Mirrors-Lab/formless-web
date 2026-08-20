@@ -9,6 +9,9 @@ export type AuthCredentials = {
 
 const AUTH_NEXT_STORAGE_KEY = 'eyesclosed.auth.next';
 
+/** Where Brand Studio login lands when no `next` path is stashed. */
+export const DEFAULT_POST_LOGIN_PATH = '/brand';
+
 export function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
@@ -46,7 +49,7 @@ export function hasAuthCallbackCode(search: string): boolean {
 /** Same-origin relative path only; blocks open redirects. */
 export function safeAuthNextPath(
   raw: string | null | undefined,
-  fallback = '/account',
+  fallback = DEFAULT_POST_LOGIN_PATH,
 ): string {
   if (!raw || !raw.startsWith('/') || raw.startsWith('//')) {
     return fallback;
@@ -63,7 +66,7 @@ export function stashAuthNextPath(path: string | null | undefined): void {
   sessionStorage.setItem(AUTH_NEXT_STORAGE_KEY, next);
 }
 
-export function takeAuthNextPath(fallback = '/account'): string {
+export function takeAuthNextPath(fallback = DEFAULT_POST_LOGIN_PATH): string {
   const stored = sessionStorage.getItem(AUTH_NEXT_STORAGE_KEY);
   sessionStorage.removeItem(AUTH_NEXT_STORAGE_KEY);
   return safeAuthNextPath(stored, fallback);
@@ -71,7 +74,7 @@ export function takeAuthNextPath(fallback = '/account'): string {
 
 export function loginHrefForCurrentLocation(): string {
   const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-  return `/login?next=${encodeURIComponent(safeAuthNextPath(next, '/brand'))}`;
+  return `/login?next=${encodeURIComponent(safeAuthNextPath(next, DEFAULT_POST_LOGIN_PATH))}`;
 }
 
 export async function signInWithPassword({ email, password }: AuthCredentials) {

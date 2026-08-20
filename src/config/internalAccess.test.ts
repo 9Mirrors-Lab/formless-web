@@ -26,6 +26,8 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/Brand')).toBe(true);
     expect(isInternalAuthPath('/BRAND/')).toBe(true);
     expect(isInternalAuthPath('/brand/signups')).toBe(true);
+    expect(isInternalAuthPath('/brand/endorsements')).toBe(true);
+    expect(isInternalAuthPath('/brand/book-launch-campaign')).toBe(true);
     expect(isInternalAuthPath('/speaker-sheet')).toBe(true);
     expect(isInternalAuthPath('/brand-kit-export')).toBe(true);
     expect(isInternalAuthPath('/zoom-backgrounds')).toBe(true);

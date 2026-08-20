@@ -311,6 +311,26 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/BrandSignupsPage.tsx',
   },
   {
+    id: 'brand-endorsements',
+    title: 'Endorsements',
+    href: '/brand/endorsements',
+    section: 'brand-identity',
+    status: 'live',
+    description:
+      'Formless reader letters with full, trimmed, and pull cuts, grouped by voice and theme.',
+    source: 'src/pages/BrandEndorsementsPage.tsx',
+  },
+  {
+    id: 'brand-book-launch-campaign',
+    title: 'Book launch campaign',
+    href: '/brand/book-launch-campaign',
+    section: 'brand-identity',
+    status: 'live',
+    description:
+      'Warm network emails, professional-list emails, and LinkedIn posts lined up by send window.',
+    source: 'src/pages/BrandBookLaunchCampaignPage.tsx',
+  },
+  {
     id: 'speaker-sheet',
     title: 'Speaker sheet',
     href: '/speaker-sheet',

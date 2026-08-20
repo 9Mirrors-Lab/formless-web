@@ -197,6 +197,25 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/BrandSignupsPage.tsx, src/lib/siteSignups.ts',
   },
   {
+    id: 'brand-endorsements',
+    title: 'Endorsements',
+    path: '/brand/endorsements',
+    category: 'design',
+    description:
+      'Formless reader letters, trimmed cuts, and pull quotes from the Google Doc, sorted by voice and theme.',
+    source: 'src/pages/BrandEndorsementsPage.tsx, src/lib/endorsementDoc.ts',
+  },
+  {
+    id: 'brand-book-launch-campaign',
+    title: 'Book launch campaign',
+    path: '/brand/book-launch-campaign',
+    category: 'design',
+    description:
+      'Warm network, professional list, and LinkedIn launch templates on one calendar.',
+    source:
+      'src/pages/BrandBookLaunchCampaignPage.tsx, src/data/bookLaunchCampaign.ts',
+  },
+  {
     id: 'speaker-sheet',
     title: 'Speaker sheet',
     path: '/speaker-sheet',

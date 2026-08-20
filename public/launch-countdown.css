@@ -1,0 +1,113 @@
+/* Shared launch countdown — used by Brand overview and audible-process.html */
+.launch-countdown-root {
+  --void: #0a0a09;
+  --canvas: #141413;
+  --panel: #1c1c1a;
+  --ink: #edebe6;
+  --muted: #a8a7a0;
+  --subtle: #8e8d87;
+  --clay: #d97757;
+  --clay-h: #e8956f;
+  --clay-d: #b85c3e;
+  --olive: #8fa876;
+  --line: #2a2a27;
+  --line-hi: #3d3d3a;
+  --serif: ui-serif, Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-decoration: none;
+}
+
+.launch-countdown-root .countdown {
+  border: 1px solid var(--line-hi);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 20px;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .launch-countdown-root .countdown {
+    grid-template-columns: 1fr;
+  }
+}
+
+.launch-countdown-root .countdown .cd-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--subtle);
+  margin-bottom: 4px;
+}
+
+.launch-countdown-root .countdown .cd-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.launch-countdown-root .countdown .cd-note {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  max-width: 42ch;
+}
+
+.launch-countdown-root .cd-digits {
+  display: flex;
+  gap: 8px;
+}
+
+.launch-countdown-root .cd-unit {
+  min-width: 52px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--canvas);
+  padding: 8px 6px 6px;
+}
+
+.launch-countdown-root .cd-unit .num {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--clay-h);
+}
+
+.launch-countdown-root .cd-unit .u {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--subtle);
+  margin-top: 4px;
+}
+
+.launch-countdown-root .cd-fit {
+  grid-column: 1 / -1;
+  font-size: 12.5px;
+  color: var(--muted);
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}
+
+.launch-countdown-root .cd-fit.ok {
+  color: var(--olive);
+}
+
+.launch-countdown-root .cd-fit.tight {
+  color: var(--clay-h);
+}
+
+.launch-countdown-root .cd-fit.late {
+  color: var(--clay-d);
+}

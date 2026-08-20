@@ -24,6 +24,8 @@ import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import BrandPage from './pages/BrandPage';
 import BrandSignupsPage from './pages/BrandSignupsPage';
+import BrandEndorsementsPage from './pages/BrandEndorsementsPage';
+import BrandBookLaunchCampaignPage from './pages/BrandBookLaunchCampaignPage';
 import SpeakerSheetPage from './pages/SpeakerSheetPage';
 import ZoomBackgroundsPage from './pages/ZoomBackgroundsPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
@@ -126,6 +128,8 @@ export function Root({ path }: { path: string }) {
   const isBrandKitExport = path === '/brand-kit-export';
   const isBrand = path === '/brand';
   const isBrandSignups = path === '/brand/signups';
+  const isBrandEndorsements = path === '/brand/endorsements';
+  const isBrandBookLaunch = path === '/brand/book-launch-campaign';
   const isSpeakerSheet = path === '/speaker-sheet';
   const isZoomBackgrounds = path === '/zoom-backgrounds';
   const isLayoutTests = path === '/layout-tests';
@@ -178,6 +182,8 @@ export function Root({ path }: { path: string }) {
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;
   if (isBrandSignups) return <BrandSignupsPage />;
+  if (isBrandEndorsements) return <BrandEndorsementsPage />;
+  if (isBrandBookLaunch) return <BrandBookLaunchCampaignPage />;
   if (isBrand) return <BrandPage />;
   if (isSpeakerSheet) return <SpeakerSheetPage />;
   if (isZoomBackgrounds) return <ZoomBackgroundsPage />;
@@ -229,6 +235,8 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/hub' ||
     path === '/brand' ||
     path === '/brand/signups' ||
+    path === '/brand/endorsements' ||
+    path === '/brand/book-launch-campaign' ||
     path === '/speaker-sheet' ||
     path === '/zoom-backgrounds' ||
     path === '/brand-kit-export' ||

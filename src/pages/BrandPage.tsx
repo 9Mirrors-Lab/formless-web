@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { BrandAudienceCharts } from "@/components/BrandAudienceCharts";
 import { BrandShell } from "@/components/app-sidebar";
+import { LaunchCountdownLink } from "@/components/LaunchCountdownLink";
 import { ShaderBackdrop } from "@/components/shader/ShaderBackdrop";
 import { RECORD_SESSION_LIST } from "@/data/audioRecordSessions";
 import { studioCatalogForTracks } from "@/data/audiobookStudioCatalog";
@@ -20,6 +21,16 @@ import {
 } from "@/lib/siteSignups";
 
 const MATERIALS = [
+  {
+    href: "/brand/book-launch-campaign",
+    title: "Book launch campaign",
+    detail: "Which emails go with which list.",
+  },
+  {
+    href: "/brand/endorsements",
+    title: "Endorsements",
+    detail: "Quote cuts for cover, Amazon, and press.",
+  },
   {
     href: "/brand-kit-export",
     title: "Logos",
@@ -90,7 +101,11 @@ export default function BrandPage() {
           aria-hidden
         />
 
-        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-7 md:px-12 md:pt-9 md:pb-14 lg:max-w-[40rem] lg:px-14">
+        <div className="relative z-10 px-5 pt-7 md:px-12 md:pt-9 lg:px-14">
+          <LaunchCountdownLink />
+        </div>
+
+        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-6 md:px-12 md:pb-14 md:pt-7 lg:max-w-[40rem] lg:px-14">
           <h1 className="sr-only">Brand Toolkit</h1>
 
           <div className="max-w-[34rem]">

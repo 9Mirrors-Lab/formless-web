@@ -48,9 +48,10 @@ describe('auth helpers', () => {
     const { safeAuthNextPath } = await import('@/lib/auth');
     expect(safeAuthNextPath('/brand')).toBe('/brand');
     expect(safeAuthNextPath('/hub?tab=design')).toBe('/hub?tab=design');
-    expect(safeAuthNextPath('https://evil.example/x')).toBe('/account');
-    expect(safeAuthNextPath('//evil.example')).toBe('/account');
-    expect(safeAuthNextPath(null, '/brand')).toBe('/brand');
+    expect(safeAuthNextPath('https://evil.example/x')).toBe('/brand');
+    expect(safeAuthNextPath('//evil.example')).toBe('/brand');
+    expect(safeAuthNextPath(null)).toBe('/brand');
+    expect(safeAuthNextPath(null, '/advance-listen')).toBe('/advance-listen');
   });
 
   it('uses an existing session if the PKCE code was already exchanged', async () => {

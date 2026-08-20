@@ -5,6 +5,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Audible process · Formless</title>
+<link rel="stylesheet" href="/launch-countdown.css">
 <style>
   :root {
     --void:   #0A0A09;
@@ -12,7 +13,7 @@
     --panel:  #1C1C1A;
     --ink:    #EDEBE6;
     --muted:  #A8A7A0;
-    --subtle: #6B6A65;
+    --subtle: #8E8D87;
     --clay:   #D97757;
     --clay-h: #E8956F;
     --clay-d: #B85C3E;
@@ -367,70 +368,281 @@
   }
   a.path:hover { color: var(--clay-h); }
 
+  /* Demoted submit strip: utility, not hero */
   .assets {
-    border: 1.5px solid var(--olive);
-    border-radius: 14px;
-    background: var(--panel);
-    padding: 18px 20px 16px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--canvas);
+    padding: 10px 14px;
     margin-bottom: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px;
   }
-  .assets .k {
+  .assets .assets-label {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--olive);
-    margin-bottom: 8px;
-  }
-  .assets h2 {
-    font-family: var(--serif);
-    font-weight: 500;
-    font-size: 22px;
-    letter-spacing: -0.01em;
-    margin-bottom: 6px;
+    color: var(--subtle);
+    white-space: nowrap;
   }
   .assets .folder {
-    display: block;
     font-family: var(--mono);
-    font-size: 12.5px;
-    line-height: 1.45;
+    font-size: 11.5px;
     color: var(--olive);
     text-decoration: underline;
-    text-underline-offset: 3px;
+    text-underline-offset: 2px;
     word-break: break-all;
-    margin-bottom: 14px;
   }
   .assets .folder:hover { color: var(--clay-h); }
-  .assets-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+  .assets-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-left: auto;
   }
-  @media (max-width: 760px) { .assets-grid { grid-template-columns: 1fr; } }
-  .assets-grid a {
-    display: block;
-    border: 1.5px solid var(--line);
-    border-radius: 10px;
-    padding: 12px 14px;
+  .assets-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
     text-decoration: none;
+    border-bottom: 1px solid var(--line-hi);
+    padding-bottom: 1px;
+  }
+  .assets-links a:hover { color: var(--clay-h); border-color: var(--clay); }
+  .assets-links a strong {
+    font-weight: 500;
     color: var(--ink);
+  }
+
+  /* Flowchart atmosphere */
+  .canvas {
+    position: relative;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(217,119,87,0.07), transparent 55%),
+      radial-gradient(ellipse 60% 50% at 50% 100%, rgba(143,168,118,0.06), transparent 50%),
+      var(--panel);
+  }
+  .canvas::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
+  }
+  .node { transition: transform 0.18s ease; }
+  .node:hover { transform: translateY(-1px); }
+  .node.active rect,
+  .node.active path {
+    filter: drop-shadow(0 0 10px rgba(217,119,87,0.35));
+  }
+  .node.ok rect {
+    filter: drop-shadow(0 0 8px rgba(143,168,118,0.25));
+  }
+  .edge.yes { stroke-width: 2; }
+  .edge.no { stroke-width: 1.75; }
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -16; }
+  }
+  .edge.no { animation: dash-flow 1.2s linear infinite; }
+  .flow .phase {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: var(--subtle);
+  }
+
+  /* Right panel: callouts + compact structure */
+  aside .lead-line {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .callout {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--canvas);
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .callout.pref {
+    border-color: rgba(217,119,87,0.45);
+    background: rgba(217,119,87,0.08);
+  }
+  .callout.alt {
+    border-color: var(--line);
+    opacity: 0.92;
+  }
+  .callout.stop {
+    border-color: rgba(184,92,62,0.4);
+    background: rgba(184,92,62,0.08);
+  }
+  .callout.go {
+    border-color: rgba(143,168,118,0.4);
+    background: rgba(143,168,118,0.08);
+  }
+  .callout .t {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--clay-h);
+    margin-bottom: 4px;
+  }
+  .callout.alt .t { color: var(--subtle); }
+  .callout.go .t { color: var(--olive); }
+  .callout.stop .t { color: var(--clay-h); }
+  .callout p {
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--ink);
+    margin-bottom: 0;
+  }
+  .callout p + p { margin-top: 6px; color: var(--muted); }
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
     background: var(--canvas);
   }
-  .assets-grid a:hover { border-color: var(--clay); }
-  .assets-grid .lab {
+  .stat .n {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .stat .l {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--subtle);
+    margin-top: 3px;
+  }
+  .meter {
+    margin: 8px 0 12px;
+  }
+  .meter .bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--subtle);
+    margin-bottom: 4px;
+  }
+  .meter .track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .meter .fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--olive), var(--clay));
+  }
+  aside .steps { margin-top: 4px; }
+  aside .steps li { margin-bottom: 5px; font-size: 12.5px; }
+
+  .launch-countdown-root {
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  /* Kindle priority weight */
+  section.block.priority {
+    border: 1.5px solid rgba(217,119,87,0.4);
+    border-radius: 14px;
+    background:
+      linear-gradient(180deg, rgba(217,119,87,0.07), transparent 120px),
+      var(--panel);
+    padding: 22px 22px 20px;
+    margin-bottom: 48px;
+  }
+  section.block.priority h2 {
+    font-size: 28px;
     margin-bottom: 6px;
   }
-  .assets-grid .fn {
+  section.block.priority .pri-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-family: var(--mono);
-    font-size: 12px;
-    color: var(--olive);
-    word-break: break-word;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--clay-h);
+    margin-bottom: 10px;
   }
+  section.block.priority .pri-mark::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--clay);
+    box-shadow: 0 0 0 4px rgba(217,119,87,0.2);
+  }
+  .card.preferred {
+    border-color: rgba(217,119,87,0.55);
+    background: rgba(217,119,87,0.06);
+  }
+  .card.preferred h3 { color: var(--clay-h); }
+  .card.dimmed {
+    opacity: 0.78;
+    border-style: dashed;
+  }
+
+  /* Spec tiles with why */
+  .spec .why {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* Compact ACX title metadata */
+  .meta-compact {
+    display: grid;
+    gap: 6px;
+  }
+  .meta-compact .row {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 8px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .meta-compact .row:last-child { border-bottom: 0; }
+  .meta-compact .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    padding-top: 2px;
+  }
+  .meta-compact .v { color: var(--muted); }
+  .meta-compact .v strong { color: var(--ink); font-weight: 500; }
 </style>
 </head>
 <body>
@@ -449,25 +661,31 @@
     </div>
   </header>
 
-  <section class="assets" id="assets">
-    <div class="k">Submit folder</div>
-    <h2>Final assets</h2>
-    <a class="folder" href="https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH" target="_blank" rel="noopener">Google Drive · ACX-Masters</a>
-    <div class="assets-grid">
-      <a href="https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH" target="_blank" rel="noopener">
-        <div class="lab">Chapter masters</div>
-        <div class="fn">01–12 *_acx_master.mp3</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1kvquMUONQR1rU0XhhdMZwq7qvn2HsKUz/view" target="_blank" rel="noopener">
-        <div class="lab">Retail sample</div>
-        <div class="fn">02_Introduction_retail_acx_master.mp3</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1KpJa9dSltX-jvPuA0PP4jKWR6W5FrBul/view" target="_blank" rel="noopener">
-        <div class="lab">Cover</div>
-        <div class="fn">Formless.png</div>
-      </a>
+  <section class="assets" id="assets" aria-label="Submit folder links">
+    <span class="assets-label">Submit folder</span>
+    <a class="folder" href="https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH" target="_blank" rel="noopener">Drive · ACX-Masters</a>
+    <div class="assets-links">
+      <a href="https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH" target="_blank" rel="noopener"><strong>Chapters</strong> 01–12</a>
+      <a href="https://drive.google.com/file/d/1kvquMUONQR1rU0XhhdMZwq7qvn2HsKUz/view" target="_blank" rel="noopener"><strong>Sample</strong> retail MP3</a>
+      <a href="https://drive.google.com/file/d/1KpJa9dSltX-jvPuA0PP4jKWR6W5FrBul/view" target="_blank" rel="noopener"><strong>Cover</strong> Formless.png</a>
     </div>
   </section>
+
+  <div class="launch-countdown-root">
+    <section class="countdown" id="countdown" aria-live="polite" hidden>
+      <div>
+        <div class="cd-label">Countdown</div>
+        <div class="cd-title">Meeting</div>
+        <p class="cd-note"></p>
+      </div>
+      <div class="cd-digits" aria-hidden="true">
+        <div class="cd-unit"><div class="num">0</div><div class="u">Days</div></div>
+        <div class="cd-unit"><div class="num">0</div><div class="u">Hrs</div></div>
+        <div class="cd-unit"><div class="num">0</div><div class="u">Min</div></div>
+      </div>
+      <p class="cd-fit" hidden></p>
+    </section>
+  </div>
 
   <div class="layout">
     <div>
@@ -483,7 +701,21 @@
             <marker id="arrow-olive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="#8FA876"/>
             </marker>
+            <filter id="node-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="rail" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#D97757" stop-opacity="0.55"/>
+              <stop offset="55%" stop-color="#A8A7A0" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#8FA876" stop-opacity="0.55"/>
+            </linearGradient>
           </defs>
+
+          <rect x="314" y="34" width="12" height="1000" rx="6" fill="url(#rail)" opacity="0.22"/>
+          <text class="phase" x="48" y="28">1 · Kindle gate</text>
+          <text class="phase" x="48" y="260">2 · Package</text>
+          <text class="phase" x="48" y="600">3 · Upload + review</text>
 
           <path class="edge" d="M320,56 L320,68"/>
           <path class="edge yes" d="M320,132 L320,168"/>
@@ -598,40 +830,30 @@
       <div class="hint">Click a step in the chart</div>
       <h3 id="p-title">Kindle ebook on KDP</h3>
       <div class="meta" id="p-meta">start · kdp.amazon.com · before ACX</div>
-      <div id="p-body">
-        <p>ACX will not find Formless until a public Amazon.com ebook listing exists. Create that listing in KDP first. Do not search ACX yet.</p>
-        <ol class="steps">
-          <li>Sign in at <a href="https://kdp.amazon.com" target="_blank" rel="noopener">kdp.amazon.com</a>. Open <strong>Bookshelf</strong>.</li>
-          <li>Create a Kindle eBook: title Formless, author Sonika Cottman, imprint Eyes Closed. Upload the Kindle manuscript and Kindle cover (this is not the ACX square).</li>
-          <li><strong>Preferred for a September 1 launch:</strong> set a Kindle preorder for September 1. After Amazon reviews it, a public detail page and Kindle ASIN appear before release. Customers can preorder immediately. The final manuscript must be submitted more than 72 hours before September 1. Missing that deadline cancels the preorder and blocks new preorders for one year. <a href="https://kdp.amazon.com/help/topic/G201499380" target="_blank" rel="noopener">KDP preorder rules</a>.</li>
-          <li><strong>Alternative:</strong> publish the Kindle ebook now. It becomes buyable before September 1. Review is typically 24–72 hours. <a href="https://kdp.amazon.com/help/topic/G202173620" target="_blank" rel="noopener">KDP timelines</a>.</li>
-        </ol>
-      </div>
-      <pre id="p-code">kdp.amazon.com → Bookshelf → Kindle eBook
-Preferred: preorder Sept 1
-Or: publish now (buyable before launch)
-Then wait for a public Amazon page</pre>
+      <div id="p-body"></div>
+      <pre id="p-code"></pre>
     </aside>
   </div>
 
-  <section class="block" id="kindle">
+  <section class="block priority" id="kindle">
+    <div class="pri-mark">Do this first · blocks everything below</div>
     <h2>Kindle ebook first</h2>
     <p class="sec-lead">
-      ACX explicitly requires the ebook to already sit in the Amazon.com bookstore. Searching ACX before that listing exists will look like the title is missing. Official: <a href="https://help.acx.com/s/article/claim-my-title" style="color:var(--clay-h)">Claim my title</a>, <a href="https://kdp.amazon.com/help/topic/G201499380" style="color:var(--clay-h)">Kindle preorder</a>, <a href="https://kdp.amazon.com/help/topic/GZUV7SNV728WT4QE" style="color:var(--clay-h)">release options</a>.
+      ACX will not find Formless until a public Amazon.com ebook listing exists. Searching ACX before that looks like the title is missing. Official: <a href="https://help.acx.com/s/article/claim-my-title" style="color:var(--clay-h)">Claim my title</a>, <a href="https://kdp.amazon.com/help/topic/G201499380" style="color:var(--clay-h)">Kindle preorder</a>, <a href="https://kdp.amazon.com/help/topic/GZUV7SNV728WT4QE" style="color:var(--clay-h)">release options</a>.
     </p>
     <div class="two">
-      <div class="card">
+      <div class="card preferred">
         <h3>Preferred · September 1 preorder</h3>
-        <p>Set the Kindle ebook for a September 1 preorder. After Amazon approves it, the book gets a public Amazon detail page and a Kindle ASIN before release. Customers can preorder immediately. That public listing is what ACX needs.</p>
+        <p>Set the Kindle ebook for a September 1 preorder. After Amazon approves it, you get a public Amazon detail page and a Kindle ASIN before release. That public listing is what ACX needs.</p>
         <ul>
           <li>Final manuscript must be submitted more than 72 hours before September 1.</li>
           <li>You cannot change the manuscript or book details inside that last 72 hours.</li>
           <li>Miss the deadline and Amazon cancels the preorder and blocks new preorders for one year.</li>
         </ul>
       </div>
-      <div class="card">
+      <div class="card dimmed">
         <h3>Alternative · publish now</h3>
-        <p>Publish the Kindle ebook immediately. It becomes available for purchase before the official September 1 launch. Amazon generally takes up to 72 hours to review and publish it.</p>
+        <p>Publish the Kindle ebook immediately. It becomes buyable before the official September 1 launch. Amazon generally takes up to 72 hours to review and publish it.</p>
         <ul>
           <li>Use this only if you accept the ebook being buyable before launch day.</li>
           <li>The ASIN and public page still appear after review, same as preorder.</li>
@@ -660,12 +882,42 @@ Then wait for a public Amazon page</pre>
     </p>
 
     <div class="spec-grid">
-      <div class="spec"><div class="k">Format</div><div class="v">MP3 192 kbps CBR</div><div class="n">WAV also accepted. We ship MP3.</div></div>
-      <div class="spec"><div class="k">Sample / channels</div><div class="v">44100 Hz · mono</div><div class="n">Stereo is rejected.</div></div>
-      <div class="spec"><div class="k">RMS</div><div class="v">−23 to −18 dBFS</div><div class="n">Studio target −21 to −19.</div></div>
-      <div class="spec"><div class="k">True peak</div><div class="v">≤ −3.0 dBFS</div><div class="n">We encode at −3.5 to survive MP3.</div></div>
-      <div class="spec"><div class="k">Noise floor</div><div class="v">≤ −60 dBFS</div><div class="n">Measure the 0.75 s head, not narration.</div></div>
-      <div class="spec"><div class="k">Room tone</div><div class="v">0.5–1 s head · 1–5 s tail</div><div class="n">We deliver 0.75 s / 2 s. No dead-zero silence. No gap &gt; 5 s mid-file.</div></div>
+      <div class="spec">
+        <div class="k">Format</div>
+        <div class="v">MP3 192 kbps CBR</div>
+        <div class="n">WAV also accepted. We ship MP3.</div>
+        <div class="why">Why it matters: VBR or a lower bitrate fails Audio Analysis in minutes.</div>
+      </div>
+      <div class="spec">
+        <div class="k">Sample / channels</div>
+        <div class="v">44100 Hz · mono</div>
+        <div class="n">Stereo is rejected.</div>
+        <div class="why">Why it matters: Stereo uploads are a hard portal reject, even when loudness is perfect.</div>
+      </div>
+      <div class="spec">
+        <div class="k">RMS</div>
+        <div class="v">−23 to −18 dBFS</div>
+        <div class="n">Studio target −21 to −19.</div>
+        <div class="why">Why it matters: Too quiet or too hot fails the ACX loudness window on every chapter.</div>
+      </div>
+      <div class="spec">
+        <div class="k">True peak</div>
+        <div class="v">≤ −3.0 dBFS</div>
+        <div class="n">We encode at −3.5 to survive MP3.</div>
+        <div class="why">Why it matters: Peaks above −3.0 clip after MP3 encode and trip the auto check.</div>
+      </div>
+      <div class="spec">
+        <div class="k">Noise floor</div>
+        <div class="v">≤ −60 dBFS</div>
+        <div class="n">Measure the 0.75 s head, not narration.</div>
+        <div class="why">Why it matters: A noisy head fails even when the spoken parts sound clean.</div>
+      </div>
+      <div class="spec">
+        <div class="k">Room tone</div>
+        <div class="v">0.5–1 s head · 1–5 s tail</div>
+        <div class="n">We deliver 0.75 s / 2 s. No dead-zero silence. No gap &gt; 5 s mid-file.</div>
+        <div class="why">Why it matters: Dead-zero silence and long mid-file gaps are common reject reasons.</div>
+      </div>
     </div>
 
     <table class="tracks">
@@ -816,41 +1068,13 @@ Then wait for a public Amazon page</pre>
       </div>
       <div class="card">
         <h3>On the ACX title</h3>
-        <ul>
-          <li>Book title, author, narrator, imprint (Eyes Closed).</li>
-          <li>Copyright year and copyright holder.</li>
-          <li>Language: English. Categories / BISAC that match the print book.</li>
-          <li>Short description (store blurb). Same story as the print listing.</li>
-          <li>Distribution: exclusive (higher royalty, Audible corner badge) or non-exclusive.</li>
-          <li>Territory rights you actually own.</li>
-          <li>Retail sample: 1–5 minutes. File: <code>02_Introduction_retail_acx_master.mp3</code> (4:59 from Introduction). Opening Credits is 42 s, too short for this slot.</li>
-          <li>No music bed unless the manuscript calls for it.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="block" id="ear">
-    <h2>Human review still fails clean numbers</h2>
-    <p class="sec-lead">Automated QC only checks the table above. Reviewers fail files for room jumps, NR shimmer, mouth noise, chair sounds, pumping, and hard cuts. Spot-check 2–3 minutes from the middle of each chapter before upload.</p>
-    <div class="two">
-      <div class="card">
-        <h3>Listen for</h3>
-        <ul>
-          <li>Same room character chapter to chapter.</li>
-          <li>Head and tail are room tone, not digital mute.</li>
-          <li>No lip smacks, paper, HVAC bursts, or keyboard.</li>
-          <li>Breaths present but not gasping.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Processing tells</h3>
-        <ul>
-          <li>Metallic or watery noise-reduction haze.</li>
-          <li>Compressor pumping on inhales.</li>
-          <li>Thin “radio” voice from an aggressive high-pass.</li>
-          <li>Echo or room ring that a studio take would not have.</li>
-        </ul>
+        <div class="meta-compact">
+          <div class="row"><div class="k">Credits</div><div class="v"><strong>Formless</strong> · Sonika Cottman (author + narrator) · Eyes Closed</div></div>
+          <div class="row"><div class="k">Rights</div><div class="v">Copyright year + holder · territory you own · exclusive or non-exclusive</div></div>
+          <div class="row"><div class="k">Store</div><div class="v">English · BISAC match print · short blurb same story as print</div></div>
+          <div class="row"><div class="k">Sample</div><div class="v"><code>02_Introduction_retail_acx_master.mp3</code> (4:59). Opening Credits is too short.</div></div>
+          <div class="row"><div class="k">Audio</div><div class="v">No music bed unless the manuscript calls for it</div></div>
+        </div>
       </div>
     </div>
   </section>
@@ -864,100 +1088,224 @@ const DETAIL = {
   kdp: {
     title: "Kindle ebook on KDP",
     meta: "start · kdp.amazon.com · before ACX",
-    body: "<p>ACX will not find Formless until a public Amazon.com ebook listing exists. Create that listing in KDP first. Do not search ACX yet.</p><ol class=\"steps\"><li>Sign in at <a href=\"https://kdp.amazon.com\" target=\"_blank\" rel=\"noopener\">kdp.amazon.com</a>. Open <strong>Bookshelf</strong>.</li><li>Create a Kindle eBook: title Formless, author Sonika Cottman, imprint Eyes Closed. Upload the Kindle manuscript and Kindle cover (this is not the ACX square).</li><li><strong>Preferred for a September 1 launch:</strong> set a Kindle preorder for September 1. After Amazon reviews it, a public detail page and Kindle ASIN appear before release. Customers can preorder immediately. The final manuscript must be submitted more than 72 hours before September 1. Missing that deadline cancels the preorder and blocks new preorders for one year. <a href=\"https://kdp.amazon.com/help/topic/G201499380\" target=\"_blank\" rel=\"noopener\">KDP preorder rules</a>.</li><li><strong>Alternative:</strong> publish the Kindle ebook now. It becomes buyable before September 1. Review is typically 24–72 hours. <a href=\"https://kdp.amazon.com/help/topic/G202173620\" target=\"_blank\" rel=\"noopener\">KDP timelines</a>.</li></ol>",
-    code: "kdp.amazon.com → Bookshelf → Kindle eBook\nPreferred: preorder Sept 1\nOr: publish now (buyable before launch)\nThen wait for a public Amazon page"
+    body: `
+      <p class="lead-line">ACX cannot find Formless until a public Amazon ebook listing exists. Do KDP first.</p>
+      <div class="stat-row">
+        <div class="stat"><div class="n">1st</div><div class="l">Before ACX</div></div>
+        <div class="stat"><div class="n">ASIN</div><div class="l">Unlocks claim</div></div>
+      </div>
+      <div class="callout pref">
+        <div class="t">Preferred · Sept 1 preorder</div>
+        <p>Public page + ASIN before release. Customers can preorder.</p>
+        <p>Final manuscript &gt;72h before Sept 1. Miss it → preorder cancelled + 1-year preorder block. <a href="https://kdp.amazon.com/help/topic/G201499380" target="_blank" rel="noopener">Rules</a></p>
+      </div>
+      <div class="callout alt">
+        <div class="t">Alternative · publish now</div>
+        <p>Buyable before launch. Review typically 24–72h. <a href="https://kdp.amazon.com/help/topic/G202173620" target="_blank" rel="noopener">Timelines</a></p>
+      </div>
+      <ol class="steps">
+        <li>Sign in at <a href="https://kdp.amazon.com" target="_blank" rel="noopener">kdp.amazon.com</a> → <strong>Bookshelf</strong>.</li>
+        <li>Create Kindle eBook: Formless · Sonika Cottman · Eyes Closed. Upload manuscript + Kindle cover (not the ACX square).</li>
+      </ol>`,
+    code: "kdp.amazon.com → Bookshelf → Kindle eBook\nPreferred: preorder Sept 1\nOr: publish now\nThen wait for a public Amazon page"
   },
   asin: {
     title: "Is the Kindle ASIN live?",
     meta: "decision · KDP Bookshelf",
-    body: "<p>Do not open ACX until View on Amazon shows a public Amazon.com page. A draft in KDP is not enough.</p><ol class=\"steps\"><li>Open <a href=\"https://kdp.amazon.com\" target=\"_blank\" rel=\"noopener\">KDP Bookshelf</a>.</li><li>Locate Formless. Status should be Live, or a live preorder.</li><li>Copy the ebook ASIN. It usually begins with B0.</li><li>Click <strong>View on Amazon</strong> and confirm a public detail page loads.</li><li>If that fails, wait. Review is typically 24–72 hours.</li></ol>",
+    body: `
+      <p class="lead-line">A KDP draft is not enough. You need a public amazon.com page.</p>
+      <div class="callout go"><div class="t">Pass</div><p><strong>View on Amazon</strong> opens a public detail page. Copy the B0… ASIN.</p></div>
+      <div class="callout stop"><div class="t">Fail</div><p>Stay on Bookshelf. Do not open ACX. Review is typically 24–72h.</p></div>
+      <ol class="steps">
+        <li>Open <a href="https://kdp.amazon.com" target="_blank" rel="noopener">KDP Bookshelf</a>.</li>
+        <li>Formless status: Live or live preorder.</li>
+        <li>Copy ASIN → confirm View on Amazon.</li>
+      </ol>`,
     code: "Bookshelf → Formless → copy ASIN\nView on Amazon must open amazon.com\nASIN usually starts with B0"
   },
   wait: {
     title: "Wait for listing",
     meta: "stop · not on ACX yet",
-    body: "<p>The title is still in KDP review. Searching ACX now will look like Formless does not exist. Stay on the Bookshelf until View on Amazon works.</p>",
+    body: `
+      <div class="callout stop">
+        <div class="t">Stop</div>
+        <p>Title still in KDP review. Searching ACX now looks like Formless does not exist.</p>
+      </div>
+      <p class="lead-line">Stay on Bookshelf until View on Amazon works.</p>`,
     code: "Do not Claim Your Title yet\nWait for the public Amazon page"
   },
   claim: {
     title: "Claim title on ACX",
     meta: "after Kindle ASIN · ACX.com",
-    body: "<p>Only after the Kindle listing is public. ACX searches by ebook ASIN, not by guessing the title. Title, author, and narrator must match the Amazon listing. ACX states the ebook must already be in the Amazon.com bookstore.</p><ol class=\"steps\"><li>Open <a href=\"https://www.acx.com\" target=\"_blank\" rel=\"noopener\">acx.com</a> and log in as the rights holder. Confirm Sonika controls the audiobook rights.</li><li>Top left: <strong>My Projects</strong>, then <strong>Claim Your Title</strong>.</li><li>Paste the Kindle ASIN from KDP (starts with B0). Click <strong>Claim title</strong> next to Formless.</li><li>Choose <strong>Use my own audio files</strong>. Do not pick Work with a Producer.</li><li>Click <strong>Claim title</strong> again. Accept the Book Posting Agreement and the License and Distribution Agreement.</li><li>Fill Title details, Chapter names (the 12 listen-order titles), and Distribution (territory + exclusive vs non-exclusive). Exclusive locks the “Only from Audible” cover corner.</li><li>Click <strong>Post to ACX</strong>. After that the project lives under My Projects → <strong>In Production</strong> → the blue title <strong>Formless</strong>.</li></ol>",
+    body: `
+      <p class="lead-line">ACX searches by ebook ASIN. Title, author, and narrator must match the Amazon listing.</p>
+      <ol class="steps">
+        <li><a href="https://www.acx.com" target="_blank" rel="noopener">acx.com</a> → My Projects → <strong>Claim Your Title</strong>.</li>
+        <li>Paste Kindle ASIN (B0…) → Claim title next to Formless.</li>
+        <li>Choose <strong>Use my own audio files</strong> (not Work with a Producer).</li>
+        <li>Accept agreements → Title details / Chapter names / Distribution → <strong>Post to ACX</strong>.</li>
+        <li>Project then lives under In Production → blue title <strong>Formless</strong>.</li>
+      </ol>`,
     code: "Only with a live Kindle ASIN\nMy Projects → Claim Your Title\nPaste ASIN → Use my own audio files\nThen: In Production → Formless"
   },
   cover: {
     title: "Cover art",
     meta: "ready · Formless.png",
-    body: "<p>The Audible square is <code>Formless.png</code> in the <a href=\"https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH\" target=\"_blank\" rel=\"noopener\">ACX-Masters Drive folder</a>. Upload it after the title is claimed. Title and author on the image must match the ACX claim: Formless, Sonika Cottman.</p><ol class=\"steps\"><li>Log in at <a href=\"https://www.acx.com\" target=\"_blank\" rel=\"noopener\">acx.com</a>.</li><li>Top left: <strong>My Projects</strong>.</li><li>Open the <strong>In Production</strong> tab.</li><li>Click the blue title <strong>Formless</strong>.</li><li>At the top of that project page, click the large <strong>+</strong> button (cover art).</li><li>Click <strong>Browse</strong>, choose <code>Formless.png</code> from Drive, then <strong>Save</strong>.</li></ol>",
+    body: `
+      <div class="stat-row">
+        <div class="stat"><div class="n">2400²</div><div class="l">Square PNG</div></div>
+        <div class="stat"><div class="n">4.2</div><div class="l">MB · under 8</div></div>
+      </div>
+      <p class="lead-line"><code>Formless.png</code> is in the <a href="https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH" target="_blank" rel="noopener">ACX-Masters</a> folder. Title/author on image must match the claim.</p>
+      <ol class="steps">
+        <li>My Projects → In Production → <strong>Formless</strong>.</li>
+        <li>Large <strong>+</strong> (cover) → Browse → Save.</li>
+      </ol>`,
     code: "My Projects → In Production → Formless\n+ (cover) → Browse → Save\nFormless.png · 2400×2400 · RGB PNG · 4.2 MB"
   },
   tracks: {
     title: "12 chapter MP3s",
     meta: "package · listen order",
-    body: "<p>These are the files ACX will receive. Grab them from the <a href=\"https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH\" target=\"_blank\" rel=\"noopener\">ACX-Masters Drive folder</a>, then upload on the Produce audiobook tab in listen order. Same spec on every file: MP3 192k CBR, mono, 44.1 kHz, RMS −23 to −18, peak ≤ −3.0, noise ≤ −60 on the head.</p><ol class=\"steps\"><li>Open the Drive folder (link under Audio tracks).</li><li>Confirm all twelve chapter <code>*_acx_master.mp3</code> files plus <code>02_Introduction_retail_acx_master.mp3</code>.</li><li>Sort by name so 01 Opening Credits is first and 12 Acknowledgments is last. The retail sample sits next to Introduction.</li></ol>",
-    code: "https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH\n01_Opening_Credits_2_acx_master.mp3\n02_Introduction_acx_master.mp3\n02_Introduction_retail_acx_master.mp3\n…\n12_Acknowledgments_acx_master.mp3"
+    body: `
+      <p class="lead-line">Upload masters from Drive on the Produce audiobook tab, in listen order.</p>
+      <div class="callout go">
+        <div class="t">Same window on every file</div>
+        <p>192k CBR · mono · 44.1 · RMS −23 to −18 · peak ≤ −3.0 · noise ≤ −60 on the head</p>
+      </div>
+      <ol class="steps">
+        <li>Open <a href="https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH" target="_blank" rel="noopener">ACX-Masters</a>.</li>
+        <li>Confirm 12 chapter <code>*_acx_master.mp3</code> + retail sample.</li>
+        <li>Sort 01 → 12. Retail sample sits next to Introduction.</li>
+      </ol>`,
+    code: "https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH\n01 … 12 *_acx_master.mp3\n+ 02_Introduction_retail_acx_master.mp3"
   },
   tags: {
     title: "ID3 tags + credits",
     meta: "inside the MP3 + spoken copy",
-    body: "<p>ACX reviewers see ID3 tags, not the Finder name. All twelve masters already have TIT2 (chapter name), TPE1 Sonika Cottman, TALB Formless, TRCK 1/12–12/12, TDRC 2026, plus album artist, composer, and genre Audiobook. Opening and closing spoken credits must still match the title metadata and cover.</p><ol class=\"steps\"><li>ID3 on the masters is done. Do not retag unless a file is re-exported.</li><li>Opening Credits file must speak title, author, and narrator.</li><li>Acknowledgments already ends with closing credits on the master.</li></ol>",
+    body: `
+      <div class="callout go"><div class="t">Already set on all 12</div><p>Reviewers see ID3, not Finder names. Do not retag unless a file is re-exported.</p></div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">TIT2</div><div class="l">Chapter name</div></div>
+        <div class="stat"><div class="n">1–12</div><div class="l">TRCK order</div></div>
+      </div>
+      <ol class="steps">
+        <li>Opening Credits must speak title, author, narrator.</li>
+        <li>Acknowledgments already ends with closing credits.</li>
+      </ol>`,
     code: "TIT2 chapter · TPE1 narrator\nTALB Formless · TRCK 1–12 · 2026"
   },
   qc: {
     title: "Studio QC gate",
     meta: "decision · before upload",
-    body: "<p>Run the ACX numbers and the ear checklist. All twelve masters are in the ACX-Masters Drive folder. Do not upload a hold.</p>",
+    body: `
+      <div class="callout go"><div class="t">Ready</div><p>All twelve masters in Drive. Numbers + ear check pass → upload.</p></div>
+      <div class="callout stop"><div class="t">Hold</div><p>Any chapter fails → re-master that file. Do not upload a hold.</p></div>`,
     code: "READY → upload\nHOLD → re-master that chapter"
   },
   hold: {
     title: "Hold / re-master",
     meta: "stop",
-    body: "<p>Peak, RMS, noise, head/tail length, or a missing file. Fix the master locally. The listen site is not the submit copy.</p>",
+    body: `
+      <div class="callout stop">
+        <div class="t">Do not upload</div>
+        <p>Peak, RMS, noise, head/tail, or a missing file. Fix the master locally. The listen site is not the submit copy.</p>
+      </div>`,
     code: "Do not upload until READY"
   },
   upload: {
     title: "Upload on ACX.com",
     meta: "Produce audiobook tab",
-    body: "<p>This is the page where the twelve MP3s go. Files show to reviewers via ID3, not the filename.</p><ol class=\"steps\"><li>Log in at <a href=\"https://www.acx.com\" target=\"_blank\" rel=\"noopener\">acx.com</a>.</li><li>Top left: <strong>My Projects</strong>.</li><li>Open the <strong>In Production</strong> tab.</li><li>Click the blue title <strong>Formless</strong>.</li><li>Stay on the <strong>Produce audiobook</strong> tab. That is the upload section.</li><li>Upload one file per section, in listen order, starting with Opening Credits and ending with Acknowledgments.</li><li>Set the retail sample to <code>02_Introduction_retail_acx_master.mp3</code> (4:59 from Introduction). Do not use Opening Credits; it is 42 s.</li><li>When every slot is filled, click <strong>I’m Done</strong> to send the book to review. Do not submit until cover art is also saved.</li></ol>",
-    code: "My Projects → In Production → Formless\nProduce audiobook tab\nUpload 01 … 12\nRetail sample: 02_Introduction_retail_acx_master.mp3\nI’m Done"
+    body: `
+      <p class="lead-line">This is where the twelve MP3s go. Reviewers see ID3, not the filename.</p>
+      <ol class="steps">
+        <li>My Projects → In Production → <strong>Formless</strong> → Produce audiobook.</li>
+        <li>Upload 01 → 12 in listen order.</li>
+        <li>Retail sample: <code>02_Introduction_retail_acx_master.mp3</code> (not Opening Credits).</li>
+        <li><strong>I’m Done</strong> only after cover is also saved.</li>
+      </ol>`,
+    code: "In Production → Formless → Produce audiobook\nUpload 01 … 12\nRetail: 02_Introduction_retail_acx_master.mp3\nI’m Done"
   },
   auto: {
     title: "Automated QC",
     meta: "decision · minutes",
-    body: "<p>After upload, ACX Audio Analysis runs on each file. Results show on the same Produce audiobook page. Failures appear as “doesn’t meet technical requirements” or invalid format.</p><ol class=\"steps\"><li>Stay on Produce audiobook after each file lands.</li><li>Open Audio Analysis if a file flags red.</li><li>Replace only the failed file from the ACX-Masters Drive folder, then re-check.</li></ol>",
+    body: `
+      <div class="meter">
+        <div class="bar-label"><span>Audio Analysis</span><span>minutes</span></div>
+        <div class="track"><div class="fill" style="width:35%"></div></div>
+      </div>
+      <div class="callout go"><div class="t">Pass</div><p>Green on Produce audiobook → human queue.</p></div>
+      <div class="callout stop"><div class="t">Fail</div><p>Replace only the red file from Drive, then re-check.</p></div>`,
     code: "pass → human queue\nfail → replace that file"
   },
   portal: {
     title: "Portal reject",
     meta: "failure path · minutes",
-    body: "<p>Usually RMS, peak, stereo, VBR, or a head/tail that is too long or too short. Re-export that chapter. Do not rebuild the whole book unless every file shares the fault.</p><ol class=\"steps\"><li>On Produce audiobook, click Replace on the red chapter.</li><li>Upload the fixed <code>*_acx_master.mp3</code>.</li><li>Wait for Audio Analysis to go green before clicking I’m Done again.</li></ol>",
+    body: `
+      <p class="lead-line">Usually RMS, peak, stereo, VBR, or head/tail length. Fix that chapter only.</p>
+      <ol class="steps">
+        <li>Produce audiobook → Replace on the red chapter.</li>
+        <li>Upload fixed <code>*_acx_master.mp3</code>.</li>
+        <li>Wait for green before I’m Done again.</li>
+      </ol>`,
     code: "Check RMS · peak · mono · CBR 192"
   },
   human: {
     title: "Human review",
     meta: "2–7 business days",
-    body: "<p>After I’m Done, the book leaves your Produce tab and goes to ACX QA. Reviewers listen. They fail mouth noise, room jumps, NR artifacts, and truncated chapters even when the meters pass.</p><ol class=\"steps\"><li>Watch My Projects → In Production for status changes.</li><li>If QA returns notes, open the blue Formless title again and replace only the named chapters.</li></ol>",
+    body: `
+      <div class="stat-row">
+        <div class="stat"><div class="n">2–7</div><div class="l">Business days</div></div>
+        <div class="stat"><div class="n">Ear</div><div class="l">Not just meters</div></div>
+      </div>
+      <p class="lead-line">After I’m Done, QA listens. Mouth noise, room jumps, and NR artifacts fail even when meters pass.</p>
+      <ol class="steps">
+        <li>Watch My Projects → In Production for status.</li>
+        <li>If notes return, replace only the named chapters.</li>
+      </ol>`,
     code: "Spot-check mid-chapter, 2–3 min each"
   },
   approve: {
     title: "Every chapter approved?",
     meta: "decision",
-    body: "<p>The title cannot publish until all twelve files and the cover are approved. One failed chapter holds the book.</p>",
+    body: `
+      <div class="callout go">
+        <div class="t">Publish gate</div>
+        <p>All 12 audio files + cover approved. One failed chapter holds the book.</p>
+      </div>`,
     code: "12 audio + cover = publish"
   },
   revise: {
     title: "Revise chapter",
     meta: "failure path",
-    body: "<p>Typical notes: mouth clicks, HVAC, inconsistent room, over-denoised voice. Re-master that chapter only, keep ID3 track numbers, re-upload from Produce audiobook.</p><ol class=\"steps\"><li>My Projects → In Production → Formless → Produce audiobook.</li><li>Replace the failed MP3 only.</li><li>Click I’m Done to resubmit.</li></ol>",
+    body: `
+      <p class="lead-line">Typical notes: mouth clicks, HVAC, room jump, over-denoise. Re-master that chapter only.</p>
+      <ol class="steps">
+        <li>Produce audiobook → replace the failed MP3 only.</li>
+        <li>Keep ID3 track numbers → I’m Done to resubmit.</li>
+      </ol>`,
     code: "Replace the failed MP3 only"
   },
   live: {
     title: "Title can publish",
     meta: "terminal",
-    body: "<p>All chapters Approved. Cover Approved. Runtime for this edition is 6h 51m 39s. ACX then sends the title to Audible, Amazon, and Apple Books, usually within about 10 business days of a clean submit.</p>",
+    body: `
+      <div class="stat-row">
+        <div class="stat"><div class="n">12</div><div class="l">Files approved</div></div>
+        <div class="stat"><div class="n">6h 51m</div><div class="l">Runtime</div></div>
+      </div>
+      <p class="lead-line">Cover approved. ACX then ships to Audible, Amazon, and Apple Books, usually within ~10 business days of a clean submit.</p>`,
     code: "Formless · 12 files · 6h 51m 39s"
   }
 };
+
+function showDetail(key) {
+  const d = DETAIL[key];
+  if (!d) return;
+  T.textContent = d.title;
+  M.textContent = d.meta;
+  B.innerHTML = d.body;
+  C.textContent = d.code;
+}
 
 const nodes = document.querySelectorAll(".node");
 const T = document.getElementById("p-title");
@@ -969,15 +1317,11 @@ nodes.forEach((n) => {
   n.addEventListener("click", () => {
     nodes.forEach((x) => x.classList.remove("active"));
     n.classList.add("active");
-    const d = DETAIL[n.dataset.k];
-    if (!d) return;
-    T.textContent = d.title;
-    M.textContent = d.meta;
-    B.innerHTML = d.body;
-    C.textContent = d.code;
+    showDetail(n.dataset.k);
   });
 });
 document.querySelector('.node[data-k="kdp"]').classList.add("active");
+showDetail("kdp");
 
 const CHECKLIST = `# Formless · Audible / ACX submit checklist
 
@@ -1037,7 +1381,6 @@ Folder: https://drive.google.com/drive/folders/1bn_9Pqn1TKa2TgYBJzscYNLaqkwRqdDH
 - [ ] Noise floor ≤ −60 dBFS on 0.75 s head
 - [ ] Head 0.5–1 s room, tail 1–5 s room
 - [x] ID3: TIT2, TPE1, TALB, TRCK 1–12, year 2026
-- [ ] Ear check: no NR haze, mouth noise, room jumps
 
 ## Portal
 - [ ] My Projects → In Production → Formless → Produce audiobook
@@ -1060,6 +1403,10 @@ btn.addEventListener("click", () => {
     }, 2000);
   });
 });
+</script>
+<script src="/launch-countdown.js"></script>
+<script>
+window.mountLaunchCountdown(document.getElementById("countdown"));
 </script>
 </body>
 </html>
