@@ -49,6 +49,7 @@ import AudioEditorialPage from './pages/AudioEditorialPage';
 import AudioEditorial2Page from './pages/AudioEditorial2Page';
 import AudibleProcessPage from './pages/AudibleProcessPage';
 import AudioRecordSessionsPage from './pages/AudioRecordSessionsPage';
+import AudioScriptComparePage from './pages/AudioScriptComparePage';
 import AdvanceListenPage from './pages/AdvanceListenPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
@@ -153,6 +154,7 @@ export function Root({ path }: { path: string }) {
   const isAudioEditorial2 = path === '/audio/editorial2';
   const isAudibleProcess = path === '/audio/process';
   const isAudioRecordSessions = path === '/audio/record-sessions';
+  const isAudioScriptCompare = path === '/audio/script-compare';
   const isAudioAdvanceListen = path === '/advance-listen';
   const isAudioEditorialV2Legacy = path === '/audio/editorial-v2';
   const isAudioCompanion = path === '/audio/companion';
@@ -208,6 +210,7 @@ export function Root({ path }: { path: string }) {
   if (isAudioEditorial2) return <AudioEditorial2Page />;
   if (isAudibleProcess) return <AudibleProcessPage />;
   if (isAudioRecordSessions) return <AudioRecordSessionsPage />;
+  if (isAudioScriptCompare) return <AudioScriptComparePage />;
   if (isAudioAdvanceListen) return <AdvanceListenPage />;
   if (isAudioEditorialV2Legacy) return <EditorialV2LegacyRedirect />;
   if (isAudioCompanion) return <AudioCompanionKitPage />;
@@ -257,6 +260,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/audio/editorial2' ||
     path === '/audio/process' ||
     path === '/audio/record-sessions' ||
+    path === '/audio/script-compare' ||
     path === '/advance-listen' ||
     path === '/audio/editorial-v2' ||
     path === '/audio/companion' ||

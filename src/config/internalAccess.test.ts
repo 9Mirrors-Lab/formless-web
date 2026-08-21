@@ -35,6 +35,7 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/audio/editorial')).toBe(true);
     expect(isInternalAuthPath('/audio/process')).toBe(true);
     expect(isInternalAuthPath('/audio/record-sessions')).toBe(true);
+    expect(isInternalAuthPath('/audio/script-compare')).toBe(true);
     expect(isInternalAuthPath('/advance-listen')).toBe(false);
     expect(isInternalAuthPath('/audio/files')).toBe(true);
     expect(isInternalAuthPath('/eyes-closed-logo-options')).toBe(true);

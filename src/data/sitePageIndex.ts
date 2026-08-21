@@ -374,6 +374,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/AudioRecordSessionsPage.tsx',
   },
   {
+    id: 'audio-script-compare',
+    title: 'Book vs audio',
+    path: '/audio/script-compare',
+    category: 'design',
+    description:
+      'Printed book text vs timed audio script, live word-level diff.',
+    source: 'src/pages/AudioScriptComparePage.tsx',
+  },
+  {
     id: 'audio-editorial-2',
     title: 'Audiobook review · Studio ladder',
     path: '/audio/editorial2',
