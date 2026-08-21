@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  aggregateDiffStats,
   diffManuscriptTexts,
   normalizeWordKey,
   scriptTextFromCues,
@@ -117,6 +118,24 @@ describe('scriptWordDiff', () => {
         { text: '' },
       ]),
     ).toBe('Hello. World');
+  });
+
+  it('aggregates chapter stats into a book total', () => {
+    const a = diffManuscriptTexts('one two three', 'one two three').stats;
+    const b = diffManuscriptTexts('alpha beta', 'alpha gamma').stats;
+    const book = aggregateDiffStats([a, b]);
+    expect(book.leftWords).toBe(a.leftWords + b.leftWords);
+    expect(book.rightWords).toBe(a.rightWords + b.rightWords);
+    expect(book.matchedWords).toBe(a.matchedWords + b.matchedWords);
+    expect(book.missingFromScript).toBe(
+      a.missingFromScript + b.missingFromScript,
+    );
+    expect(book.onlyInScript).toBe(a.onlyInScript + b.onlyInScript);
+    expect(book.replacements).toBe(a.replacements + b.replacements);
+    const denom = Math.max(book.leftWords, book.rightWords, 1);
+    expect(book.similarityPct).toBe(
+      Math.round((book.matchedWords / denom) * 1000) / 10,
+    );
   });
 
   it('flags the known Chapter 2 missing passage on the ARC side', async () => {

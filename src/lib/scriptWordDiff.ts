@@ -269,6 +269,35 @@ export function diffManuscriptTexts(
   return diffWordTokens(tokenizeWords(arcText), tokenizeWords(scriptText));
 }
 
+/** Sum per-chapter stats into one book total (similarity from totals). */
+export function aggregateDiffStats(parts: DiffStats[]): DiffStats {
+  let leftWords = 0;
+  let rightWords = 0;
+  let matchedWords = 0;
+  let missingFromScript = 0;
+  let onlyInScript = 0;
+  let replacements = 0;
+  for (const part of parts) {
+    leftWords += part.leftWords;
+    rightWords += part.rightWords;
+    matchedWords += part.matchedWords;
+    missingFromScript += part.missingFromScript;
+    onlyInScript += part.onlyInScript;
+    replacements += part.replacements;
+  }
+  const denom = Math.max(leftWords, rightWords, 1);
+  const similarityPct = Math.round((matchedWords / denom) * 1000) / 10;
+  return {
+    leftWords,
+    rightWords,
+    matchedWords,
+    missingFromScript,
+    onlyInScript,
+    replacements,
+    similarityPct,
+  };
+}
+
 export function scriptTextFromCues(
   cues: Array<{ text: string }>,
 ): string {

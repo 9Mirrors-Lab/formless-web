@@ -347,6 +347,9 @@ const MANUSCRIPTS: Record<number, AudioSentence[]> = {
   12: CHAPTER_12_MANUSCRIPT,
 };
 
+/** Whisper base.en timed script (original cue set). */
 export function manuscriptForChapter(chapterId: number): AudioSentence[] {
   return MANUSCRIPTS[chapterId] ?? [];
 }
+
+export type AudioScriptWhisperModel = 'base' | 'medium';
