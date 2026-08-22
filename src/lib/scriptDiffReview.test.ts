@@ -77,7 +77,7 @@ describe('scriptDiffReview', () => {
     );
   });
 
-  it('filters and counts open, cleared, as-spoken, and needs-update differences', () => {
+  it('filters and counts open, cleared, as-spoken, needs-update, and record differences', () => {
     const result = diffManuscriptTexts(
       'one missing two extra three swapped four',
       'one two bonus three changed four',
@@ -150,6 +150,7 @@ describe('scriptDiffReview', () => {
     expect(counts.cleared).toBe(1);
     expect(counts.asSpoken).toBe(1);
     expect(counts.needsUpdate).toBe(1);
+    expect(counts.record).toBe(0);
     expect(counts.open).toBe(result.differenceIds.length - 3);
     expect(counts.all).toBe(result.differenceIds.length);
   });
@@ -191,6 +192,29 @@ describe('scriptDiffReview', () => {
     expect(parseReviewStoreKey('not-a-key')).toBeNull();
   });
 
+  it('filters record marks separately from needs-update', () => {
+    const store = upsertReviewStatus(
+      {},
+      {
+        chapterId: 2,
+        model: 'medium',
+        fingerprint: 'delete|chapter|',
+        status: 'record',
+      },
+    );
+    const fingerprints = new Map<number, string>([[11, 'delete|chapter|']]);
+    const scope = { chapterId: 2, model: 'medium' };
+    expect(
+      filterDifferenceIds([11], fingerprints, store, scope, 'record'),
+    ).toEqual([11]);
+    expect(
+      filterDifferenceIds([11], fingerprints, store, scope, 'needs-update'),
+    ).toEqual([]);
+    expect(
+      reviewCounts([11], fingerprints, store, scope).record,
+    ).toBe(1);
+  });
+
   it('rebuilds the review store from supabase rows', () => {
     const store = rowsToReviewStore([
       {
@@ -212,10 +236,11 @@ describe('scriptDiffReview', () => {
     ).toBe('cleared');
   });
 
-  it('keeps looks-fine, as-spoken, and needs-update as separate marks', () => {
+  it('keeps looks-fine, as-spoken, needs-update, and record as separate marks', () => {
     expect(normalizeReviewStatus('cleared')).toBe('cleared');
     expect(normalizeReviewStatus('as-spoken')).toBe('as-spoken');
     expect(normalizeReviewStatus('needs-update')).toBe('needs-update');
+    expect(normalizeReviewStatus('record')).toBe('record');
     expect(normalizeReviewStatus('open')).toBeNull();
   });
 
@@ -253,14 +278,16 @@ describe('scriptDiffReview', () => {
         cleared: 1,
         asSpoken: 1,
         needsUpdate: 0,
-        all: 17,
+        record: 2,
+        all: 19,
       },
       {
         open: 40,
         cleared: 2,
         asSpoken: 0,
         needsUpdate: 3,
-        all: 45,
+        record: 1,
+        all: 46,
       },
     ]);
     expect(book).toEqual({
@@ -268,13 +295,15 @@ describe('scriptDiffReview', () => {
       cleared: 3,
       asSpoken: 1,
       needsUpdate: 3,
-      all: 62,
+      record: 3,
+      all: 65,
     });
     expect(aggregateReviewCounts([])).toEqual({
       open: 0,
       cleared: 0,
       asSpoken: 0,
       needsUpdate: 0,
+      record: 0,
       all: 0,
     });
   });

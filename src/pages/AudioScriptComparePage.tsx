@@ -2,7 +2,7 @@
  * Book vs audio — printed ARC text (left) vs timed audio script (right).
  * Live word-level diff; normalized matching.
  */
-import { Check, ChevronDown, ChevronUp, Flag, Speech } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Flag, Mic, Speech } from 'lucide-react';
 import {
   useCallback,
   useEffect,
@@ -93,6 +93,7 @@ const KIND_STYLE: Record<
 const FILTER_OPTIONS: Array<{ id: DiffReviewFilter; label: string }> = [
   { id: 'open', label: 'Open' },
   { id: 'needs-update', label: 'Needs update' },
+  { id: 'record', label: 'Record' },
   { id: 'as-spoken', label: 'As spoken' },
   { id: 'cleared', label: 'Cleared' },
   { id: 'all', label: 'All' },
@@ -100,6 +101,67 @@ const FILTER_OPTIONS: Array<{ id: DiffReviewFilter; label: string }> = [
 
 const TOOL_BUTTON =
   'inline-flex h-10 items-center gap-1.5 border px-3 font-sans text-xs uppercase tracking-[0.14em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70 disabled:opacity-40';
+
+const REVIEW_MARKS = [
+  {
+    status: 'cleared' as const,
+    label: 'Looks fine',
+    short: 'Ignore this highlight',
+    Icon: Check,
+    activeClass: 'border-[#9fb5aa]/55 bg-[#9fb5aa]/20 text-cream',
+    accent: '#9fb5aa',
+    detail:
+      'The highlight is not a problem. Leave the book and the audio as they are. Use this for noise, a false match, punctuation, or anything that does not need a wording record.',
+    exampleBook: 'Oh, well—',
+    exampleAudio: 'oh well',
+    exampleNote: 'Same line. The mark is only punctuation.',
+    bubbleAlign: 'left' as const,
+  },
+  {
+    status: 'as-spoken' as const,
+    label: 'As spoken',
+    short: 'Keep the spoken word',
+    Icon: Speech,
+    activeClass: 'border-[#9fb5aa]/55 bg-[#9fb5aa]/20 text-cream',
+    accent: '#9fb5aa',
+    detail:
+      'The author said a different word than the printed book, and the take is the one to keep. This is a real wording change, not a dismiss.',
+    exampleBook: 'the',
+    exampleAudio: 'this',
+    exampleNote: 'Different word. Keep what was said.',
+    bubbleAlign: 'center' as const,
+  },
+  {
+    status: 'needs-update' as const,
+    label: 'Needs update',
+    short: 'Fix the script',
+    Icon: Flag,
+    activeClass: 'border-[#c4a04a]/55 bg-[#c4a04a]/20 text-cream',
+    accent: '#c4a04a',
+    detail:
+      'The audio script is wrong and should be corrected, including capitalization.',
+    exampleBook: 'I',
+    exampleAudio: 'i',
+    exampleNote: 'Transcript error. Fix the script, not the book.',
+    bubbleAlign: 'right' as const,
+  },
+  {
+    status: 'record' as const,
+    label: 'Record',
+    short: 'This will be recut',
+    Icon: Mic,
+    activeClass: 'border-[#c45c4a]/60 bg-[#c45c4a]/20 text-cream',
+    accent: '#c45c4a',
+    detail:
+      'This line will be recorded again. It is not a script typo and not something to keep as spoken. Mark it here so the recut list is separate from script fixes.',
+    exampleBook: 'I sat with it',
+    exampleAudio: 'I sat—',
+    exampleNote: 'Broken take. Say the line again.',
+    bubbleAlign: 'right' as const,
+  },
+];
+
+type ReviewMark = (typeof REVIEW_MARKS)[number];
 
 function tokenExcerpt(tokens: WordToken[], max = 14): string {
   if (tokens.length === 0) return '—';
@@ -123,6 +185,8 @@ function highlightClass(
       return 'rounded-sm bg-[#9fb5aa]/18 text-cream/55 ring-1 ring-[#9fb5aa]/40';
     case 'needs-update':
       return `${base} ring-1 ring-cream/45`;
+    case 'record':
+      return `${base} ring-1 ring-[#c45c4a]/55`;
     default: {
       const _exhaustive: never = reviewStatus;
       return _exhaustive;
@@ -544,18 +608,19 @@ function MetricsBand({
 }
 
 function checkedOf(counts: DiffReviewCounts): number {
-  return counts.cleared + counts.asSpoken + counts.needsUpdate;
+  return counts.cleared + counts.asSpoken + counts.needsUpdate + counts.record;
 }
 
 const STATUS_SWATCH = {
   fine: '#f2f0e9',
   spoken: '#9fb5aa',
   update: '#c4a04a',
+  record: '#c45c4a',
   open: 'rgb(242 240 233 / 0.42)',
 } as const;
 
 type StatusSlice = {
-  id: 'fine' | 'spoken' | 'update' | 'open';
+  id: 'fine' | 'spoken' | 'update' | 'record' | 'open';
   label: string;
   value: number;
   color: string;
@@ -576,6 +641,12 @@ function statusSlices(book: DiffReviewCounts): StatusSlice[] {
       label: 'Update',
       value: book.needsUpdate,
       color: STATUS_SWATCH.update,
+    },
+    {
+      id: 'record',
+      label: 'Record',
+      value: book.record,
+      color: STATUS_SWATCH.record,
     },
   ];
 }
@@ -598,7 +669,7 @@ function CheckCluster({
       aria-label={
         book.all === 0
           ? 'No differences in the book'
-          : `${formatCount(book.all)} differences in the book, ${formatCount(bookChecked)} checked. Fine ${formatCount(book.cleared)}, spoken ${formatCount(book.asSpoken)}, update ${formatCount(book.needsUpdate)}, open ${formatCount(book.open)}. Track ${chapterIndex} has ${formatCount(track.open)} open.`
+          : `${formatCount(book.all)} differences in the book, ${formatCount(bookChecked)} checked. Fine ${formatCount(book.cleared)}, spoken ${formatCount(book.asSpoken)}, update ${formatCount(book.needsUpdate)}, record ${formatCount(book.record)}, open ${formatCount(book.open)}. Track ${chapterIndex} has ${formatCount(track.open)} open.`
       }
     >
       <p className={LABEL}>Check</p>
@@ -656,6 +727,122 @@ function CheckCluster({
   );
 }
 
+function ReviewMarkButton({
+  mark,
+  active,
+  onSelect,
+}: {
+  mark: ReviewMark;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  const { Icon } = mark;
+  const helpId = `review-mark-${mark.status}-help`;
+  const bubbleX =
+    mark.bubbleAlign === 'left'
+      ? 'left-0'
+      : mark.bubbleAlign === 'right'
+        ? 'right-0'
+        : 'left-[calc(50%-9.25rem)]';
+  const caretX =
+    mark.bubbleAlign === 'left'
+      ? 'left-8'
+      : mark.bubbleAlign === 'right'
+        ? 'right-8'
+        : 'left-[calc(50%-6px)]';
+
+  return (
+    <div className="group relative">
+      <button
+        type="button"
+        aria-pressed={active}
+        aria-describedby={helpId}
+        onClick={onSelect}
+        className="flex flex-col items-start gap-1.5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70"
+      >
+        <span
+          className={cn(
+            'inline-flex h-[30px] items-center gap-1.5 border px-[9px] font-sans text-[9px] font-normal leading-[12px] uppercase tracking-[0.14em] whitespace-nowrap transition-colors duration-150',
+            active
+              ? mark.activeClass
+              : 'border-cream/20 bg-transparent text-cream/80 group-hover:bg-cream/5',
+          )}
+        >
+          <Icon size={14} aria-hidden />
+          {mark.label}
+        </span>
+        <span
+          className={cn(
+            'px-0.5 font-sans text-[0.68rem] leading-snug',
+            active
+              ? 'text-cream/70'
+              : 'text-cream/42 group-hover:text-cream/58',
+          )}
+        >
+          {mark.short}
+        </span>
+      </button>
+      <p id={helpId} className="sr-only">
+        {mark.short}. {mark.detail} Example: book {mark.exampleBook}, audio{' '}
+        {mark.exampleAudio}. {mark.exampleNote}
+      </p>
+      <div
+        className={cn(
+          'pointer-events-none absolute top-full z-40 w-[18.5rem] pt-2.5',
+          bubbleX,
+        )}
+        aria-hidden
+      >
+        <div
+          className={cn(
+            'pointer-events-none invisible relative border border-cream/14 bg-[#161c19] text-left opacity-0 shadow-[0_22px_48px_rgba(0,0,0,0.58)] transition-[opacity,visibility] duration-150 ease-out delay-0',
+            '[@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:delay-500',
+          )}
+        >
+          <div
+            className="h-0.5 w-full"
+            style={{ backgroundColor: mark.accent }}
+          />
+          <div className="px-3.5 py-3">
+            <p className={LABEL}>{mark.label}</p>
+            <p className="mt-1.5 font-serif text-[1.08rem] italic leading-tight text-cream">
+              {mark.short}
+            </p>
+            <p className="mt-2 font-sans text-[0.78rem] leading-relaxed text-cream/65">
+              {mark.detail}
+            </p>
+            <div className="mt-3 border border-cream/10 bg-black/30 px-3 py-2">
+              <div className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1">
+                <span className="font-sans text-[0.6rem] uppercase tracking-[0.14em] text-cream/35">
+                  Book
+                </span>
+                <span className="font-serif text-[0.98rem] italic text-cream/88">
+                  {mark.exampleBook}
+                </span>
+                <span className="font-sans text-[0.6rem] uppercase tracking-[0.14em] text-cream/35">
+                  Audio
+                </span>
+                <span className="font-serif text-[0.98rem] italic text-[#9fb5aa]">
+                  {mark.exampleAudio}
+                </span>
+              </div>
+              <p className="mt-1.5 font-sans text-[0.7rem] leading-snug text-cream/45">
+                {mark.exampleNote}
+              </p>
+            </div>
+          </div>
+          <span
+            className={cn(
+              'absolute bottom-full h-0 w-0 border-x-[6px] border-b-[6px] border-x-transparent border-b-[#161c19]',
+              caretX,
+            )}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ReviewBar({
   chunk,
   status,
@@ -672,7 +859,7 @@ function ReviewBar({
   return (
     <div
       className={cn(
-        'flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3',
+        'relative z-20 flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3',
         className,
       )}
     >
@@ -690,51 +877,16 @@ function ReviewBar({
           Audio: {tokenExcerpt(chunk.right)}
         </p>
       </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          aria-pressed={status === 'cleared'}
-          onClick={() => onStatus('cleared')}
-          className={`${TOOL_BUTTON} ${
-            status === 'cleared'
-              ? 'border-[#9fb5aa]/55 bg-[#9fb5aa]/20 text-cream'
-              : 'border-cream/20 text-cream/80 hover:bg-cream/5'
-          }`}
-        >
-          <Check size={14} aria-hidden />
-          Looks fine
-        </button>
-        <button
-          type="button"
-          aria-pressed={status === 'as-spoken'}
-          onClick={() => onStatus('as-spoken')}
-          className={`${TOOL_BUTTON} ${
-            status === 'as-spoken'
-              ? 'border-[#9fb5aa]/55 bg-[#9fb5aa]/20 text-cream'
-              : 'border-cream/20 text-cream/80 hover:bg-cream/5'
-          }`}
-        >
-          <Speech size={14} aria-hidden />
-          As spoken
-        </button>
-        <button
-          type="button"
-          aria-pressed={status === 'needs-update'}
-          onClick={() => onStatus('needs-update')}
-          className={`${TOOL_BUTTON} ${
-            status === 'needs-update'
-              ? 'border-[#c4a04a]/55 bg-[#c4a04a]/20 text-cream'
-              : 'border-cream/20 text-cream/80 hover:bg-cream/5'
-          }`}
-        >
-          <Flag size={14} aria-hidden />
-          Needs update
-        </button>
+      <div className="flex flex-wrap items-end gap-3">
+        {REVIEW_MARKS.map((mark) => (
+          <ReviewMarkButton
+            key={mark.status}
+            mark={mark}
+            active={status === mark.status}
+            onSelect={() => onStatus(mark.status)}
+          />
+        ))}
       </div>
-      <p className="basis-full font-sans text-xs text-cream/45">
-        As spoken is for a different word the author said, like the vs this.
-        Needs update is for the audio script, including capitalization.
-      </p>
     </div>
   );
 }
@@ -963,6 +1115,8 @@ export default function AudioScriptComparePage() {
         return counts.asSpoken;
       case 'needs-update':
         return counts.needsUpdate;
+      case 'record':
+        return counts.record;
       case 'all':
         return counts.all;
       default: {
@@ -1064,6 +1218,13 @@ export default function AudioScriptComparePage() {
                       />
                       Needs update
                     </span>
+                    <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
+                      <span
+                        className="inline-block h-3 w-3 bg-[#c45c4a]/70"
+                        aria-hidden
+                      />
+                      Record
+                    </span>
                     <span className="font-sans text-xs text-cream/35">
                       {title} · {ARC_MANUSCRIPT_SOURCE}
                     </span>
@@ -1107,21 +1268,33 @@ export default function AudioScriptComparePage() {
               <div className="flex flex-wrap gap-1" role="group" aria-label="Review filter">
                 {FILTER_OPTIONS.map((option) => {
                   const active = filter === option.id;
+                  const count = filterCount(option.id);
+                  const openComplete = option.id === 'open' && count === 0;
                   return (
                     <button
                       key={option.id}
                       type="button"
                       aria-pressed={active}
                       onClick={() => setFilter(option.id)}
-                      className={`inline-flex h-6 items-center gap-1.5 border px-2 font-sans text-[0.6rem] uppercase tracking-[0.14em] transition-colors ${
-                        active
-                          ? 'border-cream/35 bg-cream/10 text-cream'
-                          : 'border-transparent text-cream/45 hover:text-cream/80'
-                      }`}
+                      className={cn(
+                        'inline-flex h-6 items-center gap-1.5 border px-2 font-sans text-[0.6rem] uppercase tracking-[0.14em] transition-colors',
+                        openComplete
+                          ? active
+                            ? 'border-[#6fd4b8]/80 bg-[#6fd4b8]/18 text-[#e7fff6] shadow-[inset_0_0_18px_rgba(111,212,184,0.22)]'
+                            : 'border-transparent text-[#6fd4b8]/80 hover:text-[#8fe0c8]'
+                          : active
+                            ? 'border-cream/35 bg-cream/10 text-cream'
+                            : 'border-transparent text-cream/45 hover:text-cream/80',
+                      )}
                     >
                       {option.label}
-                      <span className="font-mono tabular-nums text-cream/55">
-                        {filterCount(option.id)}
+                      <span
+                        className={cn(
+                          'font-mono tabular-nums',
+                          openComplete ? 'text-[#8fe0c8]' : 'text-cream/55',
+                        )}
+                      >
+                        {count}
                       </span>
                     </button>
                   );

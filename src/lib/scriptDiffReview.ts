@@ -4,19 +4,25 @@ import type { DiffChunk } from '@/lib/scriptWordDiff';
 
 export const DIFF_REVIEW_STORAGE_KEY = 'formless.scriptCompare.reviews';
 
-export type DiffReviewStatus = 'cleared' | 'as-spoken' | 'needs-update';
+export type DiffReviewStatus =
+  | 'cleared'
+  | 'as-spoken'
+  | 'needs-update'
+  | 'record';
 
 export type DiffReviewFilter =
   | 'open'
   | 'cleared'
   | 'as-spoken'
   | 'needs-update'
+  | 'record'
   | 'all';
 
 const REVIEW_STATUSES: readonly DiffReviewStatus[] = [
   'cleared',
   'as-spoken',
   'needs-update',
+  'record',
 ];
 
 export function isDiffReviewStatus(value: unknown): value is DiffReviewStatus {
@@ -147,6 +153,8 @@ export function filterDifferenceIds(
         return status === 'as-spoken';
       case 'needs-update':
         return status === 'needs-update';
+      case 'record':
+        return status === 'record';
       default: {
         const _exhaustive: never = filter;
         return _exhaustive;
@@ -160,6 +168,7 @@ export type DiffReviewCounts = {
   cleared: number;
   asSpoken: number;
   needsUpdate: number;
+  record: number;
   all: number;
 };
 
@@ -173,6 +182,7 @@ export function reviewCounts(
   let cleared = 0;
   let asSpoken = 0;
   let needsUpdate = 0;
+  let record = 0;
   for (const id of differenceIds) {
     const fingerprint = fingerprints.get(id);
     const status = fingerprint
@@ -181,6 +191,7 @@ export function reviewCounts(
     if (status === 'cleared') cleared += 1;
     else if (status === 'as-spoken') asSpoken += 1;
     else if (status === 'needs-update') needsUpdate += 1;
+    else if (status === 'record') record += 1;
     else open += 1;
   }
   return {
@@ -188,6 +199,7 @@ export function reviewCounts(
     cleared,
     asSpoken,
     needsUpdate,
+    record,
     all: differenceIds.length,
   };
 }
@@ -197,6 +209,7 @@ export const EMPTY_REVIEW_COUNTS: DiffReviewCounts = {
   cleared: 0,
   asSpoken: 0,
   needsUpdate: 0,
+  record: 0,
   all: 0,
 };
 
@@ -209,6 +222,7 @@ export function addReviewCounts(
     cleared: a.cleared + b.cleared,
     asSpoken: a.asSpoken + b.asSpoken,
     needsUpdate: a.needsUpdate + b.needsUpdate,
+    record: a.record + b.record,
     all: a.all + b.all,
   };
 }
