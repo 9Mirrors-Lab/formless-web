@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import {
   aggregateDiffStats,
+  cueStartForChunk,
   diffManuscriptTexts,
+  diffWordTokens,
   normalizeWordKey,
   scriptTextFromCues,
+  scriptTokensFromCues,
   tokenizeWords,
 } from '@/lib/scriptWordDiff';
 
@@ -118,6 +121,61 @@ describe('scriptWordDiff', () => {
         { text: '' },
       ]),
     ).toBe('Hello. World');
+  });
+
+  it('stamps track time on the first word of each cue', () => {
+    const tokens = scriptTokensFromCues([
+      { text: 'Hello world.', start: 12.4 },
+      { text: 'Next line.', start: 18 },
+    ]);
+    expect(tokens.map((token) => token.display)).toEqual([
+      'Hello',
+      'world',
+      'Next',
+      'line',
+    ]);
+    expect(tokens[0]?.cueStart).toBe(12.4);
+    expect(tokens[1]?.cueStart).toBeUndefined();
+    expect(tokens[2]?.cueStart).toBe(18);
+  });
+
+  it('keeps cue times through the word diff', () => {
+    const result = diffWordTokens(
+      tokenizeWords('Hello world next line'),
+      scriptTokensFromCues([
+        { text: 'Hello world.', start: 12.4 },
+        { text: 'Next line.', start: 18 },
+      ]),
+    );
+    const spoken = result.chunks.flatMap((chunk) => chunk.right);
+    expect(spoken.find((token) => token.display === 'Hello')?.cueStart).toBe(
+      12.4,
+    );
+    expect(spoken.find((token) => token.display === 'Next')?.cueStart).toBe(18);
+    expect(cueStartForChunk(result.chunks, result.chunks[0]!.id)).toBe(12.4);
+  });
+
+  it('uses the cue still in progress when a diff starts mid-line', () => {
+    const result = diffWordTokens(
+      tokenizeWords('Hello world extra next line'),
+      scriptTokensFromCues([
+        { text: 'Hello world.', start: 12.4 },
+        { text: 'Next line.', start: 18 },
+      ]),
+    );
+    const deleted = result.chunks.find((chunk) => chunk.kind === 'delete');
+    expect(deleted).toBeTruthy();
+    expect(cueStartForChunk(result.chunks, deleted!.id)).toBe(12.4);
+  });
+
+  it('looks ahead to the next cue when a leading book-only word has no audio yet', () => {
+    const result = diffWordTokens(
+      tokenizeWords('CHAPTER Hello world'),
+      scriptTokensFromCues([{ text: 'Hello world.', start: 2.1 }]),
+    );
+    const deleted = result.chunks.find((chunk) => chunk.kind === 'delete');
+    expect(deleted).toBeTruthy();
+    expect(cueStartForChunk(result.chunks, deleted!.id)).toBe(2.1);
   });
 
   it('aggregates chapter stats into a book total', () => {

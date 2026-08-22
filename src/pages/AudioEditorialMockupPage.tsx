@@ -431,7 +431,7 @@ export default function AudioEditorialMockupPage() {
                 </div>
                 <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
                   <p className="mb-4 text-[12px] leading-relaxed text-cream/40">
-                    Follow the spoken line as the playhead moves. Tap a sentence to jump.
+                    Follow the spoken line as the playhead moves. The clock is the time in the track. Tap a sentence to jump.
                   </p>
                   <div className="space-y-3">
                     {review.chapter.manuscript.map((sentence) => {
@@ -453,6 +453,9 @@ export default function AudioEditorialMockupPage() {
                             }`}
                           >
                             {sentence.text}
+                          </span>
+                          <span className="mt-1 block select-all font-mono text-[10px] uppercase tracking-[0.14em] text-cream/30 tabular-nums">
+                            {formatAudioTime(sentence.start)}
                           </span>
                         </button>
                       );

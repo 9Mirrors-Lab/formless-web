@@ -77,7 +77,7 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         id: "script-compare",
         title: "Book vs audio",
         href: "/audio/script-compare",
-        description: "Printed book text vs timed audio script",
+        description: "Printed book text vs timed audio script with track clocks",
       },
       {
         id: "audible",

@@ -389,7 +389,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/audio/script-compare',
     category: 'design',
     description:
-      'Printed book text vs timed audio script, live word-level diff.',
+      'Printed book text vs timed audio script with track clocks, live word-level diff.',
     source: 'src/pages/AudioScriptComparePage.tsx',
   },
   {

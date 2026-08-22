@@ -19,6 +19,7 @@ import { BrandShell } from '@/components/app-sidebar';
 import {
   AUDIO_CHAPTER_TITLE_BY_ID,
   AUDIO_LISTEN_ORDER,
+  formatAudioTime,
   formatChapterIndex,
   type AudioChapterId,
 } from '@/data/audioBook';
@@ -44,8 +45,12 @@ import {
 } from '@/lib/scriptDiffReview';
 import {
   aggregateDiffStats,
+  cueStartForChunk,
   diffManuscriptTexts,
+  diffWordTokens,
   scriptTextFromCues,
+  scriptTokensFromCues,
+  tokenizeWords,
   type DiffChunk,
   type DiffKind,
   type DiffStats,
@@ -224,6 +229,18 @@ function scrollPaneToDiffId(
 
 const EQUAL_SYNC_GROUP = 20;
 
+function CueClock({ seconds }: { seconds: number }) {
+  const label = formatAudioTime(seconds);
+  return (
+    <span
+      className="mr-2 inline-block w-[2.85rem] select-all font-mono text-[0.7rem] font-medium tracking-wide text-[#c5d9cf] tabular-nums"
+      title={`Track ${label}`}
+    >
+      {label}
+    </span>
+  );
+}
+
 function renderTokenBody(
   tokens: DiffChunk['left'],
   chunkId: number,
@@ -238,8 +255,13 @@ function renderTokenBody(
           : index < tokens.length - 1
             ? ' '
             : '';
+    const cueBreak = side === 'right' && token.cueStart != null ? '\n' : '';
     return (
       <span key={`${chunkId}-${side}-${index}`}>
+        {cueBreak}
+        {side === 'right' && token.cueStart != null ? (
+          <CueClock seconds={token.cueStart} />
+        ) : null}
         {token.display}
         {breakText}
       </span>
@@ -979,16 +1001,23 @@ function CheckCluster({
 function ReviewBar({
   chunk,
   status,
+  trackTime,
   onStatus,
 }: {
   chunk: DiffChunk;
   status: DiffReviewStatus | null;
+  trackTime: number | null;
   onStatus: (next: DiffReviewStatus) => void;
 }) {
   return (
     <div className="flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3">
       <div className="min-w-[14rem] flex-1">
         <p className={LABEL}>{KIND_STYLE[chunk.kind].label}</p>
+        {trackTime != null ? (
+          <p className="mt-1 font-mono text-xs tabular-nums tracking-[0.08em] text-[#9fb5aa]">
+            Track {formatAudioTime(trackTime)}
+          </p>
+        ) : null}
         <p className="mt-1 font-sans text-sm text-cream/80">
           Book: {tokenExcerpt(chunk.left)}
         </p>
@@ -1063,13 +1092,13 @@ export default function AudioScriptComparePage() {
     () => arcManuscriptForChapter(chapterId),
     [chapterId],
   );
-  const scriptText = useMemo(
-    () => scriptTextFromCues(cuesForModel(chapterId, scriptModel)),
+  const scriptTokens = useMemo(
+    () => scriptTokensFromCues(cuesForModel(chapterId, scriptModel)),
     [chapterId, scriptModel],
   );
   const diff = useMemo(
-    () => diffManuscriptTexts(arcText, scriptText),
-    [arcText, scriptText],
+    () => diffWordTokens(tokenizeWords(arcText), scriptTokens),
+    [arcText, scriptTokens],
   );
 
   const bookDiffs = useMemo(
@@ -1143,6 +1172,10 @@ export default function AudioScriptComparePage() {
   const activeChunk = useMemo(
     () => diff.chunks.find((chunk) => chunk.id === activeId) ?? null,
     [diff.chunks, activeId],
+  );
+  const activeTrackTime = useMemo(
+    () => (activeId == null ? null : cueStartForChunk(diff.chunks, activeId)),
+    [activeId, diff.chunks],
   );
   const activeStatus =
     activeId == null ? null : statusFor(activeId);
@@ -1283,7 +1316,7 @@ export default function AudioScriptComparePage() {
         <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-2 md:gap-5 md:px-8 md:pb-8 md:pt-2.5 lg:px-10 lg:pb-10">
             <BrandPageHeader
               title="Book vs audio"
-              description="Left is the printed book. Right is the timed script from the recording. Tap a highlight to mark looks fine, as spoken, or needs update."
+              description="Left is the printed book. Right is the timed script from the recording, with track clocks on each spoken line. Tap a highlight to mark looks fine, as spoken, or needs update."
             />
 
             <div className="flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3">
@@ -1365,6 +1398,7 @@ export default function AudioScriptComparePage() {
               <ReviewBar
                 chunk={activeChunk}
                 status={activeStatus}
+                trackTime={activeTrackTime}
                 onStatus={applyStatus}
               />
             ) : null}
@@ -1460,7 +1494,7 @@ export default function AudioScriptComparePage() {
               />
               <DiffPane
                 title="Audio script"
-                subtitle="Timed words taken from the recording"
+                subtitle="Spoken line with its time in the audio track"
                 chunks={diff.chunks}
                 side="right"
                 activeId={activeId}

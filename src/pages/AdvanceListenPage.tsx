@@ -117,7 +117,7 @@ export default function AdvanceListenPage() {
                     className="mt-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-sm border border-cream/12 bg-[#080a09]/78 shadow-[inset_0_1px_0_rgba(242,240,233,0.06)] backdrop-blur-[10px]"
                   >
                     <p className="shrink-0 px-4 pt-3 pb-1 text-[12px] leading-relaxed text-cream/40">
-                      Follow the spoken line as the playhead moves. Tap a sentence to jump.
+                      Follow the spoken line as the playhead moves. The clock is the time in the track. Tap a sentence to jump.
                     </p>
                     <div className="scrollbar-cream min-h-0 flex-1 overflow-y-auto px-4 py-3">
                       <div className="space-y-3">
@@ -142,6 +142,9 @@ export default function AdvanceListenPage() {
                                 }`}
                               >
                                 {sentence.text}
+                              </span>
+                              <span className="mt-1 block select-all font-mono text-[10px] uppercase tracking-[0.14em] text-cream/30 tabular-nums">
+                                {formatAudioTime(sentence.start)}
                               </span>
                             </button>
                           );

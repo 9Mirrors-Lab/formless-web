@@ -12,6 +12,8 @@ export type WordToken = {
   key: string;
   /** Preserved from source whitespace; not used for matching. */
   breakAfter?: BreakAfter;
+  /** Track seconds for the first word of a timed audio cue. */
+  cueStart?: number;
 };
 
 export type DiffChunk = {
@@ -302,4 +304,46 @@ export function scriptTextFromCues(
   cues: Array<{ text: string }>,
 ): string {
   return cues.map((cue) => cue.text.trim()).filter(Boolean).join(' ');
+}
+
+/** Tokenize timed cues and stamp the track start on the first word of each cue. */
+export function scriptTokensFromCues(
+  cues: Array<{ text: string; start: number }>,
+): WordToken[] {
+  const tokens: WordToken[] = [];
+  for (const cue of cues) {
+    const cueTokens = tokenizeWords(cue.text);
+    if (cueTokens.length === 0) continue;
+    const first = cueTokens[0];
+    if (!first) continue;
+    cueTokens[0] = { ...first, cueStart: cue.start };
+    tokens.push(...cueTokens);
+  }
+  return tokens;
+}
+
+/** Track time for the first spoken word in this chunk, else the cue still in progress. */
+export function cueStartForChunk(
+  chunks: DiffChunk[],
+  chunkId: number,
+): number | null {
+  let last: number | null = null;
+  let lookingAhead = false;
+  for (const chunk of chunks) {
+    if (chunk.id === chunkId) {
+      const own = chunk.right[0]?.cueStart ?? last;
+      if (own != null) return own;
+      lookingAhead = true;
+      continue;
+    }
+    if (lookingAhead) {
+      const next = chunk.right.find((token) => token.cueStart != null);
+      if (next?.cueStart != null) return next.cueStart;
+      continue;
+    }
+    for (const token of chunk.right) {
+      if (token.cueStart != null) last = token.cueStart;
+    }
+  }
+  return last;
 }
