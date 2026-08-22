@@ -6,7 +6,6 @@ import { Check, ChevronDown, ChevronUp, Flag, Speech } from 'lucide-react';
 import {
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
@@ -16,6 +15,13 @@ import {
 
 import { BrandPageHeader } from '@/components/BrandPageHeader';
 import { BrandShell } from '@/components/app-sidebar';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { cn } from '@/lib/utils';
 import {
   AUDIO_CHAPTER_TITLE_BY_ID,
   AUDIO_LISTEN_ORDER,
@@ -27,10 +33,6 @@ import {
   ARC_MANUSCRIPT_SOURCE,
   arcManuscriptForChapter,
 } from '@/data/arcManuscriptChapters';
-import {
-  manuscriptForChapter,
-  type AudioScriptWhisperModel,
-} from '@/data/audioManuscripts';
 import { manuscriptForChapterMedium } from '@/data/audioManuscriptsMedium';
 import { useScriptDiffReview } from '@/hooks/useScriptDiffReview';
 import {
@@ -57,10 +59,7 @@ import {
   type WordToken,
 } from '@/lib/scriptWordDiff';
 
-const SCRIPT_MODEL_LABEL: Record<AudioScriptWhisperModel, string> = {
-  base: 'Whisper base.en (original)',
-  medium: 'Whisper medium.en (new)',
-};
+const SCRIPT_MODEL = 'medium';
 
 const LABEL =
   'font-sans text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#9fb5aa]';
@@ -142,41 +141,11 @@ function chapterFromSearch(
   return 2;
 }
 
-function modelFromSearch(
-  search: string = typeof window !== 'undefined' ? window.location.search : '',
-): AudioScriptWhisperModel {
-  const raw = new URLSearchParams(search).get('model');
-  return raw === 'medium' ? 'medium' : 'base';
-}
-
-function setCompareInUrl(
-  chapterId: AudioChapterId,
-  model: AudioScriptWhisperModel,
-): void {
+function setCompareInUrl(chapterId: AudioChapterId): void {
   const url = new URL(window.location.href);
   url.searchParams.set('chapter', String(chapterId));
-  if (model === 'base') {
-    url.searchParams.delete('model');
-  } else {
-    url.searchParams.set('model', model);
-  }
+  url.searchParams.delete('model');
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-}
-
-function cuesForModel(
-  chapterId: AudioChapterId,
-  model: AudioScriptWhisperModel,
-) {
-  switch (model) {
-    case 'base':
-      return manuscriptForChapter(chapterId);
-    case 'medium':
-      return manuscriptForChapterMedium(chapterId);
-    default: {
-      const _exhaustive: never = model;
-      return _exhaustive;
-    }
-  }
 }
 
 /** Diff/sync marker nearest the vertical center of a scroll pane. */
@@ -478,6 +447,35 @@ function DualMetric({
   );
 }
 
+function TrackNav({
+  chapterId,
+  onChapter,
+}: {
+  chapterId: AudioChapterId;
+  onChapter: (id: AudioChapterId) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-end gap-3">
+      <label className="flex min-w-[14rem] flex-col gap-1.5">
+        <span className={LABEL}>Track</span>
+        <select
+          value={chapterId}
+          onChange={(event) =>
+            onChapter(Number(event.target.value) as AudioChapterId)
+          }
+          className="h-10 rounded-none border border-cream/20 bg-[#080a09] px-3 font-sans text-sm text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70"
+        >
+          {AUDIO_LISTEN_ORDER.map((id) => (
+            <option key={id} value={id}>
+              {formatChapterIndex(id)} · {AUDIO_CHAPTER_TITLE_BY_ID[id]}
+            </option>
+          ))}
+        </select>
+      </label>
+    </div>
+  );
+}
+
 function MetricsBand({
   book,
   track,
@@ -485,6 +483,7 @@ function MetricsBand({
   chapterTitle,
   bookCounts,
   trackCounts,
+  className,
 }: {
   book: DiffStats;
   track: DiffStats;
@@ -492,9 +491,15 @@ function MetricsBand({
   chapterTitle: string;
   bookCounts: DiffReviewCounts;
   trackCounts: DiffReviewCounts;
+  className?: string;
 }) {
   return (
-    <div className="flex flex-col gap-4 border border-cream/12 bg-[#0c100e] px-4 py-3 lg:flex-row lg:items-stretch lg:gap-8">
+    <div
+      className={cn(
+        'flex flex-col gap-4 border border-cream/12 bg-[#0c100e] px-4 py-3 lg:flex-row lg:items-stretch lg:gap-8',
+        className,
+      )}
+    >
       <div className="min-w-0 flex-[1.45]">
         <div
           className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-4"
@@ -549,13 +554,6 @@ const STATUS_SWATCH = {
   open: 'rgb(242 240 233 / 0.42)',
 } as const;
 
-const GRAPH_FILL = {
-  fine: '#f2f0e9',
-  spoken: '#9fb5aa',
-  update: '#c4a04a',
-  open: '#9fb5aa',
-} as const;
-
 type StatusSlice = {
   id: 'fine' | 'spoken' | 'update' | 'open';
   label: string;
@@ -582,336 +580,6 @@ function statusSlices(book: DiffReviewCounts): StatusSlice[] {
   ];
 }
 
-function StatusGraph({
-  slices,
-  total,
-  trackSlices,
-}: {
-  slices: StatusSlice[];
-  total: number;
-  trackSlices: StatusSlice[];
-}) {
-  const uid = useId().replace(/:/g, '');
-  const glowId = `check-glow-${uid}`;
-  const hotGlowId = `check-hot-${uid}`;
-  const floorFadeId = `check-floor-${uid}`;
-  const areaFillId = `check-area-${uid}`;
-
-  const width = 220;
-  const height = 128;
-  const plotLeft = 14;
-  const plotRight = 206;
-  const plotTop = 12;
-  const horizon = 82;
-  const floorBottom = 126;
-  const vpX = 110;
-  const vpY = 4;
-  const plotHeight = horizon - plotTop;
-  const maxValue = Math.max(1, ...slices.map((slice) => slice.value));
-  const checked = slices
-    .filter((slice) => slice.id !== 'open')
-    .reduce((sum, slice) => sum + slice.value, 0);
-  const checkedPct = total === 0 ? 0 : checked / total;
-  const groupWidth = (plotRight - plotLeft) / slices.length;
-  const depthX = 8;
-  const depthY = -5;
-
-  const bookBars = slices.map((slice, index) => {
-    const groupX = plotLeft + index * groupWidth;
-    const barH = (slice.value / maxValue) * (plotHeight - 12);
-    const h = slice.value > 0 ? Math.max(barH, 8) : 10;
-    const x = groupX + 6;
-    const w = 20;
-    return {
-      ...slice,
-      x,
-      w,
-      h,
-      y: horizon - h,
-      tipX: x + w / 2 + depthX / 2,
-      tipY: horizon - h + depthY,
-    };
-  });
-
-  const trackLine = trackSlices.map((slice, index) => {
-    const groupX = plotLeft + index * groupWidth;
-    const barH = (slice.value / maxValue) * (plotHeight - 12);
-    const h = Math.max(barH, slice.value > 0 ? 4 : 0);
-    return {
-      x: groupX + 16,
-      y: horizon - h,
-    };
-  });
-
-  const trailX = plotLeft + 8 + checkedPct * (plotRight - plotLeft - 16);
-  const recedeCount = 17;
-  const floorBands = 8;
-  const linePath = bookBars
-    .map((bar, index) => `${index === 0 ? 'M' : 'L'} ${bar.tipX} ${bar.tipY}`)
-    .join(' ');
-  const areaPath = `${linePath} L ${bookBars[bookBars.length - 1].x + bookBars[bookBars.length - 1].w} ${horizon} L ${bookBars[0].x} ${horizon} Z`;
-  const trackPath = trackLine
-    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-    .join(' ');
-
-  return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      className="h-[7.25rem] w-[12rem] shrink-0"
-      aria-hidden
-    >
-      <defs>
-        <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="1.4" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <filter id={hotGlowId} x="-80%" y="-80%" width="260%" height="260%">
-          <feGaussianBlur stdDeviation="2.6" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <linearGradient id={floorFadeId} x1="0" y1={horizon} x2="0" y2={floorBottom} gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#9fb5aa" stopOpacity="0.38" />
-          <stop offset="1" stopColor="#9fb5aa" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id={areaFillId} x1="0" y1={plotTop} x2="0" y2={horizon} gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#9fb5aa" stopOpacity="0.5" />
-          <stop offset="1" stopColor="#9fb5aa" stopOpacity="0.06" />
-        </linearGradient>
-      </defs>
-
-      {Array.from({ length: 4 }, (_, i) => {
-        const y = plotTop + ((i + 1) / 5) * plotHeight;
-        return (
-          <line
-            key={`grid-y-${i}`}
-            x1={plotLeft}
-            y1={y}
-            x2={plotRight}
-            y2={y}
-            stroke="rgb(159 181 170 / 0.22)"
-            strokeWidth={0.7}
-            strokeDasharray="2 3"
-          />
-        );
-      })}
-      {slices.map((slice, index) => {
-        const x = plotLeft + (index + 0.5) * groupWidth;
-        return (
-          <line
-            key={`grid-x-${slice.id}`}
-            x1={x}
-            y1={plotTop}
-            x2={x}
-            y2={horizon}
-            stroke="rgb(159 181 170 / 0.16)"
-            strokeWidth={0.7}
-          />
-        );
-      })}
-
-      <polygon
-        points={`${plotLeft},${horizon} ${plotRight},${horizon} ${plotRight - 10},${floorBottom} ${plotLeft + 10},${floorBottom}`}
-        fill={`url(#${floorFadeId})`}
-      />
-      <line
-        x1={plotLeft}
-        y1={horizon}
-        x2={plotRight}
-        y2={horizon}
-        stroke="#9fb5aa"
-        strokeWidth={1.35}
-        filter={`url(#${glowId})`}
-      />
-
-      {Array.from({ length: recedeCount }, (_, i) => {
-        const t = i / (recedeCount - 1);
-        const x = plotLeft + 10 + t * (plotRight - plotLeft - 20);
-        const dy = vpY - floorBottom;
-        const hit = (horizon - floorBottom) / dy;
-        const hx = x + (vpX - x) * hit;
-        const spine = i === 8;
-        return (
-          <line
-            key={`recede-${i}`}
-            x1={x}
-            y1={floorBottom}
-            x2={hx}
-            y2={horizon}
-            stroke={spine ? '#9fb5aa' : 'rgb(159 181 170 / 0.55)'}
-            strokeWidth={spine ? 1.35 : 0.9}
-            filter={spine ? `url(#${glowId})` : undefined}
-          />
-        );
-      })}
-
-      {Array.from({ length: floorBands }, (_, i) => {
-        const u = ((i + 1) / (floorBands + 1)) ** 0.68;
-        const y = horizon + (floorBottom - horizon) * u;
-        const scale = (y - vpY) / (floorBottom - vpY);
-        const left = vpX + (plotLeft + 10 - vpX) * scale;
-        const right = vpX + (plotRight - 10 - vpX) * scale;
-        return (
-          <line
-            key={`band-${i}`}
-            x1={left}
-            y1={y}
-            x2={right}
-            y2={y}
-            stroke="rgb(159 181 170 / 0.55)"
-            strokeWidth={0.85}
-          />
-        );
-      })}
-
-      <path
-        d={`M ${plotLeft} ${plotTop + 8} V ${plotTop} H ${plotLeft + 8}`}
-        fill="none"
-        stroke="#9fb5aa"
-        strokeWidth={1.15}
-      />
-      <path
-        d={`M ${plotRight} ${plotTop + 8} V ${plotTop} H ${plotRight - 8}`}
-        fill="none"
-        stroke="#9fb5aa"
-        strokeWidth={1.15}
-      />
-      <path
-        d={`M ${plotLeft} ${horizon - 8} V ${horizon} H ${plotLeft + 8}`}
-        fill="none"
-        stroke="#9fb5aa"
-        strokeWidth={1.15}
-      />
-      <path
-        d={`M ${plotRight} ${horizon - 8} V ${horizon} H ${plotRight - 8}`}
-        fill="none"
-        stroke="#9fb5aa"
-        strokeWidth={1.15}
-      />
-
-      <path d={areaPath} fill={`url(#${areaFillId})`} />
-
-      {bookBars.map((bar) => {
-        const color = GRAPH_FILL[bar.id];
-        const x2 = bar.x + bar.w;
-        const yb = horizon;
-        const yt = bar.y;
-        const tx = bar.x + depthX;
-        const ty = yt + depthY;
-        const sx = x2 + depthX;
-        const syb = yb + depthY;
-        const live = bar.value > 0;
-        return (
-          <g key={`book-${bar.id}`}>
-            <polygon
-              points={`${bar.x},${yb} ${tx},${yb + depthY} ${tx + bar.w},${yb + depthY} ${x2},${yb}`}
-              fill={color}
-              opacity={0.2}
-            />
-            <polygon
-              points={`${x2},${yt} ${sx},${ty} ${sx},${syb} ${x2},${yb}`}
-              fill="#080a09"
-              stroke={color}
-              strokeWidth={1}
-              opacity={0.9}
-            />
-            <polygon
-              points={`${bar.x},${yt} ${x2},${yt} ${x2},${yb} ${bar.x},${yb}`}
-              fill={live ? color : 'transparent'}
-              opacity={live ? 0.42 : 1}
-              stroke={color}
-              strokeWidth={1.2}
-            />
-            <polygon
-              points={`${bar.x},${yt} ${tx},${ty} ${sx},${ty} ${x2},${yt}`}
-              fill={live ? '#f2f0e9' : 'transparent'}
-              opacity={live ? 0.35 : 1}
-              stroke={color}
-              strokeWidth={1.2}
-            />
-            <path
-              d={`M ${bar.x} ${yb} L ${bar.x} ${yt} L ${tx} ${ty} L ${sx} ${ty} L ${sx} ${syb} L ${x2} ${yb}`}
-              fill="none"
-              stroke={color}
-              strokeWidth={live ? 1.45 : 0.9}
-              filter={`url(#${hotGlowId})`}
-            />
-            {live
-              ? Array.from({ length: 4 }, (_, i) => {
-                  const y = yt + ((i + 1) / 5) * (yb - yt);
-                  return (
-                    <line
-                      key={`${bar.id}-win-${i}`}
-                      x1={bar.x + 2}
-                      y1={y}
-                      x2={x2 - 2}
-                      y2={y}
-                      stroke="#f2f0e9"
-                      strokeWidth={0.6}
-                      opacity={0.28}
-                    />
-                  );
-                })
-              : null}
-          </g>
-        );
-      })}
-
-      <path
-        d={trackPath}
-        fill="none"
-        stroke="#9fb5aa"
-        strokeWidth={1.35}
-        strokeLinejoin="miter"
-        filter={`url(#${hotGlowId})`}
-      />
-      <path
-        d={linePath}
-        fill="none"
-        stroke="#f2f0e9"
-        strokeWidth={1.45}
-        strokeLinejoin="miter"
-        filter={`url(#${hotGlowId})`}
-      />
-      {bookBars.map((bar) => (
-        <rect
-          key={`node-${bar.id}`}
-          x={bar.tipX - 1.6}
-          y={bar.tipY - 1.6}
-          width={3.2}
-          height={3.2}
-          fill="#f2f0e9"
-          filter={`url(#${glowId})`}
-        />
-      ))}
-
-      <line
-        x1={plotLeft + 8}
-        y1={plotTop + 4}
-        x2={Math.max(plotLeft + 12, trailX)}
-        y2={plotTop + 4}
-        stroke="#9fb5aa"
-        strokeWidth={1.8}
-        filter={`url(#${hotGlowId})`}
-      />
-      <rect
-        x={Math.max(plotLeft + 12, trailX) - 2}
-        y={plotTop + 2}
-        width={4}
-        height={4}
-        fill="#f2f0e9"
-        filter={`url(#${hotGlowId})`}
-      />
-    </svg>
-  );
-}
-
 function CheckCluster({
   book,
   track,
@@ -923,77 +591,67 @@ function CheckCluster({
 }) {
   const bookChecked = checkedOf(book);
   const slices = statusSlices(book);
-  const trackSlices = statusSlices(track);
 
   return (
     <div
-      className="flex min-w-[24rem] flex-1 gap-4 lg:border-l lg:border-cream/10 lg:pl-6"
+      className="min-w-0 flex-1 lg:border-l lg:border-cream/10 lg:pl-6"
       aria-label={
         book.all === 0
           ? 'No differences in the book'
           : `${formatCount(book.all)} differences in the book, ${formatCount(bookChecked)} checked. Fine ${formatCount(book.cleared)}, spoken ${formatCount(book.asSpoken)}, update ${formatCount(book.needsUpdate)}, open ${formatCount(book.open)}. Track ${chapterIndex} has ${formatCount(track.open)} open.`
       }
     >
-      <div className="min-w-0 flex-1">
-        <p className={LABEL}>Check</p>
-        {book.all === 0 ? (
-          <p className="mt-1.5 font-sans text-[0.7rem] text-cream/40">
-            No differences in the book
-          </p>
-        ) : (
-          <>
-            <div className="mt-1.5 flex items-baseline gap-6">
-              <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
-                {formatCount(book.all)}
-                <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
-                  total
-                </span>
-              </p>
-              <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
-                {formatCount(bookChecked)}
-                <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
-                  checked
-                </span>
-              </p>
-            </div>
-            <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
-              {slices.map((slice) => (
-                <li
-                  key={slice.id}
-                  className="flex items-baseline gap-1.5 font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/40"
-                >
-                  <span
-                    className="mb-0.5 inline-block h-1.5 w-1.5 shrink-0"
-                    style={{ backgroundColor: slice.color }}
-                    aria-hidden
-                  />
-                  <span className="font-mono text-sm tabular-nums text-cream/75">
-                    {formatCount(slice.value)}
-                  </span>
-                  {slice.label}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-3 flex items-baseline gap-2">
-              <span className="font-serif text-[1.05rem] italic leading-[1.1] text-cream/50">
-                {chapterIndex}
-              </span>
-              <span className="font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/35">
-                {track.all === 0
-                  ? 'No diffs on this track'
-                  : `${formatCount(track.open)} open here`}
+      <p className={LABEL}>Check</p>
+      {book.all === 0 ? (
+        <p className="mt-1.5 font-sans text-[0.7rem] text-cream/40">
+          No differences in the book
+        </p>
+      ) : (
+        <>
+          <div className="mt-1.5 flex items-baseline gap-6">
+            <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
+              {formatCount(book.all)}
+              <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
+                total
               </span>
             </p>
-          </>
-        )}
-      </div>
-      {book.all > 0 ? (
-        <StatusGraph
-          slices={slices}
-          total={book.all}
-          trackSlices={trackSlices}
-        />
-      ) : null}
+            <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
+              {formatCount(bookChecked)}
+              <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
+                checked
+              </span>
+            </p>
+          </div>
+          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
+            {slices.map((slice) => (
+              <li
+                key={slice.id}
+                className="flex items-baseline gap-1.5 font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/40"
+              >
+                <span
+                  className="mb-0.5 inline-block h-1.5 w-1.5 shrink-0"
+                  style={{ backgroundColor: slice.color }}
+                  aria-hidden
+                />
+                <span className="font-mono text-sm tabular-nums text-cream/75">
+                  {formatCount(slice.value)}
+                </span>
+                {slice.label}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 flex items-baseline gap-2">
+            <span className="font-serif text-[1.05rem] italic leading-[1.1] text-cream/50">
+              {chapterIndex}
+            </span>
+            <span className="font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/35">
+              {track.all === 0
+                ? 'No diffs on this track'
+                : `${formatCount(track.open)} open here`}
+            </span>
+          </p>
+        </>
+      )}
     </div>
   );
 }
@@ -1003,14 +661,21 @@ function ReviewBar({
   status,
   trackTime,
   onStatus,
+  className,
 }: {
   chunk: DiffChunk;
   status: DiffReviewStatus | null;
   trackTime: number | null;
   onStatus: (next: DiffReviewStatus) => void;
+  className?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3">
+    <div
+      className={cn(
+        'flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3',
+        className,
+      )}
+    >
       <div className="min-w-[14rem] flex-1">
         <p className={LABEL}>{KIND_STYLE[chunk.kind].label}</p>
         {trackTime != null ? (
@@ -1078,9 +743,6 @@ export default function AudioScriptComparePage() {
   const [chapterId, setChapterId] = useState<AudioChapterId>(() =>
     chapterFromSearch(),
   );
-  const [scriptModel, setScriptModel] = useState<AudioScriptWhisperModel>(() =>
-    modelFromSearch(),
-  );
   const [filter, setFilter] = useState<DiffReviewFilter>('open');
   const [activeId, setActiveId] = useState<number | null>(null);
   const { store, setStatus } = useScriptDiffReview();
@@ -1093,8 +755,8 @@ export default function AudioScriptComparePage() {
     [chapterId],
   );
   const scriptTokens = useMemo(
-    () => scriptTokensFromCues(cuesForModel(chapterId, scriptModel)),
-    [chapterId, scriptModel],
+    () => scriptTokensFromCues(manuscriptForChapterMedium(chapterId)),
+    [chapterId],
   );
   const diff = useMemo(
     () => diffWordTokens(tokenizeWords(arcText), scriptTokens),
@@ -1106,7 +768,7 @@ export default function AudioScriptComparePage() {
       AUDIO_LISTEN_ORDER.map((id) => {
         const result = diffManuscriptTexts(
           arcManuscriptForChapter(id),
-          scriptTextFromCues(cuesForModel(id, scriptModel)),
+          scriptTextFromCues(manuscriptForChapterMedium(id)),
         );
         return {
           chapterId: id,
@@ -1115,7 +777,7 @@ export default function AudioScriptComparePage() {
           fingerprints: differenceFingerprints(result.chunks),
         };
       }),
-    [scriptModel],
+    [],
   );
   const bookStats = useMemo(
     () => aggregateDiffStats(bookDiffs.map((part) => part.stats)),
@@ -1127,11 +789,11 @@ export default function AudioScriptComparePage() {
         bookDiffs.map((part) =>
           reviewCounts(part.differenceIds, part.fingerprints, store, {
             chapterId: part.chapterId,
-            model: scriptModel,
+            model: SCRIPT_MODEL,
           }),
         ),
       ),
-    [bookDiffs, scriptModel, store],
+    [bookDiffs, store],
   );
 
   const fingerprints = useMemo(
@@ -1139,8 +801,8 @@ export default function AudioScriptComparePage() {
     [diff.chunks],
   );
   const reviewScope = useMemo(
-    () => ({ chapterId, model: scriptModel }),
-    [chapterId, scriptModel],
+    () => ({ chapterId, model: SCRIPT_MODEL }),
+    [chapterId],
   );
   const counts = useMemo(
     () =>
@@ -1183,8 +845,8 @@ export default function AudioScriptComparePage() {
     activeId == null ? -1 : filteredIds.indexOf(activeId);
 
   useEffect(() => {
-    setCompareInUrl(chapterId, scriptModel);
-  }, [chapterId, scriptModel]);
+    setCompareInUrl(chapterId);
+  }, [chapterId]);
 
   useEffect(() => {
     setFilter('open');
@@ -1193,13 +855,13 @@ export default function AudioScriptComparePage() {
       diff.differenceIds,
       fps,
       store,
-      { chapterId, model: scriptModel },
+      { chapterId, model: SCRIPT_MODEL },
       'open',
     );
     setActiveId(openIds[0] ?? diff.differenceIds[0] ?? null);
-    // Reset focus when the track or Whisper model changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- chapterId/scriptModel are the intentional triggers
-  }, [chapterId, scriptModel]);
+    // Reset focus when the track changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chapterId is the intentional trigger
+  }, [chapterId]);
 
   const scrollToDiff = useCallback((id: number) => {
     setActiveId(id);
@@ -1312,54 +974,107 @@ export default function AudioScriptComparePage() {
 
   return (
     <BrandShell activeId="script-compare" crumb="Book vs audio" noise={false}>
-      <div className="fixed inset-0 z-10 flex flex-col overflow-hidden bg-[#080a09] pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:left-[19rem] md:pb-0">
-        <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-2 md:gap-5 md:px-8 md:pb-8 md:pt-2.5 lg:px-10 lg:pb-10">
-            <BrandPageHeader
-              title="Book vs audio"
-              description="Left is the printed book. Right is the timed script from the recording, with track clocks on each spoken line. Tap a highlight to mark looks fine, as spoken, or needs update."
-            />
+      <div className="fixed inset-0 z-10 flex flex-col overflow-hidden bg-[#080a09] pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:left-[var(--brand-nav-width,19rem)] md:pb-0">
+        <div className="flex min-h-0 flex-1 flex-col gap-3 px-4 pb-4 pt-2 md:gap-3.5 md:px-8 md:pb-8 md:pt-2.5 lg:px-10 lg:pb-10">
+            <BrandPageHeader title="Book vs audio" />
 
-            <div className="flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3">
-              <label className="flex min-w-[14rem] flex-col gap-1.5">
-                <span className={LABEL}>Track</span>
-                <select
-                  value={chapterId}
-                  onChange={(event) =>
-                    setChapterId(Number(event.target.value) as AudioChapterId)
-                  }
-                  className="h-10 rounded-none border border-cream/20 bg-[#080a09] px-3 font-sans text-sm text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70"
-                >
-                  {AUDIO_LISTEN_ORDER.map((id) => (
-                    <option key={id} value={id}>
-                      {formatChapterIndex(id)} · {AUDIO_CHAPTER_TITLE_BY_ID[id]}
-                    </option>
-                  ))}
-                </select>
-              </label>
+            <Accordion
+              type="single"
+              collapsible
+              className="shrink-0 border border-cream/12 bg-[#0c100e]"
+            >
+              <AccordionItem value="nav" className="border-none">
+                <AccordionTrigger className="rounded-none px-4 py-2.5 hover:no-underline hover:bg-cream/[0.03] focus-visible:border-transparent focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70 data-[state=open]:border-b data-[state=open]:border-cream/12 [&>svg]:text-[#9fb5aa]">
+                  <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-4 gap-y-1 text-left">
+                    <span className={LABEL}>Track</span>
+                    <span className="truncate font-sans text-sm text-cream">
+                      {formatChapterIndex(chapterId)} · {title}
+                    </span>
+                    <span className="font-mono text-xs tabular-nums text-cream/45">
+                      {diff.stats.similarityPct}% · {formatCount(counts.open)}{' '}
+                      open
+                    </span>
+                    {activeChunk && activeChunk.kind !== 'equal' ? (
+                      <span className="truncate font-sans text-xs text-cream/40">
+                        {KIND_STYLE[activeChunk.kind].label}
+                      </span>
+                    ) : null}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="flex flex-col gap-3 px-4 pt-3 pb-3">
+                  <TrackNav
+                    chapterId={chapterId}
+                    onChapter={setChapterId}
+                  />
+                  <MetricsBand
+                    book={bookStats}
+                    track={diff.stats}
+                    chapterIndex={formatChapterIndex(chapterId)}
+                    chapterTitle={title}
+                    bookCounts={bookCounts}
+                    trackCounts={counts}
+                    className="border-cream/10 bg-transparent px-0"
+                  />
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-cream/10 pt-3">
+                    {(
+                      [
+                        'equal',
+                        'delete',
+                        'insert',
+                        'replace',
+                      ] as const
+                    ).map((kind) => (
+                      <span
+                        key={kind}
+                        className="inline-flex items-center gap-2 font-sans text-xs text-cream/55"
+                      >
+                        <span
+                          className={`inline-block h-3 w-3 ${
+                            kind === 'equal'
+                              ? 'bg-cream/25'
+                              : kind === 'delete'
+                                ? 'bg-[#c45c4a]/70'
+                                : kind === 'insert'
+                                  ? 'bg-[#3d7a6a]/80'
+                                  : 'bg-[#c4a04a]/70'
+                          }`}
+                          aria-hidden
+                        />
+                        {KIND_STYLE[kind].label}
+                      </span>
+                    ))}
+                    <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
+                      <span
+                        className="inline-block h-3 w-3 bg-cream/20 ring-1 ring-cream/15"
+                        aria-hidden
+                      />
+                      Looks fine
+                    </span>
+                    <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
+                      <span
+                        className="inline-block h-3 w-3 bg-[#9fb5aa]/70"
+                        aria-hidden
+                      />
+                      As spoken
+                    </span>
+                    <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
+                      <span
+                        className="inline-block h-3 w-3 bg-[#c4a04a]/70 ring-1 ring-cream/45"
+                        aria-hidden
+                      />
+                      Needs update
+                    </span>
+                    <span className="font-sans text-xs text-cream/35">
+                      {title} · {ARC_MANUSCRIPT_SOURCE}
+                    </span>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
-              <label className="flex min-w-[14rem] flex-col gap-1.5">
-                <span className={LABEL}>Audio script</span>
-                <select
-                  value={scriptModel}
-                  onChange={(event) =>
-                    setScriptModel(
-                      event.target.value as AudioScriptWhisperModel,
-                    )
-                  }
-                  className="h-10 rounded-none border border-cream/20 bg-[#080a09] px-3 font-sans text-sm text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70"
-                >
-                  {(Object.keys(SCRIPT_MODEL_LABEL) as AudioScriptWhisperModel[]).map(
-                    (model) => (
-                      <option key={model} value={model}>
-                        {SCRIPT_MODEL_LABEL[model]}
-                      </option>
-                    ),
-                  )}
-                </select>
-              </label>
-
-              <div className="ml-auto flex items-center gap-2">
-                <p className="font-mono text-xs tabular-nums text-cream/45">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-0.5">
+              <div className="flex items-center gap-1.5">
+                <p className="font-mono text-[0.7rem] tabular-nums text-cream/45">
                   {filteredIds.length === 0
                     ? '0'
                     : `${filteredIndex >= 0 ? filteredIndex + 1 : '—'} / ${filteredIds.length}`}
@@ -1368,42 +1083,27 @@ export default function AudioScriptComparePage() {
                   type="button"
                   onClick={() => jumpDiff(-1)}
                   disabled={filteredIds.length === 0}
-                  className={`${TOOL_BUTTON} border-cream/20 text-cream/80 hover:bg-cream/5`}
+                  className={cn(
+                    TOOL_BUTTON,
+                    'h-6 gap-1 border-cream/20 px-1.5 text-[0.6rem] tracking-[0.1em] text-cream/80 hover:bg-cream/5',
+                  )}
                 >
-                  <ChevronUp size={14} aria-hidden />
+                  <ChevronUp size={11} aria-hidden />
                   Prev
                 </button>
                 <button
                   type="button"
                   onClick={() => jumpDiff(1)}
                   disabled={filteredIds.length === 0}
-                  className={`${TOOL_BUTTON} border-cream/20 text-cream/80 hover:bg-cream/5`}
+                  className={cn(
+                    TOOL_BUTTON,
+                    'h-6 gap-1 border-cream/20 px-1.5 text-[0.6rem] tracking-[0.1em] text-cream/80 hover:bg-cream/5',
+                  )}
                 >
                   Next
-                  <ChevronDown size={14} aria-hidden />
+                  <ChevronDown size={11} aria-hidden />
                 </button>
               </div>
-            </div>
-
-            <MetricsBand
-              book={bookStats}
-              track={diff.stats}
-              chapterIndex={formatChapterIndex(chapterId)}
-              chapterTitle={title}
-              bookCounts={bookCounts}
-              trackCounts={counts}
-            />
-
-            {activeChunk && activeChunk.kind !== 'equal' ? (
-              <ReviewBar
-                chunk={activeChunk}
-                status={activeStatus}
-                trackTime={activeTrackTime}
-                onStatus={applyStatus}
-              />
-            ) : null}
-
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-0.5">
               <div className="flex flex-wrap gap-1" role="group" aria-label="Review filter">
                 {FILTER_OPTIONS.map((option) => {
                   const active = filter === option.id;
@@ -1413,7 +1113,7 @@ export default function AudioScriptComparePage() {
                       type="button"
                       aria-pressed={active}
                       onClick={() => setFilter(option.id)}
-                      className={`inline-flex h-8 items-center gap-1.5 border px-2.5 font-sans text-[0.65rem] uppercase tracking-[0.14em] transition-colors ${
+                      className={`inline-flex h-6 items-center gap-1.5 border px-2 font-sans text-[0.6rem] uppercase tracking-[0.14em] transition-colors ${
                         active
                           ? 'border-cream/35 bg-cream/10 text-cream'
                           : 'border-transparent text-cream/45 hover:text-cream/80'
@@ -1427,58 +1127,20 @@ export default function AudioScriptComparePage() {
                   );
                 })}
               </div>
-              {(
-                [
-                  'equal',
-                  'delete',
-                  'insert',
-                  'replace',
-                ] as const
-              ).map((kind) => (
-                <span
-                  key={kind}
-                  className="inline-flex items-center gap-2 font-sans text-xs text-cream/55"
-                >
-                  <span
-                    className={`inline-block h-3 w-3 ${
-                      kind === 'equal'
-                        ? 'bg-cream/25'
-                        : kind === 'delete'
-                          ? 'bg-[#c45c4a]/70'
-                          : kind === 'insert'
-                            ? 'bg-[#3d7a6a]/80'
-                            : 'bg-[#c4a04a]/70'
-                    }`}
-                    aria-hidden
-                  />
-                  {KIND_STYLE[kind].label}
-                </span>
-              ))}
-              <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
-                <span
-                  className="inline-block h-3 w-3 bg-cream/20 ring-1 ring-cream/15"
-                  aria-hidden
-                />
-                Looks fine
-              </span>
-              <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
-                <span
-                  className="inline-block h-3 w-3 bg-[#9fb5aa]/70"
-                  aria-hidden
-                />
-                As spoken
-              </span>
-              <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
-                <span
-                  className="inline-block h-3 w-3 bg-[#c4a04a]/70 ring-1 ring-cream/45"
-                  aria-hidden
-                />
-                Needs update
-              </span>
-              <span className="font-sans text-xs text-cream/35">
-                {title} · {ARC_MANUSCRIPT_SOURCE}
-              </span>
             </div>
+
+            {activeChunk && activeChunk.kind !== 'equal' ? (
+              <ReviewBar
+                chunk={activeChunk}
+                status={activeStatus}
+                trackTime={activeTrackTime}
+                onStatus={applyStatus}
+              />
+            ) : (
+              <p className="border border-cream/12 bg-[#0c100e] px-4 py-3 font-sans text-xs text-cream/40">
+                Tap a highlight in the script to review it here.
+              </p>
+            )}
 
             <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-2">
               <DiffPane
