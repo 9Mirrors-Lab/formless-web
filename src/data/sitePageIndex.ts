@@ -206,12 +206,22 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/BrandEndorsementsPage.tsx, src/lib/endorsementDoc.ts',
   },
   {
+    id: 'brand-schedule',
+    title: 'Schedule',
+    path: '/brand/schedule',
+    category: 'design',
+    description:
+      'Launch communication runway: who does what, when, on which channel.',
+    source:
+      'src/pages/BrandSchedulePage.tsx, src/data/launchCommsSchedule.ts',
+  },
+  {
     id: 'brand-book-launch-campaign',
     title: 'Book launch campaign',
     path: '/brand/book-launch-campaign',
     category: 'design',
     description:
-      'Warm network, professional list, and LinkedIn launch templates on one calendar.',
+      'Formless runway before September 1 and teaching after: warm circle, waitlist, LinkedIn, and X.',
     source:
       'src/pages/BrandBookLaunchCampaignPage.tsx, src/data/bookLaunchCampaign.ts',
   },

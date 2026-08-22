@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { diffManuscriptTexts } from '@/lib/scriptWordDiff';
 import {
+  aggregateReviewCounts,
   differenceFingerprints,
   filterDifferenceIds,
   mergeReviewStores,
+  normalizeReviewStatus,
   parseReviewStoreKey,
   reviewCounts,
   reviewStoreKey,
@@ -75,16 +77,17 @@ describe('scriptDiffReview', () => {
     );
   });
 
-  it('filters and counts open, cleared, and needs-update differences', () => {
+  it('filters and counts open, cleared, as-spoken, and needs-update differences', () => {
     const result = diffManuscriptTexts(
       'one missing two extra three swapped four',
       'one two bonus three changed four',
     );
     const fingerprints = differenceFingerprints(result.chunks);
     let store: DiffReviewStore = {};
-    const [firstId, secondId] = result.differenceIds;
+    const [firstId, secondId, thirdId] = result.differenceIds;
     expect(firstId).toBeDefined();
     expect(secondId).toBeDefined();
+    expect(thirdId).toBeDefined();
 
     store = upsertReviewStatus(store, {
       chapterId: 4,
@@ -96,6 +99,12 @@ describe('scriptDiffReview', () => {
       chapterId: 4,
       model: 'base',
       fingerprint: fingerprints.get(secondId!)!,
+      status: 'as-spoken',
+    });
+    store = upsertReviewStatus(store, {
+      chapterId: 4,
+      model: 'base',
+      fingerprint: fingerprints.get(thirdId!)!,
       status: 'needs-update',
     });
 
@@ -103,7 +112,7 @@ describe('scriptDiffReview', () => {
     expect(
       filterDifferenceIds(result.differenceIds, fingerprints, store, scope, 'open')
         .length,
-    ).toBeGreaterThan(0);
+    ).toBe(result.differenceIds.length - 3);
     expect(
       filterDifferenceIds(
         result.differenceIds,
@@ -119,9 +128,18 @@ describe('scriptDiffReview', () => {
         fingerprints,
         store,
         scope,
-        'needs-update',
+        'as-spoken',
       ),
     ).toEqual([secondId]);
+    expect(
+      filterDifferenceIds(
+        result.differenceIds,
+        fingerprints,
+        store,
+        scope,
+        'needs-update',
+      ),
+    ).toEqual([thirdId]);
 
     const counts = reviewCounts(
       result.differenceIds,
@@ -130,8 +148,9 @@ describe('scriptDiffReview', () => {
       scope,
     );
     expect(counts.cleared).toBe(1);
+    expect(counts.asSpoken).toBe(1);
     expect(counts.needsUpdate).toBe(1);
-    expect(counts.open).toBe(result.differenceIds.length - 2);
+    expect(counts.open).toBe(result.differenceIds.length - 3);
     expect(counts.all).toBe(result.differenceIds.length);
   });
 
@@ -193,6 +212,13 @@ describe('scriptDiffReview', () => {
     ).toBe('cleared');
   });
 
+  it('keeps looks-fine, as-spoken, and needs-update as separate marks', () => {
+    expect(normalizeReviewStatus('cleared')).toBe('cleared');
+    expect(normalizeReviewStatus('as-spoken')).toBe('as-spoken');
+    expect(normalizeReviewStatus('needs-update')).toBe('needs-update');
+    expect(normalizeReviewStatus('open')).toBeNull();
+  });
+
   it('keeps the newer status when merging local cache with supabase', () => {
     const local: DiffReviewStore = {
       '2:medium:one': {
@@ -218,5 +244,38 @@ describe('scriptDiffReview', () => {
     expect(merged['2:medium:one']?.status).toBe('needs-update');
     expect(merged['2:medium:two']?.status).toBe('needs-update');
     expect(merged['2:medium:three']?.status).toBe('cleared');
+  });
+
+  it('adds review counts across chapters for a whole-book total', () => {
+    const book = aggregateReviewCounts([
+      {
+        open: 15,
+        cleared: 1,
+        asSpoken: 1,
+        needsUpdate: 0,
+        all: 17,
+      },
+      {
+        open: 40,
+        cleared: 2,
+        asSpoken: 0,
+        needsUpdate: 3,
+        all: 45,
+      },
+    ]);
+    expect(book).toEqual({
+      open: 55,
+      cleared: 3,
+      asSpoken: 1,
+      needsUpdate: 3,
+      all: 62,
+    });
+    expect(aggregateReviewCounts([])).toEqual({
+      open: 0,
+      cleared: 0,
+      asSpoken: 0,
+      needsUpdate: 0,
+      all: 0,
+    });
   });
 });

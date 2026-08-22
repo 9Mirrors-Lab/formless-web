@@ -2,10 +2,11 @@
  * Book vs audio — printed ARC text (left) vs timed audio script (right).
  * Live word-level diff; normalized matching.
  */
-import { Check, ChevronDown, ChevronUp, Flag } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Flag, Speech } from 'lucide-react';
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -32,10 +33,12 @@ import {
 import { manuscriptForChapterMedium } from '@/data/audioManuscriptsMedium';
 import { useScriptDiffReview } from '@/hooks/useScriptDiffReview';
 import {
+  aggregateReviewCounts,
   differenceFingerprints,
   filterDifferenceIds,
   reviewCounts,
   statusForFingerprint,
+  type DiffReviewCounts,
   type DiffReviewFilter,
   type DiffReviewStatus,
 } from '@/lib/scriptDiffReview';
@@ -86,6 +89,7 @@ const KIND_STYLE: Record<
 const FILTER_OPTIONS: Array<{ id: DiffReviewFilter; label: string }> = [
   { id: 'open', label: 'Open' },
   { id: 'needs-update', label: 'Needs update' },
+  { id: 'as-spoken', label: 'As spoken' },
   { id: 'cleared', label: 'Cleared' },
   { id: 'all', label: 'All' },
 ];
@@ -105,15 +109,21 @@ function highlightClass(
   side: 'left' | 'right',
   reviewStatus: DiffReviewStatus | null,
 ): string {
-  if (reviewStatus === 'cleared') {
-    return 'rounded-sm bg-cream/[0.04] text-cream/35 ring-1 ring-cream/10';
-  }
   const style = KIND_STYLE[chunk.kind];
   const base = side === 'left' ? style.left : style.right;
-  if (reviewStatus === 'needs-update') {
-    return `${base} ring-1 ring-cream/45`;
+  if (reviewStatus == null) return base;
+  switch (reviewStatus) {
+    case 'cleared':
+      return 'rounded-sm bg-cream/[0.04] text-cream/35 ring-1 ring-cream/10';
+    case 'as-spoken':
+      return 'rounded-sm bg-[#9fb5aa]/18 text-cream/55 ring-1 ring-[#9fb5aa]/40';
+    case 'needs-update':
+      return `${base} ring-1 ring-cream/45`;
+    default: {
+      const _exhaustive: never = reviewStatus;
+      return _exhaustive;
+    }
   }
-  return base;
 }
 
 function chapterFromSearch(
@@ -381,33 +391,587 @@ function DiffPane({
   );
 }
 
-function Stat({ label, value }: { label: string; value: ReactNode }) {
+function formatCount(value: number): string {
+  return value.toLocaleString('en-US');
+}
+
+const TICK: Record<'delete' | 'insert' | 'replace', string> = {
+  delete: 'bg-[#c45c4a]/80',
+  insert: 'bg-[#3d7a6a]/85',
+  replace: 'bg-[#c4a04a]/80',
+};
+
+function DualMetric({
+  label,
+  bookValue,
+  trackValue,
+  tick,
+  bookHint,
+  trackHint,
+  folio,
+}: {
+  label: string;
+  bookValue: string;
+  trackValue: string;
+  tick?: keyof typeof TICK;
+  bookHint?: string;
+  trackHint?: string;
+  folio?: string;
+}) {
   return (
-    <div className="min-w-[5.5rem]">
-      <p className={LABEL}>{label}</p>
-      <p className="mt-1 font-mono text-sm text-cream tabular-nums">{value}</p>
+    <div className="min-w-0">
+      <p className={`${LABEL} flex items-center gap-1.5`}>
+        {tick ? (
+          <span className={`inline-block h-1.5 w-1.5 ${TICK[tick]}`} aria-hidden />
+        ) : null}
+        {label}
+      </p>
+      <p className="mt-1.5 font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
+        {bookValue}
+      </p>
+      <p className="mt-1.5 h-4 font-sans text-[0.7rem] text-cream/40">
+        {bookHint ?? ''}
+      </p>
+      <div className="mt-2.5 border-t border-cream/[0.08] pt-2">
+        <p className="flex items-baseline gap-2">
+          {folio ? (
+            <span className="font-serif text-[1.05rem] italic leading-none text-cream/50">
+              {folio}
+            </span>
+          ) : (
+            <span
+              className={`inline-block h-1 w-1 shrink-0 ${tick ? TICK[tick] : 'bg-transparent'}`}
+              aria-hidden
+            />
+          )}
+          <span className="font-mono text-[0.92rem] leading-none text-cream/70 tabular-nums">
+            {trackValue}
+          </span>
+        </p>
+        {trackHint ? (
+          <p className="mt-1 font-sans text-[0.65rem] text-cream/35">{trackHint}</p>
+        ) : null}
+      </div>
     </div>
   );
 }
 
-function DiffStatRow({
-  scope,
-  stats,
+function MetricsBand({
+  book,
+  track,
+  chapterIndex,
+  chapterTitle,
+  bookCounts,
+  trackCounts,
 }: {
-  scope: string;
-  stats: DiffStats;
+  book: DiffStats;
+  track: DiffStats;
+  chapterIndex: string;
+  chapterTitle: string;
+  bookCounts: DiffReviewCounts;
+  trackCounts: DiffReviewCounts;
 }) {
   return (
-    <div className="flex flex-wrap items-end gap-3">
-      <div className="min-w-[5.5rem]">
-        <p className={LABEL}>Scope</p>
-        <p className="mt-1 font-sans text-sm text-cream/85">{scope}</p>
+    <div className="flex flex-col gap-4 border border-cream/12 bg-[#0c100e] px-4 py-3 lg:flex-row lg:items-stretch lg:gap-8">
+      <div className="min-w-0 flex-[1.45]">
+        <div
+          className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-4"
+          title={chapterTitle}
+        >
+          <DualMetric
+            label="Whole book"
+            bookValue={`${book.similarityPct}%`}
+            bookHint={`${formatCount(book.matchedWords)} same words`}
+            folio={chapterIndex}
+            trackValue={`${track.similarityPct}%`}
+            trackHint={`${formatCount(track.matchedWords)} same · this track`}
+          />
+          <DualMetric
+            label="In book"
+            bookValue={formatCount(book.missingFromScript)}
+            tick="delete"
+            trackValue={formatCount(track.missingFromScript)}
+          />
+          <DualMetric
+            label="In audio"
+            bookValue={formatCount(book.onlyInScript)}
+            tick="insert"
+            trackValue={formatCount(track.onlyInScript)}
+          />
+          <DualMetric
+            label="Wording"
+            bookValue={formatCount(book.replacements)}
+            tick="replace"
+            trackValue={formatCount(track.replacements)}
+          />
+        </div>
       </div>
-      <Stat label="Same %" value={`${stats.similarityPct}%`} />
-      <Stat label="Same words" value={stats.matchedWords} />
-      <Stat label="In book, not audio" value={stats.missingFromScript} />
-      <Stat label="In audio, not book" value={stats.onlyInScript} />
-      <Stat label="Wording differs" value={stats.replacements} />
+
+      <CheckCluster
+        book={bookCounts}
+        track={trackCounts}
+        chapterIndex={chapterIndex}
+      />
+    </div>
+  );
+}
+
+function checkedOf(counts: DiffReviewCounts): number {
+  return counts.cleared + counts.asSpoken + counts.needsUpdate;
+}
+
+const STATUS_SWATCH = {
+  fine: '#f2f0e9',
+  spoken: '#9fb5aa',
+  update: '#c4a04a',
+  open: 'rgb(242 240 233 / 0.42)',
+} as const;
+
+const GRAPH_FILL = {
+  fine: '#f2f0e9',
+  spoken: '#9fb5aa',
+  update: '#c4a04a',
+  open: '#9fb5aa',
+} as const;
+
+type StatusSlice = {
+  id: 'fine' | 'spoken' | 'update' | 'open';
+  label: string;
+  value: number;
+  color: string;
+};
+
+function statusSlices(book: DiffReviewCounts): StatusSlice[] {
+  return [
+    { id: 'open', label: 'Open', value: book.open, color: STATUS_SWATCH.open },
+    { id: 'fine', label: 'Fine', value: book.cleared, color: STATUS_SWATCH.fine },
+    {
+      id: 'spoken',
+      label: 'Spoken',
+      value: book.asSpoken,
+      color: STATUS_SWATCH.spoken,
+    },
+    {
+      id: 'update',
+      label: 'Update',
+      value: book.needsUpdate,
+      color: STATUS_SWATCH.update,
+    },
+  ];
+}
+
+function StatusGraph({
+  slices,
+  total,
+  trackSlices,
+}: {
+  slices: StatusSlice[];
+  total: number;
+  trackSlices: StatusSlice[];
+}) {
+  const uid = useId().replace(/:/g, '');
+  const glowId = `check-glow-${uid}`;
+  const hotGlowId = `check-hot-${uid}`;
+  const floorFadeId = `check-floor-${uid}`;
+  const areaFillId = `check-area-${uid}`;
+
+  const width = 220;
+  const height = 128;
+  const plotLeft = 14;
+  const plotRight = 206;
+  const plotTop = 12;
+  const horizon = 82;
+  const floorBottom = 126;
+  const vpX = 110;
+  const vpY = 4;
+  const plotHeight = horizon - plotTop;
+  const maxValue = Math.max(1, ...slices.map((slice) => slice.value));
+  const checked = slices
+    .filter((slice) => slice.id !== 'open')
+    .reduce((sum, slice) => sum + slice.value, 0);
+  const checkedPct = total === 0 ? 0 : checked / total;
+  const groupWidth = (plotRight - plotLeft) / slices.length;
+  const depthX = 8;
+  const depthY = -5;
+
+  const bookBars = slices.map((slice, index) => {
+    const groupX = plotLeft + index * groupWidth;
+    const barH = (slice.value / maxValue) * (plotHeight - 12);
+    const h = slice.value > 0 ? Math.max(barH, 8) : 10;
+    const x = groupX + 6;
+    const w = 20;
+    return {
+      ...slice,
+      x,
+      w,
+      h,
+      y: horizon - h,
+      tipX: x + w / 2 + depthX / 2,
+      tipY: horizon - h + depthY,
+    };
+  });
+
+  const trackLine = trackSlices.map((slice, index) => {
+    const groupX = plotLeft + index * groupWidth;
+    const barH = (slice.value / maxValue) * (plotHeight - 12);
+    const h = Math.max(barH, slice.value > 0 ? 4 : 0);
+    return {
+      x: groupX + 16,
+      y: horizon - h,
+    };
+  });
+
+  const trailX = plotLeft + 8 + checkedPct * (plotRight - plotLeft - 16);
+  const recedeCount = 17;
+  const floorBands = 8;
+  const linePath = bookBars
+    .map((bar, index) => `${index === 0 ? 'M' : 'L'} ${bar.tipX} ${bar.tipY}`)
+    .join(' ');
+  const areaPath = `${linePath} L ${bookBars[bookBars.length - 1].x + bookBars[bookBars.length - 1].w} ${horizon} L ${bookBars[0].x} ${horizon} Z`;
+  const trackPath = trackLine
+    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
+    .join(' ');
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className="h-[7.25rem] w-[12rem] shrink-0"
+      aria-hidden
+    >
+      <defs>
+        <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="1.4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id={hotGlowId} x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="2.6" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <linearGradient id={floorFadeId} x1="0" y1={horizon} x2="0" y2={floorBottom} gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#9fb5aa" stopOpacity="0.38" />
+          <stop offset="1" stopColor="#9fb5aa" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id={areaFillId} x1="0" y1={plotTop} x2="0" y2={horizon} gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#9fb5aa" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#9fb5aa" stopOpacity="0.06" />
+        </linearGradient>
+      </defs>
+
+      {Array.from({ length: 4 }, (_, i) => {
+        const y = plotTop + ((i + 1) / 5) * plotHeight;
+        return (
+          <line
+            key={`grid-y-${i}`}
+            x1={plotLeft}
+            y1={y}
+            x2={plotRight}
+            y2={y}
+            stroke="rgb(159 181 170 / 0.22)"
+            strokeWidth={0.7}
+            strokeDasharray="2 3"
+          />
+        );
+      })}
+      {slices.map((slice, index) => {
+        const x = plotLeft + (index + 0.5) * groupWidth;
+        return (
+          <line
+            key={`grid-x-${slice.id}`}
+            x1={x}
+            y1={plotTop}
+            x2={x}
+            y2={horizon}
+            stroke="rgb(159 181 170 / 0.16)"
+            strokeWidth={0.7}
+          />
+        );
+      })}
+
+      <polygon
+        points={`${plotLeft},${horizon} ${plotRight},${horizon} ${plotRight - 10},${floorBottom} ${plotLeft + 10},${floorBottom}`}
+        fill={`url(#${floorFadeId})`}
+      />
+      <line
+        x1={plotLeft}
+        y1={horizon}
+        x2={plotRight}
+        y2={horizon}
+        stroke="#9fb5aa"
+        strokeWidth={1.35}
+        filter={`url(#${glowId})`}
+      />
+
+      {Array.from({ length: recedeCount }, (_, i) => {
+        const t = i / (recedeCount - 1);
+        const x = plotLeft + 10 + t * (plotRight - plotLeft - 20);
+        const dy = vpY - floorBottom;
+        const hit = (horizon - floorBottom) / dy;
+        const hx = x + (vpX - x) * hit;
+        const spine = i === 8;
+        return (
+          <line
+            key={`recede-${i}`}
+            x1={x}
+            y1={floorBottom}
+            x2={hx}
+            y2={horizon}
+            stroke={spine ? '#9fb5aa' : 'rgb(159 181 170 / 0.55)'}
+            strokeWidth={spine ? 1.35 : 0.9}
+            filter={spine ? `url(#${glowId})` : undefined}
+          />
+        );
+      })}
+
+      {Array.from({ length: floorBands }, (_, i) => {
+        const u = ((i + 1) / (floorBands + 1)) ** 0.68;
+        const y = horizon + (floorBottom - horizon) * u;
+        const scale = (y - vpY) / (floorBottom - vpY);
+        const left = vpX + (plotLeft + 10 - vpX) * scale;
+        const right = vpX + (plotRight - 10 - vpX) * scale;
+        return (
+          <line
+            key={`band-${i}`}
+            x1={left}
+            y1={y}
+            x2={right}
+            y2={y}
+            stroke="rgb(159 181 170 / 0.55)"
+            strokeWidth={0.85}
+          />
+        );
+      })}
+
+      <path
+        d={`M ${plotLeft} ${plotTop + 8} V ${plotTop} H ${plotLeft + 8}`}
+        fill="none"
+        stroke="#9fb5aa"
+        strokeWidth={1.15}
+      />
+      <path
+        d={`M ${plotRight} ${plotTop + 8} V ${plotTop} H ${plotRight - 8}`}
+        fill="none"
+        stroke="#9fb5aa"
+        strokeWidth={1.15}
+      />
+      <path
+        d={`M ${plotLeft} ${horizon - 8} V ${horizon} H ${plotLeft + 8}`}
+        fill="none"
+        stroke="#9fb5aa"
+        strokeWidth={1.15}
+      />
+      <path
+        d={`M ${plotRight} ${horizon - 8} V ${horizon} H ${plotRight - 8}`}
+        fill="none"
+        stroke="#9fb5aa"
+        strokeWidth={1.15}
+      />
+
+      <path d={areaPath} fill={`url(#${areaFillId})`} />
+
+      {bookBars.map((bar) => {
+        const color = GRAPH_FILL[bar.id];
+        const x2 = bar.x + bar.w;
+        const yb = horizon;
+        const yt = bar.y;
+        const tx = bar.x + depthX;
+        const ty = yt + depthY;
+        const sx = x2 + depthX;
+        const syb = yb + depthY;
+        const live = bar.value > 0;
+        return (
+          <g key={`book-${bar.id}`}>
+            <polygon
+              points={`${bar.x},${yb} ${tx},${yb + depthY} ${tx + bar.w},${yb + depthY} ${x2},${yb}`}
+              fill={color}
+              opacity={0.2}
+            />
+            <polygon
+              points={`${x2},${yt} ${sx},${ty} ${sx},${syb} ${x2},${yb}`}
+              fill="#080a09"
+              stroke={color}
+              strokeWidth={1}
+              opacity={0.9}
+            />
+            <polygon
+              points={`${bar.x},${yt} ${x2},${yt} ${x2},${yb} ${bar.x},${yb}`}
+              fill={live ? color : 'transparent'}
+              opacity={live ? 0.42 : 1}
+              stroke={color}
+              strokeWidth={1.2}
+            />
+            <polygon
+              points={`${bar.x},${yt} ${tx},${ty} ${sx},${ty} ${x2},${yt}`}
+              fill={live ? '#f2f0e9' : 'transparent'}
+              opacity={live ? 0.35 : 1}
+              stroke={color}
+              strokeWidth={1.2}
+            />
+            <path
+              d={`M ${bar.x} ${yb} L ${bar.x} ${yt} L ${tx} ${ty} L ${sx} ${ty} L ${sx} ${syb} L ${x2} ${yb}`}
+              fill="none"
+              stroke={color}
+              strokeWidth={live ? 1.45 : 0.9}
+              filter={`url(#${hotGlowId})`}
+            />
+            {live
+              ? Array.from({ length: 4 }, (_, i) => {
+                  const y = yt + ((i + 1) / 5) * (yb - yt);
+                  return (
+                    <line
+                      key={`${bar.id}-win-${i}`}
+                      x1={bar.x + 2}
+                      y1={y}
+                      x2={x2 - 2}
+                      y2={y}
+                      stroke="#f2f0e9"
+                      strokeWidth={0.6}
+                      opacity={0.28}
+                    />
+                  );
+                })
+              : null}
+          </g>
+        );
+      })}
+
+      <path
+        d={trackPath}
+        fill="none"
+        stroke="#9fb5aa"
+        strokeWidth={1.35}
+        strokeLinejoin="miter"
+        filter={`url(#${hotGlowId})`}
+      />
+      <path
+        d={linePath}
+        fill="none"
+        stroke="#f2f0e9"
+        strokeWidth={1.45}
+        strokeLinejoin="miter"
+        filter={`url(#${hotGlowId})`}
+      />
+      {bookBars.map((bar) => (
+        <rect
+          key={`node-${bar.id}`}
+          x={bar.tipX - 1.6}
+          y={bar.tipY - 1.6}
+          width={3.2}
+          height={3.2}
+          fill="#f2f0e9"
+          filter={`url(#${glowId})`}
+        />
+      ))}
+
+      <line
+        x1={plotLeft + 8}
+        y1={plotTop + 4}
+        x2={Math.max(plotLeft + 12, trailX)}
+        y2={plotTop + 4}
+        stroke="#9fb5aa"
+        strokeWidth={1.8}
+        filter={`url(#${hotGlowId})`}
+      />
+      <rect
+        x={Math.max(plotLeft + 12, trailX) - 2}
+        y={plotTop + 2}
+        width={4}
+        height={4}
+        fill="#f2f0e9"
+        filter={`url(#${hotGlowId})`}
+      />
+    </svg>
+  );
+}
+
+function CheckCluster({
+  book,
+  track,
+  chapterIndex,
+}: {
+  book: DiffReviewCounts;
+  track: DiffReviewCounts;
+  chapterIndex: string;
+}) {
+  const bookChecked = checkedOf(book);
+  const slices = statusSlices(book);
+  const trackSlices = statusSlices(track);
+
+  return (
+    <div
+      className="flex min-w-[24rem] flex-1 gap-4 lg:border-l lg:border-cream/10 lg:pl-6"
+      aria-label={
+        book.all === 0
+          ? 'No differences in the book'
+          : `${formatCount(book.all)} differences in the book, ${formatCount(bookChecked)} checked. Fine ${formatCount(book.cleared)}, spoken ${formatCount(book.asSpoken)}, update ${formatCount(book.needsUpdate)}, open ${formatCount(book.open)}. Track ${chapterIndex} has ${formatCount(track.open)} open.`
+      }
+    >
+      <div className="min-w-0 flex-1">
+        <p className={LABEL}>Check</p>
+        {book.all === 0 ? (
+          <p className="mt-1.5 font-sans text-[0.7rem] text-cream/40">
+            No differences in the book
+          </p>
+        ) : (
+          <>
+            <div className="mt-1.5 flex items-baseline gap-6">
+              <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
+                {formatCount(book.all)}
+                <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
+                  total
+                </span>
+              </p>
+              <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
+                {formatCount(bookChecked)}
+                <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
+                  checked
+                </span>
+              </p>
+            </div>
+            <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
+              {slices.map((slice) => (
+                <li
+                  key={slice.id}
+                  className="flex items-baseline gap-1.5 font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/40"
+                >
+                  <span
+                    className="mb-0.5 inline-block h-1.5 w-1.5 shrink-0"
+                    style={{ backgroundColor: slice.color }}
+                    aria-hidden
+                  />
+                  <span className="font-mono text-sm tabular-nums text-cream/75">
+                    {formatCount(slice.value)}
+                  </span>
+                  {slice.label}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 flex items-baseline gap-2">
+              <span className="font-serif text-[1.05rem] italic leading-[1.1] text-cream/50">
+                {chapterIndex}
+              </span>
+              <span className="font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/35">
+                {track.all === 0
+                  ? 'No diffs on this track'
+                  : `${formatCount(track.open)} open here`}
+              </span>
+            </p>
+          </>
+        )}
+      </div>
+      {book.all > 0 ? (
+        <StatusGraph
+          slices={slices}
+          total={book.all}
+          trackSlices={trackSlices}
+        />
+      ) : null}
     </div>
   );
 }
@@ -448,6 +1012,19 @@ function ReviewBar({
         </button>
         <button
           type="button"
+          aria-pressed={status === 'as-spoken'}
+          onClick={() => onStatus('as-spoken')}
+          className={`${TOOL_BUTTON} ${
+            status === 'as-spoken'
+              ? 'border-[#9fb5aa]/55 bg-[#9fb5aa]/20 text-cream'
+              : 'border-cream/20 text-cream/80 hover:bg-cream/5'
+          }`}
+        >
+          <Speech size={14} aria-hidden />
+          As spoken
+        </button>
+        <button
+          type="button"
           aria-pressed={status === 'needs-update'}
           onClick={() => onStatus('needs-update')}
           className={`${TOOL_BUTTON} ${
@@ -460,6 +1037,10 @@ function ReviewBar({
           Needs update
         </button>
       </div>
+      <p className="basis-full font-sans text-xs text-cream/45">
+        As spoken is for a different word the author said, like the vs this.
+        Needs update is for the audio script, including capitalization.
+      </p>
     </div>
   );
 }
@@ -491,15 +1072,38 @@ export default function AudioScriptComparePage() {
     [arcText, scriptText],
   );
 
-  const bookStats = useMemo(() => {
-    const parts = AUDIO_LISTEN_ORDER.map((id) =>
-      diffManuscriptTexts(
-        arcManuscriptForChapter(id),
-        scriptTextFromCues(cuesForModel(id, scriptModel)),
-      ).stats,
-    );
-    return aggregateDiffStats(parts);
-  }, [scriptModel]);
+  const bookDiffs = useMemo(
+    () =>
+      AUDIO_LISTEN_ORDER.map((id) => {
+        const result = diffManuscriptTexts(
+          arcManuscriptForChapter(id),
+          scriptTextFromCues(cuesForModel(id, scriptModel)),
+        );
+        return {
+          chapterId: id,
+          stats: result.stats,
+          differenceIds: result.differenceIds,
+          fingerprints: differenceFingerprints(result.chunks),
+        };
+      }),
+    [scriptModel],
+  );
+  const bookStats = useMemo(
+    () => aggregateDiffStats(bookDiffs.map((part) => part.stats)),
+    [bookDiffs],
+  );
+  const bookCounts = useMemo(
+    () =>
+      aggregateReviewCounts(
+        bookDiffs.map((part) =>
+          reviewCounts(part.differenceIds, part.fingerprints, store, {
+            chapterId: part.chapterId,
+            model: scriptModel,
+          }),
+        ),
+      ),
+    [bookDiffs, scriptModel, store],
+  );
 
   const fingerprints = useMemo(
     () => differenceFingerprints(diff.chunks),
@@ -660,6 +1264,8 @@ export default function AudioScriptComparePage() {
         return counts.open;
       case 'cleared':
         return counts.cleared;
+      case 'as-spoken':
+        return counts.asSpoken;
       case 'needs-update':
         return counts.needsUpdate;
       case 'all':
@@ -677,7 +1283,7 @@ export default function AudioScriptComparePage() {
         <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-2 md:gap-5 md:px-8 md:pb-8 md:pt-2.5 lg:px-10 lg:pb-10">
             <BrandPageHeader
               title="Book vs audio"
-              description="Left is the printed book. Right is the timed script from the recording. Tap a highlight to clear it or mark it for update."
+              description="Left is the printed book. Right is the timed script from the recording. Tap a highlight to mark looks fine, as spoken, or needs update."
             />
 
             <div className="flex flex-wrap items-end gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3">
@@ -746,11 +1352,14 @@ export default function AudioScriptComparePage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 border border-cream/12 bg-[#0c100e] px-4 py-3">
-              <DiffStatRow scope="This track" stats={diff.stats} />
-              <div className="h-px bg-cream/10" aria-hidden />
-              <DiffStatRow scope="Whole book" stats={bookStats} />
-            </div>
+            <MetricsBand
+              book={bookStats}
+              track={diff.stats}
+              chapterIndex={formatChapterIndex(chapterId)}
+              chapterTitle={title}
+              bookCounts={bookCounts}
+              trackCounts={counts}
+            />
 
             {activeChunk && activeChunk.kind !== 'equal' ? (
               <ReviewBar
@@ -816,7 +1425,21 @@ export default function AudioScriptComparePage() {
                   className="inline-block h-3 w-3 bg-cream/20 ring-1 ring-cream/15"
                   aria-hidden
                 />
-                Cleared
+                Looks fine
+              </span>
+              <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
+                <span
+                  className="inline-block h-3 w-3 bg-[#9fb5aa]/70"
+                  aria-hidden
+                />
+                As spoken
+              </span>
+              <span className="inline-flex items-center gap-2 font-sans text-xs text-cream/55">
+                <span
+                  className="inline-block h-3 w-3 bg-[#c4a04a]/70 ring-1 ring-cream/45"
+                  aria-hidden
+                />
+                Needs update
               </span>
               <span className="font-sans text-xs text-cream/35">
                 {title} · {ARC_MANUSCRIPT_SOURCE}

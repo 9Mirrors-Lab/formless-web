@@ -1,5 +1,6 @@
 export type BrandNavId =
   | "brand"
+  | "schedule"
   | "signups"
   | "endorsements"
   | "book-launch"
@@ -37,6 +38,12 @@ export const NAV_ROOMS: BrandNavRoom[] = [
     title: "Audience",
     items: [
       {
+        id: "schedule",
+        title: "Schedule",
+        href: "/brand/schedule",
+        description: "Who does what, when, on which channel",
+      },
+      {
         id: "signups",
         title: "Signups",
         href: "/brand/signups",
@@ -52,7 +59,7 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         id: "book-launch",
         title: "Book launch campaign",
         href: "/brand/book-launch-campaign",
-        description: "Warm, professional, and LinkedIn sequences",
+        description: "Formless runway before September 1 and teaching after",
       },
     ],
   },
@@ -156,6 +163,9 @@ export function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/client/review" || pathname.startsWith("/client/review/")) {
     return "client-review";
   }
+  if (pathname === "/brand/schedule" || pathname.startsWith("/brand/schedule")) {
+    return "schedule";
+  }
   if (pathname === "/brand/signups" || pathname.startsWith("/brand/signups")) {
     return "signups";
   }
@@ -191,6 +201,7 @@ export function brandNavPlace(activeId: BrandNavId): {
       return { title: "Design system", room: "Toolkit" };
     case "client-review":
       return { title: "Client review", room: "Toolkit" };
+    case "schedule":
     case "signups":
     case "endorsements":
     case "book-launch":

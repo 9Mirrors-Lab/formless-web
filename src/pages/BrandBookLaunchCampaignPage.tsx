@@ -5,10 +5,16 @@ import { BrandShell } from '@/components/app-sidebar';
 import { BrandPageBody, BrandPageHeader } from '@/components/BrandPageHeader';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import {
+  LAUNCH_ADS,
+  LAUNCH_CALENDAR,
   LAUNCH_CHANNELS,
   LAUNCH_CHANNEL_IDS,
   LAUNCH_INTAKE,
+  LAUNCH_LANDING,
+  LAUNCH_POSITIONING,
   LAUNCH_QUICK_QUESTIONS,
+  LAUNCH_RUNWAYS,
+  LAUNCH_SCRIPTS,
   findLaunchPiece,
   formatLaunchPieceCopy,
   formatLaunchSubjects,
@@ -24,7 +30,9 @@ import {
   type LaunchChannelId,
   type LaunchDeskFilters,
   type LaunchIntakeSection,
+  type LaunchPhase,
   type LaunchPiece,
+  type LaunchRunwayId,
   type LaunchView,
 } from '@/data/bookLaunchCampaign';
 
@@ -35,16 +43,34 @@ function setFiltersInUrl(filters: LaunchDeskFilters) {
   window.history.replaceState({}, '', launchDeskHref(filters));
 }
 
+function isAssetView(view: LaunchView): boolean {
+  switch (view) {
+    case 'intake':
+    case 'landing':
+    case 'calendar':
+      return true;
+    case 'all':
+    case 'warm':
+    case 'professional':
+    case 'linkedin':
+    case 'x':
+      return false;
+    default: {
+      const _never: never = view;
+      return _never;
+    }
+  }
+}
+
 function defaultPiece(filters: LaunchDeskFilters): LaunchPiece | null {
+  if (isAssetView(filters.campaign)) return null;
+
   const selected = findLaunchPiece(filters.piece);
   if (selected) {
-    if (filters.campaign === 'all' || filters.campaign === 'intake') {
-      return selected;
-    }
+    if (filters.campaign === 'all') return selected;
     if (selected.channel === filters.campaign) return selected;
   }
 
-  if (filters.campaign === 'intake') return null;
   const visible = piecesForView(filters.campaign);
   return visible[0] ?? null;
 }
@@ -60,18 +86,22 @@ export default function BrandBookLaunchCampaignPage() {
   const summary = useMemo(() => summarizeLaunchCampaign(), []);
   const selected = defaultPiece(filters);
   const timelinePieces = piecesForView(
-    filters.campaign === 'intake' ? 'all' : filters.campaign,
+    isAssetView(filters.campaign) ? 'all' : filters.campaign,
   );
   const phases = phasesUsedBy(timelinePieces);
-  const showTimeline = filters.campaign !== 'intake';
+  const showTimeline = !isAssetView(filters.campaign);
   const showMatrix = filters.campaign === 'all';
 
   function update(next: Partial<LaunchDeskFilters>) {
     setFilters((current) => {
       const merged: LaunchDeskFilters = { ...current, ...next };
       if (next.campaign && next.campaign !== current.campaign && next.piece === undefined) {
-        const first = piecesForView(next.campaign)[0];
-        merged.piece = next.campaign === 'intake' ? null : first?.id ?? null;
+        if (isAssetView(next.campaign)) {
+          merged.piece = null;
+        } else {
+          const first = piecesForView(next.campaign)[0];
+          merged.piece = first?.id ?? null;
+        }
       }
       setFiltersInUrl(merged);
       return merged;
@@ -106,9 +136,11 @@ export default function BrandBookLaunchCampaignPage() {
       <BrandPageBody>
         <div className="flex flex-col gap-6 md:gap-8">
           <BrandPageHeader
-            title="Book launch campaign"
-            description="Warm network, professional list, and LinkedIn, lined up on the same launch calendar."
+            title="Formless launch campaign"
+            description="Eleven days into September 1, then ninety days of teaching. Warm circle, waitlist, LinkedIn, and X on one runway."
           />
+
+          <PositioningStrip />
 
           <CampaignTabs
             campaign={filters.campaign}
@@ -138,6 +170,10 @@ export default function BrandBookLaunchCampaignPage() {
             />
           ) : null}
 
+          {filters.campaign === 'landing' ? (
+            <LandingDesk copiedKey={copiedKey} onCopy={copyText} />
+          ) : null}
+          {filters.campaign === 'calendar' ? <CalendarDesk /> : null}
           {filters.campaign === 'intake' ? <IntakeDesk /> : null}
 
           {selected && showTimeline ? (
@@ -155,21 +191,49 @@ export default function BrandBookLaunchCampaignPage() {
   );
 }
 
+function PositioningStrip() {
+  return (
+    <section className="grid gap-4 border-y border-cream/12 py-5 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:gap-10">
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#9fb5aa]/70">
+          Angle
+        </p>
+        <p className="mt-2 max-w-[54ch] font-serif text-[1.15rem] italic leading-snug tracking-[-0.02em] text-cream">
+          {LAUNCH_POSITIONING.angle}
+        </p>
+      </div>
+      <div className="flex flex-col gap-3 text-[0.8125rem] leading-relaxed text-cream/60">
+        <p>{LAUNCH_POSITIONING.coreBenefit}</p>
+        <p>
+          {LAUNCH_POSITIONING.author}. {LAUNCH_POSITIONING.launchDate}.{' '}
+          {LAUNCH_POSITIONING.formats}.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function summaryLine(
   campaign: LaunchView,
   summary: ReturnType<typeof summarizeLaunchCampaign>,
 ): string {
   switch (campaign) {
     case 'all':
-      return `${summary.emails} emails and ${summary.posts} LinkedIn posts across three tracks.`;
+      return `${summary.emails} emails and ${summary.posts} posts. ${summary.byRunway.before} before launch, ${summary.byRunway.launch} on the day, ${summary.byRunway.after} after.`;
     case 'warm':
-      return `${summary.byChannel.warm} emails for people who know the author personally.`;
+      return `${summary.byChannel.warm} notes for the people closest to Soni.`;
     case 'professional':
-      return `${summary.byChannel.professional} emails for the broader professional list.`;
+      return `${summary.byChannel.professional} letters for waitlist and Stay Close.`;
     case 'linkedin':
       return `${summary.byChannel.linkedin} posts for the personal LinkedIn profile.`;
+    case 'x':
+      return `${summary.byChannel.x} posts. Insight first, title second.`;
+    case 'landing':
+      return 'Launch-state book page, ads, and two short videos.';
+    case 'calendar':
+      return 'Day-by-day from August 22 through November.';
     case 'intake':
-      return 'Questions to fill the placeholders.';
+      return 'Links, lists, and the site flip still to lock.';
     default: {
       const _never: never = campaign;
       return _never;
@@ -187,15 +251,18 @@ function CampaignTabs({
   onSelect: (campaign: LaunchView) => void;
 }) {
   const tabs: Array<{ id: LaunchView; label: string; count?: number }> = [
-    { id: 'all', label: 'Timeline' },
+    { id: 'all', label: 'Runway' },
     { id: 'warm', label: 'Warm', count: summary.byChannel.warm },
     {
       id: 'professional',
-      label: 'Professional',
+      label: 'List',
       count: summary.byChannel.professional,
     },
     { id: 'linkedin', label: 'LinkedIn', count: summary.byChannel.linkedin },
-    { id: 'intake', label: 'Intake' },
+    { id: 'x', label: 'X', count: summary.byChannel.x },
+    { id: 'landing', label: 'Page' },
+    { id: 'calendar', label: 'Calendar' },
+    { id: 'intake', label: 'Ops' },
   ];
 
   return (
@@ -236,19 +303,61 @@ function TimelineMatrix({
   selectedId,
   onSelect,
 }: {
-  phases: ReturnType<typeof phasesUsedBy>;
+  phases: LaunchPhase[];
   selectedId: string | null;
   onSelect: (piece: LaunchPiece) => void;
 }) {
   return (
+    <div className="flex flex-col gap-8">
+      {LAUNCH_RUNWAYS.map((runway) => {
+        const rows = phases.filter((phase) => phase.runway === runway.id);
+        if (rows.length === 0) return null;
+        return (
+          <section key={runway.id} aria-labelledby={`runway-${runway.id}`}>
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
+              <h2
+                id={`runway-${runway.id}`}
+                className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+              >
+                {runway.label}
+              </h2>
+              <p className="max-w-[46ch] text-[0.75rem] leading-relaxed text-cream/45">
+                {runway.job}
+              </p>
+            </div>
+            <RunwayTable
+              phases={rows}
+              selectedId={selectedId}
+              onSelect={onSelect}
+              runway={runway.id}
+            />
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function RunwayTable({
+  phases,
+  selectedId,
+  onSelect,
+  runway,
+}: {
+  phases: LaunchPhase[];
+  selectedId: string | null;
+  onSelect: (piece: LaunchPiece) => void;
+  runway: LaunchRunwayId;
+}) {
+  return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[44rem] border-collapse text-left">
+      <table className="w-full min-w-[52rem] border-collapse text-left">
         <caption className="sr-only">
-          Emails and posts grouped by send window and campaign
+          {runwayLabel(runway)} emails and posts
         </caption>
         <thead>
           <tr className="border-b border-cream/12">
-            <th className="w-[9.5rem] py-3 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+            <th className="w-[11rem] py-3 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
               When
             </th>
             {LAUNCH_CHANNEL_IDS.map((channel) => (
@@ -267,14 +376,17 @@ function TimelineMatrix({
             return (
               <tr key={phase.id} className="border-b border-cream/10 align-top">
                 <th className="py-3.5 pr-4 font-sans text-[12px] font-normal leading-snug text-cream/55">
-                  {phase.label}
+                  <span className="block text-cream/80">{phase.label}</span>
+                  <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.12em] text-cream/35">
+                    {phase.dates}
+                  </span>
                 </th>
                 {LAUNCH_CHANNEL_IDS.map((channel) => {
                   const cell = row.filter((piece) => piece.channel === channel);
                   return (
                     <td key={channel} className="py-3 pr-4">
                       {cell.length === 0 ? (
-                        <span className="text-[12px] text-cream/20">—</span>
+                        <span className="text-[12px] text-cream/20">-</span>
                       ) : (
                         <ul className="flex flex-col gap-1.5">
                           {cell.map((piece) => (
@@ -298,6 +410,21 @@ function TimelineMatrix({
       </table>
     </div>
   );
+}
+
+function runwayLabel(runway: LaunchRunwayId): string {
+  switch (runway) {
+    case 'before':
+      return 'Before launch';
+    case 'launch':
+      return 'Launch day';
+    case 'after':
+      return 'After launch';
+    default: {
+      const _never: never = runway;
+      return _never;
+    }
+  }
 }
 
 function CampaignSequence({
@@ -425,6 +552,9 @@ function PieceDetail({
         {piece.title}
       </h2>
       <p className="mt-2 text-[0.8125rem] text-cream/55">{piece.send}</p>
+      <p className="mt-3 max-w-[58ch] text-[0.875rem] leading-relaxed text-cream/65">
+        {piece.purpose}
+      </p>
 
       {piece.subjects.length > 0 ? (
         <div className="mt-6">
@@ -497,6 +627,178 @@ function CopyButton({
   );
 }
 
+function LandingDesk({
+  copiedKey,
+  onCopy,
+}: {
+  copiedKey: string | null;
+  onCopy: (key: string, text: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-10">
+      <section aria-labelledby="landing-copy-heading">
+        <h2
+          id="landing-copy-heading"
+          className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+        >
+          Book page, launch morning
+        </h2>
+        <p className="mt-2 max-w-[54ch] text-[0.8125rem] leading-relaxed text-cream/50">
+          Same voice as waitlist. The only change is the ask: Kindle and Audible instead of notify me.
+        </p>
+        <div className="mt-5 divide-y divide-cream/10 border-y border-cream/12">
+          {LAUNCH_LANDING.map((section) => (
+            <article key={section.id} className="py-6">
+              <h3 className="font-sans text-[0.9375rem] text-cream">{section.heading}</h3>
+              <p className="mt-2 max-w-[62ch] text-[0.875rem] leading-relaxed text-cream/70">
+                {section.body}
+              </p>
+              {section.cta ? (
+                <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-[#9fb5aa]/70">
+                  {section.cta}
+                </p>
+              ) : null}
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="ads-heading">
+        <h2
+          id="ads-heading"
+          className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+        >
+          Quiet ad variants
+        </h2>
+        <p className="mt-2 max-w-[54ch] text-[0.8125rem] leading-relaxed text-cream/50">
+          Search and Amazon language only. Claims match the book page. No countdown, no scarcity.
+        </p>
+        <div className="mt-5 divide-y divide-cream/10 border-y border-cream/12">
+          {LAUNCH_ADS.map((ad) => (
+            <article key={ad.id} className="py-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                {ad.angle}
+              </p>
+              <h3 className="mt-2 font-sans text-[0.9375rem] text-cream">{ad.shortHeadline}</h3>
+              <p className="mt-1 text-[0.875rem] text-cream/75">{ad.longHeadline}</p>
+              <p className="mt-2 max-w-[62ch] text-[0.875rem] leading-relaxed text-cream/65">
+                {ad.body}
+              </p>
+              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-[#9fb5aa]/70">
+                {ad.cta}
+              </p>
+              <p className="mt-2 text-[0.75rem] text-cream/40">{ad.audience}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="scripts-heading">
+        <h2
+          id="scripts-heading"
+          className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+        >
+          Short videos
+        </h2>
+        <div className="mt-5 flex flex-col gap-8">
+          {LAUNCH_SCRIPTS.map((script) => (
+            <article key={script.id} className="border-t border-cream/12 pt-6">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <h3 className="font-sans text-[0.9375rem] text-cream">{script.title}</h3>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                  {script.duration}
+                </p>
+              </div>
+              <p className="mt-2 max-w-[58ch] text-[0.8125rem] leading-relaxed text-cream/50">
+                {script.purpose} {script.format}
+              </p>
+              <CopyButton
+                label={copiedKey === script.id ? 'Copied' : 'Copy script'}
+                onClick={() => void onCopy(script.id, formatScript(script))}
+              />
+              <ol className="mt-4 divide-y divide-cream/10 border-y border-cream/12">
+                {script.beats.map((beat) => (
+                  <li key={beat.clock} className="grid gap-2 py-3 md:grid-cols-[7rem_1fr]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-cream/40">
+                      {beat.clock}
+                    </span>
+                    <div className="text-[0.8125rem] leading-relaxed text-cream/75">
+                      <p>{beat.voice}</p>
+                      <p className="mt-1 text-cream/45">On screen: {beat.onScreen}</p>
+                      <p className="text-cream/40">Visual: {beat.visual}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function formatScript(script: (typeof LAUNCH_SCRIPTS)[number]): string {
+  const beats = script.beats
+    .map(
+      (beat) =>
+        `${beat.clock}\nVO: ${beat.voice}\nON SCREEN: ${beat.onScreen}\nVISUAL: ${beat.visual}`,
+    )
+    .join('\n\n');
+  return `${script.title}\n${script.duration}\n${script.format}\n\n${beats}`;
+}
+
+function CalendarDesk() {
+  return (
+    <section aria-labelledby="calendar-heading">
+      <h2
+        id="calendar-heading"
+        className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+      >
+        Day by day
+      </h2>
+      <p className="mt-2 max-w-[54ch] text-[0.8125rem] leading-relaxed text-cream/50">
+        Site flip before the launch letters. Teaching starts only after the week is closed.
+      </p>
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full min-w-[44rem] border-collapse text-left">
+          <thead>
+            <tr className="border-b border-cream/12">
+              <th className="py-3 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                When
+              </th>
+              <th className="py-3 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                Channel
+              </th>
+              <th className="py-3 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                What ships
+              </th>
+              <th className="py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                Depends on
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {LAUNCH_CALENDAR.map((row) => (
+              <tr key={row.id} className="border-b border-cream/10 align-top">
+                <td className="py-3.5 pr-4">
+                  <span className="block text-[12px] text-cream/80">{row.when}</span>
+                  <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.12em] text-cream/35">
+                    {runwayLabel(row.runway)}
+                  </span>
+                </td>
+                <td className="py-3.5 pr-4 text-[12px] text-cream/60">{row.channel}</td>
+                <td className="py-3.5 pr-4 text-[13px] leading-snug text-cream/85">{row.piece}</td>
+                <td className="py-3.5 text-[12px] leading-snug text-cream/45">{row.dependsOn}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 function IntakeDesk() {
   const both = LAUNCH_INTAKE.filter((section) => section.channel === 'both');
   const warm = LAUNCH_INTAKE.filter((section) => section.channel === 'warm');
@@ -511,7 +813,7 @@ function IntakeDesk() {
           id="quick-intake-heading"
           className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
         >
-          Quick author questions
+          Still to lock
         </h2>
         <ol className="mt-4 divide-y divide-cream/10 border-y border-cream/12">
           {LAUNCH_QUICK_QUESTIONS.map((question, index) => (
@@ -528,12 +830,11 @@ function IntakeDesk() {
         </ol>
       </section>
 
-      <IntakeGroup
-        heading="Needed for both campaigns"
-        sections={both}
-      />
-      <IntakeGroup heading="Warm network only" sections={warm} />
-      <IntakeGroup heading="Professional list only" sections={professional} />
+      <IntakeGroup heading="Needed before anything sends" sections={both} />
+      {warm.length > 0 ? <IntakeGroup heading="Warm circle" sections={warm} /> : null}
+      {professional.length > 0 ? (
+        <IntakeGroup heading="Waitlist" sections={professional} />
+      ) : null}
     </div>
   );
 }

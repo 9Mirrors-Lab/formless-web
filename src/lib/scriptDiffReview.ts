@@ -4,9 +4,28 @@ import type { DiffChunk } from '@/lib/scriptWordDiff';
 
 export const DIFF_REVIEW_STORAGE_KEY = 'formless.scriptCompare.reviews';
 
-export type DiffReviewStatus = 'cleared' | 'needs-update';
+export type DiffReviewStatus = 'cleared' | 'as-spoken' | 'needs-update';
 
-export type DiffReviewFilter = 'open' | 'cleared' | 'needs-update' | 'all';
+export type DiffReviewFilter =
+  | 'open'
+  | 'cleared'
+  | 'as-spoken'
+  | 'needs-update'
+  | 'all';
+
+const REVIEW_STATUSES: readonly DiffReviewStatus[] = [
+  'cleared',
+  'as-spoken',
+  'needs-update',
+];
+
+export function isDiffReviewStatus(value: unknown): value is DiffReviewStatus {
+  return REVIEW_STATUSES.includes(value as DiffReviewStatus);
+}
+
+export function normalizeReviewStatus(value: unknown): DiffReviewStatus | null {
+  return isDiffReviewStatus(value) ? value : null;
+}
 
 export type DiffReviewRecord = {
   status: DiffReviewStatus;
@@ -81,8 +100,10 @@ export function statusForFingerprint(
   store: DiffReviewStore,
   scope: DiffReviewScope & { fingerprint: string },
 ): DiffReviewStatus | null {
-  return store[reviewStoreKey(scope.chapterId, scope.model, scope.fingerprint)]
-    ?.status ?? null;
+  return (
+    store[reviewStoreKey(scope.chapterId, scope.model, scope.fingerprint)]
+      ?.status ?? null
+  );
 }
 
 export function upsertReviewStatus(
@@ -122,6 +143,8 @@ export function filterDifferenceIds(
         return status == null;
       case 'cleared':
         return status === 'cleared';
+      case 'as-spoken':
+        return status === 'as-spoken';
       case 'needs-update':
         return status === 'needs-update';
       default: {
@@ -135,6 +158,7 @@ export function filterDifferenceIds(
 export type DiffReviewCounts = {
   open: number;
   cleared: number;
+  asSpoken: number;
   needsUpdate: number;
   all: number;
 };
@@ -147,6 +171,7 @@ export function reviewCounts(
 ): DiffReviewCounts {
   let open = 0;
   let cleared = 0;
+  let asSpoken = 0;
   let needsUpdate = 0;
   for (const id of differenceIds) {
     const fingerprint = fingerprints.get(id);
@@ -154,15 +179,44 @@ export function reviewCounts(
       ? statusForFingerprint(store, { ...scope, fingerprint })
       : null;
     if (status === 'cleared') cleared += 1;
+    else if (status === 'as-spoken') asSpoken += 1;
     else if (status === 'needs-update') needsUpdate += 1;
     else open += 1;
   }
   return {
     open,
     cleared,
+    asSpoken,
     needsUpdate,
     all: differenceIds.length,
   };
+}
+
+export const EMPTY_REVIEW_COUNTS: DiffReviewCounts = {
+  open: 0,
+  cleared: 0,
+  asSpoken: 0,
+  needsUpdate: 0,
+  all: 0,
+};
+
+export function addReviewCounts(
+  a: DiffReviewCounts,
+  b: DiffReviewCounts,
+): DiffReviewCounts {
+  return {
+    open: a.open + b.open,
+    cleared: a.cleared + b.cleared,
+    asSpoken: a.asSpoken + b.asSpoken,
+    needsUpdate: a.needsUpdate + b.needsUpdate,
+    all: a.all + b.all,
+  };
+}
+
+export function aggregateReviewCounts(
+  parts: readonly DiffReviewCounts[],
+): DiffReviewCounts {
+  return parts.reduce(addReviewCounts, EMPTY_REVIEW_COUNTS);
 }
 
 export type ScriptDiffReviewRow = {
@@ -171,7 +225,7 @@ export type ScriptDiffReviewRow = {
   script_model: string;
   fingerprint: string;
   fingerprint_key: string;
-  status: DiffReviewStatus;
+  status: string;
   updated_at: string;
 };
 
@@ -194,9 +248,10 @@ export function rowsToReviewStore(
 ): DiffReviewStore {
   const store: DiffReviewStore = {};
   for (const row of rows) {
-    if (row.status !== 'cleared' && row.status !== 'needs-update') continue;
+    const status = normalizeReviewStatus(row.status);
+    if (!status) continue;
     store[reviewStoreKey(row.chapter_id, row.script_model, row.fingerprint)] = {
-      status: row.status,
+      status,
       updatedAt: row.updated_at,
     };
   }
@@ -228,20 +283,16 @@ export function readReviewStore(): DiffReviewStore {
     }
     const store: DiffReviewStore = {};
     for (const [key, value] of Object.entries(parsed)) {
-      if (
-        value &&
-        typeof value === 'object' &&
-        'status' in value &&
-        (value.status === 'cleared' || value.status === 'needs-update')
-      ) {
-        store[key] = {
-          status: value.status,
-          updatedAt:
-            'updatedAt' in value && typeof value.updatedAt === 'string'
-              ? value.updatedAt
-              : '',
-        };
-      }
+      if (!value || typeof value !== 'object' || !('status' in value)) continue;
+      const status = normalizeReviewStatus(value.status);
+      if (!status) continue;
+      store[key] = {
+        status,
+        updatedAt:
+          'updatedAt' in value && typeof value.updatedAt === 'string'
+            ? value.updatedAt
+            : '',
+      };
     }
     return store;
   } catch {

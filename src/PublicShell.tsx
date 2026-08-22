@@ -26,6 +26,7 @@ import BrandPage from './pages/BrandPage';
 import BrandSignupsPage from './pages/BrandSignupsPage';
 import BrandEndorsementsPage from './pages/BrandEndorsementsPage';
 import BrandBookLaunchCampaignPage from './pages/BrandBookLaunchCampaignPage';
+import BrandSchedulePage from './pages/BrandSchedulePage';
 import SpeakerSheetPage from './pages/SpeakerSheetPage';
 import ZoomBackgroundsPage from './pages/ZoomBackgroundsPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
@@ -132,6 +133,7 @@ export function Root({ path }: { path: string }) {
   const isBrandSignups = path === '/brand/signups';
   const isBrandEndorsements = path === '/brand/endorsements';
   const isBrandBookLaunch = path === '/brand/book-launch-campaign';
+  const isBrandSchedule = path === '/brand/schedule';
   const isSpeakerSheet = path === '/speaker-sheet';
   const isZoomBackgrounds = path === '/zoom-backgrounds';
   const isLayoutTests = path === '/layout-tests';
@@ -187,6 +189,7 @@ export function Root({ path }: { path: string }) {
   if (isBrandSignups) return <BrandSignupsPage />;
   if (isBrandEndorsements) return <BrandEndorsementsPage />;
   if (isBrandBookLaunch) return <BrandBookLaunchCampaignPage />;
+  if (isBrandSchedule) return <BrandSchedulePage />;
   if (isBrand) return <BrandPage />;
   if (isSpeakerSheet) return <SpeakerSheetPage />;
   if (isZoomBackgrounds) return <ZoomBackgroundsPage />;
@@ -241,6 +244,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/brand/signups' ||
     path === '/brand/endorsements' ||
     path === '/brand/book-launch-campaign' ||
+    path === '/brand/schedule' ||
     path === '/speaker-sheet' ||
     path === '/zoom-backgrounds' ||
     path === '/brand-kit-export' ||

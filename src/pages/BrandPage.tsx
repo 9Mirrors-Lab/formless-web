@@ -22,9 +22,14 @@ import {
 
 const MATERIALS = [
   {
+    href: "/brand/schedule",
+    title: "Schedule",
+    detail: "Who does what, when, on which channel.",
+  },
+  {
     href: "/brand/book-launch-campaign",
     title: "Book launch campaign",
-    detail: "Which emails go with which list.",
+    detail: "Runway into September 1, then ninety days of teaching.",
   },
   {
     href: "/brand/endorsements",

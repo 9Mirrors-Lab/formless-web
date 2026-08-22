@@ -321,13 +321,23 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/BrandEndorsementsPage.tsx',
   },
   {
+    id: 'brand-schedule',
+    title: 'Schedule',
+    href: '/brand/schedule',
+    section: 'brand-identity',
+    status: 'live',
+    description:
+      'Launch communication runway by person, date, and channel.',
+    source: 'src/pages/BrandSchedulePage.tsx',
+  },
+  {
     id: 'brand-book-launch-campaign',
     title: 'Book launch campaign',
     href: '/brand/book-launch-campaign',
     section: 'brand-identity',
     status: 'live',
     description:
-      'Warm network emails, professional-list emails, and LinkedIn posts lined up by send window.',
+      'Formless runway before September 1 and teaching after: warm circle, waitlist, LinkedIn, and X.',
     source: 'src/pages/BrandBookLaunchCampaignPage.tsx',
   },
   {
