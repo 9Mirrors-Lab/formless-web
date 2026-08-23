@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" fill="none">
+  <ellipse cx="400" cy="350" rx="375" ry="108" stroke="#9FB5AA" stroke-width="0.8" opacity="0.30"/>
+  <ellipse cx="400" cy="350" rx="272" ry="152" stroke="#9FB5AA" stroke-width="0.8" opacity="0.24" transform="rotate(32 400 350)"/>
+  <ellipse cx="400" cy="350" rx="148" ry="274" stroke="#9FB5AA" stroke-width="0.8" opacity="0.20"/>
+  <circle cx="400" cy="350" r="42" stroke="#9FB5AA" stroke-width="1" opacity="0.45"/>
+  <circle cx="400" cy="350" r="16" fill="#9FB5AA" opacity="0.12"/>
+  <circle cx="775" cy="350" r="5" fill="#CC5833" opacity="0.85"/>
+  <circle cx="568" cy="162" r="4" fill="#9FB5AA" opacity="0.60"/>
+  <circle cx="400" cy="76" r="4" fill="#CC5833" opacity="0.70"/>
+  <line x1="400" y1="350" x2="775" y2="350" stroke="#CC5833" stroke-width="0.6" stroke-dasharray="4 9" opacity="0.28"/>
+  <line x1="400" y1="350" x2="400" y2="76" stroke="#9FB5AA" stroke-width="0.6" stroke-dasharray="4 9" opacity="0.20"/>
+  <line x1="400" y1="350" x2="568" y2="162" stroke="#9FB5AA" stroke-width="0.5" stroke-dasharray="3 8" opacity="0.18"/>
+</svg>

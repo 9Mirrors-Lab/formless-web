@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Formless is available to pre-order</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --dusk: #1a1714;
+        --void: #12110e;
+        --cream: #ece9dd;
+        --clay: #cc5833;
+        --sage: #9fb5aa;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--void);
+        color: var(--cream);
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+
+      .stage {
+        display: flex;
+        justify-content: center;
+        padding: 48px 24px 80px;
+      }
+
+      .email {
+        width: 600px;
+        background: var(--dusk);
+        color: var(--cream);
+      }
+
+      .pad {
+        padding: 28px 40px 0;
+      }
+
+      .lockup {
+        display: block;
+        width: 156px;
+        height: auto;
+        margin: 0 auto;
+      }
+
+      .hero {
+        margin-top: 8px;
+        padding: 28px 24px 8px;
+        background-color: var(--dusk);
+        background-image: url("/emails/marks/orbit-hero.svg");
+        background-repeat: no-repeat;
+        background-position: 118% 46%;
+        background-size: 460px auto;
+      }
+
+      .hero-lockup {
+        display: grid;
+        grid-template-columns: 156px 1fr;
+        gap: 26px;
+        align-items: center;
+      }
+
+      .hero-cover {
+        width: 156px;
+        height: auto;
+        display: block;
+        border: 1px solid rgba(236, 233, 221, 0.18);
+        border-radius: 2px;
+      }
+
+      .hero-mark {
+        width: 36px;
+        height: 36px;
+        display: block;
+        margin-bottom: 12px;
+      }
+
+      .hero h1 {
+        color: var(--cream);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 44px;
+        font-weight: 500;
+        font-style: italic;
+        line-height: 0.95;
+        letter-spacing: -0.02em;
+      }
+
+      .hero-deck {
+        margin-top: 10px;
+        color: var(--cream);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.22;
+      }
+
+      .hero-facts {
+        margin-top: 16px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--clay);
+      }
+
+      .btn {
+        display: inline-block;
+        background: var(--cream);
+        color: var(--dusk);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        padding: 13px 24px;
+        border-radius: 999px;
+        margin-top: 22px;
+      }
+
+      .rule {
+        margin: 8px 40px 0;
+        height: 1px;
+        background: rgba(236, 233, 221, 0.12);
+      }
+
+      .player {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 28px 40px 8px;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .player-orb {
+        width: 80px;
+        height: 80px;
+        display: block;
+        border-radius: 999px;
+        transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+
+      .player:hover .player-orb {
+        transform: scale(1.04);
+      }
+
+      .player-meta {
+        display: flex;
+        width: 224px;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .player-label {
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(236, 233, 221, 0.7);
+      }
+
+      .player-track {
+        width: 100%;
+        height: 2px;
+        background: rgba(236, 233, 221, 0.2);
+      }
+
+      .player-time {
+        margin-top: 4px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        color: rgba(236, 233, 221, 0.7);
+      }
+
+      .letter,
+      .note,
+      .offer,
+      .split {
+        margin: 36px 40px 0;
+        padding-top: 28px;
+        border-top: 1px solid rgba(236, 233, 221, 0.12);
+      }
+
+      .section-mark {
+        width: 40px;
+        height: 40px;
+        display: block;
+        margin-bottom: 14px;
+      }
+
+      .letter h2,
+      .note h2,
+      .offer h2,
+      .split h2 {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 500;
+        color: var(--cream);
+      }
+
+      .letter h2 {
+        font-size: 32px;
+        margin-bottom: 14px;
+      }
+
+      .letter p,
+      .note p,
+      .offer p,
+      .split p {
+        font-size: 15px;
+        line-height: 1.65;
+        color: rgba(236, 233, 221, 0.78);
+        margin-bottom: 16px;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 120px;
+        gap: 28px;
+        align-items: center;
+      }
+
+      .split h2 {
+        font-size: 32px;
+        line-height: 1.08;
+        margin-bottom: 12px;
+      }
+
+      .cover {
+        width: 120px;
+        height: auto;
+        display: block;
+        border: 1px solid rgba(236, 233, 221, 0.18);
+        border-radius: 2px;
+      }
+
+      .note h2,
+      .offer h2 {
+        font-size: 28px;
+        margin-bottom: 16px;
+      }
+
+      .note .heart {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 20px;
+        line-height: 1.45;
+        color: var(--clay);
+        margin: 0;
+      }
+
+      .offer .fact {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        color: var(--sage);
+        margin-bottom: 8px;
+      }
+
+      .sign {
+        margin: 32px 40px 0;
+        text-align: center;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 20px;
+      }
+
+      footer {
+        margin: 40px 40px 36px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(236, 233, 221, 0.12);
+        font-size: 12px;
+        line-height: 1.7;
+        color: rgba(236, 233, 221, 0.55);
+      }
+
+      footer .lockup {
+        width: 120px;
+        margin: 0 0 14px;
+      }
+
+      footer a {
+        color: var(--clay);
+        text-decoration: none;
+      }
+
+      @media (max-width: 640px) {
+        .stage {
+          padding: 24px 0 48px;
+        }
+
+        .email {
+          width: 100%;
+        }
+
+        .pad,
+        .split,
+        .sign,
+        .letter,
+        .note,
+        .offer,
+        footer,
+        .rule {
+          margin-left: 20px;
+          margin-right: 20px;
+        }
+
+        .pad {
+          padding: 24px 20px 0;
+          margin: 0;
+        }
+
+        .hero {
+          padding: 24px 16px 8px;
+          background-position: 70% 8%;
+          background-size: 280px auto;
+        }
+
+        .hero-lockup {
+          grid-template-columns: 1fr;
+          justify-items: center;
+          text-align: center;
+        }
+
+        .hero-cover {
+          width: 140px;
+        }
+
+        .hero-mark {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .hero h1 {
+          font-size: 38px;
+        }
+
+        .hero .btn {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .player {
+          padding: 24px 16px 8px;
+        }
+
+        .split {
+          grid-template-columns: 1fr;
+        }
+
+        .cover {
+          width: 110px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <article class="email">
+        <div class="pad">
+          <a href="https://www.eyesclosed.love">
+            <img
+              class="lockup"
+              src="/brand/eyes-closed-lockup-on-dusk.svg"
+              alt="Eyes Closed"
+            />
+          </a>
+        </div>
+        <div class="hero">
+          <div class="hero-lockup">
+            <a href="https://www.amazon.com/dp/B0HFYC45QC">
+              <img
+                class="hero-cover"
+                src="/book-covers/formless-ebook.jpg"
+                alt="Cover of Formless by Sonika Cottman. Who You Truly Are Beyond the Mind."
+              />
+            </a>
+            <div>
+              <img class="hero-mark" src="/emails/marks/formless.svg" alt="" />
+              <h1>Formless</h1>
+              <p class="hero-deck">is available to pre-order.</p>
+              <p class="hero-facts">Kindle · $0.99 · September 1</p>
+              <a class="btn" href="https://www.amazon.com/dp/B0HFYC45QC">PRE-ORDER ON KINDLE</a>
+            </div>
+          </div>
+        </div>
+        <div class="rule"></div>
+        <a class="player" href="/special-preview">
+          <img
+            class="player-orb"
+            src="/emails/marks/play-orb.svg"
+            alt="Play Introduction"
+          />
+          <div class="player-meta">
+            <p class="player-label">Introduction</p>
+            <div class="player-track" aria-hidden="true"></div>
+            <p class="player-time">0:00 / 14:33</p>
+          </div>
+        </a>
+        <section class="letter">
+          <img class="section-mark" src="/emails/marks/voice.svg" alt="" />
+          <h2>A message for you</h2>
+          <p>Dear Waitlist Member,</p>
+          <p>
+            <em>Formless: Who You Truly Are Beyond the Mind</em> by Sonika
+            Cottman arrives on September 1. As a thank you for joining our
+            waitlist, here is an exclusive early preview.
+          </p>
+          <p>
+            A gentle glimpse into the wisdom in its pages, and a way of seeing
+            ourselves beyond the limitations of our thoughts.
+          </p>
+        </section>
+        <section class="split">
+          <div>
+            <img class="section-mark" src="/emails/marks/space.svg" alt="" />
+            <h2>About the book</h2>
+            <p>
+              Formless is an invitation to explore the stillness beneath a busy
+              mind. Sonika Cottman guides a journey of self-discovery: peace and
+              clarity by observing thought without identification.
+            </p>
+            <p>
+              The book looks at consciousness, the illusion of the self, and the
+              liberating truth of our essential being.
+            </p>
+          </div>
+          <img
+            class="cover"
+            src="/book-covers/formless-ebook.jpg"
+            alt="Cover of Formless by Sonika Cottman"
+          />
+        </section>
+        <section class="note">
+          <img class="section-mark" src="/emails/marks/observer.svg" alt="" />
+          <h2>From Soni</h2>
+          <p>
+            This work is born from years of personal practice and guiding others
+            toward inner freedom. It is a love letter to the quiet intelligence
+            that resides within each of us, waiting to be recognized.
+          </p>
+          <p class="heart">
+            I poured my heart into these pages, hoping to offer a steady hand to
+            anyone seeking to understand who they truly are beyond the constant
+            chatter of the mind. May it be a source of peace and liberation for
+            you.
+          </p>
+        </section>
+        <section class="offer">
+          <img class="section-mark" src="/emails/marks/awakening.svg" alt="" />
+          <h2>Pre-order on Amazon</h2>
+          <p>
+            The Kindle page is open. You can take the book home now. It arrives
+            Tuesday, September 1.
+          </p>
+          <p class="fact">Kindle · $0.99</p>
+          <p class="fact">Arrives September 1</p>
+          <p class="fact">Preview at eyesclosed.love/special-preview</p>
+          <a class="btn" href="https://www.amazon.com/dp/B0HFYC45QC">PRE-ORDER ON KINDLE</a>
+        </section>
+        <p class="sign">With love, Soni. Sonika Cottman</p>
+        <footer>
+          <img
+            class="lockup"
+            src="/brand/eyes-closed-lockup-on-dusk.svg"
+            alt="Eyes Closed"
+          />
+          You can unsubscribe from these emails <a href="#">here</a>.<br />
+          An invitation to go within and meet yourself beyond the identities and
+          stories.<br />
+          hello@eyesclosed.love<br />
+          © 2026 Eyes Closed
+        </footer>
+      </article>
+    </div>
+  </body>
+</html>

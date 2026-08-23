@@ -9,6 +9,8 @@ interface ParticleButtonProps {
   variant?: 'primary' | 'secondary';
   trackLocation?: string;
   trackLabel?: string;
+  target?: string;
+  rel?: string;
 }
 
 /**
@@ -22,6 +24,8 @@ export function ParticleButton({
   variant = 'primary',
   trackLocation,
   trackLabel,
+  target,
+  rel,
 }: ParticleButtonProps) {
   const particleContainerRef = useRef<HTMLDivElement>(null);
 
@@ -85,6 +89,8 @@ export function ParticleButton({
     return (
       <a
         href={href}
+        target={target}
+        rel={rel}
         className={baseClasses}
         onClick={handleClick as React.MouseEventHandler<HTMLAnchorElement>}
       >

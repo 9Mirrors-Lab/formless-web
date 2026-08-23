@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <clipPath id="space-clip">
+      <circle cx="40" cy="50" r="20"/>
+    </clipPath>
+  </defs>
+  <circle cx="60" cy="50" r="20" fill="#CC5833" stroke="none" clip-path="url(#space-clip)"/>
+  <circle cx="40" cy="50" r="20" stroke="#ECE9DD" stroke-width="2" opacity="0.45"/>
+  <circle cx="60" cy="50" r="20" stroke="#ECE9DD" stroke-width="2" opacity="0.45"/>
+</svg>

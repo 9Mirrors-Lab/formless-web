@@ -20,6 +20,8 @@ interface ImportMetaEnv {
    * No effect in production builds (`import.meta.env.DEV` must be true).
    */
   readonly VITE_BYPASS_INTERNAL_AUTH?: string;
+  /** Amazon Kindle product URL for the Formless pre-order landing. */
+  readonly VITE_KINDLE_PREORDER_URL?: string;
 }
 
 interface ImportMeta {

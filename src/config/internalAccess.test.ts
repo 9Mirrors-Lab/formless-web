@@ -38,6 +38,9 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/audio/record-sessions')).toBe(true);
     expect(isInternalAuthPath('/audio/script-compare')).toBe(true);
     expect(isInternalAuthPath('/advance-listen')).toBe(false);
+    expect(isInternalAuthPath('/special-preview')).toBe(false);
+    expect(isInternalAuthPath('/preorder')).toBe(false);
+    expect(isInternalAuthPath('/preorder/stay-close')).toBe(false);
     expect(isInternalAuthPath('/audio/files')).toBe(true);
     expect(isInternalAuthPath('/eyes-closed-logo-options')).toBe(true);
     expect(isInternalAuthPath('/')).toBe(false);

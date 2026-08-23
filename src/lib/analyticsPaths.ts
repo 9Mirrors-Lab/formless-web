@@ -31,7 +31,16 @@ export const INTERNAL_ANALYTICS_PATH_PREFIXES = [
 ] as const;
 
 /** Production content routes where session replay is enabled. */
-export const SESSION_REPLAY_PATHS = ['/', '/work', '/book', '/science', '/about'] as const;
+export const SESSION_REPLAY_PATHS = [
+  '/',
+  '/work',
+  '/book',
+  '/science',
+  '/about',
+  '/special-preview',
+  '/preorder',
+  '/preorder/stay-close',
+] as const;
 
 export function normalizePathname(pathname: string): string {
   return pathname.replace(/\/+$/, '').toLowerCase() || '/';

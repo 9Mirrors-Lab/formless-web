@@ -337,8 +337,28 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'brand-identity',
     status: 'live',
     description:
-      'Formless runway before September 1 and teaching after: warm circle, waitlist, LinkedIn, and X.',
+      'Formless runway before September 1 and teaching after: warm circle, waitlist, Stay Close, advance listen, LinkedIn, and X.',
     source: 'src/pages/BrandBookLaunchCampaignPage.tsx',
+  },
+  {
+    id: 'preorder-waitlist',
+    title: 'Special preview · waitlist',
+    href: '/special-preview',
+    section: 'layout-pages',
+    status: 'live',
+    description:
+      'Waitlist thank-you. Cover world, Introduction player, then a quiet Kindle pre-order.',
+    source: 'src/pages/PreorderLandingPage.tsx',
+  },
+  {
+    id: 'preorder-stay-close',
+    title: 'Pre-order · Stay Close',
+    href: '/preorder/stay-close',
+    section: 'layout-pages',
+    status: 'live',
+    description:
+      'Stay Close email landing. Same two-beat form; relationship first, then the moss pre-order.',
+    source: 'src/pages/PreorderLandingPage.tsx',
   },
   {
     id: 'speaker-sheet',

@@ -52,6 +52,7 @@ import AudibleProcessPage from './pages/AudibleProcessPage';
 import AudioRecordSessionsPage from './pages/AudioRecordSessionsPage';
 import AudioScriptComparePage from './pages/AudioScriptComparePage';
 import AdvanceListenPage from './pages/AdvanceListenPage';
+import PreorderLandingPage from './pages/PreorderLandingPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
 import AudioFilesPage from './pages/AudioFilesPage';
@@ -66,6 +67,7 @@ import { HomePageContent } from './components/HomePageContent';
 import { RequireAdvanceListenEmail } from './components/RequireAdvanceListenEmail';
 import { RequireInternalAuth } from './components/RequireInternalAuth';
 import { isAdvanceListenPath, isInternalAuthPath } from './config/internalAccess';
+import { isPreorderPath, preorderAudienceFromPath } from './config/preorderAccess';
 import { hasAuthCallbackCode } from './lib/auth';
 
 const publicSiteRestricted = isPublicSiteRestricted();
@@ -173,6 +175,9 @@ export function Root({ path }: { path: string }) {
   const isDesignFramework = path === '/design-framework';
   const isIcons = path === '/icons';
   const isHub = path === '/hub';
+  const preorderAudience = preorderAudienceFromPath(path);
+
+  if (preorderAudience) return <PreorderLandingPage audience={preorderAudience} />;
 
   if (isDesignLab) return <DesignLabPage />;
   if (isWork) return <WorkPage />;
@@ -269,7 +274,10 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/audio/editorial-v2' ||
     path === '/audio/companion' ||
     path === '/audio/send-take' ||
-    path === '/audio/files'
+    path === '/audio/files' ||
+    path === '/special-preview' ||
+    path === '/preorder' ||
+    path === '/preorder/stay-close'
   );
 }
 
@@ -287,6 +295,15 @@ function AppContentShell({ path }: { path: string }) {
     return (
       <>
         <RequireAdvanceListenEmail>{page}</RequireAdvanceListenEmail>
+        <DevMenu path={path} />
+      </>
+    );
+  }
+
+  if (isPreorderPath(path)) {
+    return (
+      <>
+        {page}
         <DevMenu path={path} />
       </>
     );

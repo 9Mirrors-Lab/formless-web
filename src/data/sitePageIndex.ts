@@ -95,6 +95,24 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/BookPage.tsx',
   },
   {
+    id: 'preorder-waitlist',
+    title: 'Formless special preview',
+    path: '/special-preview',
+    category: 'public',
+    description:
+      'Waitlist thank-you: hear the Introduction, then Kindle pre-order.',
+    source: 'src/pages/PreorderLandingPage.tsx',
+  },
+  {
+    id: 'preorder-stay-close',
+    title: 'Formless pre-order (Stay Close)',
+    path: '/preorder/stay-close',
+    category: 'public',
+    description:
+      'Email landing for Stay Close: same two-beat form, relationship copy, Kindle pre-order.',
+    source: 'src/pages/PreorderLandingPage.tsx',
+  },
+  {
     id: 'science',
     title: 'Spirituality & Science',
     path: '/science',
@@ -221,7 +239,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/brand/book-launch-campaign',
     category: 'design',
     description:
-      'Formless runway before September 1 and teaching after: warm circle, waitlist, LinkedIn, and X.',
+      'Formless runway before September 1 and teaching after: warm circle, waitlist, Stay Close, advance listen, LinkedIn, and X.',
     source:
       'src/pages/BrandBookLaunchCampaignPage.tsx, src/data/bookLaunchCampaign.ts',
   },

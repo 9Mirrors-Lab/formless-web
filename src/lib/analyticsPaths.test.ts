@@ -25,11 +25,16 @@ describe('analyticsPaths', () => {
     expect(isInternalAnalyticsPath('/design-lab')).toBe(true);
     expect(isInternalAnalyticsPath('/revised')).toBe(true);
     expect(isInternalAnalyticsPath('/book')).toBe(false);
+    expect(isInternalAnalyticsPath('/preorder')).toBe(false);
+    expect(isInternalAnalyticsPath('/special-preview')).toBe(false);
   });
 
   it('limits session replay to core content routes', () => {
     expect(isSessionReplayPath('/')).toBe(true);
     expect(isSessionReplayPath('/work')).toBe(true);
+    expect(isSessionReplayPath('/special-preview')).toBe(true);
+    expect(isSessionReplayPath('/preorder')).toBe(true);
+    expect(isSessionReplayPath('/preorder/stay-close')).toBe(true);
     expect(isSessionReplayPath('/design-system')).toBe(false);
   });
 });
