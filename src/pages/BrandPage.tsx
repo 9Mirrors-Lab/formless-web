@@ -4,15 +4,7 @@ import { BrandAudienceCharts } from "@/components/BrandAudienceCharts";
 import { BrandShell } from "@/components/app-sidebar";
 import { LaunchCountdownLink } from "@/components/LaunchCountdownLink";
 import { ShaderBackdrop } from "@/components/shader/ShaderBackdrop";
-import { RECORD_SESSION_LIST } from "@/data/audioRecordSessions";
-import { studioCatalogForTracks } from "@/data/audiobookStudioCatalog";
-import { collectBrandNeeds } from "@/lib/brandNeeds";
-import { useStudioApprovals } from "@/hooks/useStudioApprovals";
 import { signupPulse, type PulseLoad } from "@/lib/brandPulse";
-import {
-  listPublishedAudiobookTracks,
-  type AudiobookTrack,
-} from "@/lib/audiobookTracks";
 import {
   emptySignupSummary,
   fetchSiteSignups,
@@ -59,19 +51,14 @@ const MATERIALS = [
 ] as const;
 
 export default function BrandPage() {
-  const { approvedIds } = useStudioApprovals();
   const [signupState, setSignupState] = useState<PulseLoad>("loading");
   const [signupRows, setSignupRows] = useState<SiteSignup[]>([]);
-  const [tracks, setTracks] = useState<AudiobookTrack[]>([]);
 
   useEffect(() => {
     let cancelled = false;
 
     void (async () => {
-      const [signups, catalog] = await Promise.all([
-        fetchSiteSignups(),
-        listPublishedAudiobookTracks(),
-      ]);
+      const signups = await fetchSiteSignups();
       if (cancelled) return;
 
       if (signups.ok) {
@@ -81,8 +68,6 @@ export default function BrandPage() {
         setSignupRows([]);
         setSignupState("error");
       }
-
-      setTracks(catalog.ok ? catalog.tracks : []);
     })();
 
     return () => {
@@ -98,9 +83,7 @@ export default function BrandPage() {
     [signupRows, signupState],
   );
 
-  const records = studioCatalogForTracks(tracks, approvedIds);
   const audience = signupPulse(signupState, signupSummary, signupRows[0] ?? null);
-  const needs = collectBrandNeeds(RECORD_SESSION_LIST, records);
 
   return (
     <BrandShell activeId="brand" crumb="Overview" noise={false}>
@@ -115,7 +98,7 @@ export default function BrandPage() {
           <LaunchCountdownLink />
         </div>
 
-        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-6 md:px-12 md:pb-14 md:pt-7 lg:max-w-[40rem] lg:px-14">
+        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-6 md:px-12 md:pb-14 md:pt-7 lg:max-w-[48rem] lg:px-14">
           <h1 className="sr-only">Brand Toolkit</h1>
 
           <div className="max-w-[34rem]">
@@ -140,40 +123,7 @@ export default function BrandPage() {
             />
           </div>
 
-          <section className="mt-10 max-w-[34rem]" aria-labelledby="brand-needs-heading">
-            <h2
-              id="brand-needs-heading"
-              className="font-serif text-[2.5rem] font-light italic leading-[1.08] tracking-[-0.02em] text-cream"
-            >
-              What Ryan Needs
-            </h2>
-            <span className="mt-3 block h-[2px] w-[5.3rem] bg-clay opacity-90" aria-hidden />
-            {needs.length === 0 ? (
-              <p className="mt-4 text-[0.8125rem] leading-relaxed text-cream/55 md:text-sm">
-                Nothing is waiting.
-              </p>
-            ) : (
-              <ul className="mt-5 divide-y divide-cream/10 border-y border-cream/12">
-                {needs.map((need) => (
-                  <li key={need.id}>
-                    <a
-                      href={need.href}
-                      className="group flex min-h-11 items-baseline justify-between gap-6 py-3.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]"
-                    >
-                      <span className="min-w-0 text-[12px] leading-snug text-cream/80 transition-colors group-hover:text-cream">
-                        {need.sentence}
-                      </span>
-                      <span className="shrink-0 text-[11px] leading-snug text-cream/45">
-                        {need.door}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <ul className="mt-14 max-w-[34rem] divide-y divide-cream/10 border-t border-cream/12">
+          <ul className="mt-14 max-w-[42rem] divide-y divide-cream/10 border-t border-cream/12">
             {MATERIALS.map((item) => (
               <li key={item.href}>
                 <a
@@ -183,7 +133,7 @@ export default function BrandPage() {
                   <span className="text-[13px] tracking-wide text-cream/80 transition-colors group-hover:text-cream">
                     {item.title}
                   </span>
-                  <span className="max-w-[22ch] text-right text-[11px] leading-snug text-cream/55">
+                  <span className="max-w-[32ch] text-right text-[11px] leading-snug text-cream/55">
                     {item.detail}
                   </span>
                 </a>
