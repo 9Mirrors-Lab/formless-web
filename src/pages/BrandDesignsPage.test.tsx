@@ -22,13 +22,13 @@ describe('BrandDesignsPage', () => {
       /<a[^>]*aria-label="Open Waitlist letter: Coded letter"/,
     );
     expect(html).toMatch(
-      /<a[^>]*href="\/emails\/formless-preorder.html"[^>]*aria-label="Open Kindle preorder: Coded letter"/,
+      /<a[^>]*href="\/emails\/formless-preorder.html"[^>]*aria-label="Open Kindle preorder: Jacket lockup"/,
     );
     expect(html).not.toMatch(
       /<button[^>]*aria-label="Open Waitlist letter: Coded letter"/,
     );
     expect(html).not.toMatch(
-      /<button[^>]*aria-label="Open Kindle preorder: Coded letter"/,
+      /<button[^>]*aria-label="Open Kindle preorder: Jacket lockup"/,
     );
   });
 

@@ -69,13 +69,14 @@ describe('brandMaterials', () => {
 
   it('does not flatten explorations into their own design rows', () => {
     expect(BRAND_DESIGNS.map((design) => design.id)).toEqual([
-      'special-preview',
-      'stay-close-letter',
-      'waitlist-letter',
       'kindle-preorder',
+      'special-preview',
+      'waitlist-letter',
+      'stay-close-letter',
+      'audible-illuminated-manuscript',
     ]);
     expect(designsByKind('zoho-email')).toHaveLength(3);
-    expect(designsByKind('page')).toHaveLength(0);
+    expect(designsByKind('page')).toHaveLength(1);
   });
 
   it('lists the coded waitlist and Kindle preorder letters', () => {
@@ -97,6 +98,8 @@ describe('brandMaterials', () => {
     expect(preorder?.versions.find((version) => version.id === 'intro')?.previewSrc).toBe(
       '/design/previews/formless-preorder-intro-email.png',
     );
+    expect(preorder?.status).toBe('active');
+    expect(preorder?.usedFor).toBeUndefined();
   });
 
   it('exposes kind, campaign, audience, channel, and owner as chips', () => {
@@ -130,6 +133,7 @@ describe('brandMaterials', () => {
 
   it('filters designs by kind', () => {
     expect(designsByKind('microsite')).toHaveLength(1);
+    expect(designsByKind('page')).toHaveLength(1);
     expect(designsByKind('zoho-email')).toHaveLength(3);
     expect(designsByKind('all')).toHaveLength(BRAND_DESIGNS.length);
   });
@@ -147,8 +151,10 @@ describe('brandMaterials', () => {
   it('splits live from in-work', () => {
     expect(activeDesigns().every((design) => design.status === 'active')).toBe(true);
     expect(draftDesigns().every((design) => design.status === 'draft')).toBe(true);
-    expect(activeDesigns()).toHaveLength(1);
+    expect(activeDesigns()).toHaveLength(2);
+    expect(activeDesigns()[0]?.id).toBe('kindle-preorder');
     expect(draftDesigns()).toHaveLength(3);
+    expect(draftDesigns().at(-1)?.id).toBe('audible-illuminated-manuscript');
   });
 
   it('labels status, kind, and version roles in studio language', () => {

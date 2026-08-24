@@ -344,6 +344,36 @@ function PreviewThumb({
   );
 }
 
+function VersionMeta({ design, version }: { design: BrandDesign; version: DesignVersion }) {
+  const pathHref = version.href ?? design.href;
+
+  return (
+    <div className="flex min-w-0 flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/45">
+          {designVersionRoleLabel(version.role)}
+        </span>
+        <h4 className="font-sans text-sm font-medium text-cream">{version.label}</h4>
+      </div>
+      <p className="font-mono text-[11px] leading-relaxed text-cream/55">
+        {pathHref ? (
+          <a href={pathHref} className="underline-offset-4 hover:text-cream hover:underline">
+            {pathHref}
+          </a>
+        ) : (
+          version.filename
+        )}
+      </p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/35">
+        {version.filename}
+      </p>
+      {version.notes ? (
+        <p className="font-sans text-xs leading-relaxed text-cream/50">{version.notes}</p>
+      ) : null}
+    </div>
+  );
+}
+
 function VersionGallery({
   design,
   onOpen,
@@ -362,17 +392,17 @@ function VersionGallery({
               {row.label}
             </h3>
           ) : null}
-          <div
-            className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fill,minmax(15rem,16.5rem))]"
-            role="list"
-          >
+          <div className="flex flex-col gap-3" role="list">
             {row.versions.map((version) => (
               <div
                 key={version.id}
                 role="listitem"
-                className={version.wide ? 'col-span-2' : undefined}
+                className="grid overflow-hidden border border-cream/10 md:grid-cols-[16.5rem_minmax(0,1fr)]"
               >
-                <PreviewThumb design={design} version={version} onOpen={onOpen} compact />
+                <PreviewThumb design={design} version={version} onOpen={onOpen} />
+                <div className="px-5 py-5 md:px-6 md:py-6">
+                  <VersionMeta design={design} version={version} />
+                </div>
               </div>
             ))}
           </div>
