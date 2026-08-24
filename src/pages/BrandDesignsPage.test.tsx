@@ -14,29 +14,26 @@ describe('BrandDesignsPage', () => {
     );
   });
 
-  it('opens image thumbs as buttons, including coded email screenshots', () => {
+  it('opens image thumbs as buttons, and coded letters as page links', () => {
     expect(html).toMatch(
       /<button[^>]*aria-label="Open Stay Close: Waitlist thank-you kit"/,
     );
     expect(html).toMatch(
-      /<button[^>]*aria-label="Open Stay Close: Intended waitlist letter"/,
-    );
-    expect(html).toMatch(
-      /<button[^>]*aria-label="Open Waitlist letter: Coded letter"/,
-    );
-    expect(html).toMatch(
-      /<button[^>]*aria-label="Open Kindle preorder: Coded letter"/,
-    );
-    expect(html).not.toMatch(
       /<a[^>]*aria-label="Open Waitlist letter: Coded letter"/,
     );
+    expect(html).toMatch(
+      /<a[^>]*href="\/emails\/formless-preorder.html"[^>]*aria-label="Open Kindle preorder: Coded letter"/,
+    );
     expect(html).not.toMatch(
-      /<a[^>]*aria-label="Open Kindle preorder: Coded letter"/,
+      /<button[^>]*aria-label="Open Waitlist letter: Coded letter"/,
+    );
+    expect(html).not.toMatch(
+      /<button[^>]*aria-label="Open Kindle preorder: Coded letter"/,
     );
   });
 
   it('still lists the coded email files in the path row', () => {
-    expect(html).toContain('/email-previews/waitlist-intended.html');
+    expect(html).toContain('/emails/formless-waitlist-preview.html');
     expect(html).toContain('/emails/formless-preorder.html');
   });
 });

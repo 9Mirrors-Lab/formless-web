@@ -52,7 +52,6 @@ describe('brandMaterials', () => {
       'formless-waitlist-listen-first-page.png',
       'formless-waitlist-editorial-page.png',
       'formless-preorder-page-concepts.png',
-      'formless-waitlist-email-intended.jpg',
       'formless-stay-close-newsletter-brandkit.png',
       'formless-stay-close-newsletter-template.png',
     ]);
@@ -82,7 +81,7 @@ describe('brandMaterials', () => {
   it('lists the coded waitlist and Kindle preorder letters', () => {
     const waitlist = designById('waitlist-letter');
     const preorder = designById('kindle-preorder');
-    expect(waitlist?.href).toBe('/email-previews/waitlist-intended.html');
+    expect(waitlist?.href).toBe('/emails/formless-waitlist-preview.html');
     expect(designPreviewSrc(waitlist!)).toBe(
       '/design/previews/formless-waitlist-email-html.png',
     );

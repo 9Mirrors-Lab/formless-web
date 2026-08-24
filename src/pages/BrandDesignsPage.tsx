@@ -56,7 +56,6 @@ function isImagePath(path?: string): boolean {
 
 function isLivePageHref(href: string): boolean {
   if (isImagePath(href)) return false;
-  if (/\.html?(\?.*)?$/i.test(href)) return false;
   return true;
 }
 
