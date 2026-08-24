@@ -351,21 +351,31 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
     channel: 'Email',
     owner: 'Soni',
     usedFor:
-      'Soni sends this when the Kindle page is open. Cream letter with jacket lockup, Introduction listen, $0.99, September 1, Amazon button, socials. Open /emails/formless-preorder-intro.html. Zoho: upload /emails/zoho-import/formless-preorder-intro.html and formless-preorder-intro-assets.zip.',
-    href: '/emails/formless-preorder-intro.html',
+      'Soni sends this when the Kindle page is open. Cream letter, jacket lockup, $0.99, September 1, Amazon button, socials. Pick the version below: jacket only, or jacket plus Introduction.',
+    href: '/emails/formless-preorder.html',
     currentVersionId: 'html',
     versions: [
       {
         id: 'html',
-        label: 'Coded letter',
+        label: 'Jacket lockup',
         role: 'live',
-        filename: 'formless-preorder-intro.html',
+        filename: 'formless-preorder.html',
         previewSrc: '/design/previews/formless-preorder-email.png',
+        href: '/emails/formless-preorder.html',
+        notes: 'Cream letter with side-by-side jacket. Paste /emails/formless-preorder-zoho.html into Zoho.',
+      },
+      {
+        id: 'intro',
+        label: 'With Introduction',
+        role: 'exploration',
+        filename: 'formless-preorder-intro.html',
+        previewSrc: '/design/previews/formless-preorder-intro-email.png',
         href: '/emails/formless-preorder-intro.html',
-        notes: 'Cream letter with Introduction. Click the preview to open the page. Zoho zip: /emails/zoho-import/formless-preorder-intro-assets.zip.',
+        notes:
+          'Same cream letter plus the Introduction listen block. Zoho: upload /emails/zoho-import/formless-preorder-intro.html and formless-preorder-intro-assets.zip.',
       },
     ],
-    source: 'public/emails/formless-preorder-intro.html',
+    source: 'public/emails/formless-preorder.html',
   },
 ];
 

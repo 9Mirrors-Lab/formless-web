@@ -85,11 +85,18 @@ describe('brandMaterials', () => {
     expect(designPreviewSrc(waitlist!)).toBe(
       '/design/previews/formless-waitlist-email-html.png',
     );
-    expect(preorder?.href).toBe('/emails/formless-preorder-intro.html');
+    expect(preorder?.href).toBe('/emails/formless-preorder.html');
     expect(designPreviewSrc(preorder!)).toBe(
       '/design/previews/formless-preorder-email.png',
     );
-    expect(preorder?.versions[0]?.filename).toBe('formless-preorder-intro.html');
+    expect(preorder?.versions.map((version) => version.id)).toEqual(['html', 'intro']);
+    expect(preorder?.versions.map((version) => version.filename)).toEqual([
+      'formless-preorder.html',
+      'formless-preorder-intro.html',
+    ]);
+    expect(preorder?.versions.find((version) => version.id === 'intro')?.previewSrc).toBe(
+      '/design/previews/formless-preorder-intro-email.png',
+    );
   });
 
   it('exposes kind, campaign, audience, channel, and owner as chips', () => {
