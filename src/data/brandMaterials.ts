@@ -351,21 +351,21 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
     channel: 'Email',
     owner: 'Soni',
     usedFor:
-      'Soni sends this when the Kindle page is open. Eyes Closed lockup, jacket theater, $0.99, September 1, Amazon button, socials. Open /emails/formless-preorder.html. Paste /emails/formless-preorder-zoho.html into Zoho.',
-    href: '/emails/formless-preorder.html',
+      'Soni sends this when the Kindle page is open. Cream letter with jacket lockup, Introduction listen, $0.99, September 1, Amazon button, socials. Open /emails/formless-preorder-intro.html. Zoho: upload /emails/zoho-import/formless-preorder-intro.html and formless-preorder-intro-assets.zip.',
+    href: '/emails/formless-preorder-intro.html',
     currentVersionId: 'html',
     versions: [
       {
         id: 'html',
         label: 'Coded letter',
         role: 'live',
-        filename: 'formless-preorder.html',
+        filename: 'formless-preorder-intro.html',
         previewSrc: '/design/previews/formless-preorder-email.png',
-        href: '/emails/formless-preorder.html',
-        notes: 'Cream letter on dusk. Click the preview to open the page.',
+        href: '/emails/formless-preorder-intro.html',
+        notes: 'Cream letter with Introduction. Click the preview to open the page. Zoho zip: /emails/zoho-import/formless-preorder-intro-assets.zip.',
       },
     ],
-    source: 'public/emails/formless-preorder.html',
+    source: 'public/emails/formless-preorder-intro.html',
   },
 ];
 

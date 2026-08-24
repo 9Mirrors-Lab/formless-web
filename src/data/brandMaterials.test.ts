@@ -85,10 +85,11 @@ describe('brandMaterials', () => {
     expect(designPreviewSrc(waitlist!)).toBe(
       '/design/previews/formless-waitlist-email-html.png',
     );
-    expect(preorder?.href).toBe('/emails/formless-preorder.html');
+    expect(preorder?.href).toBe('/emails/formless-preorder-intro.html');
     expect(designPreviewSrc(preorder!)).toBe(
       '/design/previews/formless-preorder-email.png',
     );
+    expect(preorder?.versions[0]?.filename).toBe('formless-preorder-intro.html');
   });
 
   it('exposes kind, campaign, audience, channel, and owner as chips', () => {

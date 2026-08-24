@@ -1,0 +1,30 @@
+:root { color-scheme: light; supported-color-schemes: light; }
+html, body { margin: 0 !important; padding: 0 !important; height: 100% !important; width: 100% !important; }
+* { -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
+table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+a { text-decoration: none; }
+a[x-apple-data-detectors],
+.unstyle-auto-detected-links a {
+  color: inherit !important;
+  text-decoration: none !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+}
+@media screen and (max-width: 620px) {
+  .email-shell { width: 100% !important; }
+  .email-pad { padding-left: 24px !important; padding-right: 24px !important; }
+  .jacket-pad { padding-left: 24px !important; padding-right: 24px !important; }
+  .stack { display: block !important; width: 100% !important; }
+  .stack-pad { padding-top: 24px !important; padding-left: 0 !important; text-align: center !important; }
+  .jacket-cover { width: 148px !important; height: auto !important; margin-left: auto !important; margin-right: auto !important; }
+  .hero-copy { text-align: center !important; }
+  .hero-cta { margin-left: auto !important; margin-right: auto !important; }
+  .track-bar { margin-left: auto !important; margin-right: auto !important; }
+  .lockup { width: 132px !important; height: auto !important; }
+  .hero-line { font-size: 28px !important; line-height: 1.12 !important; }
+  .quote { font-size: 26px !important; line-height: 1.2 !important; }
+  .social { width: 32px !important; height: 32px !important; }
+}
