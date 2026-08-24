@@ -32,6 +32,10 @@ export type DesignVersion = {
   previewSrc: string;
   /** Live HTML or page for this version, if it exists. */
   href?: string;
+  /** Same label stacks these versions on one gallery row. */
+  row?: string;
+  /** Landscape board: span two columns and show the full image. */
+  wide?: boolean;
   notes?: string;
 };
 
@@ -46,8 +50,8 @@ export type BrandDesign = {
   owner: string;
   liveFrom?: string;
   liveUntil?: string;
-  /** Plain sentence: who sees it, and why it exists. */
-  usedFor: string;
+  /** Plain sentence: who sees it, and why it exists. Omit when the card should stay quiet. */
+  usedFor?: string;
   href?: string;
   aliases?: readonly string[];
   currentVersionId: string;
@@ -193,6 +197,22 @@ export function designPreviewSrc(design: BrandDesign): string {
   return designCurrentVersion(design).previewSrc;
 }
 
+export function designVersionRows(
+  design: BrandDesign,
+): Array<{ label: string; versions: DesignVersion[] }> {
+  const rows: Array<{ label: string; versions: DesignVersion[] }> = [];
+  for (const version of design.versions) {
+    const label = version.row ?? '';
+    const last = rows[rows.length - 1];
+    if (last && last.label === label) {
+      last.versions.push(version);
+      continue;
+    }
+    rows.push({ label, versions: [version] });
+  }
+  return rows;
+}
+
 export const BRAND_DESIGNS: readonly BrandDesign[] = [
   {
     id: 'special-preview',
@@ -232,8 +252,6 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
     audience: 'Teaching list',
     channel: 'Email',
     owner: 'Soni',
-    usedFor:
-      'Stay Close letter work and the waitlist boards that sit with it. The teaching-letter board is the rules. The template is the readable letter. The waitlist photograph is the intended send after Canva failed.',
     currentVersionId: 'template',
     versions: [
       {
@@ -242,6 +260,8 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
         role: 'system',
         filename: 'formless-waitlist-thankyou-brandkit.png',
         previewSrc: '/design/previews/formless-waitlist-thankyou-brandkit.png',
+        row: 'Waitlist thank-you kit',
+        wide: true,
         notes: 'Waitlist thank-you brand kit.',
       },
       {
@@ -250,6 +270,7 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
         role: 'exploration',
         filename: 'formless-waitlist-listen-first-page.png',
         previewSrc: '/design/previews/formless-waitlist-listen-first-page.png',
+        row: 'Waitlist thank-you kit',
         notes: 'Listen-first page board.',
       },
       {
@@ -258,6 +279,7 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
         role: 'exploration',
         filename: 'formless-waitlist-editorial-page.png',
         previewSrc: '/design/previews/formless-waitlist-editorial-page.png',
+        row: 'Waitlist thank-you kit',
         notes: 'Editorial page board.',
       },
       {
@@ -266,23 +288,8 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
         role: 'exploration',
         filename: 'formless-preorder-page-concepts.png',
         previewSrc: '/design/previews/formless-preorder-page-concepts.png',
+        row: 'Waitlist thank-you kit',
         notes: 'Pre-order page concepts board.',
-      },
-      {
-        id: 'brandkit',
-        label: 'Teaching-letter board',
-        role: 'system',
-        filename: 'formless-stay-close-newsletter-brandkit.png',
-        previewSrc: '/design/previews/formless-stay-close-newsletter-brandkit.png',
-        notes: 'Stay Close teaching-letter system board.',
-      },
-      {
-        id: 'template',
-        label: 'Readable letter',
-        role: 'mock',
-        filename: 'formless-stay-close-newsletter-template.png',
-        previewSrc: '/design/previews/formless-stay-close-newsletter-template.png',
-        notes: 'Readable mock of the Stay Close letter.',
       },
       {
         id: 'intended',
@@ -291,7 +298,27 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
         filename: 'formless-waitlist-email-intended.jpg',
         previewSrc: '/design/previews/formless-waitlist-email-intended.jpg',
         href: '/email-previews/waitlist-intended.html',
-        notes: 'Jacket-led waitlist HTML, Zoho-ready. Paste /emails/formless-waitlist-zoho.html. Merge tags $[FNAME]$ and $[UNSUBSCRIBE]$. Photograph is the earlier mock.',
+        row: 'Waitlist thank-you kit',
+        notes: 'Photograph of the intended waitlist email after Canva failed.',
+      },
+      {
+        id: 'brandkit',
+        label: 'Teaching-letter board',
+        role: 'system',
+        filename: 'formless-stay-close-newsletter-brandkit.png',
+        previewSrc: '/design/previews/formless-stay-close-newsletter-brandkit.png',
+        row: 'Teaching-letter board',
+        wide: true,
+        notes: 'Stay Close teaching-letter system board.',
+      },
+      {
+        id: 'template',
+        label: 'Readable letter',
+        role: 'mock',
+        filename: 'formless-stay-close-newsletter-template.png',
+        previewSrc: '/design/previews/formless-stay-close-newsletter-template.png',
+        row: 'Teaching-letter board',
+        notes: 'Readable mock of the Stay Close letter.',
       },
     ],
     source: 'Zoho email template',

@@ -13,6 +13,7 @@ import {
   designKindCounts,
   designKindLabel,
   designVersionRoleLabel,
+  designVersionRows,
   designsByKind,
   formatShortDate,
   liveWindowLabel,
@@ -297,26 +298,31 @@ function PreviewThumb({
   const className = compact
     ? 'flex min-w-0 flex-col gap-1.5 border border-cream/10 p-1.5 text-left transition-colors hover:border-cream/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]'
     : 'flex items-center justify-center bg-[#0c0e0d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]';
+  const caption = compact ? (
+    <>
+      <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-cream/45">
+        {designVersionRoleLabel(version.role)}
+      </span>
+      <span className="font-sans text-xs leading-snug text-cream/80">{version.label}</span>
+    </>
+  ) : null;
   const image = (
     <img
       src={version.previewSrc}
       alt=""
-      className="aspect-[4/5] w-full object-cover object-top"
+      className={
+        compact && version.wide
+          ? 'aspect-[3/2] w-full object-contain object-center'
+          : 'aspect-[4/5] w-full object-cover object-top'
+      }
     />
   );
 
   if (pageHref) {
     return (
       <a href={pageHref} className={className} aria-label={`Open ${design.title}: ${version.label}`}>
+        {caption}
         {image}
-        {compact ? (
-          <>
-            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-cream/45">
-              {designVersionRoleLabel(version.role)}
-            </span>
-            <span className="font-sans text-xs leading-snug text-cream/80">{version.label}</span>
-          </>
-        ) : null}
       </a>
     );
   }
@@ -333,15 +339,8 @@ function PreviewThumb({
       className={className}
       aria-label={`Open ${design.title}: ${version.label}`}
     >
+      {caption}
       {image}
-      {compact ? (
-        <>
-          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-cream/45">
-            {designVersionRoleLabel(version.role)}
-          </span>
-          <span className="font-sans text-xs leading-snug text-cream/80">{version.label}</span>
-        </>
-      ) : null}
     </button>
   );
 }
@@ -353,15 +352,31 @@ function VersionGallery({
   design: BrandDesign;
   onOpen: OpenLightbox;
 }) {
+  const rows = designVersionRows(design);
+
   return (
-    <div
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fill,minmax(15rem,16.5rem))]"
-      role="list"
-      aria-label={`${design.title} versions`}
-    >
-      {design.versions.map((version) => (
-        <div key={version.id} role="listitem">
-          <PreviewThumb design={design} version={version} onOpen={onOpen} compact />
+    <div className="flex flex-col gap-8" aria-label={`${design.title} versions`}>
+      {rows.map((row, index) => (
+        <div key={row.label || `row-${index}`} className="flex flex-col gap-3">
+          {row.label ? (
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-cream/55">
+              {row.label}
+            </h3>
+          ) : null}
+          <div
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fill,minmax(15rem,16.5rem))]"
+            role="list"
+          >
+            {row.versions.map((version) => (
+              <div
+                key={version.id}
+                role="listitem"
+                className={version.wide ? 'col-span-2' : undefined}
+              >
+                <PreviewThumb design={design} version={version} onOpen={onOpen} compact />
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
@@ -395,9 +410,11 @@ function DesignMeta({ design, version }: { design: BrandDesign; version: DesignV
           </span>
         ) : null}
       </div>
-      <p className="mt-4 max-w-xl font-sans text-sm leading-relaxed text-cream/70 md:text-[0.9375rem]">
-        {design.usedFor}
-      </p>
+      {design.usedFor ? (
+        <p className="mt-4 max-w-xl font-sans text-sm leading-relaxed text-cream/70 md:text-[0.9375rem]">
+          {design.usedFor}
+        </p>
+      ) : null}
       <dl className="mt-6 grid gap-4 border-t border-cream/10 pt-5 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/45 sm:grid-cols-2">
         <div>
           <dt>Path</dt>

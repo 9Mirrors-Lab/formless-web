@@ -12,6 +12,7 @@ import {
   designKindLabel,
   designPreviewSrc,
   designVersionRoleLabel,
+  designVersionRows,
   designsByKind,
   draftDesigns,
   liveWindowLabel,
@@ -31,7 +32,7 @@ describe('brandMaterials', () => {
     expect(design?.liveFrom).toBe('2026-08-22');
     expect(design?.liveUntil).toBe('2026-09-14');
     expect(design?.href).toBe('/special-preview');
-    expect(design?.usedFor.toLowerCase()).toContain('waitlist');
+    expect(design?.usedFor?.toLowerCase()).toContain('waitlist');
     expect(design?.aliases).toContain('/preorder');
     expect(designPreviewSrc(design!)).toBe('/design/previews/special-preview.jpg');
     expect(designPreviewSrc(design!)).not.toBe(FORMLESS_BOOK_COVER.src);
@@ -45,16 +46,26 @@ describe('brandMaterials', () => {
     expect(design?.kind).toBe('zoho-email');
     expect(design?.campaign).toBe('Stay Close');
     expect(designCurrentVersion(design!).id).toBe('template');
+    expect(design?.usedFor).toBeUndefined();
     expect(design?.versions.map((version) => version.filename)).toEqual([
       'formless-waitlist-thankyou-brandkit.png',
       'formless-waitlist-listen-first-page.png',
       'formless-waitlist-editorial-page.png',
       'formless-preorder-page-concepts.png',
+      'formless-waitlist-email-intended.jpg',
       'formless-stay-close-newsletter-brandkit.png',
       'formless-stay-close-newsletter-template.png',
-      'formless-waitlist-email-intended.jpg',
+    ]);
+    expect(designVersionRows(design!).map((row) => row.label)).toEqual([
+      'Waitlist thank-you kit',
+      'Teaching-letter board',
     ]);
     expect(designById('waitlist-thankyou')).toBeUndefined();
+    expect(design?.versions.find((version) => version.id === 'waitlist-thankyou-brandkit')?.wide).toBe(
+      true,
+    );
+    expect(design?.versions.find((version) => version.id === 'brandkit')?.wide).toBe(true);
+    expect(design?.versions.filter((version) => version.wide)).toHaveLength(2);
   });
 
   it('does not flatten explorations into their own design rows', () => {
