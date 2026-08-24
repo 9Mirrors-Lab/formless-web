@@ -66,18 +66,18 @@ describe('recordSessionFindingForDiff', () => {
     const result = diffFor(8);
     const chunk = chunkWithKey(result, 'left', 'ready');
     expect(chunk).toBeTruthy();
-    expect(recordSessionFindingForChunk(8, result.chunks, chunk!).id).toBe(
-      'ch8-ready-to-begin',
-    );
+    const finding = recordSessionFindingForChunk(8, result.chunks, chunk!);
+    expect(finding).not.toBeNull();
+    expect(finding?.id).toBe('ch8-ready-to-begin');
   });
 
   it('links Chapter 4’s complete-you gap to its player beat', () => {
     const result = diffFor(4);
     const chunk = chunkWithKey(result, 'left', 'complete');
     expect(chunk).toBeTruthy();
-    expect(recordSessionFindingForChunk(4, result.chunks, chunk!).id).toBe(
-      'ch4-complete-you',
-    );
+    const finding = recordSessionFindingForChunk(4, result.chunks, chunk!);
+    expect(finding).not.toBeNull();
+    expect(finding?.id).toBe('ch4-complete-you');
   });
 
   it('links Chapter 9 oneness/openness wording to its player beat', () => {
@@ -86,17 +86,17 @@ describe('recordSessionFindingForDiff', () => {
     expect(chunk).toBeTruthy();
     const trackTime = cueStartForChunk(result.chunks, chunk!.id);
     expect(trackTime).toBeGreaterThan(1180);
-    expect(recordSessionFindingForChunk(9, result.chunks, chunk!).id).toBe(
-      'ch9-openness',
-    );
+    const finding = recordSessionFindingForChunk(9, result.chunks, chunk!);
+    expect(finding).not.toBeNull();
+    expect(finding?.id).toBe('ch9-openness');
   });
 
   it('links Chapter 9 “the mind” / “my mind” wording to its player beat', () => {
     const result = diffFor(9);
     const my = chunkWithKey(result, 'right', 'my');
     expect(my).toBeTruthy();
-    expect(recordSessionFindingForChunk(9, result.chunks, my!).id).toBe(
-      'ch9-the-mind',
-    );
+    const finding = recordSessionFindingForChunk(9, result.chunks, my!);
+    expect(finding).not.toBeNull();
+    expect(finding?.id).toBe('ch9-the-mind');
   });
 });
