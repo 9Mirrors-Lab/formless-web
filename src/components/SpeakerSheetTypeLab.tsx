@@ -142,7 +142,7 @@ export function SpeakerSheetTypeLab() {
               lead, work, and live.
             </p>
             <img
-              src="/design/speaker-notes/formless-cover-final.png"
+              src="/book-covers/formless-ebook.jpg"
               alt="Formless book cover"
               className="mx-auto mt-6 w-28 rounded-sm shadow-lg shadow-black/40"
             />

@@ -2,7 +2,7 @@
  * Book vs audio — printed ARC text (left) vs timed audio script (right).
  * Live word-level diff; normalized matching.
  */
-import { Check, ChevronDown, ChevronUp, Flag, Mic, Speech } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, Flag, Mic, Speech } from 'lucide-react';
 import {
   useCallback,
   useEffect,
@@ -13,6 +13,7 @@ import {
   type RefObject,
 } from 'react';
 
+import { AudibleDeskTabs } from '@/components/AudibleDeskTabs';
 import { BrandPageHeader } from '@/components/BrandPageHeader';
 import { BrandShell } from '@/components/app-sidebar';
 import {
@@ -63,6 +64,9 @@ const SCRIPT_MODEL = 'medium';
 
 const LABEL =
   'font-sans text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#9fb5aa]';
+
+const CHIP =
+  'inline-flex h-6 items-center gap-1 px-1.5 font-sans text-[0.6rem] uppercase tracking-[0.14em]';
 
 const KIND_STYLE: Record<
   DiffKind,
@@ -463,7 +467,6 @@ function DualMetric({
   tick,
   bookHint,
   trackHint,
-  folio,
 }: {
   label: string;
   bookValue: string;
@@ -471,42 +474,190 @@ function DualMetric({
   tick?: keyof typeof TICK;
   bookHint?: string;
   trackHint?: string;
-  folio?: string;
 }) {
   return (
-    <div className="min-w-0">
-      <p className={`${LABEL} flex items-center gap-1.5`}>
-        {tick ? (
-          <span className={`inline-block h-1.5 w-1.5 ${TICK[tick]}`} aria-hidden />
-        ) : null}
-        {label}
-      </p>
-      <p className="mt-1.5 font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
-        {bookValue}
-      </p>
-      <p className="mt-1.5 h-4 font-sans text-[0.7rem] text-cream/40">
-        {bookHint ?? ''}
-      </p>
-      <div className="mt-2.5 border-t border-cream/[0.08] pt-2">
-        <p className="flex items-baseline gap-2">
-          {folio ? (
-            <span className="font-serif text-[1.05rem] italic leading-none text-cream/50">
-              {folio}
-            </span>
-          ) : (
+    <div
+      className={`${CHIP} text-cream/45`}
+      title={[bookHint, trackHint].filter(Boolean).join(' · ') || undefined}
+    >
+      {tick ? (
+        <span className={`inline-block h-1.5 w-1.5 shrink-0 ${TICK[tick]}`} aria-hidden />
+      ) : null}
+      {label}
+      <span className="font-mono tabular-nums text-cream">{bookValue}</span>
+      <span className="font-mono tabular-nums text-cream/55">{trackValue}</span>
+    </div>
+  );
+}
+
+function checkedOf(counts: DiffReviewCounts): number {
+  return counts.cleared + counts.asSpoken + counts.needsUpdate + counts.record;
+}
+
+function CheckChip({ book }: { book: DiffReviewCounts }) {
+  const bookChecked = checkedOf(book);
+
+  return (
+    <div
+      className={`${CHIP} text-cream/45`}
+      aria-label={
+        book.all === 0
+          ? 'No differences in the book'
+          : `${formatCount(book.all)} differences in the book, ${formatCount(bookChecked)} checked.`
+      }
+    >
+      Check
+      <span className="font-mono tabular-nums text-cream">
+        {formatCount(bookChecked)}
+        <span className="text-cream/40">/{formatCount(book.all)}</span>
+      </span>
+    </div>
+  );
+}
+
+function FilterChips({
+  filter,
+  onFilter,
+  countFor,
+}: {
+  filter: DiffReviewFilter;
+  onFilter: (id: DiffReviewFilter) => void;
+  countFor: (id: DiffReviewFilter) => number;
+}) {
+  return (
+    <div
+      className="flex flex-wrap gap-0.5 sm:ml-auto"
+      role="group"
+      aria-label="Review filter"
+    >
+      {FILTER_OPTIONS.map((option) => {
+        const active = filter === option.id;
+        const count = countFor(option.id);
+        const openComplete = option.id === 'open' && count === 0;
+        return (
+          <button
+            key={option.id}
+            type="button"
+            aria-pressed={active}
+            onClick={() => onFilter(option.id)}
+            className={cn(
+              CHIP,
+              'border transition-colors',
+              openComplete
+                ? active
+                  ? 'border-[#6fd4b8]/80 bg-[#6fd4b8]/18 text-[#e7fff6] shadow-[inset_0_0_18px_rgba(111,212,184,0.22)]'
+                  : 'border-transparent text-[#6fd4b8]/80 hover:text-[#8fe0c8]'
+                : active
+                  ? 'border-cream/35 bg-cream/10 text-cream'
+                  : 'border-transparent text-cream/45 hover:text-cream/80',
+            )}
+          >
+            {option.label}
             <span
-              className={`inline-block h-1 w-1 shrink-0 ${tick ? TICK[tick] : 'bg-transparent'}`}
-              aria-hidden
-            />
-          )}
-          <span className="font-mono text-[0.92rem] leading-none text-cream/70 tabular-nums">
-            {trackValue}
-          </span>
-        </p>
-        {trackHint ? (
-          <p className="mt-1 font-sans text-[0.65rem] text-cream/35">{trackHint}</p>
-        ) : null}
-      </div>
+              className={cn(
+                'font-mono tabular-nums',
+                openComplete ? 'text-[#8fe0c8]' : 'text-cream/55',
+              )}
+            >
+              {count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function MetricsRow({
+  book,
+  track,
+  chapterTitle,
+  bookCounts,
+  filter,
+  onFilter,
+  countFor,
+}: {
+  book: DiffStats;
+  track: DiffStats;
+  chapterTitle: string;
+  bookCounts: DiffReviewCounts;
+  filter: DiffReviewFilter;
+  onFilter: (id: DiffReviewFilter) => void;
+  countFor: (id: DiffReviewFilter) => number;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-0.5" title={chapterTitle}>
+      <DualMetric
+        label="Whole book"
+        bookValue={`${book.similarityPct}%`}
+        bookHint={`${formatCount(book.matchedWords)} same words`}
+        trackValue={`${track.similarityPct}%`}
+        trackHint={`${formatCount(track.matchedWords)} same · this track`}
+      />
+      <DualMetric
+        label="In book"
+        bookValue={formatCount(book.missingFromScript)}
+        tick="delete"
+        trackValue={formatCount(track.missingFromScript)}
+      />
+      <DualMetric
+        label="In audio"
+        bookValue={formatCount(book.onlyInScript)}
+        tick="insert"
+        trackValue={formatCount(track.onlyInScript)}
+      />
+      <DualMetric
+        label="Wording"
+        bookValue={formatCount(book.replacements)}
+        tick="replace"
+        trackValue={formatCount(track.replacements)}
+      />
+      <CheckChip book={bookCounts} />
+      <FilterChips filter={filter} onFilter={onFilter} countFor={countFor} />
+    </div>
+  );
+}
+
+function JumpNav({
+  indexLabel,
+  disabled,
+  onPrev,
+  onNext,
+}: {
+  indexLabel: string;
+  disabled: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <p className="font-mono text-[0.7rem] tabular-nums text-cream/45">
+        {indexLabel}
+      </p>
+      <button
+        type="button"
+        onClick={onPrev}
+        disabled={disabled}
+        className={cn(
+          TOOL_BUTTON,
+          'h-6 gap-1 border-cream/20 px-1.5 text-[0.6rem] tracking-[0.1em] text-cream/80 hover:bg-cream/5',
+        )}
+      >
+        <ChevronLeft size={11} aria-hidden />
+        Prev
+      </button>
+      <button
+        type="button"
+        onClick={onNext}
+        disabled={disabled}
+        className={cn(
+          TOOL_BUTTON,
+          'h-6 gap-1 border-cream/20 px-1.5 text-[0.6rem] tracking-[0.1em] text-cream/80 hover:bg-cream/5',
+        )}
+      >
+        Next
+        <ChevronRight size={11} aria-hidden />
+      </button>
     </div>
   );
 }
@@ -536,193 +687,6 @@ function TrackNav({
           ))}
         </select>
       </label>
-    </div>
-  );
-}
-
-function MetricsBand({
-  book,
-  track,
-  chapterIndex,
-  chapterTitle,
-  bookCounts,
-  trackCounts,
-  className,
-}: {
-  book: DiffStats;
-  track: DiffStats;
-  chapterIndex: string;
-  chapterTitle: string;
-  bookCounts: DiffReviewCounts;
-  trackCounts: DiffReviewCounts;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        'flex flex-col gap-4 border border-cream/12 bg-[#0c100e] px-4 py-3 lg:flex-row lg:items-stretch lg:gap-8',
-        className,
-      )}
-    >
-      <div className="min-w-0 flex-[1.45]">
-        <div
-          className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-4"
-          title={chapterTitle}
-        >
-          <DualMetric
-            label="Whole book"
-            bookValue={`${book.similarityPct}%`}
-            bookHint={`${formatCount(book.matchedWords)} same words`}
-            folio={chapterIndex}
-            trackValue={`${track.similarityPct}%`}
-            trackHint={`${formatCount(track.matchedWords)} same · this track`}
-          />
-          <DualMetric
-            label="In book"
-            bookValue={formatCount(book.missingFromScript)}
-            tick="delete"
-            trackValue={formatCount(track.missingFromScript)}
-          />
-          <DualMetric
-            label="In audio"
-            bookValue={formatCount(book.onlyInScript)}
-            tick="insert"
-            trackValue={formatCount(track.onlyInScript)}
-          />
-          <DualMetric
-            label="Wording"
-            bookValue={formatCount(book.replacements)}
-            tick="replace"
-            trackValue={formatCount(track.replacements)}
-          />
-        </div>
-      </div>
-
-      <CheckCluster
-        book={bookCounts}
-        track={trackCounts}
-        chapterIndex={chapterIndex}
-      />
-    </div>
-  );
-}
-
-function checkedOf(counts: DiffReviewCounts): number {
-  return counts.cleared + counts.asSpoken + counts.needsUpdate + counts.record;
-}
-
-const STATUS_SWATCH = {
-  fine: '#f2f0e9',
-  spoken: '#9fb5aa',
-  update: '#c4a04a',
-  record: '#c45c4a',
-  open: 'rgb(242 240 233 / 0.42)',
-} as const;
-
-type StatusSlice = {
-  id: 'fine' | 'spoken' | 'update' | 'record' | 'open';
-  label: string;
-  value: number;
-  color: string;
-};
-
-function statusSlices(book: DiffReviewCounts): StatusSlice[] {
-  return [
-    { id: 'open', label: 'Open', value: book.open, color: STATUS_SWATCH.open },
-    { id: 'fine', label: 'Fine', value: book.cleared, color: STATUS_SWATCH.fine },
-    {
-      id: 'spoken',
-      label: 'Spoken',
-      value: book.asSpoken,
-      color: STATUS_SWATCH.spoken,
-    },
-    {
-      id: 'update',
-      label: 'Update',
-      value: book.needsUpdate,
-      color: STATUS_SWATCH.update,
-    },
-    {
-      id: 'record',
-      label: 'Record',
-      value: book.record,
-      color: STATUS_SWATCH.record,
-    },
-  ];
-}
-
-function CheckCluster({
-  book,
-  track,
-  chapterIndex,
-}: {
-  book: DiffReviewCounts;
-  track: DiffReviewCounts;
-  chapterIndex: string;
-}) {
-  const bookChecked = checkedOf(book);
-  const slices = statusSlices(book);
-
-  return (
-    <div
-      className="min-w-0 flex-1 lg:border-l lg:border-cream/10 lg:pl-6"
-      aria-label={
-        book.all === 0
-          ? 'No differences in the book'
-          : `${formatCount(book.all)} differences in the book, ${formatCount(bookChecked)} checked. Fine ${formatCount(book.cleared)}, spoken ${formatCount(book.asSpoken)}, update ${formatCount(book.needsUpdate)}, record ${formatCount(book.record)}, open ${formatCount(book.open)}. Track ${chapterIndex} has ${formatCount(track.open)} open.`
-      }
-    >
-      <p className={LABEL}>Check</p>
-      {book.all === 0 ? (
-        <p className="mt-1.5 font-sans text-[0.7rem] text-cream/40">
-          No differences in the book
-        </p>
-      ) : (
-        <>
-          <div className="mt-1.5 flex items-baseline gap-6">
-            <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
-              {formatCount(book.all)}
-              <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
-                total
-              </span>
-            </p>
-            <p className="font-mono text-[1.7rem] leading-none tracking-tight text-cream tabular-nums">
-              {formatCount(bookChecked)}
-              <span className="ml-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cream/40">
-                checked
-              </span>
-            </p>
-          </div>
-          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
-            {slices.map((slice) => (
-              <li
-                key={slice.id}
-                className="flex items-baseline gap-1.5 font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/40"
-              >
-                <span
-                  className="mb-0.5 inline-block h-1.5 w-1.5 shrink-0"
-                  style={{ backgroundColor: slice.color }}
-                  aria-hidden
-                />
-                <span className="font-mono text-sm tabular-nums text-cream/75">
-                  {formatCount(slice.value)}
-                </span>
-                {slice.label}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 flex items-baseline gap-2">
-            <span className="font-serif text-[1.05rem] italic leading-[1.1] text-cream/50">
-              {chapterIndex}
-            </span>
-            <span className="font-sans text-[0.65rem] uppercase tracking-[0.14em] text-cream/35">
-              {track.all === 0
-                ? 'No diffs on this track'
-                : `${formatCount(track.open)} open here`}
-            </span>
-          </p>
-        </>
-      )}
     </div>
   );
 }
@@ -848,12 +812,14 @@ function ReviewBar({
   status,
   trackTime,
   onStatus,
+  nav,
   className,
 }: {
-  chunk: DiffChunk;
+  chunk: DiffChunk | null;
   status: DiffReviewStatus | null;
   trackTime: number | null;
   onStatus: (next: DiffReviewStatus) => void;
+  nav?: ReactNode;
   className?: string;
 }) {
   return (
@@ -864,29 +830,40 @@ function ReviewBar({
       )}
     >
       <div className="min-w-[14rem] flex-1">
-        <p className={LABEL}>{KIND_STYLE[chunk.kind].label}</p>
-        {trackTime != null ? (
-          <p className="mt-1 font-mono text-xs tabular-nums tracking-[0.08em] text-[#9fb5aa]">
-            Track {formatAudioTime(trackTime)}
+        {chunk ? (
+          <>
+            <p className={LABEL}>{KIND_STYLE[chunk.kind].label}</p>
+            {trackTime != null ? (
+              <p className="mt-1 font-mono text-xs tabular-nums tracking-[0.08em] text-[#9fb5aa]">
+                Track {formatAudioTime(trackTime)}
+              </p>
+            ) : null}
+            <p className="mt-1 font-sans text-sm text-cream/80">
+              Book: {tokenExcerpt(chunk.left)}
+            </p>
+            <p className="mt-0.5 font-sans text-sm text-cream/55">
+              Audio: {tokenExcerpt(chunk.right)}
+            </p>
+          </>
+        ) : (
+          <p className="font-sans text-xs text-cream/40">
+            Tap a highlight in the script to review it here.
           </p>
-        ) : null}
-        <p className="mt-1 font-sans text-sm text-cream/80">
-          Book: {tokenExcerpt(chunk.left)}
-        </p>
-        <p className="mt-0.5 font-sans text-sm text-cream/55">
-          Audio: {tokenExcerpt(chunk.right)}
-        </p>
+        )}
       </div>
-      <div className="flex flex-wrap items-end gap-3">
-        {REVIEW_MARKS.map((mark) => (
-          <ReviewMarkButton
-            key={mark.status}
-            mark={mark}
-            active={status === mark.status}
-            onSelect={() => onStatus(mark.status)}
-          />
-        ))}
-      </div>
+      {chunk ? (
+        <div className="flex flex-wrap items-end gap-3">
+          {REVIEW_MARKS.map((mark) => (
+            <ReviewMarkButton
+              key={mark.status}
+              mark={mark}
+              active={status === mark.status}
+              onSelect={() => onStatus(mark.status)}
+            />
+          ))}
+        </div>
+      ) : null}
+      {nav}
     </div>
   );
 }
@@ -1130,7 +1107,10 @@ export default function AudioScriptComparePage() {
     <BrandShell activeId="script-compare" crumb="Book vs audio" noise={false}>
       <div className="fixed inset-0 z-10 flex flex-col overflow-hidden bg-[#080a09] pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:left-[var(--brand-nav-width,19rem)] md:pb-0">
         <div className="flex min-h-0 flex-1 flex-col gap-3 px-4 pb-4 pt-2 md:gap-3.5 md:px-8 md:pb-8 md:pt-2.5 lg:px-10 lg:pb-10">
-            <BrandPageHeader title="Book vs audio" />
+            <div className="flex shrink-0 flex-col gap-2">
+              <BrandPageHeader title="Book vs audio" />
+              <AudibleDeskTabs activeId="script-compare" />
+            </div>
 
             <Accordion
               type="single"
@@ -1159,15 +1139,6 @@ export default function AudioScriptComparePage() {
                   <TrackNav
                     chapterId={chapterId}
                     onChapter={setChapterId}
-                  />
-                  <MetricsBand
-                    book={bookStats}
-                    track={diff.stats}
-                    chapterIndex={formatChapterIndex(chapterId)}
-                    chapterTitle={title}
-                    bookCounts={bookCounts}
-                    trackCounts={counts}
-                    className="border-cream/10 bg-transparent px-0"
                   />
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-cream/10 pt-3">
                     {(
@@ -1233,87 +1204,37 @@ export default function AudioScriptComparePage() {
               </AccordionItem>
             </Accordion>
 
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-0.5">
-              <div className="flex items-center gap-1.5">
-                <p className="font-mono text-[0.7rem] tabular-nums text-cream/45">
-                  {filteredIds.length === 0
-                    ? '0'
-                    : `${filteredIndex >= 0 ? filteredIndex + 1 : '—'} / ${filteredIds.length}`}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => jumpDiff(-1)}
-                  disabled={filteredIds.length === 0}
-                  className={cn(
-                    TOOL_BUTTON,
-                    'h-6 gap-1 border-cream/20 px-1.5 text-[0.6rem] tracking-[0.1em] text-cream/80 hover:bg-cream/5',
-                  )}
-                >
-                  <ChevronUp size={11} aria-hidden />
-                  Prev
-                </button>
-                <button
-                  type="button"
-                  onClick={() => jumpDiff(1)}
-                  disabled={filteredIds.length === 0}
-                  className={cn(
-                    TOOL_BUTTON,
-                    'h-6 gap-1 border-cream/20 px-1.5 text-[0.6rem] tracking-[0.1em] text-cream/80 hover:bg-cream/5',
-                  )}
-                >
-                  Next
-                  <ChevronDown size={11} aria-hidden />
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-1" role="group" aria-label="Review filter">
-                {FILTER_OPTIONS.map((option) => {
-                  const active = filter === option.id;
-                  const count = filterCount(option.id);
-                  const openComplete = option.id === 'open' && count === 0;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      aria-pressed={active}
-                      onClick={() => setFilter(option.id)}
-                      className={cn(
-                        'inline-flex h-6 items-center gap-1.5 border px-2 font-sans text-[0.6rem] uppercase tracking-[0.14em] transition-colors',
-                        openComplete
-                          ? active
-                            ? 'border-[#6fd4b8]/80 bg-[#6fd4b8]/18 text-[#e7fff6] shadow-[inset_0_0_18px_rgba(111,212,184,0.22)]'
-                            : 'border-transparent text-[#6fd4b8]/80 hover:text-[#8fe0c8]'
-                          : active
-                            ? 'border-cream/35 bg-cream/10 text-cream'
-                            : 'border-transparent text-cream/45 hover:text-cream/80',
-                      )}
-                    >
-                      {option.label}
-                      <span
-                        className={cn(
-                          'font-mono tabular-nums',
-                          openComplete ? 'text-[#8fe0c8]' : 'text-cream/55',
-                        )}
-                      >
-                        {count}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {activeChunk && activeChunk.kind !== 'equal' ? (
+            <div className="flex flex-col">
+              <MetricsRow
+                book={bookStats}
+                track={diff.stats}
+                chapterTitle={title}
+                bookCounts={bookCounts}
+                filter={filter}
+                onFilter={setFilter}
+                countFor={filterCount}
+              />
               <ReviewBar
-                chunk={activeChunk}
+                chunk={
+                  activeChunk && activeChunk.kind !== 'equal' ? activeChunk : null
+                }
                 status={activeStatus}
                 trackTime={activeTrackTime}
                 onStatus={applyStatus}
+                nav={
+                  <JumpNav
+                    indexLabel={
+                      filteredIds.length === 0
+                        ? '0'
+                        : `${filteredIndex >= 0 ? filteredIndex + 1 : '—'} / ${filteredIds.length}`
+                    }
+                    disabled={filteredIds.length === 0}
+                    onPrev={() => jumpDiff(-1)}
+                    onNext={() => jumpDiff(1)}
+                  />
+                }
               />
-            ) : (
-              <p className="border border-cream/12 bg-[#0c100e] px-4 py-3 font-sans text-xs text-cream/40">
-                Tap a highlight in the script to review it here.
-              </p>
-            )}
+            </div>
 
             <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-2">
               <DiffPane

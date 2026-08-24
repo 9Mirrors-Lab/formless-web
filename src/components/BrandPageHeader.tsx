@@ -6,6 +6,8 @@ type BrandPageHeaderProps = {
   title: string;
   description?: string;
   actions?: ReactNode;
+  /** Desk pages use sans. Editorial pages keep the serif title. */
+  tone?: "editorial" | "desk";
 };
 
 /** Shared top block for Brand Toolkit pages. Keep this structure identical across materials. */
@@ -14,6 +16,7 @@ export function BrandPageHeader({
   title,
   description,
   actions,
+  tone = "editorial",
 }: BrandPageHeaderProps) {
   return (
     <header className="flex flex-col gap-2 text-left md:flex-row md:items-end md:justify-between md:gap-6">
@@ -23,7 +26,13 @@ export function BrandPageHeader({
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="font-serif text-[1.75rem] italic leading-[1.05] tracking-[-0.02em] text-cream sm:text-[2rem] md:text-[2.25rem]">
+        <h1
+          className={
+            tone === "desk"
+              ? "font-sans text-[1.65rem] font-semibold leading-[1.08] tracking-[-0.03em] text-cream sm:text-[1.85rem] md:text-[2.05rem]"
+              : "font-serif text-[1.75rem] italic leading-[1.05] tracking-[-0.02em] text-cream sm:text-[2rem] md:text-[2.25rem]"
+          }
+        >
           {title}
         </h1>
         {description ? (

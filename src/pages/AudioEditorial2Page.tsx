@@ -20,6 +20,7 @@ import {
   setEditorialViewInUrl,
 } from '@/components/audio-review/AudioWorkspaceNav';
 import { MasterPhasesWorkspace } from '@/components/audio-review/MasterPhasesWorkspace';
+import { AudibleDeskTabs } from '@/components/AudibleDeskTabs';
 import { BrandShell } from '@/components/app-sidebar';
 import { AUDIO_BOOK } from '@/data/audioBook';
 import {
@@ -121,6 +122,9 @@ export default function AudioEditorial2Page() {
             </button>
           </nav>
         </header>
+        <div className="shrink-0 border-b border-cream/10 bg-[#101412] px-2">
+          <AudibleDeskTabs activeId="audible-studio" />
+        </div>
 
         <main className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-[#0d100e]">
           <MasterPhasesWorkspace

@@ -1834,6 +1834,69 @@
   animation: teaching-space-right 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
 }
 
+@keyframes teaching-observer-wave {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.teaching-icon-mark--live .observer-wave {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: teaching-observer-wave 2.5s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+.teaching-icon-mark--live .observer-wave:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.teaching-icon-mark--live .observer-wave:nth-child(2) {
+  animation-delay: 0.6s;
+}
+
+.teaching-icon-mark--live .observer-wave:nth-child(3) {
+  animation-delay: 1.2s;
+}
+
+@keyframes teaching-pause-left {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes teaching-pause-right {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-10px);
+  }
+}
+
+.teaching-icon-mark--live .pause-bar-left,
+.teaching-icon-mark--live .pause-bar-right {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.teaching-icon-mark--live .pause-bar-left {
+  animation: teaching-pause-left 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.teaching-icon-mark--live .pause-bar-right {
+  animation: teaching-pause-right 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
 /* Record session WAV helper: clay well breathes so the steps control is findable. */
 @keyframes record-helper-breathe {
   0%,

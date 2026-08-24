@@ -8,10 +8,12 @@ export type BrandNavId =
   | "audible"
   | "audible-process"
   | "record-sessions"
+  | "record-list"
   | "script-compare"
   | "audible-studio"
   | "zoom-backgrounds"
   | "brand-kit"
+  | "designs"
   | "client-review"
   | "design-system";
 
@@ -68,10 +70,10 @@ export const NAV_ROOMS: BrandNavRoom[] = [
     title: "Audible",
     items: [
       {
-        id: "record-sessions",
-        title: "Record Sessions",
-        href: "/audio/record-sessions",
-        description: "Scripts for re-records",
+        id: "audible",
+        title: "Listen",
+        href: "/audio/editorial",
+        description: "Compare masters",
       },
       {
         id: "script-compare",
@@ -80,22 +82,10 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         description: "Print vs timed script",
       },
       {
-        id: "audible",
-        title: "Listen",
-        href: "/audio/editorial",
-        description: "Compare masters",
-      },
-      {
-        id: "audible-process",
-        title: "Process",
-        href: "/audio/process",
-        description: "What ACX needs to submit",
-      },
-      {
-        id: "audible-studio",
-        title: "Studio ladder",
-        href: "/audio/editorial2",
-        description: "Master phases",
+        id: "record-sessions",
+        title: "Record Sessions",
+        href: "/audio/record-sessions",
+        description: "Scripts for re-records",
       },
     ],
   },
@@ -103,6 +93,12 @@ export const NAV_ROOMS: BrandNavRoom[] = [
     id: "materials",
     title: "Materials",
     items: [
+      {
+        id: "designs",
+        title: "Designs",
+        href: "/brand/designs",
+        description: "Live pages and files",
+      },
       {
         id: "brand-kit",
         title: "Logos",
@@ -125,6 +121,45 @@ export const NAV_ROOMS: BrandNavRoom[] = [
   },
 ];
 
+/** Pages reached from tabs on Book vs audio, not from the Audible nav list. */
+export const AUDIBLE_DESK_TABS: readonly BrandNavItem[] = [
+  {
+    id: "script-compare",
+    title: "Book vs audio",
+    href: "/audio/script-compare",
+    description: "Print vs timed script",
+  },
+  {
+    id: "record-list",
+    title: "Record list",
+    href: "/audio/record-list",
+    description: "Lines marked to recut",
+  },
+  {
+    id: "audible-studio",
+    title: "Studio ladder",
+    href: "/audio/editorial2",
+    description: "Master phases",
+  },
+  {
+    id: "audible-process",
+    title: "Process",
+    href: "/audio/process",
+    description: "What ACX needs to submit",
+  },
+];
+
+export function navHighlightId(activeId: BrandNavId): BrandNavId {
+  switch (activeId) {
+    case "record-list":
+    case "audible-studio":
+    case "audible-process":
+      return "script-compare";
+    default:
+      return activeId;
+  }
+}
+
 export function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/speaker-sheet") return "speaker-sheet";
   if (pathname === "/audio/companion" || pathname.startsWith("/audio/companion")) {
@@ -141,6 +176,12 @@ export function navIdFromPath(pathname: string): BrandNavId {
     pathname.startsWith("/audio/record-sessions")
   ) {
     return "record-sessions";
+  }
+  if (
+    pathname === "/audio/record-list" ||
+    pathname.startsWith("/audio/record-list")
+  ) {
+    return "record-list";
   }
   if (
     pathname === "/audio/script-compare" ||
@@ -181,6 +222,9 @@ export function navIdFromPath(pathname: string): BrandNavId {
   ) {
     return "book-launch";
   }
+  if (pathname === "/brand/designs" || pathname.startsWith("/brand/designs")) {
+    return "designs";
+  }
   if (pathname === "/brand") return "brand";
   return "brand";
 }
@@ -193,6 +237,9 @@ export function brandNavPlace(activeId: BrandNavId): {
     const item = room.items.find((entry) => entry.id === activeId);
     if (item) return { title: item.title, room: room.title };
   }
+
+  const deskTab = AUDIBLE_DESK_TABS.find((entry) => entry.id === activeId);
+  if (deskTab) return { title: deskTab.title, room: "Audible" };
 
   switch (activeId) {
     case "brand":
@@ -209,10 +256,12 @@ export function brandNavPlace(activeId: BrandNavId): {
     case "audible":
     case "audible-process":
     case "record-sessions":
+    case "record-list":
     case "script-compare":
     case "audible-studio":
     case "zoom-backgrounds":
     case "brand-kit":
+    case "designs":
       return { title: "Eyes Closed", room: "Toolkit" };
     default: {
       const _never: never = activeId;

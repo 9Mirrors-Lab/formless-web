@@ -10,7 +10,13 @@ export {
   LAUNCH_SCRIPTS,
 } from './bookLaunchAssets';
 
-export type LaunchChannelId = 'warm' | 'professional' | 'linkedin' | 'x';
+export type LaunchChannelId =
+  | 'warm'
+  | 'waitlist'
+  | 'stay-close'
+  | 'advance'
+  | 'linkedin'
+  | 'x';
 
 export type LaunchPieceKind = 'email' | 'post';
 
@@ -74,7 +80,7 @@ export type LaunchRunway = {
 
 export type LaunchIntakeSection = {
   id: string;
-  channel: 'both' | 'warm' | 'professional';
+  channel: 'both' | 'warm' | 'lists';
   title: string;
   questions: string[];
   placeholders?: string[];
@@ -108,7 +114,9 @@ export const LAUNCH_POSITIONING = {
 
 export const LAUNCH_CHANNEL_IDS = [
   'warm',
-  'professional',
+  'waitlist',
+  'stay-close',
+  'advance',
   'linkedin',
   'x',
 ] as const satisfies readonly LaunchChannelId[];
@@ -116,7 +124,9 @@ export const LAUNCH_CHANNEL_IDS = [
 export const LAUNCH_VIEWS = [
   'all',
   'warm',
-  'professional',
+  'waitlist',
+  'stay-close',
+  'advance',
   'linkedin',
   'x',
   'landing',
@@ -216,20 +226,50 @@ export const LAUNCH_CHANNELS: Record<LaunchChannelId, LaunchChannel> = {
     rule: 'A human note. One why. One date. One optional ask. Never "join my launch team."',
     pieceKind: 'email',
   },
-  professional: {
-    id: 'professional',
-    title: 'Waitlist and Stay Close',
-    shortTitle: 'List',
+  waitlist: {
+    id: 'waitlist',
+    title: 'Book waitlist',
+    shortTitle: 'Waitlist',
     audience:
-      'People who asked to be told: book waitlist, Stay Close, and advance-listen companions. They opted in. They are not a cold blast list.',
-    tone: 'Mission-led, unhurried, one letter at a time.',
+      'People who wanted to hear when the book is out. The notify form on /book. They opted in for one clear letter, not a relationship sequence.',
+    tone: 'Direct, unhurried, one letter at a time.',
     cadence: [
-      'One letter before the day',
-      'One letter on September 1',
+      'One almost-here letter',
+      'One available letter on September 1',
       'Thanks, then an optional review note to people who met the book',
       'One teaching letter after launch week',
     ],
-    rule: 'They asked to be told. Tell them. Do not manufacture a week of reminders.',
+    rule: 'They wanted to hear. Tell them once. Do not manufacture a week of reminders.',
+    pieceKind: 'email',
+  },
+  'stay-close': {
+    id: 'stay-close',
+    title: 'Stay Close',
+    shortTitle: 'Stay Close',
+    audience:
+      'People who joined Stay Close from the about page. An ongoing relationship, not a launch list.',
+    tone: 'Quieter than the waitlist. Same facts. Less announcement.',
+    cadence: [
+      'A quieter almost-here note',
+      'The same available letter, softened',
+      'Thanks, then teaching',
+    ],
+    rule: 'Stay Close stays a relationship. Mixing it with the waitlist makes both feel like marketing.',
+    pieceKind: 'email',
+  },
+  advance: {
+    id: 'advance',
+    title: 'Advance listen',
+    shortTitle: 'Advance',
+    audience:
+      'People who already crossed the audio gate. Early companions, not a second list to squeeze.',
+    tone: 'Companion-to-companion. They already heard the work.',
+    cadence: [
+      'No extra sequence before the day',
+      'A note that the audiobook is public',
+      'Invite into the teaching after',
+    ],
+    rule: 'They already crossed a threshold. No countdown. No extra ask.',
     pieceKind: 'email',
   },
   linkedin: {
@@ -271,7 +311,7 @@ export const LAUNCH_INTAKE: readonly LaunchIntakeSection[] = [
     title: 'Who hears from which list',
     questions: [
       'Is the warm circle a named list of 15-40 people, not a BCC blast?',
-      'Can waitlist, Stay Close, and advance-listen be sent separately?',
+      'Can book waitlist, Stay Close, and advance listen each receive their own send?',
       'Who sends, from which address, and with which tool?',
     ],
     note: 'Copy without a send path is not communication. This is the only ops gate that can silently kill launch day.',
@@ -323,7 +363,7 @@ export const LAUNCH_INTAKE: readonly LaunchIntakeSection[] = [
 
 export const LAUNCH_QUICK_QUESTIONS: readonly string[] = [
   'Who is in the warm circle of 15-40 names?',
-  'Which tool sends waitlist and Stay Close on September 1?',
+  'Which tool sends book waitlist, Stay Close, and advance listen as three separate letters on September 1?',
   'What are the Kindle, Audible, and review URLs?',
   'Who flips /book that morning?',
   'Who already offered to share, and should receive the kit?',
@@ -331,7 +371,9 @@ export const LAUNCH_QUICK_QUESTIONS: readonly string[] = [
 
 export const LAUNCH_CHANNEL_LABEL: Record<LaunchChannelId, string> = {
   warm: 'Warm circle',
-  professional: 'Waitlist and Stay Close',
+  waitlist: 'Book waitlist',
+  'stay-close': 'Stay Close',
+  advance: 'Advance listen',
   linkedin: 'LinkedIn',
   x: 'X',
 };
@@ -339,7 +381,9 @@ export const LAUNCH_CHANNEL_LABEL: Record<LaunchChannelId, string> = {
 export const LAUNCH_VIEW_LABEL: Record<LaunchView, string> = {
   all: 'All campaigns',
   warm: 'Warm circle',
-  professional: 'Waitlist and Stay Close',
+  waitlist: 'Book waitlist',
+  'stay-close': 'Stay Close',
+  advance: 'Advance listen',
   linkedin: 'LinkedIn',
   x: 'X',
   landing: 'Book page',
@@ -355,6 +399,11 @@ export const LAUNCH_RUNWAY_LABEL: Record<LaunchRunwayId, string> = {
 
 function isLaunchView(value: string | null): value is LaunchView {
   return LAUNCH_VIEWS.some((view) => view === value);
+}
+
+function campaignFromSearch(value: string | null): LaunchView {
+  if (value === 'professional' || value === 'list') return 'waitlist';
+  return isLaunchView(value) ? value : 'all';
 }
 
 export function runwayForPhase(phase: LaunchPhaseId): LaunchRunwayId {
@@ -402,7 +451,9 @@ export function piecesForView(
     case 'calendar':
       return [...pieces];
     case 'warm':
-    case 'professional':
+    case 'waitlist':
+    case 'stay-close':
+    case 'advance':
     case 'linkedin':
     case 'x':
       return piecesForChannel(view, pieces);
@@ -435,7 +486,9 @@ export function summarizeLaunchCampaign(
 } {
   const byChannel: Record<LaunchChannelId, number> = {
     warm: 0,
-    professional: 0,
+    waitlist: 0,
+    'stay-close': 0,
+    advance: 0,
     linkedin: 0,
     x: 0,
   };
@@ -512,7 +565,7 @@ export function launchDeskHref(filters: Partial<LaunchDeskFilters> = {}): string
 export function launchFiltersFromSearch(search: string): LaunchDeskFilters {
   const params = new URLSearchParams(search.startsWith('?') ? search : `?${search}`);
   const campaignRaw = params.get('campaign');
-  const campaign = isLaunchView(campaignRaw) ? campaignRaw : 'all';
+  const campaign = campaignFromSearch(campaignRaw);
   const pieceRaw = params.get('piece');
   const piece = findLaunchPiece(pieceRaw);
   return {

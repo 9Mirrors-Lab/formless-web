@@ -6,6 +6,7 @@ import { ChevronUp } from "lucide-react";
 import {
   NAV_ROOMS,
   brandNavPlace,
+  navHighlightId,
   type BrandNavId,
 } from "@/components/brandNavData";
 
@@ -38,6 +39,7 @@ export function BrandMobileCurtain({
   const linksRef = useRef<HTMLElement>(null);
   const didMount = useRef(false);
   const place = brandNavPlace(activeId);
+  const highlightId = navHighlightId(activeId);
 
   useGSAP(
     () => {
@@ -193,7 +195,7 @@ export function BrandMobileCurtain({
                 onClick={onClose}
                 tabIndex={open ? 0 : -1}
               >
-                <span className="font-serif text-[1.85rem] font-light italic leading-none tracking-tight">
+                <span className="font-sans text-[1.55rem] font-semibold leading-none tracking-[-0.03em]">
                   Eyes Closed
                 </span>
                 <span
@@ -208,12 +210,12 @@ export function BrandMobileCurtain({
             </li>
             {NAV_ROOMS.map((room) => (
               <li key={room.id}>
-                <p className="px-4 pb-1 font-serif text-[1.15rem] italic leading-none text-[#9fb5aa]">
+                <p className="px-4 pb-1 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[#9fb5aa]">
                   {room.title}
                 </p>
                 <ul className="flex flex-col">
                   {room.items.map((item) => {
-                    const isActive = item.id === activeId;
+                    const isActive = item.id === highlightId;
                     return (
                       <li key={item.id}>
                         <a
@@ -281,7 +283,7 @@ export function BrandMobileCurtain({
         }
         onClick={() => (open ? onClose() : onOpen())}
       >
-        <span className="min-w-0 font-serif text-[1.35rem] italic leading-none tracking-tight text-cream">
+        <span className="min-w-0 font-sans text-[1.05rem] font-semibold leading-none tracking-tight text-cream">
           {place.title}
         </span>
         <span className="inline-flex shrink-0 items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#9fb5aa]">

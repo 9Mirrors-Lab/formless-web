@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
-import { Copy } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Copy, X } from 'lucide-react';
 
 import { BrandShell } from '@/components/app-sidebar';
 import { BrandPageBody, BrandPageHeader } from '@/components/BrandPageHeader';
@@ -39,6 +40,9 @@ import {
 const TAB_CLASS =
   'inline-flex h-11 items-center rounded-full border px-3.5 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors';
 
+const PIECE_TRAY_PANEL =
+  'fixed inset-y-0 right-0 z-50 flex w-full max-w-xl flex-col border-l border-cream/10 bg-[#121614] shadow-xl';
+
 function setFiltersInUrl(filters: LaunchDeskFilters) {
   window.history.replaceState({}, '', launchDeskHref(filters));
 }
@@ -51,7 +55,9 @@ function isAssetView(view: LaunchView): boolean {
       return true;
     case 'all':
     case 'warm':
-    case 'professional':
+    case 'waitlist':
+    case 'stay-close':
+    case 'advance':
     case 'linkedin':
     case 'x':
       return false;
@@ -62,17 +68,17 @@ function isAssetView(view: LaunchView): boolean {
   }
 }
 
-function defaultPiece(filters: LaunchDeskFilters): LaunchPiece | null {
-  if (isAssetView(filters.campaign)) return null;
+function pieceStaysInView(pieceId: string | null, view: LaunchView): boolean {
+  if (isAssetView(view)) return false;
+  const piece = findLaunchPiece(pieceId);
+  if (!piece) return false;
+  if (view === 'all') return true;
+  return piece.channel === view;
+}
 
-  const selected = findLaunchPiece(filters.piece);
-  if (selected) {
-    if (filters.campaign === 'all') return selected;
-    if (selected.channel === filters.campaign) return selected;
-  }
-
-  const visible = piecesForView(filters.campaign);
-  return visible[0] ?? null;
+function selectedPiece(filters: LaunchDeskFilters): LaunchPiece | null {
+  if (!pieceStaysInView(filters.piece, filters.campaign)) return null;
+  return findLaunchPiece(filters.piece);
 }
 
 export default function BrandBookLaunchCampaignPage() {
@@ -84,7 +90,7 @@ export default function BrandBookLaunchCampaignPage() {
   const [subjectIndex, setSubjectIndex] = useState(0);
 
   const summary = useMemo(() => summarizeLaunchCampaign(), []);
-  const selected = defaultPiece(filters);
+  const selected = selectedPiece(filters);
   const timelinePieces = piecesForView(
     isAssetView(filters.campaign) ? 'all' : filters.campaign,
   );
@@ -96,11 +102,8 @@ export default function BrandBookLaunchCampaignPage() {
     setFilters((current) => {
       const merged: LaunchDeskFilters = { ...current, ...next };
       if (next.campaign && next.campaign !== current.campaign && next.piece === undefined) {
-        if (isAssetView(next.campaign)) {
+        if (!pieceStaysInView(merged.piece, next.campaign)) {
           merged.piece = null;
-        } else {
-          const first = piecesForView(next.campaign)[0];
-          merged.piece = first?.id ?? null;
         }
       }
       setFiltersInUrl(merged);
@@ -109,14 +112,16 @@ export default function BrandBookLaunchCampaignPage() {
     setSubjectIndex(0);
   }
 
+  function closePiece() {
+    update({ piece: null });
+  }
+
   function selectPiece(piece: LaunchPiece, campaign: LaunchView) {
+    if (filters.piece === piece.id) {
+      closePiece();
+      return;
+    }
     update({ piece: piece.id, campaign });
-    window.requestAnimationFrame(() => {
-      document.getElementById('launch-piece-heading')?.scrollIntoView({
-        block: 'start',
-        behavior: reduceMotion ? 'auto' : 'smooth',
-      });
-    });
   }
 
   async function copyText(key: string, text: string) {
@@ -136,8 +141,9 @@ export default function BrandBookLaunchCampaignPage() {
       <BrandPageBody>
         <div className="flex flex-col gap-6 md:gap-8">
           <BrandPageHeader
+            tone="desk"
             title="Formless launch campaign"
-            description="Eleven days into September 1, then ninety days of teaching. Warm circle, waitlist, LinkedIn, and X on one runway."
+            description="Eleven days into September 1, then ninety days of teaching. Warm circle, waitlist, Stay Close, advance listen, LinkedIn, and X; each list is its own lane."
           />
 
           <PositioningStrip />
@@ -175,18 +181,21 @@ export default function BrandBookLaunchCampaignPage() {
           ) : null}
           {filters.campaign === 'calendar' ? <CalendarDesk /> : null}
           {filters.campaign === 'intake' ? <IntakeDesk /> : null}
-
-          {selected && showTimeline ? (
-            <PieceDetail
-              piece={selected}
-              subjectIndex={subjectIndex}
-              copiedKey={copiedKey}
-              onSubjectIndex={setSubjectIndex}
-              onCopy={copyText}
-            />
-          ) : null}
         </div>
       </BrandPageBody>
+      <AnimatePresence>
+        {selected && showTimeline ? (
+          <PieceInspector
+            piece={selected}
+            subjectIndex={subjectIndex}
+            copiedKey={copiedKey}
+            reduceMotion={reduceMotion}
+            onClose={closePiece}
+            onSubjectIndex={setSubjectIndex}
+            onCopy={copyText}
+          />
+        ) : null}
+      </AnimatePresence>
     </BrandShell>
   );
 }
@@ -198,7 +207,7 @@ function PositioningStrip() {
         <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#9fb5aa]/70">
           Angle
         </p>
-        <p className="mt-2 max-w-[54ch] font-serif text-[1.15rem] italic leading-snug tracking-[-0.02em] text-cream">
+        <p className="mt-2 max-w-[54ch] font-sans text-[1.05rem] font-medium leading-snug tracking-[-0.02em] text-cream">
           {LAUNCH_POSITIONING.angle}
         </p>
       </div>
@@ -222,8 +231,12 @@ function summaryLine(
       return `${summary.emails} emails and ${summary.posts} posts. ${summary.byRunway.before} before launch, ${summary.byRunway.launch} on the day, ${summary.byRunway.after} after.`;
     case 'warm':
       return `${summary.byChannel.warm} notes for the people closest to Soni.`;
-    case 'professional':
-      return `${summary.byChannel.professional} letters for waitlist and Stay Close.`;
+    case 'waitlist':
+      return `${summary.byChannel.waitlist} letters for people who wanted to hear.`;
+    case 'stay-close':
+      return `${summary.byChannel['stay-close']} quieter letters for Stay Close.`;
+    case 'advance':
+      return `${summary.byChannel.advance} notes for advance-listen companions.`;
     case 'linkedin':
       return `${summary.byChannel.linkedin} posts for the personal LinkedIn profile.`;
     case 'x':
@@ -253,11 +266,9 @@ function CampaignTabs({
   const tabs: Array<{ id: LaunchView; label: string; count?: number }> = [
     { id: 'all', label: 'Runway' },
     { id: 'warm', label: 'Warm', count: summary.byChannel.warm },
-    {
-      id: 'professional',
-      label: 'List',
-      count: summary.byChannel.professional,
-    },
+    { id: 'waitlist', label: 'Waitlist', count: summary.byChannel.waitlist },
+    { id: 'stay-close', label: 'Stay Close', count: summary.byChannel['stay-close'] },
+    { id: 'advance', label: 'Advance', count: summary.byChannel.advance },
     { id: 'linkedin', label: 'LinkedIn', count: summary.byChannel.linkedin },
     { id: 'x', label: 'X', count: summary.byChannel.x },
     { id: 'landing', label: 'Page' },
@@ -314,16 +325,26 @@ function TimelineMatrix({
         if (rows.length === 0) return null;
         return (
           <section key={runway.id} aria-labelledby={`runway-${runway.id}`}>
-            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
-              <h2
-                id={`runway-${runway.id}`}
-                className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
-              >
-                {runway.label}
-              </h2>
-              <p className="max-w-[46ch] text-[0.75rem] leading-relaxed text-cream/45">
-                {runway.job}
+            <div
+              className={[
+                'mb-3 border-l-2 pl-3',
+                runway.id === 'launch' ? 'border-clay' : 'border-cream/20',
+              ].join(' ')}
+            >
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-cream/40">
+                {runwayDateSpan(rows)}
               </p>
+              <div className="mt-1 flex flex-wrap items-baseline justify-between gap-3">
+                <h2
+                  id={`runway-${runway.id}`}
+                  className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
+                >
+                  {runway.label}
+                </h2>
+                <p className="max-w-[46ch] text-[0.75rem] leading-relaxed text-cream/45">
+                  {runway.job}
+                </p>
+              </div>
             </div>
             <RunwayTable
               phases={rows}
@@ -351,7 +372,7 @@ function RunwayTable({
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[52rem] border-collapse text-left">
+        <table className="w-full min-w-[72rem] border-collapse text-left">
         <caption className="sr-only">
           {runwayLabel(runway)} emails and posts
         </caption>
@@ -375,8 +396,13 @@ function RunwayTable({
             const row = piecesForPhase(phase.id);
             return (
               <tr key={phase.id} className="border-b border-cream/10 align-top">
-                <th className="py-3.5 pr-4 font-sans text-[12px] font-normal leading-snug text-cream/55">
-                  <span className="block text-cream/80">{phase.label}</span>
+                <th
+                  className={[
+                    'py-3.5 pr-4 font-sans text-[12px] font-normal leading-snug text-cream/55',
+                    runway === 'launch' ? 'border-l-2 border-clay pl-3' : '',
+                  ].join(' ')}
+                >
+                  <span className="block font-medium text-cream">{phase.label}</span>
                   <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.12em] text-cream/35">
                     {phase.dates}
                   </span>
@@ -384,9 +410,15 @@ function RunwayTable({
                 {LAUNCH_CHANNEL_IDS.map((channel) => {
                   const cell = row.filter((piece) => piece.channel === channel);
                   return (
-                    <td key={channel} className="py-3 pr-4">
+                    <td
+                      key={channel}
+                      className={[
+                        'py-3 pr-4',
+                        runway === 'launch' ? 'bg-clay/[0.04]' : '',
+                      ].join(' ')}
+                    >
                       {cell.length === 0 ? (
-                        <span className="text-[12px] text-cream/20">-</span>
+                        <span className="block min-h-[2.5rem]" />
                       ) : (
                         <ul className="flex flex-col gap-1.5">
                           {cell.map((piece) => (
@@ -410,6 +442,13 @@ function RunwayTable({
       </table>
     </div>
   );
+}
+
+function runwayDateSpan(phases: LaunchPhase[]): string {
+  if (phases.length === 0) return '';
+  const first = phases[0]?.dates ?? '';
+  const last = phases[phases.length - 1]?.dates ?? first;
+  return first === last ? first : `${first} · ${last}`;
 }
 
 function runwayLabel(runway: LaunchRunwayId): string {
@@ -443,7 +482,7 @@ function CampaignSequence({
     <section aria-labelledby={`${channel}-heading`}>
       <h2
         id={`${channel}-heading`}
-        className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+        className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
       >
         {meta.title}
       </h2>
@@ -508,11 +547,100 @@ function PieceChip({
           : 'text-cream/75 hover:bg-cream/[0.04] hover:text-cream',
       ].join(' ')}
     >
-      <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-cream/40">
+      <span className="block font-mono text-[8px] uppercase tracking-[0.16em] text-cream/40">
+        {piece.send}
+      </span>
+      <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.14em] text-cream/40">
         {pieceShortLabel(piece)}
       </span>
-      <span className="mt-0.5 block text-[12px] leading-snug">{piece.title}</span>
+      <span className="mt-0.5 block text-[12px] font-medium leading-snug">{piece.title}</span>
     </button>
+  );
+}
+
+function PieceInspector({
+  piece,
+  subjectIndex,
+  copiedKey,
+  reduceMotion,
+  onClose,
+  onSubjectIndex,
+  onCopy,
+}: {
+  piece: LaunchPiece;
+  subjectIndex: number;
+  copiedKey: string | null;
+  reduceMotion: boolean;
+  onClose: () => void;
+  onSubjectIndex: (index: number) => void;
+  onCopy: (key: string, text: string) => void;
+}) {
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const channel = LAUNCH_CHANNELS[piece.channel];
+  const slide = reduceMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, stiffness: 280, damping: 32 };
+
+  useEffect(() => {
+    bodyRef.current?.scrollTo({ top: 0 });
+  }, [piece.id]);
+
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      onClose();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <>
+      <motion.button
+        type="button"
+        aria-label="Close piece"
+        className="fixed inset-0 z-40 bg-black/50 md:hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      />
+      <motion.aside
+        initial={reduceMotion ? false : { x: '100%' }}
+        animate={{ x: 0 }}
+        exit={reduceMotion ? undefined : { x: '100%' }}
+        transition={slide}
+        className={PIECE_TRAY_PANEL}
+        aria-labelledby="launch-piece-heading"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-cream/10 py-5 pl-6 pr-20">
+          <p className="pt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#9fb5aa]/70">
+            {channel.title} · {pieceKindLabel(piece.kind)} {piece.number}
+          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center text-cream/45 transition-colors hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
+            aria-label="Close"
+          >
+            <X size={18} aria-hidden />
+          </button>
+        </div>
+        <div
+          ref={bodyRef}
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6"
+        >
+          <PieceDetail
+            piece={piece}
+            subjectIndex={subjectIndex}
+            copiedKey={copiedKey}
+            onSubjectIndex={onSubjectIndex}
+            onCopy={onCopy}
+          />
+        </div>
+      </motion.aside>
+    </>
   );
 }
 
@@ -529,7 +657,6 @@ function PieceDetail({
   onSubjectIndex: (index: number) => void;
   onCopy: (key: string, text: string) => void;
 }) {
-  const channel = LAUNCH_CHANNELS[piece.channel];
   const copyKey = `${piece.id}:${subjectIndex}`;
   const subjectsKey = `${piece.id}:subjects`;
   const safeSubjectIndex =
@@ -538,16 +665,10 @@ function PieceDetail({
       : Math.min(subjectIndex, piece.subjects.length - 1);
 
   return (
-    <article
-      className="scroll-mt-24 border-t border-cream/12 pt-7"
-      aria-labelledby="launch-piece-heading"
-    >
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#9fb5aa]/70">
-        {channel.title} · {pieceKindLabel(piece.kind)} {piece.number}
-      </p>
+    <article aria-labelledby="launch-piece-heading">
       <h2
         id="launch-piece-heading"
-        className="mt-2 font-serif text-[1.6rem] italic leading-[1.08] tracking-[-0.02em] text-cream md:text-[1.85rem]"
+        className="font-sans text-[1.45rem] font-semibold leading-[1.08] tracking-[-0.03em] text-cream md:text-[1.65rem]"
       >
         {piece.title}
       </h2>
@@ -639,7 +760,7 @@ function LandingDesk({
       <section aria-labelledby="landing-copy-heading">
         <h2
           id="landing-copy-heading"
-          className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+          className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
         >
           Book page, launch morning
         </h2>
@@ -666,7 +787,7 @@ function LandingDesk({
       <section aria-labelledby="ads-heading">
         <h2
           id="ads-heading"
-          className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+          className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
         >
           Quiet ad variants
         </h2>
@@ -696,7 +817,7 @@ function LandingDesk({
       <section aria-labelledby="scripts-heading">
         <h2
           id="scripts-heading"
-          className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+          className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
         >
           Short videos
         </h2>
@@ -753,7 +874,7 @@ function CalendarDesk() {
     <section aria-labelledby="calendar-heading">
       <h2
         id="calendar-heading"
-        className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+        className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
       >
         Day by day
       </h2>
@@ -802,16 +923,14 @@ function CalendarDesk() {
 function IntakeDesk() {
   const both = LAUNCH_INTAKE.filter((section) => section.channel === 'both');
   const warm = LAUNCH_INTAKE.filter((section) => section.channel === 'warm');
-  const professional = LAUNCH_INTAKE.filter(
-    (section) => section.channel === 'professional',
-  );
+  const lists = LAUNCH_INTAKE.filter((section) => section.channel === 'lists');
 
   return (
     <div className="flex flex-col gap-10">
       <section aria-labelledby="quick-intake-heading">
         <h2
           id="quick-intake-heading"
-          className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+          className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
         >
           Still to lock
         </h2>
@@ -832,8 +951,8 @@ function IntakeDesk() {
 
       <IntakeGroup heading="Needed before anything sends" sections={both} />
       {warm.length > 0 ? <IntakeGroup heading="Warm circle" sections={warm} /> : null}
-      {professional.length > 0 ? (
-        <IntakeGroup heading="Waitlist" sections={professional} />
+      {lists.length > 0 ? (
+        <IntakeGroup heading="Waitlist, Stay Close, advance listen" sections={lists} />
       ) : null}
     </div>
   );
@@ -851,7 +970,7 @@ function IntakeGroup({
     <section aria-labelledby={headingId}>
       <h2
         id={headingId}
-        className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+        className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
       >
         {heading}
       </h2>

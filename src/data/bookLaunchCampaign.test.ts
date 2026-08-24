@@ -27,16 +27,18 @@ import {
 describe('bookLaunchCampaign', () => {
   it('keeps warm notes, list letters, LinkedIn, and X on dated runways', () => {
     const summary = summarizeLaunchCampaign();
-    expect(summary.total).toBe(27);
-    expect(summary.emails).toBe(11);
+    expect(summary.total).toBe(33);
+    expect(summary.emails).toBe(17);
     expect(summary.posts).toBe(16);
     expect(summary.byChannel.warm).toBe(6);
-    expect(summary.byChannel.professional).toBe(5);
+    expect(summary.byChannel.waitlist).toBe(5);
+    expect(summary.byChannel['stay-close']).toBe(4);
+    expect(summary.byChannel.advance).toBe(2);
     expect(summary.byChannel.linkedin).toBe(8);
     expect(summary.byChannel.x).toBe(8);
-    expect(summary.byRunway.before).toBe(9);
-    expect(summary.byRunway.launch).toBe(4);
-    expect(summary.byRunway.after).toBe(14);
+    expect(summary.byRunway.before).toBe(10);
+    expect(summary.byRunway.launch).toBe(6);
+    expect(summary.byRunway.after).toBe(17);
 
     expect(piecesForChannel('warm').map((piece) => piece.id)).toEqual([
       'warm-1',
@@ -46,10 +48,23 @@ describe('bookLaunchCampaign', () => {
       'warm-5',
       'warm-6',
     ]);
-    expect(piecesForChannel('professional').map((piece) => piece.number)).toEqual([
+    expect(piecesForChannel('waitlist').map((piece) => piece.number)).toEqual([
       1, 2, 3, 4, 5,
     ]);
+    expect(piecesForChannel('stay-close').map((piece) => piece.id)).toEqual([
+      'stay-1',
+      'stay-2',
+      'stay-3',
+      'stay-4',
+    ]);
+    expect(piecesForChannel('advance').map((piece) => piece.id)).toEqual([
+      'adv-1',
+      'adv-2',
+    ]);
     expect(LAUNCH_CHANNELS.warm.pieceKind).toBe('email');
+    expect(LAUNCH_CHANNELS.waitlist.pieceKind).toBe('email');
+    expect(LAUNCH_CHANNELS['stay-close'].pieceKind).toBe('email');
+    expect(LAUNCH_CHANNELS.advance.pieceKind).toBe('email');
     expect(LAUNCH_CHANNELS.linkedin.pieceKind).toBe('post');
     expect(LAUNCH_CHANNELS.x.pieceKind).toBe('post');
   });
@@ -64,12 +79,16 @@ describe('bookLaunchCampaign', () => {
     expect(piecesForPhase('eve').map((piece) => piece.id)).toEqual(['warm-4']);
     expect(piecesForPhase('week-2').map((piece) => piece.id)).toEqual([
       'pro-5',
+      'stay-4',
+      'adv-2',
       'li-5',
       'x-5',
     ]);
     expect(piecesForPhase('launch-day').map((piece) => piece.channel)).toEqual([
       'warm',
-      'professional',
+      'waitlist',
+      'stay-close',
+      'advance',
       'linkedin',
       'x',
     ]);
@@ -84,13 +103,13 @@ describe('bookLaunchCampaign', () => {
       'approach',
       'eve',
     ]);
-    expect(piecesForRunway('launch')).toHaveLength(4);
+    expect(piecesForRunway('launch')).toHaveLength(6);
   });
 
   it('filters the desk by campaign view', () => {
-    expect(piecesForView('all')).toHaveLength(27);
-    expect(piecesForView('intake')).toHaveLength(27);
-    expect(piecesForView('landing')).toHaveLength(27);
+    expect(piecesForView('all')).toHaveLength(33);
+    expect(piecesForView('intake')).toHaveLength(33);
+    expect(piecesForView('landing')).toHaveLength(33);
     expect(piecesForView('warm').every((piece) => piece.channel === 'warm')).toBe(
       true,
     );
@@ -130,7 +149,13 @@ describe('bookLaunchCampaign', () => {
     expect(launchFiltersFromSearch('')).toEqual({ campaign: 'all', piece: null });
     expect(
       launchFiltersFromSearch('?campaign=professional&piece=pro-2'),
-    ).toEqual({ campaign: 'professional', piece: 'pro-2' });
+    ).toEqual({ campaign: 'waitlist', piece: 'pro-2' });
+    expect(
+      launchFiltersFromSearch('?campaign=waitlist&piece=pro-2'),
+    ).toEqual({ campaign: 'waitlist', piece: 'pro-2' });
+    expect(
+      launchFiltersFromSearch('?campaign=stay-close&piece=stay-2'),
+    ).toEqual({ campaign: 'stay-close', piece: 'stay-2' });
     expect(launchFiltersFromSearch('?campaign=x&piece=x-3')).toEqual({
       campaign: 'x',
       piece: 'x-3',

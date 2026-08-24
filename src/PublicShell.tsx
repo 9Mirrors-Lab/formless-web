@@ -27,6 +27,7 @@ import BrandSignupsPage from './pages/BrandSignupsPage';
 import BrandEndorsementsPage from './pages/BrandEndorsementsPage';
 import BrandBookLaunchCampaignPage from './pages/BrandBookLaunchCampaignPage';
 import BrandSchedulePage from './pages/BrandSchedulePage';
+import BrandDesignsPage from './pages/BrandDesignsPage';
 import SpeakerSheetPage from './pages/SpeakerSheetPage';
 import ZoomBackgroundsPage from './pages/ZoomBackgroundsPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
@@ -50,6 +51,7 @@ import AudioEditorialPage from './pages/AudioEditorialPage';
 import AudioEditorial2Page from './pages/AudioEditorial2Page';
 import AudibleProcessPage from './pages/AudibleProcessPage';
 import AudioRecordSessionsPage from './pages/AudioRecordSessionsPage';
+import AudioRecordListPage from './pages/AudioRecordListPage';
 import AudioScriptComparePage from './pages/AudioScriptComparePage';
 import AdvanceListenPage from './pages/AdvanceListenPage';
 import PreorderLandingPage from './pages/PreorderLandingPage';
@@ -136,6 +138,7 @@ export function Root({ path }: { path: string }) {
   const isBrandEndorsements = path === '/brand/endorsements';
   const isBrandBookLaunch = path === '/brand/book-launch-campaign';
   const isBrandSchedule = path === '/brand/schedule';
+  const isBrandDesigns = path === '/brand/designs';
   const isSpeakerSheet = path === '/speaker-sheet';
   const isZoomBackgrounds = path === '/zoom-backgrounds';
   const isLayoutTests = path === '/layout-tests';
@@ -158,6 +161,7 @@ export function Root({ path }: { path: string }) {
   const isAudioEditorial2 = path === '/audio/editorial2';
   const isAudibleProcess = path === '/audio/process';
   const isAudioRecordSessions = path === '/audio/record-sessions';
+  const isAudioRecordList = path === '/audio/record-list';
   const isAudioScriptCompare = path === '/audio/script-compare';
   const isAudioAdvanceListen = path === '/advance-listen';
   const isAudioEditorialV2Legacy = path === '/audio/editorial-v2';
@@ -195,6 +199,7 @@ export function Root({ path }: { path: string }) {
   if (isBrandEndorsements) return <BrandEndorsementsPage />;
   if (isBrandBookLaunch) return <BrandBookLaunchCampaignPage />;
   if (isBrandSchedule) return <BrandSchedulePage />;
+  if (isBrandDesigns) return <BrandDesignsPage />;
   if (isBrand) return <BrandPage />;
   if (isSpeakerSheet) return <SpeakerSheetPage />;
   if (isZoomBackgrounds) return <ZoomBackgroundsPage />;
@@ -218,6 +223,7 @@ export function Root({ path }: { path: string }) {
   if (isAudioEditorial2) return <AudioEditorial2Page />;
   if (isAudibleProcess) return <AudibleProcessPage />;
   if (isAudioRecordSessions) return <AudioRecordSessionsPage />;
+  if (isAudioRecordList) return <AudioRecordListPage />;
   if (isAudioScriptCompare) return <AudioScriptComparePage />;
   if (isAudioAdvanceListen) return <AdvanceListenPage />;
   if (isAudioEditorialV2Legacy) return <EditorialV2LegacyRedirect />;
@@ -250,6 +256,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/brand/endorsements' ||
     path === '/brand/book-launch-campaign' ||
     path === '/brand/schedule' ||
+    path === '/brand/designs' ||
     path === '/speaker-sheet' ||
     path === '/zoom-backgrounds' ||
     path === '/brand-kit-export' ||
@@ -269,6 +276,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/audio/editorial2' ||
     path === '/audio/process' ||
     path === '/audio/record-sessions' ||
+    path === '/audio/record-list' ||
     path === '/audio/script-compare' ||
     path === '/advance-listen' ||
     path === '/audio/editorial-v2' ||

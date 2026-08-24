@@ -6,6 +6,7 @@ import {
   SCHEDULE_LISTS,
   SCHEDULE_OWNERS,
   SCHEDULE_PHASES,
+  SCHEDULE_WINDOWS,
   SCHEDULE_WORK,
   currentPhaseId,
   filterScheduleWork,
@@ -22,6 +23,8 @@ import {
   workInListCell,
   workTouchesChannel,
   workTouchesList,
+  workLaneLabel,
+  workListTitles,
 } from "@/data/launchCommsSchedule";
 
 describe("launchCommsSchedule", () => {
@@ -36,6 +39,11 @@ describe("launchCommsSchedule", () => {
       "stay-close",
       "advance",
     ]);
+    expect(SCHEDULE_WINDOWS.map((window) => window.id)).toEqual([
+      "now",
+      "day",
+      "after",
+    ]);
   });
 
   it("places every activity on a known date, owner, and channel or surface", () => {
@@ -44,7 +52,7 @@ describe("launchCommsSchedule", () => {
     const channelIds = new Set(SCHEDULE_CHANNELS.map((channel) => channel.id));
     const listIds = new Set(SCHEDULE_LISTS.map((list) => list.id));
 
-    expect(SCHEDULE_WORK).toHaveLength(17);
+    expect(SCHEDULE_WORK).toHaveLength(20);
     for (const item of SCHEDULE_WORK) {
       expect(phaseIds.has(item.phase)).toBe(true);
       expect(ownerIds.has(item.owner)).toBe(true);
@@ -62,6 +70,7 @@ describe("launchCommsSchedule", () => {
     expect(itemsForPhase("day").map((item) => item.id)).toEqual([
       "site-flip",
       "launch-email",
+      "stay-close-available",
       "launch-li",
       "advance-listen",
     ]);
@@ -70,11 +79,14 @@ describe("launchCommsSchedule", () => {
     ]);
     expect(
       workInChannelCell(SCHEDULE_WORK, "email", "day").map((item) => item.id),
-    ).toEqual(["launch-email", "advance-listen"]);
+    ).toEqual(["launch-email", "stay-close-available", "advance-listen"]);
     expect(
       workInListCell(SCHEDULE_WORK, "waitlist", "day").map((item) => item.id),
     ).toEqual(["launch-email"]);
     expect(workTouchesList(findScheduleWork("launch-email")!, "stay-close")).toBe(
+      false,
+    );
+    expect(workTouchesList(findScheduleWork("stay-close-available")!, "stay-close")).toBe(
       true,
     );
     expect(workTouchesChannel(findScheduleWork("launch-email")!, "email")).toBe(
@@ -85,13 +97,13 @@ describe("launchCommsSchedule", () => {
   it("filters by person and window without dropping the rest of the runway data", () => {
     expect(itemsForOwner("ops").every((item) => item.owner === "ops")).toBe(true);
     expect(filterScheduleWork({ who: "copy", window: "now", phase: "all" }).map((item) => item.id)).toEqual(
-      ["voice", "listing", "book-page", "waitlist-almost"],
+      ["voice", "listing", "book-page", "waitlist-almost", "stay-close-almost"],
     );
     expect(
       filterScheduleWork({ who: "all", window: "after", phase: "settle" }).map(
         (item) => item.id,
       ),
-    ).toEqual(["thanks", "reviews"]);
+    ).toEqual(["thanks", "stay-close-thanks", "reviews"]);
   });
 
   it("marks Aug 21 as lock and Sep 1 as launch day", () => {
@@ -103,13 +115,32 @@ describe("launchCommsSchedule", () => {
 
   it("summarizes who still needs a decision this week", () => {
     const summary = summarizeSchedule();
-    expect(summary.total).toBe(17);
+    expect(summary.total).toBe(20);
     expect(summary.blocked).toBe(2);
     expect(summary.next).toBe(6);
     expect(summary.byOwner.soni + summary.byOwner.ops + summary.byOwner.copy).toBe(
-      17,
+      20,
     );
     expect(statusLabel("blocked")).toBe("Needs a decision");
+  });
+
+  it("keeps owned lists as separate pieces, not one comma line", () => {
+    expect(workLaneLabel(findScheduleWork("launch-email")!)).toBe("Email");
+    expect(workListTitles(findScheduleWork("launch-email")!)).toEqual([
+      "Book waitlist",
+    ]);
+    expect(workListTitles(findScheduleWork("stay-close-available")!)).toEqual([
+      "Stay Close",
+    ]);
+    expect(workListTitles(findScheduleWork("advance-listen")!)).toEqual([
+      "Advance listen",
+    ]);
+    expect(workListTitles(findScheduleWork("lists")!)).toEqual([
+      "Book waitlist",
+      "Stay Close",
+      "Advance listen",
+    ]);
+    expect(workLaneLabel(findScheduleWork("lists")!)).not.toContain(",");
   });
 
   it("round-trips desk filters in the schedule URL", () => {

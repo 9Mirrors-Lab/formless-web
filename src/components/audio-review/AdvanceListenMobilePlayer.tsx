@@ -78,7 +78,7 @@ export function AdvanceListenMobilePlayer({
       </header>
 
       <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-6 py-3">
-        {/* Shared jacket; capped at 381px on every breakpoint. */}
+        {/* Shared jacket; capped at 381px tall on every breakpoint. */}
         <AdvanceListenCoverJacket />
       </div>
 

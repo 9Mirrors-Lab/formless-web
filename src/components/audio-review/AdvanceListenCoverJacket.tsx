@@ -1,16 +1,17 @@
 import { AUDIO_BOOK } from '@/data/audioBook';
+import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
 
-/** Mobile well measured 381px. The jacket never exceeds this on any breakpoint. */
+/** Mobile well measured 381px. Portrait jacket fits that height. */
 export const ADVANCE_LISTEN_JACKET_MAX_PX = 381;
-
-const COVER_SRC = '/book-covers/formless-audible.png';
 
 export function AdvanceListenCoverJacket() {
   return (
     <img
-      src={COVER_SRC}
+      src={FORMLESS_BOOK_COVER.src}
       alt={`${AUDIO_BOOK.title} cover`}
-      className="aspect-square h-auto w-full max-h-[min(100%,381px)] max-w-[min(100%,381px)] rounded-[1.25rem] object-contain shadow-[0_18px_44px_rgba(0,0,0,0.42)]"
+      width={FORMLESS_BOOK_COVER.width}
+      height={FORMLESS_BOOK_COVER.height}
+      className="aspect-[5/8] h-auto w-full max-h-[min(100%,381px)] max-w-[min(100%,238px)] rounded-sm object-contain shadow-[0_18px_44px_rgba(0,0,0,0.42)]"
     />
   );
 }

@@ -5,6 +5,7 @@ import {
   type AudioChapter,
   type AudioChapterStatus,
 } from '@/data/audioBook';
+import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
 
 export type FormlessCoverDirection = {
   id: 'a' | 'b' | 'c' | 'd' | 'e';
@@ -46,12 +47,12 @@ export const FORMLESS_COVER_DIRECTIONS: FormlessCoverDirection[] = [
   },
 ];
 
-/** Approved ACX square cover. Used on editorial / listen sidebars. */
+/** Final Kindle jacket. Used on editorial / listen sidebars. */
 export const FORMLESS_COVER = {
-  id: 'audible',
-  label: 'Audible',
-  note: 'Approved square cover',
-  src: '/book-covers/formless-audible.png',
+  id: 'ebook',
+  label: 'Kindle',
+  note: 'Final jacket',
+  src: FORMLESS_BOOK_COVER.src,
 } as const;
 
 type FormlessBookCoverPanelProps = {
@@ -95,10 +96,12 @@ export function FormlessBookCoverPanel({ chapters }: FormlessBookCoverPanelProps
   return (
     <div className="shrink-0 border-b border-cream/10 px-5 pb-4 pt-5">
       <div className="flex items-start gap-3.5">
-        <div className="relative size-24 shrink-0 overflow-hidden rounded-md border border-cream/12 bg-[#0c0f0d] shadow-[0_12px_28px_rgba(0,0,0,0.4)]">
+        <div className="relative h-24 w-[3.75rem] shrink-0 overflow-hidden rounded-md border border-cream/12 bg-[#0c0f0d] shadow-[0_12px_28px_rgba(0,0,0,0.4)]">
           <img
             src={cover.src}
             alt={`${AUDIO_BOOK.title} cover`}
+            width={FORMLESS_BOOK_COVER.width}
+            height={FORMLESS_BOOK_COVER.height}
             className="h-full w-full object-cover"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />

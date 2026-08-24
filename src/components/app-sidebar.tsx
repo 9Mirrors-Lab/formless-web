@@ -10,6 +10,7 @@ import {
 import { BrandMobileCurtain } from "@/components/BrandMobileCurtain";
 import {
   NAV_ROOMS,
+  navHighlightId,
   navIdFromPath,
   type BrandNavId,
 } from "@/components/brandNavData";
@@ -74,6 +75,8 @@ function BrandNavPanel({
   labelledBy: string;
   onCollapse: () => void;
 }) {
+  const highlightId = navHighlightId(activeId);
+
   return (
     <div className="relative flex h-full flex-col">
       <div
@@ -101,7 +104,7 @@ function BrandNavPanel({
           >
             Brand Toolkit
           </p>
-          <p className="mt-2 font-serif text-[1.85rem] font-light italic leading-none tracking-tight text-cream transition-colors group-hover:text-cream/90">
+          <p className="mt-2 font-sans text-[1.55rem] font-semibold leading-none tracking-[-0.03em] text-cream transition-colors group-hover:text-cream/90">
             Eyes Closed
           </p>
         </a>
@@ -124,7 +127,7 @@ function BrandNavPanel({
       >
         <ul className="flex flex-col gap-6">
           {NAV_ROOMS.map((room, roomIndex) => {
-            const roomActive = room.items.some((item) => item.id === activeId);
+            const roomActive = room.items.some((item) => item.id === highlightId);
 
             return (
               <li key={room.id} className="brand-nav-item">
@@ -138,7 +141,7 @@ function BrandNavPanel({
                 </p>
                 <ul className="flex flex-col gap-0.5">
                   {room.items.map((item, itemIndex) => {
-                    const isActive = item.id === activeId;
+                    const isActive = item.id === highlightId;
                     return (
                       <li
                         key={item.id}

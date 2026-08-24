@@ -37,6 +37,11 @@ const MATERIALS = [
     detail: "Quote cuts for cover, Amazon, and press.",
   },
   {
+    href: "/brand/designs",
+    title: "Designs",
+    detail: "Live pages, what they are for, and the files they rest on.",
+  },
+  {
     href: "/brand-kit-export",
     title: "Logos",
     detail: "Marks, publishing lockup, and QR.",

@@ -186,35 +186,35 @@ Soni`,
   },
   {
     id: 'pro-1',
-    channel: 'professional',
+    channel: 'waitlist',
     kind: 'email',
     number: 1,
     title: 'The book is nearly here',
     send: 'Fri Aug 28',
     phase: 'approach',
-    purpose: 'People who asked to be told get one letter before the day. No scarcity.',
+    purpose: 'People who wanted to hear get one letter before the day. No scarcity.',
     subjects: [
       'Formless is nearly here',
       'A note before September 1',
-      'The book you asked to hear about',
+      'The book you wanted to hear about',
     ],
-    preview: 'You asked to be told when the book was close. It arrives September 1.',
+    preview: 'Formless is close, as promised. It arrives September 1.',
     body: `Hi [First Name],
 
-You asked to be told when *Formless* was close. It arrives Tuesday, September 1, on Kindle and Audible.
+Formless is close, as promised. It arrives Tuesday, September 1, on Kindle and Audible.
 
 The book is a doorway into a simple recognition: you are not the voice in your head. You are the one who hears it. Peace does not have to wait for the next change of circumstances.
 
 I will write again on the morning it is available, with the links. There is nothing to do before then.
 
-If this no longer belongs in your inbox, you can leave the list. Either way, I'm glad you asked to be told.
+If this no longer belongs in your inbox, you can leave the list. Either way, thank you for waiting.
 
 Sonika Cottman
 Eyes Closed`,
   },
   {
     id: 'pro-2',
-    channel: 'professional',
+    channel: 'waitlist',
     kind: 'email',
     number: 2,
     title: 'Formless is available',
@@ -246,7 +246,7 @@ Eyes Closed`,
   },
   {
     id: 'pro-3',
-    channel: 'professional',
+    channel: 'waitlist',
     kind: 'email',
     number: 3,
     title: 'Thank you for staying close',
@@ -274,7 +274,7 @@ Eyes Closed`,
   },
   {
     id: 'pro-4',
-    channel: 'professional',
+    channel: 'waitlist',
     kind: 'email',
     number: 4,
     title: 'If you have met the book',
@@ -304,7 +304,7 @@ Eyes Closed`,
   },
   {
     id: 'pro-5',
-    channel: 'professional',
+    channel: 'waitlist',
     kind: 'email',
     number: 5,
     title: 'The voice, and the one who hears it',
@@ -326,6 +326,172 @@ There is a voice in the head. It narrates, judges, plans, and rehearses. Most of
 That something does not need the next house, the next job, or the next version of you. It is already here.
 
 *Formless* is a walk through that recognition, into relationships, work, the body, and the places we learned our earliest fear.
+
+If you want the whole walk: [Kindle Link] · [Audible Link]
+
+Sonika Cottman
+Eyes Closed`,
+  },
+  {
+    id: 'stay-1',
+    channel: 'stay-close',
+    kind: 'email',
+    number: 1,
+    title: 'A quieter note before September 1',
+    send: 'Fri Aug 28',
+    phase: 'approach',
+    purpose: 'Stay Close hears the same news as a continuation, not an announcement.',
+    subjects: [
+      'Formless is nearly here',
+      'A quiet note',
+      'September 1',
+    ],
+    preview: "You've stayed close to this work. The book arrives September 1.",
+    body: `Hi [First Name],
+
+You've stayed close to this work. *Formless* arrives Tuesday, September 1, on Kindle and Audible.
+
+I will write again that morning, with the links. Nothing is required of you before then.
+
+If this no longer belongs in your inbox, you can leave. Either way, I'm glad you stayed.
+
+Sonika Cottman
+Eyes Closed`,
+  },
+  {
+    id: 'stay-2',
+    channel: 'stay-close',
+    kind: 'email',
+    number: 2,
+    title: 'The book is here',
+    send: 'Tue Sep 1, morning',
+    phase: 'launch-day',
+    purpose: 'Same door as the waitlist, spoken as a relationship rather than a launch.',
+    subjects: [
+      'Formless is here',
+      'Kindle and Audible',
+      'The book is available',
+    ],
+    preview: 'The book is available. The relationship continues.',
+    body: `Hi [First Name],
+
+*Formless* is available this morning.
+
+You already chose to stay close. The book is one more doorway into the same recognition: you are not the voice in your head. You are the one who hears it.
+
+Read on Kindle: [Kindle Link]
+Listen on Audible: [Audible Link]
+The home for both is [eyesclosed.love/book](https://www.eyesclosed.love/book)
+
+If this is for someone else more than for you, you can send them the same door.
+
+Sonika Cottman
+Eyes Closed`,
+  },
+  {
+    id: 'stay-3',
+    channel: 'stay-close',
+    kind: 'email',
+    number: 3,
+    title: 'Still here',
+    send: 'Fri Sep 4',
+    phase: 'settle',
+    purpose: 'Close the week as a relationship, not a report.',
+    subjects: [
+      'Still here',
+      'A note after the first days',
+      'Thank you for staying close',
+    ],
+    preview: 'The first days are done. The teaching is the work now.',
+    body: `Hi [First Name],
+
+Thank you for staying close as *Formless* arrived.
+
+I will not turn this week into a report. What matters is whether the recognition lands in the actual life: the email that shifts a whole day, the room with people you love, the old feeling of not enough.
+
+The practice on the site remains open: [eyesclosed.love](https://www.eyesclosed.love)
+
+Sonika Cottman
+Eyes Closed`,
+  },
+  {
+    id: 'stay-4',
+    channel: 'stay-close',
+    kind: 'email',
+    number: 4,
+    title: 'The voice, and the one who hears it',
+    send: 'Wed Sep 9 or Thu Sep 10',
+    phase: 'week-2',
+    purpose: 'Invite Stay Close into the teaching, not another availability note.',
+    subjects: [
+      'The voice, and the one who hears it',
+      'A page from Formless',
+      'You are not the thought',
+    ],
+    preview: 'There is a voice in the head. You are the one listening to it.',
+    body: `Hi [First Name],
+
+A page from the work, now that the book is in the world.
+
+There is a voice in the head. It narrates, judges, plans, and rehearses. Most of us live as if that voice is who we are. The practice begins one step back: noticing the voice, and noticing that something is aware of it.
+
+That something does not need the next house, the next job, or the next version of you. It is already here.
+
+If you want the whole walk: [Kindle Link] · [Audible Link]
+
+Sonika Cottman
+Eyes Closed`,
+  },
+  {
+    id: 'adv-1',
+    channel: 'advance',
+    kind: 'email',
+    number: 1,
+    title: 'The audiobook is public now',
+    send: 'Tue Sep 1',
+    phase: 'launch-day',
+    purpose: 'They already crossed a threshold. One note. No extra sequence.',
+    subjects: [
+      'The audiobook is public now',
+      'Formless is available to listen',
+      'Same links, now public',
+    ],
+    preview: 'You already heard it. The audiobook is public now.',
+    body: `Hi [First Name],
+
+You already heard *Formless* before it was public. The audiobook is available for anyone now.
+
+Read on Kindle: [Kindle Link]
+Listen on Audible: [Audible Link]
+The book lives here: [eyesclosed.love/book](https://www.eyesclosed.love/book)
+
+There is no extra sequence. You are already in.
+
+Sonika Cottman
+Eyes Closed`,
+  },
+  {
+    id: 'adv-2',
+    channel: 'advance',
+    kind: 'email',
+    number: 2,
+    title: 'The teaching continues',
+    send: 'Wed Sep 9 or Thu Sep 10',
+    phase: 'week-2',
+    purpose: 'Invite early companions into the public teaching. Not a funnel.',
+    subjects: [
+      'The teaching continues',
+      'A page from Formless',
+      'You are not the thought',
+    ],
+    preview: 'The early listen was a threshold. The teaching is public now.',
+    body: `Hi [First Name],
+
+You met this work before it was public. The teaching continues in the open.
+
+There is a voice in the head. It narrates, judges, plans, and rehearses. Most of us live as if that voice is who we are. The practice begins one step back: noticing the voice, and noticing that something is aware of it.
+
+*Formless* is a walk through that recognition. The site remains the home: [eyesclosed.love](https://www.eyesclosed.love)
 
 If you want the whole walk: [Kindle Link] · [Audible Link]
 

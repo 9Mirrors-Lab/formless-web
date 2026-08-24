@@ -1,6 +1,6 @@
 /** Persist review status for book-vs-audio differences. */
 
-import type { DiffChunk } from '@/lib/scriptWordDiff';
+import type { DiffChunk, DiffKind } from '@/lib/scriptWordDiff';
 
 export const DIFF_REVIEW_STORAGE_KEY = 'formless.scriptCompare.reviews';
 
@@ -241,7 +241,90 @@ export type ScriptDiffReviewRow = {
   fingerprint_key: string;
   status: string;
   updated_at: string;
+  id?: string;
+  created_at?: string;
 };
+
+export type ScriptDiffReviewDetailRow = ScriptDiffReviewRow & {
+  id: string;
+  created_at: string;
+};
+
+export type DifferenceKind = Exclude<DiffKind, 'equal'>;
+
+export type ParsedDifferenceFingerprint = {
+  kind: DifferenceKind;
+  book: string;
+  audio: string;
+  before: string;
+  after: string;
+  occurrence: number;
+};
+
+function isDifferenceKind(value: string): value is DifferenceKind {
+  return value === 'delete' || value === 'insert' || value === 'replace';
+}
+
+/** Unpack the stored book-vs-audio fingerprint into readable parts. */
+export function parseDifferenceFingerprint(
+  fingerprint: string,
+): ParsedDifferenceFingerprint | null {
+  const hashMatch = /#(\d+)$/.exec(fingerprint);
+  const occurrence = hashMatch ? Number(hashMatch[1]) : 0;
+  const raw = hashMatch ? fingerprint.slice(0, hashMatch.index) : fingerprint;
+  const parts = raw.split('|');
+  if (parts.length !== 5) return null;
+  const kind = parts[0];
+  if (!kind || !isDifferenceKind(kind)) return null;
+  return {
+    kind,
+    book: parts[1] ?? '',
+    audio: parts[2] ?? '',
+    before: parts[3] ?? '',
+    after: parts[4] ?? '',
+    occurrence,
+  };
+}
+
+export type RecordReviewChapterGroup = {
+  chapterId: number;
+  rows: ScriptDiffReviewDetailRow[];
+};
+
+export function groupReviewRowsByChapter(
+  rows: readonly ScriptDiffReviewDetailRow[],
+  chapterOrder: readonly number[],
+): RecordReviewChapterGroup[] {
+  const byChapter = new Map<number, ScriptDiffReviewDetailRow[]>();
+  for (const row of rows) {
+    const list = byChapter.get(row.chapter_id) ?? [];
+    list.push(row);
+    byChapter.set(row.chapter_id, list);
+  }
+  const seen = new Set<number>();
+  const groups: RecordReviewChapterGroup[] = [];
+  for (const chapterId of chapterOrder) {
+    const list = byChapter.get(chapterId);
+    if (!list || list.length === 0) continue;
+    seen.add(chapterId);
+    groups.push({
+      chapterId,
+      rows: [...list].sort((a, b) => a.updated_at.localeCompare(b.updated_at)),
+    });
+  }
+  const leftover = [...byChapter.keys()]
+    .filter((chapterId) => !seen.has(chapterId))
+    .sort((a, b) => a - b);
+  for (const chapterId of leftover) {
+    const list = byChapter.get(chapterId);
+    if (!list) continue;
+    groups.push({
+      chapterId,
+      rows: [...list].sort((a, b) => a.updated_at.localeCompare(b.updated_at)),
+    });
+  }
+  return groups;
+}
 
 export const SCRIPT_DIFF_REVIEW_BOOK_SLUG = 'formless';
 

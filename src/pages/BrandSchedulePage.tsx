@@ -8,10 +8,12 @@ import {
   SCHEDULE_LISTS,
   SCHEDULE_OWNERS,
   SCHEDULE_PHASES,
+  SCHEDULE_WINDOWS,
   currentPhaseId,
   filterScheduleWork,
   findScheduleWork,
   ownerById,
+  phasesForWindow,
   scheduleDeskHref,
   scheduleFiltersFromSearch,
   statusLabel,
@@ -20,6 +22,7 @@ import {
   workInChannelCell,
   workInListCell,
   workLaneLabel,
+  workListTitles,
   type ScheduleChannel,
   type ScheduleFilters,
   type ScheduleList,
@@ -78,51 +81,35 @@ export default function BrandSchedulePage() {
     });
   }
 
-  function boardForView() {
-    const shared = {
-      items: visible,
-      phaseFilter: filters.phase,
-      windowFilter: filters.window,
-      here,
-      selectedId: selected?.id ?? null,
-      onSelectItem: selectItem,
-      onSelectPhase: selectPhase,
-    };
-
-    switch (filters.view) {
-      case "people":
-        return <PeopleBoard owners={owners} {...shared} />;
-      case "channels":
-        return <ChannelBoard {...shared} />;
-      case "lists":
-        return <ListBoard {...shared} />;
-      default: {
-        const _never: never = filters.view;
-        return _never;
-      }
-    }
+  function selectWindow(window: ScheduleWindowId) {
+    update({
+      window: filters.window === window ? "all" : window,
+      phase: "all",
+    });
   }
+
+  const boardProps = {
+    phaseFilter: filters.phase,
+    windowFilter: filters.window,
+    here,
+    selectedId: selected?.id ?? null,
+    onSelectItem: selectItem,
+    onSelectPhase: selectPhase,
+    onSelectWindow: selectWindow,
+  };
 
   return (
     <BrandShell activeId="schedule" crumb="Schedule">
       <BrandPageBody>
         <div className="flex flex-col gap-6 md:gap-8">
           <BrandPageHeader
+            tone="desk"
             title="Schedule"
-            description="Who is doing what, on which channel, and which list it goes to."
-            actions={
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/45">
-                {tick.days === 0
-                  ? "Launch day"
-                  : `${tick.days} day${tick.days === 1 ? "" : "s"} to Sep 1`}
-              </p>
-            }
+            description="Time is the spine. Before, launch day, and after are the three blocks. Lanes sit underneath."
+            actions={<CountdownMark tick={tick} />}
           />
 
-          <p className="border-b border-cream/12 pb-3 font-sans text-sm text-cream/55">
-            {summary.next} this week, {summary.blocked} waiting on a decision,
-            {` ${summary.total} pieces on the runway.`}
-          </p>
+          <StatusStrip summary={summary} />
 
           <div className="flex flex-col gap-3 xl:flex-row xl:flex-wrap xl:items-start xl:gap-x-8 xl:gap-y-3">
             <FilterRow
@@ -157,28 +144,68 @@ export default function BrandSchedulePage() {
                 { id: "after", label: "After" },
               ]}
               active={filters.window}
-              onSelect={(window) =>
-                update({ window, phase: "all" })
-              }
+              onSelect={(window) => update({ window, phase: "all" })}
             />
           </div>
-
-          <PhaseRail
-            active={filters.phase}
-            window={filters.window}
-            here={here}
-            onSelect={selectPhase}
-          />
 
           <div className="lg:hidden">
             <MobileTimeline
               items={visible}
               selectedId={selected?.id ?? null}
+              here={here}
               onSelect={selectItem}
             />
           </div>
 
-          <div className="hidden lg:block">{boardForView()}</div>
+          <div className="hidden lg:block">
+            {filters.view === "people" ? (
+              <ScheduleBoard
+                laneLabel="Who"
+                caption="Communication work by person and date"
+                lanes={owners.map((owner) => ({
+                  id: owner.id,
+                  title: owner.name,
+                  subtitle: owner.role,
+                }))}
+                cellFor={(laneId, phaseId) =>
+                  workInCell(visible, laneId as ScheduleOwner["id"], phaseId)
+                }
+                {...boardProps}
+              />
+            ) : null}
+            {filters.view === "channels" ? (
+              <ScheduleBoard
+                laneLabel="Channel"
+                caption="Communication work by channel and date"
+                lanes={SCHEDULE_CHANNELS.map((channel) => ({
+                  id: channel.id,
+                  title: channel.title,
+                  subtitle: channel.job,
+                }))}
+                cellFor={(laneId, phaseId) =>
+                  workInChannelCell(visible, laneId as ScheduleChannel["id"], phaseId)
+                }
+                showOwner
+                {...boardProps}
+              />
+            ) : null}
+            {filters.view === "lists" ? (
+              <ScheduleBoard
+                laneLabel="List"
+                caption="Email work by distribution list and date"
+                lanes={SCHEDULE_LISTS.map((list) => ({
+                  id: list.id,
+                  title: list.title,
+                  subtitle: list.job,
+                }))}
+                cellFor={(laneId, phaseId) =>
+                  workInListCell(visible, laneId as ScheduleList["id"], phaseId)
+                }
+                showOwner
+                {...boardProps}
+              />
+            ) : null}
+          </div>
 
           {selected ? <WorkDetail item={selected} /> : null}
 
@@ -208,6 +235,64 @@ export default function BrandSchedulePage() {
         </div>
       </BrandPageBody>
     </BrandShell>
+  );
+}
+
+function CountdownMark({
+  tick,
+}: {
+  tick: ReturnType<typeof tickLaunchCountdown>;
+}) {
+  const runwayDays = 11;
+  const elapsed = Math.min(runwayDays, Math.max(0, runwayDays - tick.days));
+  const pct = tick.days === 0 ? 100 : Math.round((elapsed / runwayDays) * 100);
+
+  return (
+    <div className="flex min-w-[11rem] flex-col gap-2">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/45">
+        {tick.days === 0
+          ? "Launch day"
+          : `${tick.days} day${tick.days === 1 ? "" : "s"} to Sep 1`}
+      </p>
+      <div
+        className="h-1 overflow-hidden bg-cream/10"
+        aria-hidden
+      >
+        <div
+          className="h-full bg-clay"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function StatusStrip({
+  summary,
+}: {
+  summary: ReturnType<typeof summarizeSchedule>;
+}) {
+  return (
+    <div className="flex flex-col gap-3 border-y border-cream/12 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <p className="font-sans text-sm text-cream/55">
+        {summary.next} this week, {summary.blocked} waiting on a decision,
+        {` ${summary.total} pieces on the runway.`}
+      </p>
+      <ul className="flex flex-wrap gap-4 font-mono text-[9px] uppercase tracking-[0.14em] text-cream/40">
+        <li className="flex items-center gap-2">
+          <span className="h-3 w-0.5 bg-clay" aria-hidden />
+          Needs a decision
+        </li>
+        <li className="flex items-center gap-2">
+          <span className="h-3 w-0.5 bg-cream/70" aria-hidden />
+          This week
+        </li>
+        <li className="flex items-center gap-2">
+          <span className="h-3 w-0.5 bg-cream/20" aria-hidden />
+          On the calendar
+        </li>
+      </ul>
+    </div>
   );
 }
 
@@ -255,170 +340,88 @@ function FilterRow<T extends string>({
   );
 }
 
-function PhaseRail({
-  active,
-  window,
-  here,
-  onSelect,
-}: {
-  active: SchedulePhaseId | "all";
-  window: ScheduleWindowId | "all";
-  here: SchedulePhaseId | null;
-  onSelect: (phase: SchedulePhaseId) => void;
-}) {
-  return (
-    <ol className="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-cream/12 bg-cream/12 sm:grid-cols-3 lg:grid-cols-6">
-      {SCHEDULE_PHASES.map((phase) => {
-        const lit =
-          (active === "all" || active === phase.id) &&
-          (window === "all" || window === phase.window);
-        const isDay = phase.id === "day";
-        const isHere = here === phase.id;
-        return (
-          <li key={phase.id} className="bg-[#080a09]">
-            <button
-              type="button"
-              onClick={() => onSelect(phase.id)}
-              aria-pressed={active === phase.id}
-              className={[
-                "flex h-full w-full flex-col items-start px-3 py-3 text-left transition-opacity",
-                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#9fb5aa]",
-                lit ? "opacity-100" : "opacity-40",
-                isDay ? "bg-cream/[0.04]" : "",
-              ].join(" ")}
-            >
-              <span className="flex w-full items-center justify-between gap-2">
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-cream/45">
-                  {phase.when}
-                </span>
-                {isHere ? (
-                  <span className="font-mono text-[8px] uppercase tracking-[0.16em] text-clay">
-                    Now
-                  </span>
-                ) : null}
-              </span>
-              <span className="mt-1.5 font-serif text-[1.05rem] italic leading-none tracking-[-0.02em] text-cream">
-                {phase.title}
-              </span>
-              <span className="mt-1.5 text-[11px] leading-snug text-cream/45">
-                {phase.job}
-              </span>
-            </button>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
+type BoardLane = {
+  id: string;
+  title: string;
+  subtitle: string;
+};
 
-function PeopleBoard({
-  owners,
-  items,
+function ScheduleBoard({
+  laneLabel,
+  caption,
+  lanes,
+  cellFor,
   phaseFilter,
   windowFilter,
   here,
   selectedId,
+  showOwner = false,
   onSelectItem,
   onSelectPhase,
+  onSelectWindow,
 }: {
-  owners: readonly ScheduleOwner[];
-  items: readonly ScheduleWork[];
+  laneLabel: string;
+  caption: string;
+  lanes: readonly BoardLane[];
+  cellFor: (laneId: string, phaseId: SchedulePhaseId) => ScheduleWork[];
   phaseFilter: SchedulePhaseId | "all";
   windowFilter: ScheduleWindowId | "all";
   here: SchedulePhaseId | null;
   selectedId: string | null;
+  showOwner?: boolean;
   onSelectItem: (item: ScheduleWork) => void;
   onSelectPhase: (phase: SchedulePhaseId) => void;
+  onSelectWindow: (window: ScheduleWindowId) => void;
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[64rem] border-collapse text-left">
-        <caption className="sr-only">
-          Communication work by person and date
-        </caption>
+      <table className="w-full min-w-[72rem] border-collapse text-left">
+        <caption className="sr-only">{caption}</caption>
         <thead>
           <tr>
-            <th className="sticky left-0 top-0 z-20 w-[8.5rem] bg-[#080a09] py-2 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
-              Who
-            </th>
-            {SCHEDULE_PHASES.map((phase) => (
-              <PhaseHead
-                key={phase.id}
-                phase={phase}
-                lit={columnLit(phase, phaseFilter, windowFilter)}
-                here={here === phase.id}
-                onSelect={() => onSelectPhase(phase.id)}
-              />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {owners.map((owner) => (
-            <tr key={owner.id} className="align-top">
-              <th className="sticky left-0 z-10 bg-[#080a09] py-3 pr-4">
-                <span className="block font-sans text-[13px] text-cream">
-                  {owner.name}
-                </span>
-                <span className="mt-0.5 block text-[11px] font-normal leading-snug text-cream/40">
-                  {owner.role}
-                </span>
-              </th>
-              {SCHEDULE_PHASES.map((phase) => {
-                const cell = workInCell(items, owner.id, phase.id);
-                return (
-                  <td
-                    key={phase.id}
-                    className={[
-                      "border-t border-cream/10 py-3 pr-3",
-                      columnLit(phase, phaseFilter, windowFilter)
-                        ? ""
-                        : "opacity-35",
-                      phase.id === "day" ? "bg-cream/[0.03]" : "",
-                    ].join(" ")}
+            <th className="sticky left-0 top-0 z-30 w-[8.75rem] bg-[#080a09] pr-4" />
+            {SCHEDULE_WINDOWS.map((group) => {
+              const phases = phasesForWindow(group.id);
+              const lit = windowFilter === "all" || windowFilter === group.id;
+              return (
+                <th
+                  key={group.id}
+                  colSpan={phases.length}
+                  className={[
+                    "sticky top-0 z-20 px-0 pb-0 pt-0",
+                    windowHeadClass(group.id),
+                    lit ? "opacity-100" : "opacity-40",
+                  ].join(" ")}
+                >
+                  <button
+                    type="button"
+                    onClick={() => onSelectWindow(group.id)}
+                    aria-pressed={windowFilter === group.id}
+                    className="flex w-full flex-col items-start gap-1.5 px-3 pb-2 pt-2.5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#9fb5aa]"
                   >
-                    <ChipList
-                      items={cell}
-                      selectedId={selectedId}
-                      onSelect={onSelectItem}
+                    <span className="flex w-full items-baseline justify-between gap-3">
+                      <span className="font-sans text-[13px] font-semibold tracking-tight text-cream">
+                        {group.label}
+                      </span>
+                      <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-cream/40">
+                        {group.dates}
+                      </span>
+                    </span>
+                    <span
+                      className={[
+                        "block h-0.5 w-full",
+                        group.id === "day" ? "bg-clay" : "bg-cream/20",
+                      ].join(" ")}
+                      aria-hidden
                     />
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function ChannelBoard({
-  items,
-  phaseFilter,
-  windowFilter,
-  here,
-  selectedId,
-  onSelectItem,
-  onSelectPhase,
-}: {
-  items: readonly ScheduleWork[];
-  phaseFilter: SchedulePhaseId | "all";
-  windowFilter: ScheduleWindowId | "all";
-  here: SchedulePhaseId | null;
-  selectedId: string | null;
-  onSelectItem: (item: ScheduleWork) => void;
-  onSelectPhase: (phase: SchedulePhaseId) => void;
-}) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[64rem] border-collapse text-left">
-        <caption className="sr-only">
-          Communication work by channel and date
-        </caption>
-        <thead>
+                  </button>
+                </th>
+              );
+            })}
+          </tr>
           <tr>
-            <th className="sticky left-0 top-0 z-20 w-[9.5rem] bg-[#080a09] py-2 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
-              Channel
+            <th className="sticky left-0 top-[3.25rem] z-30 bg-[#080a09] py-2 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+              {laneLabel}
             </th>
             {SCHEDULE_PHASES.map((phase) => (
               <PhaseHead
@@ -432,113 +435,32 @@ function ChannelBoard({
           </tr>
         </thead>
         <tbody>
-          {SCHEDULE_CHANNELS.map((channel) => (
-            <tr key={channel.id} className="align-top">
-              <th className="sticky left-0 z-10 bg-[#080a09] py-3 pr-4">
-                <span className="block font-sans text-[13px] text-cream">
-                  {channel.title}
+          {lanes.map((lane) => (
+            <tr key={lane.id} className="align-top">
+              <th className="sticky left-0 z-10 border-t border-cream/18 bg-[#080a09] py-4 pr-4">
+                <span className="block font-sans text-[13px] font-medium text-cream">
+                  {lane.title}
                 </span>
                 <span className="mt-0.5 block text-[11px] font-normal leading-snug text-cream/40">
-                  {channel.job}
+                  {lane.subtitle}
                 </span>
               </th>
               {SCHEDULE_PHASES.map((phase) => {
-                const cell = workInChannelCell(items, channel.id, phase.id);
+                const cell = cellFor(lane.id, phase.id);
+                const lit = columnLit(phase, phaseFilter, windowFilter);
                 return (
                   <td
                     key={phase.id}
                     className={[
-                      "border-t border-cream/10 py-3 pr-3",
-                      columnLit(phase, phaseFilter, windowFilter)
-                        ? ""
-                        : "opacity-35",
-                      phase.id === "day" ? "bg-cream/[0.03]" : "",
+                      "border-t border-cream/18 py-4 pr-3",
+                      windowCellClass(phase.window),
+                      lit ? "" : "opacity-35",
                     ].join(" ")}
                   >
                     <ChipList
                       items={cell}
                       selectedId={selectedId}
-                      showOwner
-                      onSelect={onSelectItem}
-                    />
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function ListBoard({
-  items,
-  phaseFilter,
-  windowFilter,
-  here,
-  selectedId,
-  onSelectItem,
-  onSelectPhase,
-}: {
-  items: readonly ScheduleWork[];
-  phaseFilter: SchedulePhaseId | "all";
-  windowFilter: ScheduleWindowId | "all";
-  here: SchedulePhaseId | null;
-  selectedId: string | null;
-  onSelectItem: (item: ScheduleWork) => void;
-  onSelectPhase: (phase: SchedulePhaseId) => void;
-}) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[64rem] border-collapse text-left">
-        <caption className="sr-only">
-          Email work by distribution list and date
-        </caption>
-        <thead>
-          <tr>
-            <th className="sticky left-0 top-0 z-20 w-[9.5rem] bg-[#080a09] py-2 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
-              List
-            </th>
-            {SCHEDULE_PHASES.map((phase) => (
-              <PhaseHead
-                key={phase.id}
-                phase={phase}
-                lit={columnLit(phase, phaseFilter, windowFilter)}
-                here={here === phase.id}
-                onSelect={() => onSelectPhase(phase.id)}
-              />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {SCHEDULE_LISTS.map((list) => (
-            <tr key={list.id} className="align-top">
-              <th className="sticky left-0 z-10 bg-[#080a09] py-3 pr-4">
-                <span className="block font-sans text-[13px] text-cream">
-                  {list.title}
-                </span>
-                <span className="mt-0.5 block text-[11px] font-normal leading-snug text-cream/40">
-                  {list.job}
-                </span>
-              </th>
-              {SCHEDULE_PHASES.map((phase) => {
-                const cell = workInListCell(items, list.id, phase.id);
-                return (
-                  <td
-                    key={phase.id}
-                    className={[
-                      "border-t border-cream/10 py-3 pr-3",
-                      columnLit(phase, phaseFilter, windowFilter)
-                        ? ""
-                        : "opacity-35",
-                      phase.id === "day" ? "bg-cream/[0.03]" : "",
-                    ].join(" ")}
-                  >
-                    <ChipList
-                      items={cell}
-                      selectedId={selectedId}
-                      showOwner
+                      showOwner={showOwner}
                       onSelect={onSelectItem}
                     />
                   </td>
@@ -566,18 +488,25 @@ function PhaseHead({
   return (
     <th
       className={[
-        "sticky top-0 z-10 bg-[#080a09]",
+        "sticky top-[3.25rem] z-10 bg-[#080a09]",
+        windowHeadClass(phase.window),
         lit ? "opacity-100" : "opacity-35",
       ].join(" ")}
     >
       <button
         type="button"
         onClick={onSelect}
-        className="w-full py-2 pr-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
+        aria-pressed={undefined}
+        className="w-full px-3 py-2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#9fb5aa]"
       >
-        <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+        <span className="block font-sans text-[12px] font-medium tracking-tight text-cream">
+          {phase.title}
+        </span>
+        <span className="mt-0.5 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.14em] text-cream/40">
           {phase.when}
-          {here ? " · now" : ""}
+          {here ? (
+            <span className="text-clay">Now</span>
+          ) : null}
         </span>
       </button>
     </th>
@@ -596,7 +525,7 @@ function ChipList({
   onSelect: (item: ScheduleWork) => void;
 }) {
   if (items.length === 0) {
-    return <span className="text-[12px] text-cream/18">—</span>;
+    return <span className="block min-h-[2.5rem]" />;
   }
 
   return (
@@ -641,11 +570,17 @@ function WorkChip({
           : "text-cream/80 hover:bg-cream/[0.04] hover:text-cream",
       ].join(" ")}
     >
-      <span className="block text-[12px] leading-snug">{item.title}</span>
+      <span className="block font-mono text-[8px] uppercase tracking-[0.16em] text-cream/40">
+        {item.when}
+      </span>
+      <span className="mt-0.5 block text-[12px] font-medium leading-snug">
+        {item.title}
+      </span>
       <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.14em] text-cream/40">
         {showOwner ? `${owner.name} · ` : ""}
         {workLaneLabel(item)}
       </span>
+      <WorkLists item={item} />
     </button>
   );
 }
@@ -653,58 +588,91 @@ function WorkChip({
 function MobileTimeline({
   items,
   selectedId,
+  here,
   onSelect,
 }: {
   items: readonly ScheduleWork[];
   selectedId: string | null;
+  here: SchedulePhaseId | null;
   onSelect: (item: ScheduleWork) => void;
 }) {
   return (
-    <ol className="flex flex-col gap-7">
-      {SCHEDULE_PHASES.map((phase) => {
-        const row = items.filter((item) => item.phase === phase.id);
-        if (row.length === 0) return null;
+    <ol className="flex flex-col gap-10">
+      {SCHEDULE_WINDOWS.map((group) => {
+        const phases = phasesForWindow(group.id).filter((phase) =>
+          items.some((item) => item.phase === phase.id),
+        );
+        if (phases.length === 0) return null;
         return (
-          <li key={phase.id}>
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
-              {phase.when}
-            </p>
-            <h2 className="mt-1 font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream">
-              {phase.title}
-            </h2>
-            <p className="mt-1 text-[12px] text-cream/45">{phase.job}</p>
-            <ul className="mt-4 divide-y divide-cream/10 border-y border-cream/12">
-              {row.map((item) => {
-                const owner = ownerById(item.owner);
-                const selected = item.id === selectedId;
+          <li key={group.id}>
+            <div
+              className={[
+                "mb-5 border-l-2 pl-3",
+                group.id === "day" ? "border-clay" : "border-cream/25",
+              ].join(" ")}
+            >
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-cream/40">
+                {group.dates}
+              </p>
+              <h2 className="mt-1 font-sans text-[1.2rem] font-semibold tracking-tight text-cream">
+                {group.label}
+              </h2>
+            </div>
+            <ol className="flex flex-col gap-7">
+              {phases.map((phase) => {
+                const row = items.filter((item) => item.phase === phase.id);
                 return (
-                  <li key={item.id}>
-                    <button
-                      type="button"
-                      onClick={() => onSelect(item)}
-                      aria-current={selected ? "true" : undefined}
-                      className={[
-                        "flex w-full min-h-11 items-baseline justify-between gap-4 py-3.5 text-left",
-                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]",
-                        selected ? "text-cream" : "text-cream/80 hover:text-cream",
-                      ].join(" ")}
-                    >
-                      <span className="min-w-0">
-                        <span className="block text-[13px] tracking-wide">
-                          {item.title}
-                        </span>
-                        <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.14em] text-cream/40">
-                          {workLaneLabel(item)} · {item.when}
-                        </span>
-                      </span>
-                      <span className="shrink-0 text-right text-[11px] leading-snug text-cream/45">
-                        {owner.name}
-                      </span>
-                    </button>
+                  <li key={phase.id}>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                      {phase.when}
+                      {here === phase.id ? " · now" : ""}
+                    </p>
+                    <h3 className="mt-1 font-sans text-[1.05rem] font-medium tracking-tight text-cream">
+                      {phase.title}
+                    </h3>
+                    <p className="mt-1 text-[12px] text-cream/45">{phase.job}</p>
+                    <ul className="mt-4 divide-y divide-cream/10 border-y border-cream/12">
+                      {row.map((item) => {
+                        const owner = ownerById(item.owner);
+                        const selected = item.id === selectedId;
+                        return (
+                          <li key={item.id}>
+                            <button
+                              type="button"
+                              onClick={() => onSelect(item)}
+                              aria-current={selected ? "true" : undefined}
+                              className={[
+                                "flex w-full min-h-11 items-baseline justify-between gap-4 py-3.5 text-left",
+                                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]",
+                                selected
+                                  ? "text-cream"
+                                  : "text-cream/80 hover:text-cream",
+                              ].join(" ")}
+                            >
+                              <span className="min-w-0">
+                                <span className="block font-mono text-[8px] uppercase tracking-[0.16em] text-cream/40">
+                                  {item.when}
+                                </span>
+                                <span className="mt-0.5 block text-[13px] font-medium tracking-wide">
+                                  {item.title}
+                                </span>
+                                <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.14em] text-cream/40">
+                                  {workLaneLabel(item)}
+                                </span>
+                                <WorkLists item={item} />
+                              </span>
+                              <span className="shrink-0 text-right text-[11px] leading-snug text-cream/45">
+                                {owner.name}
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </li>
                 );
               })}
-            </ul>
+            </ol>
           </li>
         );
       })}
@@ -712,10 +680,30 @@ function MobileTimeline({
   );
 }
 
+function WorkLists({ item }: { item: ScheduleWork }) {
+  const lists = workListTitles(item);
+  if (lists.length === 0) return null;
+
+  return (
+    <ul className="mt-1.5 flex flex-col gap-0.5">
+      {lists.map((title) => (
+        <li
+          key={title}
+          className="font-mono text-[9px] uppercase tracking-[0.14em] text-cream/35"
+        >
+          {title}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function WorkDetail({ item }: { item: ScheduleWork }) {
   const owner = ownerById(item.owner);
   const phase = SCHEDULE_PHASES.find((entry) => entry.id === item.phase);
   const lane = workLaneLabel(item);
+  const lists = workListTitles(item);
+  const window = SCHEDULE_WINDOWS.find((entry) => entry.id === item.window);
 
   return (
     <article
@@ -723,15 +711,27 @@ function WorkDetail({ item }: { item: ScheduleWork }) {
       aria-labelledby="schedule-item-heading"
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#9fb5aa]/70">
-        {item.when} · {owner.name}
+        {window?.label} · {item.when} · {owner.name}
         {lane ? ` · ${lane}` : ""} · {statusLabel(item.status)}
       </p>
       <h2
         id="schedule-item-heading"
-        className="mt-2 font-serif text-[1.75rem] italic leading-tight tracking-[-0.02em] text-cream"
+        className="mt-2 font-sans text-[1.55rem] font-semibold leading-tight tracking-[-0.03em] text-cream"
       >
         {item.title}
       </h2>
+      {lists.length > 0 ? (
+        <ul className="mt-4 flex flex-col gap-1.5 border-y border-cream/12 py-3">
+          {lists.map((title) => (
+            <li
+              key={title}
+              className="border-l-2 border-cream/25 pl-3 text-[13px] leading-snug text-cream/80"
+            >
+              {title}
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <p className="mt-3 max-w-[62ch] text-[0.9375rem] leading-relaxed text-cream/80">
         {item.work}
       </p>
@@ -740,7 +740,7 @@ function WorkDetail({ item }: { item: ScheduleWork }) {
       </p>
       {phase ? (
         <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/35">
-          {phase.title} · {phase.job}
+          {phase.title} · {phase.when} · {phase.job}
         </p>
       ) : null}
     </article>
@@ -750,13 +750,18 @@ function WorkDetail({ item }: { item: ScheduleWork }) {
 function LaunchDayScript() {
   return (
     <section aria-labelledby="launch-day-script-heading">
-      <h2
-        id="launch-day-script-heading"
-        className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
-      >
-        September 1 order
-      </h2>
-      <div className="mt-4 grid gap-6 border-t border-cream/12 pt-5 md:grid-cols-3">
+      <div className="flex items-baseline justify-between gap-4 border-b border-clay/40 pb-3">
+        <h2
+          id="launch-day-script-heading"
+          className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
+        >
+          September 1 order
+        </h2>
+        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-clay">
+          Launch day
+        </p>
+      </div>
+      <div className="mt-5 grid gap-6 md:grid-cols-3">
         <ScriptColumn title="Morning" lines={LAUNCH_DAY_SCRIPT.morning} />
         <ScriptColumn title="Day" lines={LAUNCH_DAY_SCRIPT.day} />
         <ScriptColumn title="Do not" lines={LAUNCH_DAY_SCRIPT.skip} muted />
@@ -784,7 +789,7 @@ function ScriptColumn({
           <li
             key={line}
             className={[
-              "text-[13px] leading-snug",
+              "border-l border-cream/15 pl-3 text-[13px] leading-snug",
               muted ? "text-cream/45" : "text-cream/80",
             ].join(" ")}
           >
@@ -816,7 +821,7 @@ function LaneJobs({
     <section aria-labelledby="lane-jobs-heading">
       <h2
         id="lane-jobs-heading"
-        className="font-serif text-[1.35rem] italic leading-tight tracking-[-0.02em] text-cream"
+        className="font-sans text-[1.2rem] font-semibold tracking-tight text-cream"
       >
         {heading}
       </h2>
@@ -848,7 +853,7 @@ function LaneJobRow({
   return (
     <li className="grid gap-3 py-4 md:grid-cols-[9.5rem_1fr] md:items-start">
       <div>
-        <p className="text-[13px] text-cream">{row.title}</p>
+        <p className="text-[13px] font-medium text-cream">{row.title}</p>
         <p className="mt-0.5 text-[11px] text-cream/40">{row.job}</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
@@ -857,7 +862,11 @@ function LaneJobRow({
           return (
             <p
               key={slot.id}
-              className={lit ? "opacity-100" : "opacity-35"}
+              className={[
+                "border-l pl-3",
+                slot.id === "day" ? "border-clay/50" : "border-cream/15",
+                lit ? "opacity-100" : "opacity-35",
+              ].join(" ")}
             >
               <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-cream/35">
                 {slot.label}
@@ -871,6 +880,36 @@ function LaneJobRow({
       </div>
     </li>
   );
+}
+
+function windowHeadClass(window: ScheduleWindowId): string {
+  switch (window) {
+    case "now":
+      return "bg-[#0b100e]";
+    case "day":
+      return "bg-[#14110f]";
+    case "after":
+      return "bg-[#080a09]";
+    default: {
+      const _never: never = window;
+      return _never;
+    }
+  }
+}
+
+function windowCellClass(window: ScheduleWindowId): string {
+  switch (window) {
+    case "now":
+      return "bg-[#0b100e]/80";
+    case "day":
+      return "border-x border-clay/35 bg-clay/[0.06]";
+    case "after":
+      return "bg-[#080a09]";
+    default: {
+      const _never: never = window;
+      return _never;
+    }
+  }
 }
 
 function columnLit(

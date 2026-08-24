@@ -341,6 +341,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/BrandBookLaunchCampaignPage.tsx',
   },
   {
+    id: 'brand-designs',
+    title: 'Designs',
+    href: '/brand/designs',
+    section: 'brand-identity',
+    status: 'live',
+    description:
+      'Ledger of shipped pages and final files: use, live status, and canonical paths.',
+    source: 'src/pages/BrandDesignsPage.tsx',
+  },
+  {
     id: 'preorder-waitlist',
     title: 'Special preview · waitlist',
     href: '/special-preview',

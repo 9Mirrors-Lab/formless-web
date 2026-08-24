@@ -58,6 +58,10 @@ Runtime nav/footer copy comes from the client revision transform. Seed migration
 
 **Contact:** `hello@eyesclosed.love` (footer seed and revision)
 
+## Canonical materials (for agents)
+
+Shipped designs, Zoho templates, and final files are listed in [`src/data/brandMaterials.ts`](src/data/brandMaterials.ts). The Brand Studio page is [`/brand/designs`](/brand/designs). One row is one job. Explorations, system boards, and intended mocks sit as versions on that row. Do not flatten them into sibling designs. Read that ledger for the current Kindle jacket, print cover path, whether a campaign page is live, and which waitlist / Stay Close letter is the intended send. Do not reconstruct this from Drive folders or chat.
+
 ---
 
 ## The product's native shape

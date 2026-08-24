@@ -1,8 +1,8 @@
 /**
  * Advance listen — Immersive Formless listen world
  *
- * Visual thesis: Shader is the room. The approved jacket sits on that field
- * as a square object, never larger than the mobile well (381px).
+ * Visual thesis: Shader is the room. The final jacket sits on that field
+ * as a portrait object, never taller than the mobile well (381px).
  * Player and track list sit open beside it on desktop; optimized master only.
  * Standalone listen page. Not wrapped in BrandShell; no toolkit nav.
  */

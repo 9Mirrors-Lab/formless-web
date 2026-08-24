@@ -244,6 +244,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
       'src/pages/BrandBookLaunchCampaignPage.tsx, src/data/bookLaunchCampaign.ts',
   },
   {
+    id: 'brand-designs',
+    title: 'Designs',
+    path: '/brand/designs',
+    category: 'design',
+    description:
+      'Ledger of shipped designs and final files: what each is for, and whether it is live.',
+    source: 'src/pages/BrandDesignsPage.tsx, src/data/brandMaterials.ts',
+  },
+  {
     id: 'speaker-sheet',
     title: 'Speaker sheet',
     path: '/speaker-sheet',

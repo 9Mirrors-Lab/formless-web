@@ -8,6 +8,7 @@ import {
   writeReviewStore,
   type DiffReviewStatus,
   type DiffReviewStore,
+  type ScriptDiffReviewDetailRow,
   type ScriptDiffReviewRow,
 } from '@/lib/scriptDiffReview';
 
@@ -15,6 +16,9 @@ const TABLE = 'script_diff_reviews';
 
 const ROW_SELECT =
   'book_slug, chapter_id, script_model, fingerprint, fingerprint_key, status, updated_at';
+
+const DETAIL_ROW_SELECT =
+  'id, book_slug, chapter_id, script_model, fingerprint, fingerprint_key, status, created_at, updated_at';
 
 export async function fingerprintKey(fingerprint: string): Promise<string> {
   const digest = await globalThis.crypto.subtle.digest(
@@ -39,6 +43,26 @@ export async function fetchScriptDiffReviews(): Promise<
     ok: true,
     store: rowsToReviewStore((data ?? []) as ScriptDiffReviewRow[]),
   };
+}
+
+export async function fetchScriptDiffReviewsByStatus(
+  status: DiffReviewStatus,
+): Promise<
+  { ok: true; rows: ScriptDiffReviewDetailRow[] } | { ok: false; error: string }
+> {
+  if (!hasSupabaseEnv()) {
+    return { ok: false, error: 'Supabase is not configured.' };
+  }
+  const supabase = getBrowserSupabaseClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select(DETAIL_ROW_SELECT)
+    .eq('book_slug', SCRIPT_DIFF_REVIEW_BOOK_SLUG)
+    .eq('status', status)
+    .order('chapter_id', { ascending: true })
+    .order('updated_at', { ascending: true });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, rows: (data ?? []) as ScriptDiffReviewDetailRow[] };
 }
 
 export async function persistScriptDiffReview(input: {

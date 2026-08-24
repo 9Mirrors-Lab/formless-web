@@ -5,8 +5,10 @@ import {
   aggregateReviewCounts,
   differenceFingerprints,
   filterDifferenceIds,
+  groupReviewRowsByChapter,
   mergeReviewStores,
   normalizeReviewStatus,
+  parseDifferenceFingerprint,
   parseReviewStoreKey,
   reviewCounts,
   reviewStoreKey,
@@ -14,6 +16,7 @@ import {
   statusForFingerprint,
   upsertReviewStatus,
   type DiffReviewStore,
+  type ScriptDiffReviewDetailRow,
 } from '@/lib/scriptDiffReview';
 
 describe('scriptDiffReview', () => {
@@ -306,5 +309,88 @@ describe('scriptDiffReview', () => {
       record: 0,
       all: 0,
     });
+  });
+
+  it('unpacks stored fingerprints into book, audio, and neighbor words', () => {
+    expect(
+      parseDifferenceFingerprint(
+        'replace|smaller|similar|or unfairness these|moments matter because',
+      ),
+    ).toEqual({
+      kind: 'replace',
+      book: 'smaller',
+      audio: 'similar',
+      before: 'or unfairness these',
+      after: 'moments matter because',
+      occurrence: 0,
+    });
+    expect(
+      parseDifferenceFingerprint(
+        'delete|chapter|||2 awareness and',
+      ),
+    ).toEqual({
+      kind: 'delete',
+      book: 'chapter',
+      audio: '',
+      before: '',
+      after: '2 awareness and',
+      occurrence: 0,
+    });
+    expect(
+      parseDifferenceFingerprint('replace|are|were|when you|present#1'),
+    ).toEqual({
+      kind: 'replace',
+      book: 'are',
+      audio: 'were',
+      before: 'when you',
+      after: 'present',
+      occurrence: 1,
+    });
+    expect(parseDifferenceFingerprint('cleared|nope')).toBeNull();
+  });
+
+  it('groups record rows by listen order and mark time', () => {
+    const rows: ScriptDiffReviewDetailRow[] = [
+      {
+        id: 'later-ch4',
+        book_slug: 'formless',
+        chapter_id: 4,
+        script_model: 'medium',
+        fingerprint: 'replace|your|the|life they were|inner refusal of',
+        fingerprint_key: 'b',
+        status: 'record',
+        created_at: '2026-08-22T19:16:43.000Z',
+        updated_at: '2026-08-22T19:16:43.702Z',
+      },
+      {
+        id: 'ch2',
+        book_slug: 'formless',
+        chapter_id: 2,
+        script_model: 'medium',
+        fingerprint: 'delete|chapter|||2 awareness and',
+        fingerprint_key: 'a',
+        status: 'record',
+        created_at: '2026-08-22T18:55:42.000Z',
+        updated_at: '2026-08-22T18:55:42.062Z',
+      },
+      {
+        id: 'earlier-ch4',
+        book_slug: 'formless',
+        chapter_id: 4,
+        script_model: 'medium',
+        fingerprint: 'replace|smaller|similar|or unfairness these|moments matter because',
+        fingerprint_key: 'c',
+        status: 'record',
+        created_at: '2026-08-22T19:16:43.000Z',
+        updated_at: '2026-08-22T19:16:43.374Z',
+      },
+    ];
+    const groups = groupReviewRowsByChapter(rows, [13, 0, 1, 2, 3, 4, 5, 6]);
+    expect(groups.map((group) => group.chapterId)).toEqual([2, 4]);
+    expect(groups[0]?.rows.map((row) => row.id)).toEqual(['ch2']);
+    expect(groups[1]?.rows.map((row) => row.id)).toEqual([
+      'earlier-ch4',
+      'later-ch4',
+    ]);
   });
 });

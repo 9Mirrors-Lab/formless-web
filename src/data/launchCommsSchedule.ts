@@ -80,6 +80,18 @@ export type ScheduleFilters = {
   item: string | null;
 };
 
+export type ScheduleWindow = {
+  id: ScheduleWindowId;
+  label: string;
+  dates: string;
+};
+
+export const SCHEDULE_WINDOWS: readonly ScheduleWindow[] = [
+  { id: "now", label: "Before", dates: "Aug 21–31" },
+  { id: "day", label: "Launch day", dates: "Sep 1" },
+  { id: "after", label: "After", dates: "Sep 2–Nov" },
+];
+
 export const SCHEDULE_OWNERS: readonly ScheduleOwner[] = [
   { id: "soni", name: "Soni", role: "Voice and relationships" },
   { id: "ops", name: "Ops", role: "Lists, links, send path" },
@@ -261,11 +273,25 @@ export const SCHEDULE_WORK: readonly ScheduleWork[] = [
     when: "Aug 28",
     phase: "approach",
     window: "now",
-    work: "One waitlist letter: the book is nearly here, what it is, no countdown, no scarcity. Stay Close can get the same letter or a quieter variant.",
+    work: "One waitlist letter: the book is nearly here, what it is, no countdown, no scarcity.",
     channel: "email",
-    lists: ["waitlist", "stay-close"],
+    lists: ["waitlist"],
     purpose:
-      "People who asked to be told deserve to be told. Once is enough before the day.",
+      "People who wanted to hear deserve a letter. Once is enough before the day.",
+    owner: "copy",
+    status: "later",
+  },
+  {
+    id: "stay-close-almost",
+    title: "Stay Close almost-here",
+    when: "Aug 28",
+    phase: "approach",
+    window: "now",
+    work: "Quieter Stay Close letter: the book is nearly here. Same facts, less announcement.",
+    channel: "email",
+    lists: ["stay-close"],
+    purpose:
+      "Stay Close is a relationship. They should hear it as a continuation, not a campaign.",
     owner: "copy",
     status: "later",
   },
@@ -302,11 +328,25 @@ export const SCHEDULE_WORK: readonly ScheduleWork[] = [
     when: "Sep 1 morning",
     phase: "day",
     window: "day",
-    work: "One email to waitlist + Stay Close: the book is available, who it is for, Kindle + Audible links, no review ask yet.",
+    work: "One waitlist letter: the book is available, who it is for, Kindle + Audible links, no review ask yet.",
     channel: "email",
-    lists: ["waitlist", "stay-close"],
+    lists: ["waitlist"],
     purpose:
       "One letter. The ask is to meet the book, not to manufacture Amazon rank.",
+    owner: "copy",
+    status: "later",
+  },
+  {
+    id: "stay-close-available",
+    title: "Stay Close available letter",
+    when: "Sep 1 morning",
+    phase: "day",
+    window: "day",
+    work: "Stay Close letter: the book is available. Same links. Spoken as a relationship, not a launch.",
+    channel: "email",
+    lists: ["stay-close"],
+    purpose:
+      "Same door. Different weight. Stay Close should not feel like a second waitlist blast.",
     owner: "copy",
     status: "later",
   },
@@ -352,6 +392,20 @@ export const SCHEDULE_WORK: readonly ScheduleWork[] = [
     status: "later",
   },
   {
+    id: "stay-close-thanks",
+    title: "Stay Close thank-you",
+    when: "Sep 2–4",
+    phase: "settle",
+    window: "after",
+    work: "Thank-you note to Stay Close. No metrics. The relationship continues into teaching.",
+    channel: "email",
+    lists: ["stay-close"],
+    purpose:
+      "Close the launch gesture without turning Stay Close into a campaign list.",
+    owner: "soni",
+    status: "later",
+  },
+  {
     id: "reviews",
     title: "Honest-review invite",
     when: "Sep 4–7",
@@ -385,8 +439,8 @@ export const SCHEDULE_CHANNELS: readonly ScheduleChannel[] = [
     id: "email",
     title: "Email",
     job: "Letters to the lists",
-    before: "Split lists, confirm send, almost-here letter",
-    day: "One available letter",
+    before: "Split lists, confirm send, almost-here letters",
+    day: "Waitlist, Stay Close, and advance letters",
     after: "Thanks, then reviews",
   },
   {
@@ -411,7 +465,7 @@ export const SCHEDULE_LISTS: readonly ScheduleList[] = [
   {
     id: "waitlist",
     title: "Book waitlist",
-    job: "People who asked to be told",
+    job: "People who wanted to hear",
     before: "One almost-here letter",
     day: "One available letter",
     after: "Thanks, then teaching",
@@ -437,8 +491,9 @@ export const SCHEDULE_LISTS: readonly ScheduleList[] = [
 export const LAUNCH_DAY_SCRIPT = {
   morning: [
     "Flip /book to live links.",
-    "Send one email to waitlist and Stay Close.",
-    "Note to advance-listen companions.",
+    "Waitlist: available letter.",
+    "Stay Close: available letter.",
+    "Advance listen: the audiobook is public now.",
   ],
   day: [
     "LinkedIn post from Soni. Link in the first comment.",
@@ -537,12 +592,19 @@ export function workTouchesList(
 }
 
 export function workLaneLabel(item: ScheduleWork): string {
-  const parts: string[] = [];
-  if (item.channel) parts.push(channelById(item.channel).title);
-  else if (item.surface) parts.push(item.surface);
-  const listTitles = listsFor(item).map((id) => listById(id).title);
-  if (listTitles.length > 0) parts.push(listTitles.join(", "));
-  return parts.join(" · ");
+  if (item.channel) return channelById(item.channel).title;
+  if (item.surface) return item.surface;
+  return "";
+}
+
+export function workListTitles(item: ScheduleWork): string[] {
+  return listsFor(item).map((id) => listById(id).title);
+}
+
+export function phasesForWindow(
+  window: ScheduleWindowId,
+): readonly SchedulePhase[] {
+  return SCHEDULE_PHASES.filter((phase) => phase.window === window);
 }
 
 export function itemsForOwner(owner: ScheduleOwnerId | "all"): readonly ScheduleWork[] {
