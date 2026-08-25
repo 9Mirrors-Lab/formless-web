@@ -1,5 +1,4 @@
-import { useState, type FormEvent } from 'react';
-import { SignupNameFields } from '@/components/SignupNameFields';
+import { useState, type FormEvent, type ReactNode } from 'react';
 import { validateSignupNames } from '@/lib/auth';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import {
@@ -22,6 +21,27 @@ type StayCloseNotifyFormProps = {
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+function StayField({
+  id,
+  label,
+  children,
+  className = '',
+}: {
+  id: string;
+  label: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`stay-field ${className}`.trim()}>
+      <label htmlFor={id} className="sr-only">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
 }
 
 export function StayCloseNotifyForm({
@@ -124,46 +144,69 @@ export function StayCloseNotifyForm({
     );
   }
 
+  const submitting = status === 'submitting';
+
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <SignupNameFields
-          idPrefix="stay-close"
-          firstName={firstName}
-          lastName={lastName}
-          onFirstNameChange={(value) => {
-            setFirstName(value);
-            clearError();
-          }}
-          onLastNameChange={(value) => {
-            setLastName(value);
-            clearError();
-          }}
-          disabled={status === 'submitting'}
-          inputClassName=""
-          wrapperClassName="stay-name-fields"
-        />
-        <label htmlFor="stay-close-email" className="sr-only">
-          Email address
-        </label>
-        <input
-          id="stay-close-email"
-          type="email"
-          name="email"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => {
-            setEmail(event.target.value);
-            clearError();
-          }}
-          placeholder={emailPlaceholder}
-          disabled={status === 'submitting'}
-          required
-        />
-        <button type="submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Sending…' : submitLabel}
+    <div className="stay-form-wrap">
+      <form onSubmit={handleSubmit} className="stay-form" noValidate>
+        <div className="stay-name-row">
+          <StayField id="stay-close-first-name" label="First name">
+            <input
+              id="stay-close-first-name"
+              type="text"
+              name="firstName"
+              autoComplete="given-name"
+              value={firstName}
+              onChange={(event) => {
+                setFirstName(event.target.value);
+                clearError();
+              }}
+              placeholder="First name"
+              disabled={submitting}
+              required
+            />
+          </StayField>
+
+          <StayField id="stay-close-last-name" label="Last name">
+            <input
+              id="stay-close-last-name"
+              type="text"
+              name="lastName"
+              autoComplete="family-name"
+              value={lastName}
+              onChange={(event) => {
+                setLastName(event.target.value);
+                clearError();
+              }}
+              placeholder="Last name"
+              disabled={submitting}
+              required
+            />
+          </StayField>
+        </div>
+
+        <StayField id="stay-close-email" label="Email">
+          <input
+            id="stay-close-email"
+            type="email"
+            name="email"
+            autoComplete="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              clearError();
+            }}
+            placeholder={emailPlaceholder}
+            disabled={submitting}
+            required
+          />
+        </StayField>
+
+        <button type="submit" disabled={submitting}>
+          {submitting ? 'Sending…' : submitLabel}
         </button>
       </form>
+
       <p className="fine">{finePrint}</p>
       {status === 'error' ? (
         <p className="stay-error" role="alert">
@@ -178,6 +221,6 @@ export function StayCloseNotifyForm({
           {emailLink.text}
         </a>
       </div>
-    </>
+    </div>
   );
 }
