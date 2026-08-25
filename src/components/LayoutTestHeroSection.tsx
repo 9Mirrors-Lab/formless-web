@@ -61,7 +61,7 @@ function HeroBookAside() {
           className="aspect-[5/8] h-auto w-[12.5rem] shrink-0 object-contain shadow-[0_22px_48px_rgba(0,0,0,0.45)] sm:w-[13.5rem] xl:w-[14.5rem]"
         />
 
-        <div className="min-w-0 max-w-[17rem]">
+        <div className="min-w-0 max-w-[18.5rem]">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.24em] text-cream/90">
             Now on Amazon
           </p>
@@ -70,7 +70,7 @@ function HeroBookAside() {
             <br />
             pre-order now!
           </p>
-          <p className="mt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-cream/85">
+          <p className="mt-4 whitespace-nowrap font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-clay">
             {factsLine}
           </p>
           <a
