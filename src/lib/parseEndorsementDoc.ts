@@ -3,7 +3,7 @@ import type {
   EndorsementPlacement,
   EndorsementTheme,
   EndorsementVoice,
-} from '../data/endorsements';
+} from '../data/endorsements.js';
 
 const SHORT_PULL_CHARS = 160;
 const NAME_SUFFIX = /^(PhD|MC|LLC|RNBN|MD|Jr\.?|Sr\.?)$/i;

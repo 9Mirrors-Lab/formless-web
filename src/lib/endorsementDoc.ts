@@ -4,14 +4,14 @@ import {
   statusFromCuts,
   type Endorsement,
   type EndorsementOverlay,
-} from '../data/endorsements';
+} from '../data/endorsements.js';
 import {
   inferPlacements,
   inferThemes,
   inferVoices,
   parseEndorsementDoc,
   type ParsedEndorsement,
-} from './parseEndorsementDoc';
+} from './parseEndorsementDoc.js';
 
 export const ENDORSEMENT_DOC_ID = '1JkeEdciMh2ytvVM-uh-rvSio374oiajUA-G26wI6eps';
 export const ENDORSEMENT_DOC_EDIT_URL = `https://docs.google.com/document/d/${ENDORSEMENT_DOC_ID}/edit`;

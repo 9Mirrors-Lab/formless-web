@@ -1,4 +1,4 @@
-import { loadEndorsementDoc } from '../src/lib/endorsementDoc';
+import { loadEndorsementDoc } from '../src/lib/endorsementDoc.js';
 
 type ApiRequest = {
   method?: string;
