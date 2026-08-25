@@ -8,7 +8,7 @@ export type SignupSource =
   | 'book_page'
   | 'advance_listen';
 
-export type SignupFailureReason = 'invalid_email' | 'server_error';
+export type SignupFailureReason = 'invalid_email' | 'invalid_name' | 'server_error';
 
 type AnalyticsProperties = Record<string, string | number | boolean | null>;
 
