@@ -259,7 +259,7 @@ export default function BookPage() {
               <span className="mb-6 block font-mono text-xs uppercase tracking-[0.3em] text-cream/30">
                 {headerEyebrow}
               </span>
-              <h1 className="book-title mb-8 pb-[0.06em] font-serif text-5xl leading-[1.14] text-cream md:text-7xl">
+              <h1 className="book-title mb-8 pb-[0.06em] font-serif text-[clamp(1.85rem,3.2vw,2.75rem)] leading-[1.18] tracking-[-0.01em] text-cream">
                 {headerTitleMatch ? (
                   <>
                     <span className="whitespace-nowrap">
@@ -271,7 +271,7 @@ export default function BookPage() {
                   headerTitle
                 )}
               </h1>
-              <p className="max-w-lg font-sans text-xl leading-relaxed text-cream/55">
+              <p className="max-w-lg font-sans text-lg leading-relaxed text-cream/55 md:text-xl">
                 {headerLede}
               </p>
             </div>
