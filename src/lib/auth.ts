@@ -5,6 +5,8 @@ import { getBrowserSupabaseClient } from '@/lib/supabase';
 export type AuthCredentials = {
   email: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
 };
 
 const AUTH_NEXT_STORAGE_KEY = 'eyesclosed.auth.next';
@@ -14,6 +16,12 @@ export const DEFAULT_POST_LOGIN_PATH = '/brand';
 
 export function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+export function validateSignupNames(firstName: string, lastName: string): string | null {
+  if (!firstName.trim()) return 'Enter your first name.';
+  if (!lastName.trim()) return 'Enter your last name.';
+  return null;
 }
 
 export function normalizeEmail(value: string): string {
@@ -85,13 +93,26 @@ export async function signInWithPassword({ email, password }: AuthCredentials) {
   });
 }
 
-export async function signUpWithPassword({ email, password }: AuthCredentials) {
+export async function signUpWithPassword({
+  email,
+  password,
+  firstName,
+  lastName,
+}: AuthCredentials) {
   const supabase = getBrowserSupabaseClient();
+  const trimmedFirst = firstName?.trim();
+  const trimmedLast = lastName?.trim();
 
   return supabase.auth.signUp({
     email: normalizeEmail(email),
     password,
-    options: { emailRedirectTo: getAuthCallbackUrl() },
+    options: {
+      emailRedirectTo: getAuthCallbackUrl(),
+      data: {
+        ...(trimmedFirst ? { first_name: trimmedFirst } : {}),
+        ...(trimmedLast ? { last_name: trimmedLast } : {}),
+      },
+    },
   });
 }
 

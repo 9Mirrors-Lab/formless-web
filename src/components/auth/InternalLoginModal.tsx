@@ -116,6 +116,7 @@ export function InternalLoginModal({
             title={copy.title}
             description={copy.description}
             submitLabel={isSignup ? 'Sign up' : 'Sign in'}
+            mode={isSignup ? 'signup' : 'signin'}
             passwordAutoComplete={isSignup ? 'new-password' : 'current-password'}
             hideIntro
             googleNextPath={nextPath}

@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { SignupNameFields } from '@/components/SignupNameFields';
 import {
   captureSignupFailed,
   captureSignupStarted,
@@ -15,7 +16,6 @@ import {
 } from '@/lib/analytics';
 import { listenLockup } from '@/components/audio-review/advanceListenType';
 import { captureAdvanceListenEmail } from '@/lib/advanceListenAccess';
-import { isValidEmail } from '@/lib/auth';
 
 function goHome(): void {
   window.location.assign('/');
@@ -36,6 +36,8 @@ export function AdvanceListenEmailModal({
 }: {
   onUnlocked: () => void;
 }) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -47,18 +49,22 @@ export function AdvanceListenEmailModal({
     const trimmed = email.trim();
     captureSignupStarted('advance_listen', 'advance_listen_gate');
 
-    if (!isValidEmail(trimmed)) {
-      captureSignupFailed('advance_listen', 'advance_listen_gate', 'invalid_email');
-      setErrorMessage('Enter a valid email address.');
-      return;
-    }
-
     setSubmitting(true);
-    const result = await captureAdvanceListenEmail(trimmed);
+    const result = await captureAdvanceListenEmail({
+      email: trimmed,
+      firstName,
+      lastName,
+    });
     setSubmitting(false);
 
     if (!result.ok) {
-      captureSignupFailed('advance_listen', 'advance_listen_gate', 'server_error');
+      if (result.errorMessage.includes('email')) {
+        captureSignupFailed('advance_listen', 'advance_listen_gate', 'invalid_email');
+      } else if (result.errorMessage.includes('name')) {
+        captureSignupFailed('advance_listen', 'advance_listen_gate', 'invalid_name');
+      } else {
+        captureSignupFailed('advance_listen', 'advance_listen_gate', 'server_error');
+      }
       setErrorMessage(result.errorMessage);
       return;
     }
@@ -105,6 +111,21 @@ export function AdvanceListenEmailModal({
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="mt-2 space-y-4">
+            <SignupNameFields
+              idPrefix="advance-listen"
+              firstName={firstName}
+              lastName={lastName}
+              onFirstNameChange={(value) => {
+                setFirstName(value);
+                if (errorMessage) setErrorMessage(null);
+              }}
+              onLastNameChange={(value) => {
+                setLastName(value);
+                if (errorMessage) setErrorMessage(null);
+              }}
+              disabled={submitting}
+              inputClassName={inputClassName}
+            />
             <div>
               <label htmlFor="advance-listen-email" className="sr-only">
                 Email

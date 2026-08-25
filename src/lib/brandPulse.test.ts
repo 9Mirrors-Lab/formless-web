@@ -14,6 +14,8 @@ const now = new Date(2026, 7, 18, 15, 0, 0);
 const latest: SiteSignup = {
   id: 'book_release:1',
   email: 'ada@house.com',
+  firstName: 'Ada',
+  lastName: 'House',
   source: 'book_page',
   list: 'book_release',
   createdAt: new Date(2026, 7, 17, 9, 0, 0).toISOString(),
@@ -116,6 +118,8 @@ describe('brandPulse', () => {
       {
         id: 'book_release:1',
         email: 'ada@house.com',
+        firstName: null,
+        lastName: null,
         source: 'book_page',
         list: 'book_release',
         createdAt: new Date(2026, 5, 1, 12).toISOString(),
@@ -123,6 +127,8 @@ describe('brandPulse', () => {
       {
         id: 'newsletter:2',
         email: 'ada@house.com',
+        firstName: null,
+        lastName: null,
         source: 'about_stay_close',
         list: 'newsletter',
         createdAt: new Date(2026, 6, 1, 12).toISOString(),
@@ -130,6 +136,8 @@ describe('brandPulse', () => {
       {
         id: 'advance_listen:3',
         email: 'new@house.com',
+        firstName: null,
+        lastName: null,
         source: 'advance_listen',
         list: 'advance_listen',
         createdAt: new Date(2026, 7, 18, 12).toISOString(),

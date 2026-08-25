@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react';
+import { SignupNameFields } from '@/components/SignupNameFields';
+import { validateSignupNames } from '@/lib/auth';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import {
   captureCtaClick,
@@ -30,21 +32,43 @@ export function StayCloseNotifyForm({
   errorMessage,
   emailLink,
 }: StayCloseNotifyFormProps) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<FormStatus>('idle');
+  const [formError, setFormError] = useState<string | null>(null);
+
+  function clearError() {
+    if (status === 'error') {
+      setStatus('idle');
+      setFormError(null);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
     const trimmed = email.trim();
     captureSignupStarted('about_stay_close', 'about_stay_close_form');
 
-    if (!isValidEmail(trimmed)) {
-      captureSignupFailed('about_stay_close', 'about_stay_close_form', 'invalid_email');
+    const nameError = validateSignupNames(trimmedFirstName, trimmedLastName);
+    if (nameError) {
+      captureSignupFailed('about_stay_close', 'about_stay_close_form', 'invalid_name');
+      setFormError(nameError);
       setStatus('error');
       return;
     }
 
+    if (!isValidEmail(trimmed)) {
+      captureSignupFailed('about_stay_close', 'about_stay_close_form', 'invalid_email');
+      setFormError(errorMessage);
+      setStatus('error');
+      return;
+    }
+
+    setFormError(null);
     setStatus('submitting');
 
     try {
@@ -52,6 +76,8 @@ export function StayCloseNotifyForm({
       const normalizedEmail = trimmed.toLowerCase();
       const { error } = await supabase.from('newsletter_signups').insert({
         email: normalizedEmail,
+        first_name: trimmedFirstName,
+        last_name: trimmedLastName,
         source: 'about_stay_close',
       });
 
@@ -67,8 +93,11 @@ export function StayCloseNotifyForm({
       captureSignupSucceeded('about_stay_close', 'about_stay_close_form');
       setStatus('success');
       setEmail('');
+      setFirstName('');
+      setLastName('');
     } catch {
       captureSignupFailed('about_stay_close', 'about_stay_close_form', 'server_error');
+      setFormError(errorMessage);
       setStatus('error');
     }
   }
@@ -98,6 +127,22 @@ export function StayCloseNotifyForm({
   return (
     <>
       <form onSubmit={handleSubmit}>
+        <SignupNameFields
+          idPrefix="stay-close"
+          firstName={firstName}
+          lastName={lastName}
+          onFirstNameChange={(value) => {
+            setFirstName(value);
+            clearError();
+          }}
+          onLastNameChange={(value) => {
+            setLastName(value);
+            clearError();
+          }}
+          disabled={status === 'submitting'}
+          inputClassName=""
+          wrapperClassName="stay-name-fields"
+        />
         <label htmlFor="stay-close-email" className="sr-only">
           Email address
         </label>
@@ -109,7 +154,7 @@ export function StayCloseNotifyForm({
           value={email}
           onChange={(event) => {
             setEmail(event.target.value);
-            if (status === 'error') setStatus('idle');
+            clearError();
           }}
           placeholder={emailPlaceholder}
           disabled={status === 'submitting'}
@@ -122,7 +167,7 @@ export function StayCloseNotifyForm({
       <p className="fine">{finePrint}</p>
       {status === 'error' ? (
         <p className="stay-error" role="alert">
-          {errorMessage}
+          {formError ?? errorMessage}
         </p>
       ) : null}
       <div className="signoff">

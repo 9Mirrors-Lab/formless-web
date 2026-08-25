@@ -1,7 +1,13 @@
-import { isValidEmail, normalizeEmail } from '@/lib/auth';
+import { isValidEmail, normalizeEmail, validateSignupNames } from '@/lib/auth';
 import { getBrowserSupabaseClient } from '@/lib/supabase';
 
 export const ADVANCE_LISTEN_EMAIL_STORAGE_KEY = 'eyesclosed.advance-listen.email';
+
+export type AdvanceListenSignupInput = {
+  email: string;
+  firstName: string;
+  lastName: string;
+};
 
 export function readStoredAdvanceListenEmail(): string | null {
   if (typeof window === 'undefined') return null;
@@ -23,10 +29,20 @@ export function hasStoredAdvanceListenEmail(): boolean {
   return readStoredAdvanceListenEmail() !== null;
 }
 
-export async function captureAdvanceListenEmail(
-  email: string,
-): Promise<{ ok: true } | { ok: false; errorMessage: string }> {
+export async function captureAdvanceListenEmail({
+  email,
+  firstName,
+  lastName,
+}: AdvanceListenSignupInput): Promise<{ ok: true } | { ok: false; errorMessage: string }> {
   const normalized = normalizeEmail(email);
+  const trimmedFirstName = firstName.trim();
+  const trimmedLastName = lastName.trim();
+
+  const nameError = validateSignupNames(trimmedFirstName, trimmedLastName);
+  if (nameError) {
+    return { ok: false, errorMessage: nameError };
+  }
+
   if (!isValidEmail(normalized)) {
     return { ok: false, errorMessage: 'Enter a valid email address.' };
   }
@@ -35,6 +51,8 @@ export async function captureAdvanceListenEmail(
     const supabase = getBrowserSupabaseClient();
     const { error } = await supabase.from('advance_listen_signups').insert({
       email: normalized,
+      first_name: trimmedFirstName,
+      last_name: trimmedLastName,
       source: 'advance_listen',
     });
 

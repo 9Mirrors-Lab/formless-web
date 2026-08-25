@@ -1,6 +1,8 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { BookOpen, Send } from 'lucide-react';
 import { TeachingIconMark } from '@/components/iconography/TeachingIconMark';
+import { SignupNameFields } from '@/components/SignupNameFields';
+import { validateSignupNames } from '@/lib/auth';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import {
   captureSignupFailed,
@@ -89,6 +91,12 @@ function NotifyMetaRow({
   );
 }
 
+const dockInputClassName =
+  'w-full rounded-full border border-cream/15 bg-[#080a09]/80 px-4 py-3 font-sans text-sm text-cream placeholder:text-cream/30 transition-colors duration-300 focus:border-cream/30 focus:outline-none disabled:opacity-60';
+
+const cardInputClassName =
+  'w-full rounded-full border border-cream/15 bg-[#080a09]/70 px-6 py-4 font-sans text-sm text-cream placeholder:text-cream/30 transition-all duration-300 focus:border-cream/30 focus:bg-[#080a09] focus:outline-none disabled:opacity-60';
+
 export function BookReleaseNotifyForm({
   releaseDate = DEFAULT_RELEASE_DATE,
   subheadline = DEFAULT_SUBHEADLINE,
@@ -99,9 +107,12 @@ export function BookReleaseNotifyForm({
   errorMessage = DEFAULT_ERROR,
   variant = 'card',
 }: BookReleaseNotifyFormProps) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [submittedEmail, setSubmittedEmail] = useState('');
   const [status, setStatus] = useState<FormStatus>('idle');
+  const [formError, setFormError] = useState<string | null>(null);
 
   const buttonLabel = ctaLabel.trim() || DEFAULT_CTA;
   const subheadCopy = subheadline.trim() || DEFAULT_SUBHEADLINE;
@@ -114,15 +125,27 @@ export function BookReleaseNotifyForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
     const trimmed = email.trim();
     captureSignupStarted('book_page', 'book_release_form');
 
-    if (!isValidEmail(trimmed)) {
-      captureSignupFailed('book_page', 'book_release_form', 'invalid_email');
+    const nameError = validateSignupNames(trimmedFirstName, trimmedLastName);
+    if (nameError) {
+      captureSignupFailed('book_page', 'book_release_form', 'invalid_name');
+      setFormError(nameError);
       setStatus('error');
       return;
     }
 
+    if (!isValidEmail(trimmed)) {
+      captureSignupFailed('book_page', 'book_release_form', 'invalid_email');
+      setFormError(errorMessage);
+      setStatus('error');
+      return;
+    }
+
+    setFormError(null);
     setStatus('submitting');
 
     try {
@@ -130,6 +153,8 @@ export function BookReleaseNotifyForm({
       const normalizedEmail = trimmed.toLowerCase();
       const { error } = await supabase.from('book_release_signups').insert({
         email: normalizedEmail,
+        first_name: trimmedFirstName,
+        last_name: trimmedLastName,
         source: 'book_page',
       });
 
@@ -147,8 +172,11 @@ export function BookReleaseNotifyForm({
       setSubmittedEmail(normalizedEmail);
       setStatus('success');
       setEmail('');
+      setFirstName('');
+      setLastName('');
     } catch {
       captureSignupFailed('book_page', 'book_release_form', 'server_error');
+      setFormError(errorMessage);
       setStatus('error');
     }
   }
@@ -172,6 +200,31 @@ export function BookReleaseNotifyForm({
           {releaseDateLabel}
         </p>
 
+        <div className="mb-3">
+          <SignupNameFields
+            idPrefix="book-release-dock"
+            firstName={firstName}
+            lastName={lastName}
+            onFirstNameChange={(value) => {
+              setFirstName(value);
+              if (status === 'error') {
+                setStatus('idle');
+                setFormError(null);
+              }
+            }}
+            onLastNameChange={(value) => {
+              setLastName(value);
+              if (status === 'error') {
+                setStatus('idle');
+                setFormError(null);
+              }
+            }}
+            disabled={status === 'submitting'}
+            inputClassName={dockInputClassName}
+            wrapperClassName="grid grid-cols-2 gap-2"
+          />
+        </div>
+
         <div className="flex items-start gap-2">
           <div className="min-w-0 flex-1">
             <form
@@ -191,7 +244,10 @@ export function BookReleaseNotifyForm({
                 value={email}
                 onChange={(event) => {
                   setEmail(event.target.value);
-                  if (status === 'error') setStatus('idle');
+                  if (status === 'error') {
+                    setStatus('idle');
+                    setFormError(null);
+                  }
                 }}
                 placeholder="Your email"
                 disabled={status === 'submitting'}
@@ -201,7 +257,7 @@ export function BookReleaseNotifyForm({
 
             {status === 'error' ? (
               <p className="mt-2 font-sans text-xs text-clay/90" role="alert">
-                {errorMessage}
+                {formError ?? errorMessage}
               </p>
             ) : (
               <div className="flex justify-center">
@@ -291,6 +347,27 @@ export function BookReleaseNotifyForm({
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <SignupNameFields
+          idPrefix="book-release"
+          firstName={firstName}
+          lastName={lastName}
+          onFirstNameChange={(value) => {
+            setFirstName(value);
+            if (status === 'error') {
+              setStatus('idle');
+              setFormError(null);
+            }
+          }}
+          onLastNameChange={(value) => {
+            setLastName(value);
+            if (status === 'error') {
+              setStatus('idle');
+              setFormError(null);
+            }
+          }}
+          disabled={status === 'submitting'}
+          inputClassName={cardInputClassName}
+        />
         <label htmlFor={emailFieldId} className="sr-only">
           Email address
         </label>
@@ -302,11 +379,14 @@ export function BookReleaseNotifyForm({
           value={email}
           onChange={(event) => {
             setEmail(event.target.value);
-            if (status === 'error') setStatus('idle');
+            if (status === 'error') {
+              setStatus('idle');
+              setFormError(null);
+            }
           }}
           placeholder="Your email"
           disabled={status === 'submitting'}
-          className="w-full rounded-full border border-cream/15 bg-[#080a09]/70 px-6 py-4 font-sans text-sm text-cream placeholder:text-cream/30 transition-all duration-300 focus:border-cream/30 focus:bg-[#080a09] focus:outline-none disabled:opacity-60"
+          className={cardInputClassName}
         />
         <button
           type="submit"
@@ -319,7 +399,7 @@ export function BookReleaseNotifyForm({
 
       {status === 'error' ? (
         <p className="mt-3 font-sans text-sm text-clay/90" role="alert">
-          {errorMessage}
+          {formError ?? errorMessage}
         </p>
       ) : null}
 

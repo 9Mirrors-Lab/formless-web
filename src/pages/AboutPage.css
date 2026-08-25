@@ -104,6 +104,16 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+#about-page-scope .stay .stay-name-fields {
+  display: flex;
+  gap: .6rem;
+  flex: 1 1 100%;
+  width: 100%;
+}
+#about-page-scope .stay .stay-name-fields input {
+  flex: 1 1 calc(50% - .3rem);
+  min-width: 0;
+}
 #about-page-scope .stay input {
   flex: 1 1 14rem;
   padding: .95rem 1.4rem;

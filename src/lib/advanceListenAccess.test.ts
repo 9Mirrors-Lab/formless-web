@@ -59,8 +59,26 @@ describe('advanceListenAccess', () => {
     expect(hasStoredAdvanceListenEmail()).toBe(false);
   });
 
+  it('rejects missing names before calling supabase', async () => {
+    const result = await captureAdvanceListenEmail({
+      email: 'publisher@house.com',
+      firstName: '',
+      lastName: 'Lee',
+    });
+    expect(result).toEqual({
+      ok: false,
+      errorMessage: 'Enter your first name.',
+    });
+    expect(insert).not.toHaveBeenCalled();
+    expect(hasStoredAdvanceListenEmail()).toBe(false);
+  });
+
   it('rejects an invalid email before calling supabase', async () => {
-    const result = await captureAdvanceListenEmail('not-an-email');
+    const result = await captureAdvanceListenEmail({
+      email: 'not-an-email',
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+    });
     expect(result).toEqual({
       ok: false,
       errorMessage: 'Enter a valid email address.',
@@ -72,11 +90,17 @@ describe('advanceListenAccess', () => {
   it('saves a new email and remembers it locally', async () => {
     insert.mockResolvedValue({ error: null });
 
-    const result = await captureAdvanceListenEmail('  Publisher@House.com ');
+    const result = await captureAdvanceListenEmail({
+      email: '  Publisher@House.com ',
+      firstName: ' Ada ',
+      lastName: ' House ',
+    });
 
     expect(result).toEqual({ ok: true });
     expect(insert).toHaveBeenCalledWith({
       email: 'publisher@house.com',
+      first_name: 'Ada',
+      last_name: 'House',
       source: 'advance_listen',
     });
     expect(readStoredAdvanceListenEmail()).toBe('publisher@house.com');
@@ -85,7 +109,11 @@ describe('advanceListenAccess', () => {
   it('treats a duplicate email as success', async () => {
     insert.mockResolvedValue({ error: { code: '23505' } });
 
-    const result = await captureAdvanceListenEmail('publisher@house.com');
+    const result = await captureAdvanceListenEmail({
+      email: 'publisher@house.com',
+      firstName: 'Ada',
+      lastName: 'House',
+    });
 
     expect(result).toEqual({ ok: true });
     expect(readStoredAdvanceListenEmail()).toBe('publisher@house.com');

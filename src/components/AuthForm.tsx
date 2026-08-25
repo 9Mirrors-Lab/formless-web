@@ -50,17 +50,25 @@ const inputBaseClassName =
 const buttonBaseClassName =
   'w-full rounded-full px-5 py-3.5 font-sans text-xs font-semibold uppercase tracking-[0.18em] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60';
 
+export type AuthFormValues = {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+};
+
 type AuthFormProps = {
   title: string;
   description: string;
   submitLabel: string;
+  mode?: 'signin' | 'signup';
   theme?: AuthFormTheme;
   passwordAutoComplete?: 'current-password' | 'new-password';
   showGoogleAuth?: boolean;
   hideIntro?: boolean;
   googleNextPath?: string | null;
   alternateAction: ReactNode;
-  onSubmit: (values: { email: string; password: string }) => Promise<{
+  onSubmit: (values: AuthFormValues) => Promise<{
     errorMessage?: string;
     successMessage?: string;
   }>;
@@ -70,6 +78,7 @@ export function AuthForm({
   title,
   description,
   submitLabel,
+  mode = 'signin',
   theme = 'dark',
   passwordAutoComplete = 'current-password',
   showGoogleAuth = true,
@@ -79,6 +88,9 @@ export function AuthForm({
   onSubmit,
 }: AuthFormProps) {
   const styles = themeStyles[theme];
+  const isSignup = mode === 'signup';
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -90,7 +102,22 @@ export function AuthForm({
     setErrorMessage(null);
     setSuccessMessage(null);
 
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
     const trimmedEmail = email.trim();
+
+    if (isSignup) {
+      if (!trimmedFirstName) {
+        setErrorMessage('Enter your first name.');
+        return;
+      }
+
+      if (!trimmedLastName) {
+        setErrorMessage('Enter your last name.');
+        return;
+      }
+    }
+
     if (!isValidEmail(trimmedEmail)) {
       setErrorMessage('Enter a valid email address.');
       return;
@@ -102,7 +129,13 @@ export function AuthForm({
     }
 
     setSubmitting(true);
-    const result = await onSubmit({ email: trimmedEmail, password });
+    const result = await onSubmit({
+      email: trimmedEmail,
+      password,
+      ...(isSignup
+        ? { firstName: trimmedFirstName, lastName: trimmedLastName }
+        : {}),
+    });
     setSubmitting(false);
 
     if (result.errorMessage) {
@@ -146,6 +179,51 @@ export function AuthForm({
       ) : null}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {isSignup ? (
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="auth-first-name" className="sr-only">
+                First name
+              </label>
+              <input
+                id="auth-first-name"
+                type="text"
+                name="firstName"
+                autoComplete="given-name"
+                value={firstName}
+                onChange={(event) => {
+                  setFirstName(event.target.value);
+                  if (errorMessage) setErrorMessage(null);
+                }}
+                placeholder="First name"
+                disabled={submitting}
+                required
+                className={`${inputBaseClassName} ${styles.input}`}
+              />
+            </div>
+            <div>
+              <label htmlFor="auth-last-name" className="sr-only">
+                Last name
+              </label>
+              <input
+                id="auth-last-name"
+                type="text"
+                name="lastName"
+                autoComplete="family-name"
+                value={lastName}
+                onChange={(event) => {
+                  setLastName(event.target.value);
+                  if (errorMessage) setErrorMessage(null);
+                }}
+                placeholder="Last name"
+                disabled={submitting}
+                required
+                className={`${inputBaseClassName} ${styles.input}`}
+              />
+            </div>
+          </div>
+        ) : null}
+
         <div>
           <label htmlFor="auth-email" className="sr-only">
             Email

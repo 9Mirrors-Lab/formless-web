@@ -14,6 +14,8 @@ export type SignupMetricKey = 'people' | 'entries' | SignupList;
 export type SiteSignup = {
   id: string;
   email: string;
+  firstName: string | null;
+  lastName: string | null;
   source: string;
   list: SignupList;
   createdAt: string;
@@ -33,9 +35,16 @@ export type FetchSiteSignupsResult =
 type SignupRow = {
   id: string;
   email: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
   source?: string | null;
   created_at: string;
 };
+
+export function signupDisplayName(row: Pick<SiteSignup, 'firstName' | 'lastName'>): string | null {
+  const parts = [row.firstName, row.lastName].filter((part): part is string => Boolean(part?.trim()));
+  return parts.length > 0 ? parts.join(' ') : null;
+}
 
 export function signupListLabel(list: SignupList): string {
   switch (list) {
@@ -178,6 +187,9 @@ export function filterSignups(
 
     const haystack = [
       row.email,
+      row.firstName,
+      row.lastName,
+      signupDisplayName(row),
       signupListLabel(row.list),
       row.source,
       signupListPath(row.list),
@@ -197,10 +209,12 @@ function csvCell(value: string): string {
 }
 
 export function signupsToCsv(rows: SiteSignup[]): string {
-  const header = ['email', 'list', 'source', 'page', 'created_at'];
+  const header = ['email', 'first_name', 'last_name', 'list', 'source', 'page', 'created_at'];
   const lines = rows.map((row) =>
     [
       csvCell(row.email),
+      csvCell(row.firstName ?? ''),
+      csvCell(row.lastName ?? ''),
       csvCell(signupListLabel(row.list)),
       csvCell(row.source),
       csvCell(signupListPath(row.list)),
@@ -273,6 +287,8 @@ function mapSignupRows(
     mapped.push({
       id: `${list}:${row.id}`,
       email,
+      firstName: row.first_name?.trim() || null,
+      lastName: row.last_name?.trim() || null,
       source: row.source?.trim() || fallbackSource,
       list,
       createdAt: row.created_at,
@@ -299,7 +315,7 @@ export async function fetchSiteSignups(): Promise<FetchSiteSignupsResult> {
   }
 
   const supabase = getBrowserSupabaseClient();
-  const signupSelect = 'id, email, source, created_at';
+  const signupSelect = 'id, email, first_name, last_name, source, created_at';
 
   const [book, newsletter, advanceListen, accounts] = await Promise.all([
     supabase
@@ -316,7 +332,7 @@ export async function fetchSiteSignups(): Promise<FetchSiteSignupsResult> {
       .order('created_at', { ascending: false }),
     supabase
       .from('profiles')
-      .select('id, email, created_at')
+      .select('id, email, first_name, last_name, created_at')
       .order('created_at', { ascending: false }),
   ]);
 

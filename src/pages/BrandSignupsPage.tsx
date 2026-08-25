@@ -16,6 +16,7 @@ import {
   fetchSiteSignups,
   filterSignups,
   signupDeskListFromSearch,
+  signupDisplayName,
   signupListLabel,
   signupListPath,
   signupMetricHelp,
@@ -253,7 +254,7 @@ export default function BrandSignupsPage() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search email or list"
+                placeholder="Search name or email"
                 className="h-11 w-full rounded-full border border-cream/15 bg-transparent px-4 font-sans text-sm text-cream placeholder:text-cream/30 transition-colors focus:border-cream/30 focus:outline-none"
               />
             </label>
@@ -286,9 +287,12 @@ export default function BrandSignupsPage() {
 
           {state === 'ready' && visible.length > 0 ? (
             <div className="min-w-0">
-              <div className="hidden border-b border-cream/10 pb-2 md:grid md:grid-cols-[minmax(0,1.6fr)_9.5rem_7rem_auto] md:gap-4">
+              <div className="hidden border-b border-cream/10 pb-2 md:grid md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_9.5rem_7rem_auto] md:gap-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/35">
                   Email
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/35">
+                  Name
                 </p>
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/35">
                   List
@@ -301,7 +305,9 @@ export default function BrandSignupsPage() {
 
               <ul className="divide-y divide-cream/10">
                 <AnimatePresence initial={false}>
-                  {visible.map((row, index) => (
+                  {visible.map((row, index) => {
+                    const name = signupDisplayName(row);
+                    return (
                     <motion.li
                       key={row.id}
                       layout={!reduceMotion}
@@ -313,14 +319,18 @@ export default function BrandSignupsPage() {
                         delay: reduceMotion ? 0 : Math.min(index, 12) * 0.02,
                         ease: [0.16, 1, 0.3, 1],
                       }}
-                      className="grid grid-cols-1 gap-2 py-4 md:grid-cols-[minmax(0,1.6fr)_9.5rem_7rem_auto] md:items-center md:gap-4 md:py-3.5"
+                      className="grid grid-cols-1 gap-2 py-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_9.5rem_7rem_auto] md:items-center md:gap-4 md:py-3.5"
                     >
                       <div className="min-w-0">
                         <p className="truncate font-sans text-sm text-cream">{row.email}</p>
                         <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-cream/30 md:hidden">
+                          {name ? `${name} · ` : ''}
                           {signupListLabel(row.list)} · {formatWhen(row.createdAt)}
                         </p>
                       </div>
+                      <p className="hidden truncate font-sans text-sm text-cream/70 md:block">
+                        {name ?? '—'}
+                      </p>
                       <p className="hidden font-sans text-sm text-cream/55 md:block">
                         <span className="block">{signupListLabel(row.list)}</span>
                         <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.12em] text-cream/28">
@@ -341,7 +351,8 @@ export default function BrandSignupsPage() {
                         </button>
                       </div>
                     </motion.li>
-                  ))}
+                    );
+                  })}
                 </AnimatePresence>
               </ul>
             </div>

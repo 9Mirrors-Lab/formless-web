@@ -26,6 +26,7 @@ export function SignupPage() {
         title="Create your account"
         description="Register now so you are ready when additional member content opens."
         submitLabel="Create account"
+        mode="signup"
         passwordAutoComplete="new-password"
         alternateAction={
           <>

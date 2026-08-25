@@ -19,6 +19,8 @@ const rows: SiteSignup[] = [
   {
     id: 'book_release:1',
     email: 'ada@house.com',
+    firstName: 'Ada',
+    lastName: 'House',
     source: 'book_page',
     list: 'book_release',
     createdAt: '2026-08-14T12:00:00.000Z',
@@ -26,6 +28,8 @@ const rows: SiteSignup[] = [
   {
     id: 'newsletter:2',
     email: 'ada@house.com',
+    firstName: 'Ada',
+    lastName: 'House',
     source: 'about_stay_close',
     list: 'newsletter',
     createdAt: '2026-08-13T12:00:00.000Z',
@@ -33,6 +37,8 @@ const rows: SiteSignup[] = [
   {
     id: 'account:3',
     email: 'new@house.com',
+    firstName: null,
+    lastName: null,
     source: 'account',
     list: 'account',
     createdAt: '2026-08-12T12:00:00.000Z',
@@ -107,8 +113,8 @@ describe('siteSignups', () => {
     const csv = signupsToCsv(rows.slice(0, 1));
     expect(csv).toBe(
       [
-        'email,list,source,page,created_at',
-        'ada@house.com,Book waitlist,book_page,/book,2026-08-14T12:00:00.000Z',
+        'email,first_name,last_name,list,source,page,created_at',
+        'ada@house.com,Ada,House,Book waitlist,book_page,/book,2026-08-14T12:00:00.000Z',
       ].join('\n'),
     );
   });
@@ -121,6 +127,8 @@ describe('siteSignups', () => {
               {
                 id: '1',
                 email: 'Ada@House.com',
+                first_name: 'Ada',
+                last_name: 'House',
                 source: 'book_page',
                 created_at: '2026-08-14T12:00:00.000Z',
               },
@@ -156,6 +164,8 @@ describe('siteSignups', () => {
         {
           id: 'book_release:1',
           email: 'ada@house.com',
+          firstName: 'Ada',
+          lastName: 'House',
           source: 'book_page',
           list: 'book_release',
           createdAt: '2026-08-14T12:00:00.000Z',
@@ -163,6 +173,8 @@ describe('siteSignups', () => {
         {
           id: 'advance_listen:3',
           email: 'new@house.com',
+          firstName: null,
+          lastName: null,
           source: 'advance_listen',
           list: 'advance_listen',
           createdAt: '2026-08-12T12:00:00.000Z',
@@ -296,6 +308,8 @@ describe('siteSignups', () => {
         {
           id: 'book_release:keep',
           email: 'ada@house.com',
+          firstName: null,
+          lastName: null,
           source: 'book_page',
           list: 'book_release',
           createdAt: '2026-08-14T12:00:00.000Z',
@@ -310,6 +324,8 @@ describe('siteSignups', () => {
         {
           id: 'advance_listen:table',
           email: 'ada@house.com',
+          firstName: null,
+          lastName: null,
           source: 'advance_listen',
           list: 'advance_listen',
           createdAt: '2026-08-14T12:00:00.000Z',
@@ -317,6 +333,8 @@ describe('siteSignups', () => {
         {
           id: 'advance_listen:profile',
           email: 'ada@house.com',
+          firstName: null,
+          lastName: null,
           source: 'advance_listen',
           list: 'advance_listen',
           createdAt: '2026-08-01T12:00:00.000Z',
@@ -326,6 +344,8 @@ describe('siteSignups', () => {
       {
         id: 'advance_listen:profile',
         email: 'ada@house.com',
+        firstName: null,
+        lastName: null,
         source: 'advance_listen',
         list: 'advance_listen',
         createdAt: '2026-08-01T12:00:00.000Z',
