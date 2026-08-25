@@ -6,7 +6,10 @@ function parseBooleanFlag(value: string | null | undefined): boolean | null {
   return null;
 }
 
-/** Optional Formless book aside on home hero. `?heroBookAside=1` or `VITE_HERO_BOOK_ASIDE=true`. Default: off. */
+/**
+ * Formless jacket + preorder column on home hero.
+ * Default: on. Opt out with `?heroBookAside=0` or `VITE_HERO_BOOK_ASIDE=false`.
+ */
 export function resolveHeroBookAsideEnabled(search?: string): boolean {
   if (typeof window !== 'undefined' || search !== undefined) {
     const params = new URLSearchParams(search ?? window.location.search);
@@ -18,7 +21,7 @@ export function resolveHeroBookAsideEnabled(search?: string): boolean {
   if (fromEnv === 'true' || fromEnv === '1') return true;
   if (fromEnv === 'false' || fromEnv === '0') return false;
 
-  return false;
+  return true;
 }
 
 export function heroBookAsideQueryHref(enabled: boolean): string {

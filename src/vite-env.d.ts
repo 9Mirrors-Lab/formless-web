@@ -8,7 +8,7 @@ interface ImportMetaEnv {
   readonly VITE_PUBLIC_POSTHOG_KEY?: string;
   readonly VITE_PUBLIC_POSTHOG_HOST?: string;
   readonly VITE_PUBLIC_POSTHOG_DISABLED?: string;
-  /** When `true` or `1`, show Formless book aside on home hero. Overridden by `?heroBookAside=`. */
+  /** Formless jacket preorder column on home hero. Default on; `false`/`0` hides it. Overridden by `?heroBookAside=`. */
   readonly VITE_HERO_BOOK_ASIDE?: string;
   /**
    * When `true` or `1`, show the book cover block on `/audio/editorial2`.

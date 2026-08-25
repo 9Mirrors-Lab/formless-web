@@ -63,12 +63,12 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
   // Hero & home
   {
     id: 'hero-book-aside',
-    title: 'Home with Formless panel',
-    href: '/?heroBookAside=1',
+    title: 'Home with Formless jacket',
+    href: '/',
     section: 'hero-home',
-    status: 'experiment',
+    status: 'live',
     description:
-      'Two-column hero with Formless title, release date, page-12 quote, and waitlist CTA on the right.',
+      'Two-column hero: invitation copy left; ebook cover, preorder line, and Amazon CTA on the right. Hide with ?heroBookAside=0.',
     source: 'src/components/LayoutTestHeroSection.tsx',
   },
   {

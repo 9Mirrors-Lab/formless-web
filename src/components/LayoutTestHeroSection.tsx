@@ -1,6 +1,9 @@
 import { useContent } from '@/context/ContentContext';
 import { useSiteAccess } from '@/context/SiteAccessContext';
 import { resolveHeroBookAsideEnabled } from '@/config/featureFlags';
+import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
+import { PREORDER_FACTS, kindlePreorderHref } from '@/data/preorderLanding';
+import { captureCtaClick } from '@/lib/analytics';
 import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
 
 function HeroReflectionCta() {
@@ -40,41 +43,46 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
+/** Jacket lockup: cover beside Amazon preorder stack (matches cream lockup example). */
 function HeroBookAside() {
+  const href = kindlePreorderHref();
+  const trackLocation = 'home_hero_book_aside';
+  const factsLine = `Amazon · ${PREORDER_FACTS.price} · ${PREORDER_FACTS.delivers}`;
+
   return (
-    <aside className="min-w-0 border-t border-cream/12 pt-7 lg:self-center lg:border-l lg:border-t-0 lg:pl-7">
-      <p className="font-serif text-3xl uppercase tracking-[0.12em] text-cream md:text-4xl">
-        Formless
-      </p>
-      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.22em] text-cream/45">
-        Coming September 1, 2026
-      </p>
-      <p className="mt-2 text-sm leading-relaxed text-cream/50 lg:text-[0.9375rem] lg:whitespace-nowrap">
-        An invitation to discover who you are beyond thought
-      </p>
+    <aside className="border-t border-cream/12 pt-8 lg:self-center lg:border-l lg:border-t-0 lg:pl-10 xl:pl-12">
+      <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-7">
+        <img
+          src={FORMLESS_BOOK_COVER.src}
+          alt={FORMLESS_BOOK_COVER.alt}
+          width={FORMLESS_BOOK_COVER.width}
+          height={FORMLESS_BOOK_COVER.height}
+          decoding="async"
+          className="aspect-[5/8] h-auto w-[12.5rem] shrink-0 object-contain shadow-[0_22px_48px_rgba(0,0,0,0.45)] sm:w-[13.5rem] xl:w-[14.5rem]"
+        />
 
-      <div className="mt-6 border-y border-cream/10 py-6">
-        <blockquote
-          cite="/book"
-          className="border-l-2 border-clay/35 pl-5 font-serif text-lg italic leading-relaxed text-cream/72 md:text-xl"
-        >
-          <p>
-            Everything in me stopped. For the first time, I sensed that the voice in my head was not
-            me.
+        <div className="min-w-0 max-w-[17rem]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cream/55">
+            Now on Amazon
           </p>
-        </blockquote>
-        <p className="mt-5 pl-5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/40">
-          — Page 12
-        </p>
-      </div>
-
-      <div className="mt-6">
-        <a
-          href="/book"
-          className="inline-flex rounded-full bg-clay px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-transform hover:scale-105"
-        >
-          Join the Waitlist
-        </a>
+          <p className="mt-3 font-serif text-[1.45rem] italic leading-[1.2] text-cream md:text-[1.65rem]">
+            eBook is available to
+            <br />
+            pre-order now!
+          </p>
+          <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-clay">
+            {factsLine}
+          </p>
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => captureCtaClick('Pre-order on Amazon', href, trackLocation)}
+            className="mt-6 inline-flex rounded-full bg-clay px-5 py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-cream transition-transform hover:scale-105"
+          >
+            Pre-order on Amazon
+          </a>
+        </div>
       </div>
     </aside>
   );
@@ -85,7 +93,7 @@ type LayoutTestHeroSectionProps = {
   showBookAside?: boolean;
 };
 
-/** Home hero lockup; Formless aside is optional via feature flag. */
+/** Home hero lockup with Formless jacket preorder column (default on). */
 export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionProps) {
   const { restricted } = useSiteAccess();
   const { getImage, getText } = useContent();
@@ -96,6 +104,34 @@ export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionPr
     const raw = getText('home', 'hero', key);
     return restricted ? stripAnchorsFromCopy(raw) : raw;
   };
+
+  const headline = (
+    <h1
+      className={
+        bookAsideEnabled
+          ? 'font-serif text-[clamp(2.35rem,4.2vw,4.25rem)] italic leading-[1.08] tracking-normal text-cream'
+          : 'font-serif text-[clamp(2.75rem,5.8vw,6.5rem)] italic leading-[1.05] tracking-normal text-cream'
+      }
+    >
+      <span className={bookAsideEnabled ? 'block' : 'block sm:whitespace-nowrap'}>
+        {cx('headline_primary')}
+      </span>
+      <span className={bookAsideEnabled ? 'block' : 'block sm:whitespace-nowrap'}>
+        {cx('headline_secondary')}
+      </span>
+    </h1>
+  );
+
+  const copyStack = (
+    <>
+      <SectionLabel>{cx('eyebrow')}</SectionLabel>
+      {headline}
+      <p className="mt-8 max-w-xl whitespace-pre-line text-lg leading-relaxed text-cream/66 md:mt-10 md:text-xl">
+        {cx('lede')}
+      </p>
+      <HeroReflectionCta />
+    </>
+  );
 
   return (
     <section className="home-hero relative min-h-[100dvh] overflow-hidden px-6 pb-20 pt-36 md:px-16 lg:px-24">
@@ -118,28 +154,16 @@ export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionPr
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl pt-12 md:pt-24">
-        <SectionLabel>{cx('eyebrow')}</SectionLabel>
-        <h1 className="font-serif text-[clamp(2.75rem,5.8vw,6.5rem)] italic leading-[1.05] tracking-normal text-cream">
-          <span className="block sm:whitespace-nowrap">{cx('headline_primary')}</span>
-          <span className="block sm:whitespace-nowrap">{cx('headline_secondary')}</span>
-        </h1>
-
-        <div
-          className={
-            bookAsideEnabled
-              ? 'mt-12 grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(26rem,1.15fr)] lg:items-start'
-              : 'mt-12'
-          }
-        >
-          <div className="max-w-2xl">
-            <p className="whitespace-pre-line text-lg leading-relaxed text-cream/66 md:text-xl">
-              {cx('lede')}
-            </p>
-            <HeroReflectionCta />
+        {bookAsideEnabled ? (
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(26rem,32rem)] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(28rem,34rem)] xl:gap-14">
+            <div className="min-w-0">{copyStack}</div>
+            <HeroBookAside />
           </div>
-
-          {bookAsideEnabled ? <HeroBookAside /> : null}
-        </div>
+        ) : (
+          <div>
+            {copyStack}
+          </div>
+        )}
       </div>
     </section>
   );
