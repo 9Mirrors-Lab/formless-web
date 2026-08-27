@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { BrandAmazonPreorders } from "@/components/BrandAmazonPreorders";
+import { BrandAmazonRankings } from "@/components/BrandAmazonRankings";
 import { BrandAudienceCharts } from "@/components/BrandAudienceCharts";
 import { BrandShell } from "@/components/app-sidebar";
 import { LaunchCountdownLink } from "@/components/LaunchCountdownLink";
@@ -98,29 +100,40 @@ export default function BrandPage() {
           <LaunchCountdownLink />
         </div>
 
-        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-6 md:px-12 md:pb-14 md:pt-7 lg:max-w-[48rem] lg:px-14">
+        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-6 md:px-12 md:pb-14 md:pt-7 lg:max-w-[72rem] lg:px-14">
           <h1 className="sr-only">Brand Toolkit</h1>
 
-          <div className="max-w-[34rem]">
-            <a
-              href={audience.href}
-              className="group block rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]"
-            >
-              <p className="font-serif text-[1.85rem] font-light italic leading-[1.08] tracking-[-0.02em] text-cream transition-colors group-hover:text-cream/90 sm:text-[2.15rem] md:text-[2.45rem]">
-                {audience.headline}
-              </p>
-              {audience.detail ? (
-                <p className="mt-3 max-w-[42ch] text-[0.8125rem] leading-relaxed text-cream/55 md:text-sm">
-                  {audience.detail}
-                </p>
-              ) : null}
-            </a>
+          <div className="flex flex-col gap-10 lg:gap-12">
+            <div className="grid gap-6 md:grid-cols-2 md:items-start md:gap-12 lg:gap-16">
+              <div className="max-w-[34rem]">
+                <BrandAmazonPreorders />
+              </div>
+              <div className="max-w-[34rem]">
+                <BrandAmazonRankings />
+              </div>
+            </div>
 
-            <BrandAudienceCharts
-              state={signupState}
-              rows={signupRows}
-              summary={signupSummary}
-            />
+            <div className="max-w-[34rem]">
+              <a
+                href={audience.href}
+                className="group block rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]"
+              >
+                <p className="font-serif text-[1.85rem] font-light italic leading-[1.08] tracking-[-0.02em] text-cream transition-colors group-hover:text-cream/90 sm:text-[2.15rem] md:text-[2.45rem]">
+                  {audience.headline}
+                </p>
+                {audience.detail ? (
+                  <p className="mt-3 max-w-[42ch] text-[0.8125rem] leading-relaxed text-cream/55 md:text-sm">
+                    {audience.detail}
+                  </p>
+                ) : null}
+              </a>
+
+              <BrandAudienceCharts
+                state={signupState}
+                rows={signupRows}
+                summary={signupSummary}
+              />
+            </div>
           </div>
 
           <ul className="mt-14 max-w-[42rem] divide-y divide-cream/10 border-t border-cream/12">
