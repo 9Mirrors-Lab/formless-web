@@ -74,9 +74,11 @@ describe('brandMaterials', () => {
       'waitlist-letter',
       'stay-close-letter',
       'audible-illuminated-manuscript',
+      'design-system-lockups',
     ]);
     expect(designsByKind('zoho-email')).toHaveLength(3);
     expect(designsByKind('page')).toHaveLength(1);
+    expect(designsByKind('kit')).toHaveLength(1);
   });
 
   it('lists the coded waitlist and Kindle preorder letters', () => {
@@ -153,8 +155,22 @@ describe('brandMaterials', () => {
     expect(draftDesigns().every((design) => design.status === 'draft')).toBe(true);
     expect(activeDesigns()).toHaveLength(2);
     expect(activeDesigns()[0]?.id).toBe('kindle-preorder');
-    expect(draftDesigns()).toHaveLength(3);
-    expect(draftDesigns().at(-1)?.id).toBe('audible-illuminated-manuscript');
+    expect(draftDesigns()).toHaveLength(4);
+    expect(draftDesigns().at(-1)?.id).toBe('design-system-lockups');
+  });
+
+  it('keeps design system lockups in the exploration row', () => {
+    const design = designById('design-system-lockups');
+    expect(design).toBeDefined();
+    expect(design?.kind).toBe('kit');
+    expect(designVersionRows(design!).map((row) => row.label)).toEqual([
+      'Design system exploration',
+    ]);
+    expect(design?.versions.map((version) => version.id)).toEqual([
+      'energy-evolution',
+      'energy-evolution-flow',
+      'beyond-boundaries',
+    ]);
   });
 
   it('labels status, kind, and version roles in studio language', () => {

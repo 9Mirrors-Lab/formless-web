@@ -257,7 +257,7 @@ export const SCHEDULE_WORK: readonly ScheduleWork[] = [
   {
     id: "linkedin-story",
     title: "Why-I-wrote post",
-    when: "Aug 25–27",
+    when: "Tue Aug 25",
     phase: "quiet",
     window: "now",
     work: "One LinkedIn post: why the book exists, who it is for. No purchase link in the body. Story first.",
@@ -447,7 +447,7 @@ export const SCHEDULE_CHANNELS: readonly ScheduleChannel[] = [
     id: "linkedin",
     title: "LinkedIn",
     job: "Public story",
-    before: "One why-I-wrote post",
+    before: "Tue Aug 25 why-I-wrote post",
     day: "One it-is-here post",
     after: "Lessons, not recaps",
   },

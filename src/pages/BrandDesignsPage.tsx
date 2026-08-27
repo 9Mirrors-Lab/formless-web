@@ -312,7 +312,9 @@ function PreviewThumb({
       className={
         compact && version.wide
           ? 'aspect-[3/2] w-full object-contain object-center'
-          : 'aspect-[4/5] w-full object-cover object-top'
+          : version.wide
+            ? 'aspect-[16/10] w-full object-contain object-center'
+            : 'aspect-[4/5] w-full object-cover object-top'
       }
     />
   );

@@ -92,6 +92,10 @@ describe("launchCommsSchedule", () => {
     expect(workTouchesChannel(findScheduleWork("launch-email")!, "email")).toBe(
       true,
     );
+    expect(findScheduleWork("linkedin-story")?.when).toBe("Tue Aug 25");
+    expect(
+      workInChannelCell(SCHEDULE_WORK, "linkedin", "quiet").map((item) => item.id),
+    ).toEqual(["linkedin-story"]);
   });
 
   it("filters by person and window without dropping the rest of the runway data", () => {
