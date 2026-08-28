@@ -178,6 +178,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/AudioRecordSessionsPage.tsx',
   },
   {
+    id: 'audio-re-records',
+    title: 'Re-records',
+    href: '/audio/re-records',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Client review of updated chapter masters 4-9. Published optimized masters via Google Drive.',
+    source: 'src/pages/AudioReRecordsPage.tsx',
+  },
+  {
     id: 'audio-editorial-2',
     title: 'Audiobook review · Studio ladder',
     href: '/audio/editorial2',

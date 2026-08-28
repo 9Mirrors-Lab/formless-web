@@ -122,9 +122,28 @@ export async function extractAudioPeaks(
 }
 
 const OVERVIEW_BARS = 320;
-const SPARSE_CHUNK_BYTES = 24 * 1024;
-const SPARSE_CONCURRENCY = 6;
+/** Larger aligned chunks decode reliably; 24 KB slices rarely produce MP3 peaks. */
+const SPARSE_CHUNK_BYTES = 128 * 1024;
+const SPARSE_SAMPLE_COUNT = 48;
+const SPARSE_CONCURRENCY = 8;
 const FIRST_CHUNK_CLOSE_ENOUGH = 0.7;
+
+export function interpolatePeaks(samples: number[], barCount: number): number[] {
+  if (barCount <= 0 || samples.length === 0) return [];
+  if (samples.length === 1) return Array.from({ length: barCount }, () => samples[0] ?? 0);
+
+  const out: number[] = [];
+  for (let index = 0; index < barCount; index += 1) {
+    const position = (index / Math.max(1, barCount - 1)) * (samples.length - 1);
+    const left = Math.floor(position);
+    const right = Math.min(samples.length - 1, left + 1);
+    const blend = position - left;
+    const start = samples[left] ?? 0;
+    const end = samples[right] ?? 0;
+    out.push(start + (end - start) * blend);
+  }
+  return out;
+}
 
 /**
  * Overview bars for the Drive listen well. Uses the first decode when it covers
@@ -175,14 +194,15 @@ export async function extractOverviewPeaks(
       return firstPeaks.length > 0 ? downsamplePeaks(firstPeaks, barCount) : [];
     }
 
-    const peaks = new Array<number>(barCount).fill(0);
+    const sampleCount = Math.min(SPARSE_SAMPLE_COUNT, barCount);
+    const samples = new Array<number>(sampleCount).fill(0);
     let cursor = 0;
-    while (cursor < barCount) {
+    while (cursor < sampleCount) {
       signal?.throwIfAborted();
-      const batchEnd = Math.min(barCount, cursor + SPARSE_CONCURRENCY);
+      const batchEnd = Math.min(sampleCount, cursor + SPARSE_CONCURRENCY);
       const jobs: Array<Promise<void>> = [];
       for (let index = cursor; index < batchEnd; index += 1) {
-        const start = Math.floor((index / barCount) * fileSize);
+        const start = Math.floor((index / sampleCount) * fileSize);
         const end = Math.min(fileSize - 1, start + SPARSE_CHUNK_BYTES - 1);
         jobs.push(
           fetch(url, {
@@ -194,10 +214,10 @@ export async function extractOverviewPeaks(
             .then(async (response) => {
               if (!response.ok && response.status !== 206) return;
               const buffer = await response.arrayBuffer();
-              peaks[index] = await peakFromBuffer(context, buffer);
+              samples[index] = await peakFromBuffer(context, buffer);
             })
             .catch(() => {
-              peaks[index] = 0;
+              samples[index] = 0;
             }),
         );
       }
@@ -205,11 +225,11 @@ export async function extractOverviewPeaks(
       cursor = batchEnd;
     }
 
-    const filled = peaks.filter((value) => value > 0).length;
-    if (filled < Math.max(8, Math.floor(barCount * 0.08)) && firstPeaks.length > 0) {
+    const filled = samples.filter((value) => value > 0).length;
+    if (filled < Math.max(4, Math.floor(sampleCount * 0.12)) && firstPeaks.length > 0) {
       return downsamplePeaks(firstPeaks, barCount);
     }
-    return peaks;
+    return interpolatePeaks(samples, barCount);
   } finally {
     await context.close();
   }

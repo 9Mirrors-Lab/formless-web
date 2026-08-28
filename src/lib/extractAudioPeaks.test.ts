@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   downsamplePeaks,
   findMpegFrameOffset,
+  interpolatePeaks,
   parseContentRangeTotal,
   peaksFromChannel,
 } from '@/lib/extractAudioPeaks';
@@ -28,5 +29,10 @@ describe('waveform peak helpers', () => {
     expect(peaks).toHaveLength(2);
     expect(peaks[0]).toBeCloseTo(0.9);
     expect(peaks[1]).toBeCloseTo(0.3);
+  });
+
+  it('interpolates sparse samples across the full bar count', () => {
+    expect(interpolatePeaks([0, 1], 5)).toEqual([0, 0.25, 0.5, 0.75, 1]);
+    expect(interpolatePeaks([0.4], 3)).toEqual([0.4, 0.4, 0.4]);
   });
 });

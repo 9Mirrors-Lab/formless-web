@@ -7,17 +7,19 @@ import {
 } from '@/components/brandNavData';
 
 describe('Audible navigation', () => {
-  it('keeps Listen, Book vs audio, and Record Sessions in the sidebar', () => {
+  it('keeps Listen, Book vs audio, Record Sessions, and Re-records in the sidebar', () => {
     const audible = NAV_ROOMS.find((room) => room.id === 'audible');
     expect(audible?.items.map((item) => item.id)).toEqual([
       'audible',
       'script-compare',
       'record-sessions',
+      're-records',
     ]);
     expect(audible?.items.map((item) => item.title)).toEqual([
       'Listen',
       'Book vs audio',
       'Record Sessions',
+      'Re-records',
     ]);
   });
 
@@ -36,5 +38,6 @@ describe('Audible navigation', () => {
     expect(navHighlightId('audible-process')).toBe('script-compare');
     expect(navHighlightId('audible')).toBe('audible');
     expect(navHighlightId('record-sessions')).toBe('record-sessions');
+    expect(navHighlightId('re-records')).toBe('re-records');
   });
 });

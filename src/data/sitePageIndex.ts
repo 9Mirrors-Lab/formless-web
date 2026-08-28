@@ -411,6 +411,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/AudioRecordSessionsPage.tsx',
   },
   {
+    id: 'audio-re-records',
+    title: 'Re-records',
+    path: '/audio/re-records',
+    category: 'design',
+    description:
+      'Client review of updated chapter masters 4-9. Published optimized masters via Google Drive.',
+    source: 'src/pages/AudioReRecordsPage.tsx',
+  },
+  {
     id: 'audio-script-compare',
     title: 'Book vs audio',
     path: '/audio/script-compare',

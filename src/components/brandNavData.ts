@@ -8,6 +8,7 @@ export type BrandNavId =
   | "audible"
   | "audible-process"
   | "record-sessions"
+  | "re-records"
   | "record-list"
   | "script-compare"
   | "audible-studio"
@@ -86,6 +87,12 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         title: "Record Sessions",
         href: "/audio/record-sessions",
         description: "Scripts for re-records",
+      },
+      {
+        id: "re-records",
+        title: "Re-records",
+        href: "/audio/re-records",
+        description: "Updated masters to review",
       },
     ],
   },
@@ -178,6 +185,12 @@ export function navIdFromPath(pathname: string): BrandNavId {
     return "record-sessions";
   }
   if (
+    pathname === "/audio/re-records" ||
+    pathname.startsWith("/audio/re-records")
+  ) {
+    return "re-records";
+  }
+  if (
     pathname === "/audio/record-list" ||
     pathname.startsWith("/audio/record-list")
   ) {
@@ -256,6 +269,7 @@ export function brandNavPlace(activeId: BrandNavId): {
     case "audible":
     case "audible-process":
     case "record-sessions":
+    case "re-records":
     case "record-list":
     case "script-compare":
     case "audible-studio":

@@ -73,12 +73,22 @@ export async function fetchGoogleDriveMedia(request: Request): Promise<Response>
   headers.set('Content-Type', 'audio/mpeg');
   headers.set('Accept-Ranges', 'bytes');
   headers.set('Cache-Control', 'public, max-age=3600');
-  const length = upstream.headers.get('content-length');
-  if (length) headers.set('Content-Length', length);
   const contentRange = upstream.headers.get('content-range');
   if (contentRange) headers.set('Content-Range', contentRange);
 
-  return new Response(method === 'HEAD' ? null : upstream.body, {
+  if (method === 'HEAD') {
+    const length = upstream.headers.get('content-length');
+    if (length) headers.set('Content-Length', length);
+    return new Response(null, { status: upstream.status, headers });
+  }
+
+  // Buffer capped range bodies so Content-Length always matches bytes sent.
+  // Streaming upstream.body through Node can trigger ERR_CONTENT_LENGTH_MISMATCH
+  // in the browser and breaks waveform peak extraction in dev.
+  const body = Buffer.from(await upstream.arrayBuffer());
+  headers.set('Content-Length', String(body.length));
+
+  return new Response(body, {
     status: upstream.status,
     headers,
   });

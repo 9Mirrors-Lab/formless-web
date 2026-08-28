@@ -51,6 +51,7 @@ import AudioEditorialPage from './pages/AudioEditorialPage';
 import AudioEditorial2Page from './pages/AudioEditorial2Page';
 import AudibleProcessPage from './pages/AudibleProcessPage';
 import AudioRecordSessionsPage from './pages/AudioRecordSessionsPage';
+import AudioReRecordsPage from './pages/AudioReRecordsPage';
 import AudioRecordListPage from './pages/AudioRecordListPage';
 import AudioScriptComparePage from './pages/AudioScriptComparePage';
 import AdvanceListenPage from './pages/AdvanceListenPage';
@@ -161,6 +162,7 @@ export function Root({ path }: { path: string }) {
   const isAudioEditorial2 = path === '/audio/editorial2';
   const isAudibleProcess = path === '/audio/process';
   const isAudioRecordSessions = path === '/audio/record-sessions';
+  const isAudioReRecords = path === '/audio/re-records';
   const isAudioRecordList = path === '/audio/record-list';
   const isAudioScriptCompare = path === '/audio/script-compare';
   const isAudioAdvanceListen = path === '/advance-listen';
@@ -223,6 +225,7 @@ export function Root({ path }: { path: string }) {
   if (isAudioEditorial2) return <AudioEditorial2Page />;
   if (isAudibleProcess) return <AudibleProcessPage />;
   if (isAudioRecordSessions) return <AudioRecordSessionsPage />;
+  if (isAudioReRecords) return <AudioReRecordsPage />;
   if (isAudioRecordList) return <AudioRecordListPage />;
   if (isAudioScriptCompare) return <AudioScriptComparePage />;
   if (isAudioAdvanceListen) return <AdvanceListenPage />;
@@ -276,6 +279,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/audio/editorial2' ||
     path === '/audio/process' ||
     path === '/audio/record-sessions' ||
+    path === '/audio/re-records' ||
     path === '/audio/record-list' ||
     path === '/audio/script-compare' ||
     path === '/advance-listen' ||

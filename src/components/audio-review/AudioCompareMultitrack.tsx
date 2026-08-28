@@ -574,23 +574,26 @@ export const AudioCompareMultitrack = forwardRef<
     setDrivePeaks([]);
     setDrivePeaksLoading(true);
 
-    void extractOverviewPeaks(waveformUrl, {
-      barCount: 320,
-      durationSeconds,
-      signal: controller.signal,
-    })
-      .then((peaks) => {
+    void (async () => {
+      try {
+        const peaks = await extractOverviewPeaks(waveformUrl, {
+          barCount: 320,
+          durationSeconds,
+          signal: controller.signal,
+        });
         if (controller.signal.aborted) return;
         setDrivePeaks(peaks);
-        setDrivePeaksLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         if (controller.signal.aborted) return;
         if (error instanceof DOMException && error.name === 'AbortError') return;
         console.error('drive waveform peaks failed', error);
         setDrivePeaks([]);
-        setDrivePeaksLoading(false);
-      });
+      } finally {
+        if (!controller.signal.aborted) {
+          setDrivePeaksLoading(false);
+        }
+      }
+    })();
 
     return () => controller.abort();
   }, [durationSeconds, isDriveMedia, waveformUrl]);
