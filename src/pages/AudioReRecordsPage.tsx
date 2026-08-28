@@ -87,13 +87,13 @@ export default function AudioReRecordsPage() {
                 Re-records
               </h1>
               <p className="mt-2 max-w-[36ch] font-sans text-sm leading-relaxed text-cream/55">
-                Jump the tags on the waveform to hear each punch. Chapters 4-9 only.
+                Click a tag on the timeline to hear each edit. Chapters 4-9 only.
               </p>
             </header>
 
             <div className="scrollbar-cream mt-5 min-h-0 flex-1 overflow-y-auto rounded-sm border border-cream/12 bg-cream/[0.03]">
               <p className="border-b border-cream/10 px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/45">
-                Chapter {formatChapterIndex(track.chapterId)} punches
+                Chapter {formatChapterIndex(track.chapterId)} tags
               </p>
               <ul className="divide-y divide-cream/10">
                 {track.cues.map((cue) => {

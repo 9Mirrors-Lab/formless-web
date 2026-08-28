@@ -12,9 +12,9 @@ export type ReRecordCue = {
   id: string;
   /** Seek point on the mastered track (seconds). */
   atSeconds: number;
-  /** Short label shown on the waveform tag. */
+  /** Short label shown on the timeline tag. */
   tag: string;
-  /** What changed at this punch. */
+  /** What changed at this tag. */
   note: string;
 };
 

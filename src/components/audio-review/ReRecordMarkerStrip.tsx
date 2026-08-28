@@ -24,7 +24,7 @@ function seekFromClientX(
 }
 
 /**
- * Full-track scrub line with listen tags at re-record punches.
+ * Full-track scrub line with listen tags at re-record edits.
  * Drag the playhead or click a tag to jump.
  */
 export function ReRecordMarkerStrip({
@@ -54,7 +54,7 @@ export function ReRecordMarkerStrip({
           Listen tags
         </p>
         <p className="font-mono text-[10px] tabular-nums text-cream/40">
-          {cues.length} punch{cues.length === 1 ? '' : 'es'}
+          {cues.length} tag{cues.length === 1 ? '' : 's'}
         </p>
       </div>
 

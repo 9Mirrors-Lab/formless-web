@@ -9,7 +9,7 @@ import {
 } from '@/data/audioReRecords';
 
 describe('audioReRecords', () => {
-  it('covers chapters 4-9 with punch tags', () => {
+  it('covers chapters 4-9 with listen tags', () => {
     expect(RE_RECORD_CHAPTER_IDS).toEqual([4, 5, 6, 7, 8, 9]);
     for (const track of RE_RECORD_TRACKS) {
       expect(track.cues.length).toBeGreaterThan(0);
