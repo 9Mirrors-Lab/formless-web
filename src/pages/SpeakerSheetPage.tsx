@@ -6,6 +6,12 @@ import {
   BrandPageBody,
   BrandPageHeader,
 } from "@/components/BrandPageHeader";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type SpeakerSheet = {
   id: string;
@@ -15,33 +21,64 @@ type SpeakerSheet = {
   pdfSrc?: string;
 };
 
-const ASSET_REV = "20260810-ceremonial-formless";
+const ASSET_REV = "20260829-canva-speaker-sheets";
+const CANVA_SPEAKER_SHEETS = "https://canva.link/speaker-sheets";
 
 const CURRENT_SHEETS: SpeakerSheet[] = [
+  {
+    id: "a-keynote-cover-pair",
+    letter: "A",
+    name: "Keynote cover pair",
+    imageSrc: `/design/speaker-notes/versions/d1-keynote-cover-pair.jpg?v=${ASSET_REV}`,
+  },
+  {
+    id: "b-contact-rail",
+    letter: "B",
+    name: "Contact rail",
+    imageSrc: `/design/speaker-notes/versions/d2-contact-rail.png?v=${ASSET_REV}`,
+  },
+  {
+    id: "c-profile-band",
+    letter: "C",
+    name: "Profile band",
+    imageSrc: `/design/speaker-notes/versions/d3-profile-band.jpg?v=${ASSET_REV}`,
+  },
+  {
+    id: "d-navy-keynote",
+    letter: "D",
+    name: "Navy keynote",
+    imageSrc: `/design/speaker-notes/versions/d4-navy-keynote.jpg?v=${ASSET_REV}`,
+  },
+  {
+    id: "e-signature-banner",
+    letter: "E",
+    name: "Signature banner",
+    imageSrc: `/design/speaker-notes/versions/d5-signature-banner.jpg?v=${ASSET_REV}`,
+  },
+];
+
+const PREVIOUS_SHEETS: SpeakerSheet[] = [
   {
     id: "a-ceremonial-center",
     letter: "A",
     name: "Ceremonial Center",
-    imageSrc: `/design/speaker-notes/versions/a-ceremonial-center.png?v=${ASSET_REV}`,
-    pdfSrc: `/design/speaker-notes/exports/layout-a-beyond-the-mind.pdf?v=${ASSET_REV}`,
+    imageSrc: "/design/speaker-notes/versions/a-ceremonial-center.png",
+    pdfSrc: "/design/speaker-notes/exports/layout-a-beyond-the-mind.pdf",
   },
   {
     id: "b-editorial-bands",
     letter: "B",
     name: "Editorial Bands",
-    imageSrc: `/design/speaker-notes/versions/b-editorial-bands.png?v=${ASSET_REV}`,
-    pdfSrc: `/design/speaker-notes/exports/layout-b-beyond-the-mind.pdf?v=${ASSET_REV}`,
+    imageSrc: "/design/speaker-notes/versions/b-editorial-bands.png",
+    pdfSrc: "/design/speaker-notes/exports/layout-b-beyond-the-mind.pdf",
   },
   {
     id: "c-contact-first",
     letter: "C",
     name: "Contact First",
-    imageSrc: `/design/speaker-notes/versions/c-contact-first.png?v=${ASSET_REV}`,
-    pdfSrc: `/design/speaker-notes/exports/layout-c-beyond-the-mind.pdf?v=${ASSET_REV}`,
+    imageSrc: "/design/speaker-notes/versions/c-contact-first.png",
+    pdfSrc: "/design/speaker-notes/exports/layout-c-beyond-the-mind.pdf",
   },
-];
-
-const PREVIOUS_SHEETS: SpeakerSheet[] = [
   {
     id: "foundation",
     letter: "B",
@@ -120,7 +157,7 @@ export default function SpeakerSheetPage() {
               className="max-h-[min(82dvh,920px)] w-auto rounded-lg border border-cream/10 object-contain shadow-2xl"
             />
             <figcaption className="text-center text-sm text-cream/65">
-              <span className="font-serif italic text-cream">
+              <span className="font-sans font-medium text-cream">
                 {lightbox.letter} — {lightbox.name}
               </span>
             </figcaption>
@@ -172,7 +209,7 @@ function SectionHeading({
 }) {
   return (
     <div className="flex items-center gap-4">
-      <span className="font-serif text-4xl italic leading-none text-clay/45 md:text-5xl">
+      <span className="font-sans text-4xl font-semibold leading-none tracking-[-0.03em] text-clay/45 md:text-5xl">
         {plate}
       </span>
       <div className="h-px flex-1 bg-cream/12" aria-hidden />
@@ -193,21 +230,33 @@ function SpeakerSheetSection({
 }) {
   return (
     <div className="flex flex-col gap-10">
-      <BrandPageHeader title="Speaker sheet" />
+      <BrandPageHeader
+        tone="desk"
+        title="Speaker sheet"
+        description="Current Canva speaker sheets for booking and venues. Open a layout to preview, or jump into Canva to edit."
+        actions={
+          <a
+            href={CANVA_SPEAKER_SHEETS}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-9 items-center border border-clay/40 bg-clay/10 px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-cream transition-colors hover:border-clay/60 hover:bg-clay/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
+          >
+            Open in Canva
+          </a>
+        }
+      />
 
       <p className="max-w-xl font-sans text-sm leading-relaxed text-cream/55">
-        The 01 designs are available in Canva:{" "}
+        Source files live in Canva:{" "}
         <a
-          href="https://canva.link/speaker-sheets"
+          href={CANVA_SPEAKER_SHEETS}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="text-cream/80 underline decoration-cream/25 underline-offset-4 transition-colors hover:text-cream hover:decoration-cream/60"
         >
-          https://canva.link/speaker-sheets
+          {CANVA_SPEAKER_SHEETS}
         </a>
         .
-        <br />
-        Earlier designs sit below as reference.
       </p>
 
       <div className="flex flex-col gap-14">
@@ -225,14 +274,23 @@ function SpeakerSheetSection({
 
         <section
           aria-labelledby="previous-sheets-heading"
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-4"
         >
           <SectionHeading
             plate="02"
             title="Previous"
             headingId="previous-sheets-heading"
           />
-          <SheetGrid sheets={PREVIOUS_SHEETS} onOpen={onOpen} columns={4} />
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="previous-sheets" className="border-cream/12">
+              <AccordionTrigger className="py-3 font-sans text-sm font-medium text-cream/70 hover:no-underline hover:text-cream [&>svg]:text-cream/45">
+                Earlier speaker sheet layouts ({PREVIOUS_SHEETS.length})
+              </AccordionTrigger>
+              <AccordionContent className="pb-4 pt-2">
+                <SheetGrid sheets={PREVIOUS_SHEETS} onOpen={onOpen} columns={4} />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </section>
       </div>
     </div>
@@ -294,7 +352,11 @@ function SheetCard({
           </h3>
         </div>
         <div className="flex shrink-0 items-center">
-          <DownloadLink href={sheet.imageSrc} label="PNG" name={sheet.name} />
+          <DownloadLink
+            href={sheet.imageSrc}
+            label={sheet.imageSrc.includes(".png") ? "PNG" : "JPG"}
+            name={sheet.name}
+          />
           {sheet.pdfSrc ? (
             <DownloadLink href={sheet.pdfSrc} label="PDF" name={sheet.name} />
           ) : null}

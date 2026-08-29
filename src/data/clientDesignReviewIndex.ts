@@ -357,7 +357,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'brand-identity',
     status: 'live',
     description:
-      'Ledger of shipped pages and final files, plus Canva template ideas for social and banners.',
+      'Ledger of active and in-work designs, final files, plus Canva template ideas for social and banners.',
     source: 'src/pages/BrandDesignsPage.tsx, src/data/canvaTemplateIdeas.ts',
   },
   {
@@ -386,7 +386,7 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     href: '/speaker-sheet',
     section: 'brand-identity',
     status: 'experiment',
-    description: 'Speaker one-sheet concepts A/B/C with full-size preview.',
+    description: 'Current Canva speaker sheets with earlier layouts collapsed under Previous.',
     source: 'src/pages/SpeakerSheetPage.tsx',
   },
   {

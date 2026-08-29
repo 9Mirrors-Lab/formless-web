@@ -1,12 +1,13 @@
 import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
 
 /**
- * Canonical ledger of shipped designs, Zoho templates, and final files.
+ * Canonical ledger of active and in-work designs, Zoho templates, and final files.
  * Agents: read this file before hunting Drive, chat, or public/.
- * Studio page: /brand/designs
+ * Studio page: /brand/designs (Active | In work | Template ideas)
  *
  * One row is one job. Explorations, system boards, and intended mocks
  * sit as versions on that row. Do not flatten them into sibling designs.
+ * Active = current live or studio work. In work = drafts not treated as active.
  */
 
 export type MaterialStatus = 'active' | 'archived' | 'draft';
@@ -302,7 +303,7 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
       },
     ],
     source: 'public/emails/formless-waitlist-preview.html',
-    notes: 'This row is the coded waitlist send.',
+    notes: 'In work. Not on the Active Designs tab.',
   },
   {
     id: 'stay-close-letter',
@@ -373,12 +374,12 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
       },
     ],
     source: 'Zoho email template',
-    notes: 'One Stay Close shelf. Do not split these onto Special preview.',
+    notes: 'In work. One Stay Close shelf. Do not split these onto Special preview.',
   },
   {
     id: 'audible-illuminated-manuscript',
     title: 'Audible Master · Illuminated Manuscript',
-    status: 'draft',
+    status: 'active',
     kind: 'page',
     campaign: 'Audible Master',
     audience: 'Author + producer',
@@ -410,7 +411,7 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
       },
     ],
     source: 'Parallel design exploration · The Illuminated Manuscript',
-    notes: 'Blind exploration. Keep the light and dark treatments together as one design job.',
+    notes: 'Active Audible Master job. Keep the light and dark treatments together as one design job.',
   },
 ];
 

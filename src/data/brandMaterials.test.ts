@@ -45,6 +45,7 @@ describe('brandMaterials', () => {
     expect(design).toBeDefined();
     expect(design?.kind).toBe('zoho-email');
     expect(design?.campaign).toBe('Stay Close');
+    expect(design?.audience).toBe('Teaching list');
     expect(designCurrentVersion(design!).id).toBe('template');
     expect(design?.usedFor).toBeUndefined();
     expect(design?.versions.map((version) => version.filename)).toEqual([
@@ -149,13 +150,18 @@ describe('brandMaterials', () => {
     expect(covers?.variants[1]?.canonicalPath).toBe('/book-covers/formless-print.jpg');
   });
 
-  it('splits live from in-work', () => {
+  it('splits active from in-work', () => {
     expect(activeDesigns().every((design) => design.status === 'active')).toBe(true);
     expect(draftDesigns().every((design) => design.status === 'draft')).toBe(true);
-    expect(activeDesigns()).toHaveLength(2);
-    expect(activeDesigns()[0]?.id).toBe('kindle-preorder');
-    expect(draftDesigns()).toHaveLength(3);
-    expect(draftDesigns().at(-1)?.id).toBe('audible-illuminated-manuscript');
+    expect(activeDesigns().map((design) => design.id)).toEqual([
+      'kindle-preorder',
+      'special-preview',
+      'audible-illuminated-manuscript',
+    ]);
+    expect(draftDesigns().map((design) => design.id)).toEqual([
+      'waitlist-letter',
+      'stay-close-letter',
+    ]);
   });
 
   it('labels status, kind, and version roles in studio language', () => {

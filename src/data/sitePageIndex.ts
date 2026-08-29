@@ -249,7 +249,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/brand/designs',
     category: 'design',
     description:
-      'Ledger of shipped designs and final files, plus a Canva template ideas library.',
+      'Ledger of active and in-work designs, final files, and a Canva template ideas library.',
     source:
       'src/pages/BrandDesignsPage.tsx, src/data/brandMaterials.ts, src/data/canvaTemplateIdeas.ts',
   },
@@ -258,7 +258,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     title: 'Speaker sheet',
     path: '/speaker-sheet',
     category: 'design',
-    description: 'Speaker one-sheet layout concepts A/B/C for venue and booking use.',
+    description: 'Current Canva speaker sheets plus earlier layouts in a collapsed Previous accordion.',
     source: 'src/pages/SpeakerSheetPage.tsx',
   },
   {

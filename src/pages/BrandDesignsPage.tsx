@@ -7,14 +7,14 @@ import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
 import {
   BRAND_ASSET_FAMILIES,
   DESIGN_KINDS_IN_USE,
+  activeDesigns,
   designChipFacetLabel,
   designChips,
   designCurrentVersion,
-  designKindCounts,
   designKindLabel,
   designVersionRoleLabel,
   designVersionRows,
-  designsByKind,
+  draftDesigns,
   formatShortDate,
   liveWindowLabel,
   materialStatusLabel,
@@ -34,7 +34,7 @@ import {
   type Formless3dMockup,
 } from '@/data/canvaTemplateIdeas';
 
-type DesignsView = 'shipped' | 'template-ideas';
+type DesignsView = 'active' | 'in-work' | 'template-ideas';
 type KindFilter = DesignKind | 'all';
 
 type OpenPreview = {
@@ -126,7 +126,8 @@ function DesignsViewTabs({
   onChange: (next: DesignsView) => void;
 }) {
   const options: Array<{ id: DesignsView; label: string }> = [
-    { id: 'shipped', label: 'Shipped' },
+    { id: 'active', label: 'Active' },
+    { id: 'in-work', label: 'In work' },
     { id: 'template-ideas', label: 'Template ideas' },
   ];
 
@@ -170,7 +171,7 @@ function KindFilter({
       id: kind,
       label: designKindLabel(kind),
       count: counts[kind],
-    })),
+    })).filter((option) => option.count > 0),
   ];
 
   return (
@@ -762,18 +763,32 @@ function DesignShelf({
 }
 
 export default function BrandDesignsPage() {
-  const [view, setView] = useState<DesignsView>('shipped');
+  const [view, setView] = useState<DesignsView>('active');
   const [kindFilter, setKindFilter] = useState<KindFilter>('all');
   const [lightbox, setLightbox] = useState<{ items: OpenPreview[]; index: number } | null>(null);
-  const visible = designsByKind(kindFilter);
-  const live = visible.filter((design) => design.status === 'active');
-  const inWork = visible.filter((design) => design.status === 'draft');
-  const counts = designKindCounts();
   const showingTemplates = view === 'template-ideas';
+  const showingInWork = view === 'in-work';
+  const statusPool = showingInWork ? draftDesigns() : activeDesigns();
+  const shelfDesigns =
+    kindFilter === 'all'
+      ? statusPool
+      : statusPool.filter((design) => design.kind === kindFilter);
+  const counts = {
+    all: statusPool.length,
+    microsite: statusPool.filter((design) => design.kind === 'microsite').length,
+    page: statusPool.filter((design) => design.kind === 'page').length,
+    'zoho-email': statusPool.filter((design) => design.kind === 'zoho-email').length,
+    kit: statusPool.filter((design) => design.kind === 'kit').length,
+  };
 
   const openLightbox: OpenLightbox = (items, index) => {
     if (items.length === 0) return;
     setLightbox({ items, index: Math.min(Math.max(index, 0), items.length - 1) });
+  };
+
+  const changeView = (next: DesignsView) => {
+    setView(next);
+    setKindFilter('all');
   };
 
   return (
@@ -787,18 +802,22 @@ export default function BrandDesignsPage() {
               description={
                 showingTemplates
                   ? 'Canva library ideas for social, banners, and backgrounds. Copy into your account to edit.'
-                  : 'One card per job. Live, intended, system, and exploration sit on that card so versions do not scatter.'
+                  : showingInWork
+                    ? 'Drafts and boards still in progress. Waitlist and Stay Close live here until they are ready.'
+                    : 'Live and current studio work only. Kindle preorder, Special preview, and Audible Master.'
               }
               actions={
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream/45">
                   {showingTemplates
                     ? `${FORMLESS_3D_MOCKUPS.length} mockups · ${CANVA_TEMPLATE_IDEAS.length} templates`
-                    : `${live.length} live · ${inWork.length} in work`}
+                    : showingInWork
+                      ? `${draftDesigns().length} in work`
+                      : `${activeDesigns().length} active`}
                 </p>
               }
             />
 
-            <DesignsViewTabs value={view} onChange={setView} />
+            <DesignsViewTabs value={view} onChange={changeView} />
 
             {showingTemplates ? (
               <TemplateIdeasShelf onOpen={openLightbox} />
@@ -806,32 +825,37 @@ export default function BrandDesignsPage() {
               <>
                 <KindFilter value={kindFilter} onChange={setKindFilter} counts={counts} />
 
-                <DesignShelf heading="Live designs" designs={live} onOpen={openLightbox} />
-                <DesignShelf heading="In work" designs={inWork} onOpen={openLightbox} />
+                <DesignShelf
+                  heading={showingInWork ? 'In work' : 'Active designs'}
+                  designs={shelfDesigns}
+                  onOpen={openLightbox}
+                />
 
-                <section aria-labelledby="designs-files-heading" className="flex flex-col gap-5">
-                  <div className="flex items-center gap-4">
-                    <h2
-                      id="designs-files-heading"
-                      className="shrink-0 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-cream/55"
-                    >
-                      Final files
-                    </h2>
-                    <div className="h-px flex-1 bg-cream/12" aria-hidden />
-                  </div>
-                  {BRAND_ASSET_FAMILIES.map((family) => (
-                    <div key={family.id} className="flex flex-col gap-4">
-                      <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/50">
-                        {family.summary}
-                      </p>
-                      <div className="grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
-                        {family.variants.map((variant) => (
-                          <AssetCard key={variant.id} variant={variant} />
-                        ))}
-                      </div>
+                {showingInWork ? null : (
+                  <section aria-labelledby="designs-files-heading" className="flex flex-col gap-5">
+                    <div className="flex items-center gap-4">
+                      <h2
+                        id="designs-files-heading"
+                        className="shrink-0 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-cream/55"
+                      >
+                        Final files
+                      </h2>
+                      <div className="h-px flex-1 bg-cream/12" aria-hidden />
                     </div>
-                  ))}
-                </section>
+                    {BRAND_ASSET_FAMILIES.map((family) => (
+                      <div key={family.id} className="flex flex-col gap-4">
+                        <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/50">
+                          {family.summary}
+                        </p>
+                        <div className="grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+                          {family.variants.map((variant) => (
+                            <AssetCard key={variant.id} variant={variant} />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </section>
+                )}
               </>
             )}
           </div>
