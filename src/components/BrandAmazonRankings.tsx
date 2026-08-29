@@ -1,7 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
-  AMAZON_KINDLE_RANK,
   amazonBestMovement,
   amazonImprovedCategoryCount,
   amazonRankDeltasFromHistory,
@@ -9,6 +8,7 @@ import {
   formatAmazonRank,
   formatAmazonRankDelta,
   kindleListingHref,
+  type AmazonKindleRankSnapshot,
   type AmazonRankPoint,
 } from '@/data/amazonRankings';
 import {
@@ -17,6 +17,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import type { PulseLoad } from '@/lib/brandPulse';
+import { fetchKindleRanks } from '@/lib/kindleRanks';
 
 const UP = '#7dba8a';
 const CLAY = '#c4a574';
@@ -81,24 +83,19 @@ function RankRow({ row, delta, featured = false }: RankRowProps) {
   );
 }
 
-export function BrandAmazonRankings() {
-  const listingHref = kindleListingHref();
-  const rows = amazonRankDisplayRows();
-  const deltas = amazonRankDeltasFromHistory();
-  const improved = amazonImprovedCategoryCount();
-  const best = amazonBestMovement();
+function RankingsBody({ snapshot }: { snapshot: AmazonKindleRankSnapshot }) {
+  const rows = amazonRankDisplayRows(snapshot);
+  const deltas = amazonRankDeltasFromHistory(snapshot);
+  const improved = amazonImprovedCategoryCount(snapshot);
+  const best = amazonBestMovement(snapshot);
   const [store, ...categories] = rows;
-  const history = AMAZON_KINDLE_RANK.history;
   const historyRows = useMemo(
-    () => [...history].sort((a, b) => b.asOf.localeCompare(a.asOf)),
-    [history],
+    () => [...snapshot.history].sort((a, b) => b.asOf.localeCompare(a.asOf)),
+    [snapshot.history],
   );
 
   return (
-    <section
-      aria-labelledby="brand-amazon-rank-heading"
-      className="rounded-lg border border-[#c4a574]/22 bg-[#080a09]/62 px-4 py-4 shadow-[inset_0_1px_0_rgba(242,240,233,0.05)] backdrop-blur-[3px] sm:px-5 sm:py-5"
-    >
+    <>
       <header className="flex items-start justify-between gap-3">
         <div>
           <h2
@@ -119,7 +116,7 @@ export function BrandAmazonRankings() {
           </p>
         </div>
         <a
-          href={listingHref}
+          href={kindleListingHref()}
           target="_blank"
           rel="noopener noreferrer"
           className="shrink-0 rounded-sm opacity-65 transition-opacity hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fb5aa]"
@@ -173,7 +170,7 @@ export function BrandAmazonRankings() {
                 </thead>
                 <tbody>
                   {historyRows.map((entry) => {
-                    const isLatest = entry.asOf === AMAZON_KINDLE_RANK.asOf;
+                    const isLatest = entry.asOf === snapshot.asOf;
                     const tone = isLatest ? 'text-[#c4a574]' : 'text-cream/55';
                     return (
                       <tr
@@ -212,6 +209,82 @@ export function BrandAmazonRankings() {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+    </>
+  );
+}
+
+function RankingsStatus({
+  state,
+  error,
+}: {
+  state: PulseLoad;
+  error: string | null;
+}) {
+  const detail =
+    state === 'loading'
+      ? 'Loading ranks from Amazon history.'
+      : error ?? 'Could not load Kindle ranks.';
+
+  return (
+    <>
+      <header>
+        <h2
+          id="brand-amazon-rank-heading"
+          className="font-sans text-[15px] font-medium tracking-[-0.01em] text-cream"
+        >
+          Kindle Rankings
+        </h2>
+        <p className="mt-1 font-sans text-[11px] text-cream/48">{detail}</p>
+      </header>
+      <div className="mt-4 space-y-3" aria-hidden={state === 'loading'}>
+        <div className="h-14 rounded-sm bg-cream/5" />
+        <div className="h-8 rounded-sm bg-cream/5" />
+        <div className="h-8 rounded-sm bg-cream/5" />
+        <div className="h-8 rounded-sm bg-cream/5" />
+      </div>
+    </>
+  );
+}
+
+export function BrandAmazonRankings() {
+  const [state, setState] = useState<PulseLoad>('loading');
+  const [snapshot, setSnapshot] = useState<AmazonKindleRankSnapshot | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void (async () => {
+      const result = await fetchKindleRanks();
+      if (cancelled) return;
+
+      if (result.ok) {
+        setSnapshot(result.snapshot);
+        setError(null);
+        setState('ready');
+      } else {
+        setSnapshot(null);
+        setError(result.error);
+        setState('error');
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <section
+      aria-labelledby="brand-amazon-rank-heading"
+      aria-busy={state === 'loading'}
+      className="rounded-lg border border-[#c4a574]/22 bg-[#080a09]/62 px-4 py-4 shadow-[inset_0_1px_0_rgba(242,240,233,0.05)] backdrop-blur-[3px] sm:px-5 sm:py-5"
+    >
+      {state === 'ready' && snapshot ? (
+        <RankingsBody snapshot={snapshot} />
+      ) : (
+        <RankingsStatus state={state} error={error} />
+      )}
     </section>
   );
 }

@@ -33,26 +33,49 @@ export type AmazonKindleRankSnapshot = {
   history: AmazonRankHistoryEntry[];
 };
 
-/** Live Kindle listing ranks. Update when Amazon rank changes. */
-export const AMAZON_KINDLE_RANK: AmazonKindleRankSnapshot = {
-  storeRank: 51_869,
-  storeLabel: 'Kindle Store',
+/** Category copy shared by live Supabase rows and local fixtures. */
+export const AMAZON_KINDLE_RANK_LABELS = {
+  store: {
+    label: 'Kindle Store',
+    shortLabel: 'Kindle Store',
+  },
   personalTransformation: {
-    key: 'personalTransformation',
     label: 'Personal Transformation & Spirituality',
     shortLabel: 'Personal Transformation',
+  },
+  datingRelationships: {
+    label: 'Dating, Relationships & Spirituality',
+    shortLabel: 'Dating, Relationships',
+  },
+  spiritualHealing: {
+    label: 'Spiritual Healing',
+    shortLabel: 'Spiritual Healing',
+  },
+} as const;
+
+/**
+ * Local fixture for unit tests and offline fallback.
+ * Live Brand Studio data comes from `public.kindle_ranks` via `fetchKindleRanks`.
+ */
+export const AMAZON_KINDLE_RANK: AmazonKindleRankSnapshot = {
+  storeRank: 51_869,
+  storeLabel: AMAZON_KINDLE_RANK_LABELS.store.label,
+  personalTransformation: {
+    key: 'personalTransformation',
+    label: AMAZON_KINDLE_RANK_LABELS.personalTransformation.label,
+    shortLabel: AMAZON_KINDLE_RANK_LABELS.personalTransformation.shortLabel,
     rank: 23,
   },
   datingRelationships: {
     key: 'datingRelationships',
-    label: 'Dating, Relationships & Spirituality',
-    shortLabel: 'Dating, Relationships',
+    label: AMAZON_KINDLE_RANK_LABELS.datingRelationships.label,
+    shortLabel: AMAZON_KINDLE_RANK_LABELS.datingRelationships.shortLabel,
     rank: 37,
   },
   spiritualHealing: {
     key: 'spiritualHealing',
-    label: 'Spiritual Healing',
-    shortLabel: 'Spiritual Healing',
+    label: AMAZON_KINDLE_RANK_LABELS.spiritualHealing.label,
+    shortLabel: AMAZON_KINDLE_RANK_LABELS.spiritualHealing.shortLabel,
     rank: 40,
   },
   asOf: '2026-08-28',

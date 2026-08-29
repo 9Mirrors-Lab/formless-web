@@ -18,7 +18,7 @@ describe('amazonRankings', () => {
     expect(formatAmazonRank(23)).toBe('#23');
   });
 
-  it('keeps the live snapshot fields', () => {
+  it('keeps the offline fixture fields', () => {
     expect(AMAZON_KINDLE_RANK.storeRank).toBe(51_869);
     expect(AMAZON_KINDLE_RANK.personalTransformation.rank).toBe(23);
     expect(AMAZON_KINDLE_RANK.datingRelationships.rank).toBe(37);
