@@ -20,8 +20,9 @@ export type AmazonPreorderSnapshot = {
 
 /** Kindle pre-order units from KDP reports. Update when new orders arrive. */
 export const AMAZON_PREORDERS: AmazonPreorderSnapshot = {
-  asOf: '2026-08-27',
+  asOf: '2026-08-29',
   rows: [
+    { orderDate: '2026-08-29', marketplace: 'Amazon.com', preOrderUnits: 14 },
     { orderDate: '2026-08-27', marketplace: 'Amazon.com', preOrderUnits: 2 },
     { orderDate: '2026-08-27', marketplace: 'Amazon.ca', preOrderUnits: 1 },
     { orderDate: '2026-08-26', marketplace: 'Amazon.com', preOrderUnits: 6 },
