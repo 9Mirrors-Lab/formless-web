@@ -36,4 +36,11 @@ describe('BrandDesignsPage', () => {
     expect(html).toContain('/emails/formless-waitlist-preview.html');
     expect(html).toContain('/emails/formless-preorder.html');
   });
+
+  it('exposes a Template ideas tab beside Shipped', () => {
+    expect(html).toContain('Template ideas');
+    expect(html).toContain('aria-label="Designs sections"');
+    expect(html).toMatch(/role="tab"[^>]*aria-selected="true"[^>]*>Shipped</);
+    expect(html).toMatch(/role="tab"[^>]*>Template ideas</);
+  });
 });

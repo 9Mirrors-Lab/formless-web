@@ -357,8 +357,8 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     section: 'brand-identity',
     status: 'live',
     description:
-      'Ledger of shipped pages and final files: use, live status, and canonical paths.',
-    source: 'src/pages/BrandDesignsPage.tsx',
+      'Ledger of shipped pages and final files, plus Canva template ideas for social and banners.',
+    source: 'src/pages/BrandDesignsPage.tsx, src/data/canvaTemplateIdeas.ts',
   },
   {
     id: 'preorder-waitlist',

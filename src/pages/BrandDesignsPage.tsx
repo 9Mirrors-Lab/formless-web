@@ -25,7 +25,16 @@ import {
   type DesignVersion,
   type MaterialStatus,
 } from '@/data/brandMaterials';
+import {
+  CANVA_TEMPLATE_IDEAS,
+  FORMLESS_3D_MOCKUPS,
+  canvaChannelLabel,
+  formless3dMockupPreviews,
+  type CanvaTemplateIdea,
+  type Formless3dMockup,
+} from '@/data/canvaTemplateIdeas';
 
+type DesignsView = 'shipped' | 'template-ideas';
 type KindFilter = DesignKind | 'all';
 
 type OpenPreview = {
@@ -109,6 +118,43 @@ function FacetChip({ chip }: { chip: DesignChip }) {
   );
 }
 
+function DesignsViewTabs({
+  value,
+  onChange,
+}: {
+  value: DesignsView;
+  onChange: (next: DesignsView) => void;
+}) {
+  const options: Array<{ id: DesignsView; label: string }> = [
+    { id: 'shipped', label: 'Shipped' },
+    { id: 'template-ideas', label: 'Template ideas' },
+  ];
+
+  return (
+    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Designs sections">
+      {options.map((option) => {
+        const selected = value === option.id;
+        return (
+          <button
+            key={option.id}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            onClick={() => onChange(option.id)}
+            className={
+              selected
+                ? 'inline-flex h-9 items-center border border-cream/30 bg-cream/[0.08] px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-cream'
+                : 'inline-flex h-9 items-center border border-cream/12 px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/50 hover:border-cream/25 hover:text-cream/80'
+            }
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function KindFilter({
   value,
   onChange,
@@ -149,6 +195,133 @@ function KindFilter({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function TemplateIdeaCard({ idea }: { idea: CanvaTemplateIdea }) {
+  return (
+    <article className="flex flex-col gap-4 border border-cream/12 px-5 py-5 md:px-6 md:py-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="font-sans text-lg font-medium leading-none tracking-[-0.02em] text-cream">
+            {idea.title}
+          </h3>
+          <p className="mt-3 max-w-xl font-sans text-sm leading-relaxed text-cream/70">
+            {idea.useFor}
+          </p>
+        </div>
+        <span className="inline-flex h-7 items-center rounded-full border border-cream/15 px-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/55">
+          {idea.format}
+        </span>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        {idea.channels.map((channel) => (
+          <span
+            key={channel}
+            className="inline-flex h-8 items-center border border-cream/12 px-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/70"
+          >
+            {canvaChannelLabel(channel)}
+          </span>
+        ))}
+      </div>
+
+      <a
+        href={idea.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-auto inline-flex w-fit items-center gap-2 border border-clay/40 bg-clay/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-cream transition-colors hover:border-clay/60 hover:bg-clay/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
+      >
+        Open in Canva
+      </a>
+    </article>
+  );
+}
+
+function MockupThumb({
+  mockup,
+  index,
+  onOpen,
+}: {
+  mockup: Formless3dMockup;
+  index: number;
+  onOpen: OpenLightbox;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(formless3dMockupPreviews(), index)}
+      className="flex flex-col gap-2 border border-cream/12 p-2 text-left transition-colors hover:border-cream/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fb5aa]"
+      aria-label={`Open ${mockup.title}: ${mockup.label}`}
+    >
+      <div className="bg-[#0c0e0d]">
+        <img
+          src={mockup.previewSrc}
+          alt=""
+          className="aspect-[4/3] w-full object-contain object-center"
+        />
+      </div>
+      <div className="px-1 pb-1">
+        <p className="font-sans text-sm font-medium text-cream">{mockup.title}</p>
+        <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/45">
+          {mockup.label}
+        </p>
+      </div>
+    </button>
+  );
+}
+
+function TemplateIdeasShelf({ onOpen }: { onOpen: OpenLightbox }) {
+  return (
+    <div className="flex flex-col gap-10 md:gap-12">
+      <section aria-labelledby="3d-mockups-heading" className="flex flex-col gap-5">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-4">
+            <h2
+              id="3d-mockups-heading"
+              className="shrink-0 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-cream/55"
+            >
+              3D mockups
+            </h2>
+            <div className="h-px flex-1 bg-cream/12" aria-hidden />
+          </div>
+          <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/55">
+            Formless branding already applied. Use these for social, ads, and
+            pre-order posts.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {FORMLESS_3D_MOCKUPS.map((mockup, index) => (
+            <MockupThumb key={mockup.id} mockup={mockup} index={index} onOpen={onOpen} />
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="template-ideas-heading" className="flex flex-col gap-5">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-4">
+            <h2
+              id="template-ideas-heading"
+              className="shrink-0 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-cream/55"
+            >
+              Canva library
+            </h2>
+            <div className="h-px flex-1 bg-cream/12" aria-hidden />
+          </div>
+          <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/55">
+            Reference templates only. Open a link to add the design to your Canva
+            account and edit it. These are not live Formless assets.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {CANVA_TEMPLATE_IDEAS.map((idea) => (
+            <TemplateIdeaCard key={idea.id} idea={idea} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -587,12 +760,14 @@ function DesignShelf({
 }
 
 export default function BrandDesignsPage() {
+  const [view, setView] = useState<DesignsView>('shipped');
   const [kindFilter, setKindFilter] = useState<KindFilter>('all');
   const [lightbox, setLightbox] = useState<{ items: OpenPreview[]; index: number } | null>(null);
   const visible = designsByKind(kindFilter);
   const live = visible.filter((design) => design.status === 'active');
   const inWork = visible.filter((design) => design.status === 'draft');
   const counts = designKindCounts();
+  const showingTemplates = view === 'template-ideas';
 
   const openLightbox: OpenLightbox = (items, index) => {
     if (items.length === 0) return;
@@ -607,42 +782,56 @@ export default function BrandDesignsPage() {
             <BrandPageHeader
               tone="desk"
               title="Designs"
-              description="One card per job. Live, intended, system, and exploration sit on that card so versions do not scatter."
+              description={
+                showingTemplates
+                  ? 'Canva library ideas for social, banners, and backgrounds. Copy into your account to edit.'
+                  : 'One card per job. Live, intended, system, and exploration sit on that card so versions do not scatter.'
+              }
               actions={
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream/45">
-                  {live.length} live · {inWork.length} in work
+                  {showingTemplates
+                    ? `${FORMLESS_3D_MOCKUPS.length} mockups · ${CANVA_TEMPLATE_IDEAS.length} templates`
+                    : `${live.length} live · ${inWork.length} in work`}
                 </p>
               }
             />
 
-            <KindFilter value={kindFilter} onChange={setKindFilter} counts={counts} />
+            <DesignsViewTabs value={view} onChange={setView} />
 
-            <DesignShelf heading="Live designs" designs={live} onOpen={openLightbox} />
-            <DesignShelf heading="In work" designs={inWork} onOpen={openLightbox} />
+            {showingTemplates ? (
+              <TemplateIdeasShelf onOpen={openLightbox} />
+            ) : (
+              <>
+                <KindFilter value={kindFilter} onChange={setKindFilter} counts={counts} />
 
-            <section aria-labelledby="designs-files-heading" className="flex flex-col gap-5">
-              <div className="flex items-center gap-4">
-                <h2
-                  id="designs-files-heading"
-                  className="shrink-0 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-cream/55"
-                >
-                  Final files
-                </h2>
-                <div className="h-px flex-1 bg-cream/12" aria-hidden />
-              </div>
-              {BRAND_ASSET_FAMILIES.map((family) => (
-                <div key={family.id} className="flex flex-col gap-4">
-                  <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/50">
-                    {family.summary}
-                  </p>
-                  <div className="grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
-                    {family.variants.map((variant) => (
-                      <AssetCard key={variant.id} variant={variant} />
-                    ))}
+                <DesignShelf heading="Live designs" designs={live} onOpen={openLightbox} />
+                <DesignShelf heading="In work" designs={inWork} onOpen={openLightbox} />
+
+                <section aria-labelledby="designs-files-heading" className="flex flex-col gap-5">
+                  <div className="flex items-center gap-4">
+                    <h2
+                      id="designs-files-heading"
+                      className="shrink-0 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-cream/55"
+                    >
+                      Final files
+                    </h2>
+                    <div className="h-px flex-1 bg-cream/12" aria-hidden />
                   </div>
-                </div>
-              ))}
-            </section>
+                  {BRAND_ASSET_FAMILIES.map((family) => (
+                    <div key={family.id} className="flex flex-col gap-4">
+                      <p className="max-w-2xl font-sans text-sm leading-relaxed text-cream/50">
+                        {family.summary}
+                      </p>
+                      <div className="grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+                        {family.variants.map((variant) => (
+                          <AssetCard key={variant.id} variant={variant} />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </section>
+              </>
+            )}
           </div>
         </BrandPageBody>
       </BrandShell>

@@ -249,8 +249,9 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     path: '/brand/designs',
     category: 'design',
     description:
-      'Ledger of shipped designs and final files: what each is for, and whether it is live.',
-    source: 'src/pages/BrandDesignsPage.tsx, src/data/brandMaterials.ts',
+      'Ledger of shipped designs and final files, plus a Canva template ideas library.',
+    source:
+      'src/pages/BrandDesignsPage.tsx, src/data/brandMaterials.ts, src/data/canvaTemplateIdeas.ts',
   },
   {
     id: 'speaker-sheet',
