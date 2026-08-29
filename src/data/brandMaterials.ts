@@ -412,56 +412,6 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
     source: 'Parallel design exploration · The Illuminated Manuscript',
     notes: 'Blind exploration. Keep the light and dark treatments together as one design job.',
   },
-  {
-    id: 'design-system-lockups',
-    title: 'Design system lockups',
-    status: 'draft',
-    kind: 'kit',
-    campaign: 'Design system',
-    audience: 'Internal',
-    channel: 'Web',
-    owner: 'Ryan',
-    usedFor:
-      'Parallel lockup explorations for the Eyes Closed design system: icon plus rule, THE eyebrow, stacked serif and sans type, copper accent lines, and event-style compositions. Review before the next token update.',
-    currentVersionId: 'energy-evolution',
-    versions: [
-      {
-        id: 'energy-evolution',
-        label: 'The Energy Evolution',
-        role: 'exploration',
-        filename: 'formless-design-system-energy-evolution-lockup.jpg',
-        previewSrc: '/design/previews/formless-design-system-energy-evolution-lockup.jpg',
-        row: 'Design system exploration',
-        wide: true,
-        notes:
-          'Sun icon, THE plus horizontal rule, copper serif ENERGY over wide sans EVOLUTION, diamond divider, and warm particle portrait. Tests stacked type scale and accent color on black.',
-      },
-      {
-        id: 'energy-evolution-flow',
-        label: 'The Energy Evolution · flow',
-        role: 'exploration',
-        filename: 'formless-design-system-energy-evolution-flow-lockup.jpg',
-        previewSrc: '/design/previews/formless-design-system-energy-evolution-flow-lockup.jpg',
-        row: 'Design system exploration',
-        wide: true,
-        notes:
-          'Same type lockup as the portrait board, with abstract golden particle flow on the right instead of a figure. Tests how the left rule column holds when the art is atmosphere, not subject.',
-      },
-      {
-        id: 'beyond-boundaries',
-        label: 'Beyond Boundaries',
-        role: 'exploration',
-        filename: 'formless-design-system-beyond-boundaries-lockup.jpg',
-        previewSrc: '/design/previews/formless-design-system-beyond-boundaries-lockup.jpg',
-        row: 'Design system exploration',
-        wide: true,
-        notes:
-          'LEADING eyebrow, copper serif headline, rule plus subtitle stack, calendar icon with vertical rule, and footer pipe tags. Event lockup pattern for conferences and launches.',
-      },
-    ],
-    source: 'Design system exploration · CCW and Energy Evolution lockups',
-    notes: 'Exploration bucket only. Not shipped. Review on /brand/designs only.',
-  },
 ];
 
 export const BRAND_ASSET_FAMILIES: readonly BrandAssetFamily[] = [
