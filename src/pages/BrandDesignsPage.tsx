@@ -803,8 +803,8 @@ export default function BrandDesignsPage() {
                 showingTemplates
                   ? 'Canva library ideas for social, banners, and backgrounds. Copy into your account to edit.'
                   : showingInWork
-                    ? 'Drafts and boards still in progress. Waitlist and Stay Close live here until they are ready.'
-                    : 'Live and current studio work only. Kindle preorder, Special preview, and Audible Master.'
+                    ? 'Drafts and boards still in progress. Waitlist, Stay Close, and Audible Master live here until they are ready.'
+                    : 'Live and current studio work only. Kindle preorder and Special preview.'
               }
               actions={
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream/45">

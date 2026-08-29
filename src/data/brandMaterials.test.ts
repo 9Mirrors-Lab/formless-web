@@ -156,11 +156,11 @@ describe('brandMaterials', () => {
     expect(activeDesigns().map((design) => design.id)).toEqual([
       'kindle-preorder',
       'special-preview',
-      'audible-illuminated-manuscript',
     ]);
     expect(draftDesigns().map((design) => design.id)).toEqual([
       'waitlist-letter',
       'stay-close-letter',
+      'audible-illuminated-manuscript',
     ]);
   });
 

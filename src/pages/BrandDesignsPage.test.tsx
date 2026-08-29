@@ -17,7 +17,7 @@ describe('BrandDesignsPage', () => {
   it('shows Active designs only on the default tab', () => {
     expect(html).toContain('Kindle preorder');
     expect(html).toContain('Special preview');
-    expect(html).toContain('Audible Master · Illuminated Manuscript');
+    expect(html).not.toContain('Audible Master · Illuminated Manuscript');
     expect(html).not.toContain('Stay Close');
     expect(html).not.toContain('Waitlist letter');
     expect(html).not.toContain('/emails/formless-waitlist-preview.html');

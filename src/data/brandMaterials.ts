@@ -379,7 +379,7 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
   {
     id: 'audible-illuminated-manuscript',
     title: 'Audible Master · Illuminated Manuscript',
-    status: 'active',
+    status: 'draft',
     kind: 'page',
     campaign: 'Audible Master',
     audience: 'Author + producer',
@@ -411,7 +411,7 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
       },
     ],
     source: 'Parallel design exploration · The Illuminated Manuscript',
-    notes: 'Active Audible Master job. Keep the light and dark treatments together as one design job.',
+    notes: 'In work. Keep the light and dark treatments together as one design job.',
   },
 ];
 
