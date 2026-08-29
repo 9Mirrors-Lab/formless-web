@@ -35,27 +35,27 @@ export type AmazonKindleRankSnapshot = {
 
 /** Live Kindle listing ranks. Update when Amazon rank changes. */
 export const AMAZON_KINDLE_RANK: AmazonKindleRankSnapshot = {
-  storeRank: 58_953,
+  storeRank: 51_869,
   storeLabel: 'Kindle Store',
   personalTransformation: {
     key: 'personalTransformation',
     label: 'Personal Transformation & Spirituality',
     shortLabel: 'Personal Transformation',
-    rank: 30,
+    rank: 23,
   },
   datingRelationships: {
     key: 'datingRelationships',
     label: 'Dating, Relationships & Spirituality',
     shortLabel: 'Dating, Relationships',
-    rank: 44,
+    rank: 37,
   },
   spiritualHealing: {
     key: 'spiritualHealing',
     label: 'Spiritual Healing',
     shortLabel: 'Spiritual Healing',
-    rank: 53,
+    rank: 40,
   },
-  asOf: '2026-08-27',
+  asOf: '2026-08-28',
   history: [
     {
       asOf: '2026-08-26',
@@ -67,11 +67,19 @@ export const AMAZON_KINDLE_RANK: AmazonKindleRankSnapshot = {
     },
     {
       asOf: '2026-08-27',
-      label: 'Today',
+      label: 'Aug 27',
       storeRank: 58_953,
       personalTransformation: 30,
       datingRelationships: 44,
       spiritualHealing: 53,
+    },
+    {
+      asOf: '2026-08-28',
+      label: 'Today',
+      storeRank: 51_869,
+      personalTransformation: 23,
+      datingRelationships: 37,
+      spiritualHealing: 40,
     },
   ],
 };

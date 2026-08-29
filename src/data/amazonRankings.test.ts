@@ -14,16 +14,16 @@ import {
 
 describe('amazonRankings', () => {
   it('formats rank numbers with grouping', () => {
-    expect(formatAmazonRank(58_953)).toBe('#58,953');
-    expect(formatAmazonRank(30)).toBe('#30');
+    expect(formatAmazonRank(51_869)).toBe('#51,869');
+    expect(formatAmazonRank(23)).toBe('#23');
   });
 
   it('keeps the live snapshot fields', () => {
-    expect(AMAZON_KINDLE_RANK.storeRank).toBe(58_953);
-    expect(AMAZON_KINDLE_RANK.personalTransformation.rank).toBe(30);
-    expect(AMAZON_KINDLE_RANK.datingRelationships.rank).toBe(44);
-    expect(AMAZON_KINDLE_RANK.spiritualHealing.rank).toBe(53);
-    expect(AMAZON_KINDLE_RANK.history).toHaveLength(2);
+    expect(AMAZON_KINDLE_RANK.storeRank).toBe(51_869);
+    expect(AMAZON_KINDLE_RANK.personalTransformation.rank).toBe(23);
+    expect(AMAZON_KINDLE_RANK.datingRelationships.rank).toBe(37);
+    expect(AMAZON_KINDLE_RANK.spiritualHealing.rank).toBe(40);
+    expect(AMAZON_KINDLE_RANK.history).toHaveLength(3);
   });
 
   it('orders Kindle Store first, then the three categories', () => {
@@ -34,14 +34,14 @@ describe('amazonRankings', () => {
       'datingRelationships',
       'spiritualHealing',
     ]);
-    expect(rows[0]?.rank).toBe(58_953);
-    expect(rows[1]?.rank).toBe(30);
+    expect(rows[0]?.rank).toBe(51_869);
+    expect(rows[1]?.rank).toBe(23);
   });
 
   it('names today from the as-of date', () => {
-    const now = new Date(2026, 7, 27, 12, 0, 0);
-    expect(formatAmazonRankAsOf('2026-08-27', now)).toBe('Checked today');
-    expect(formatAmazonRankAsOf('2026-08-26', now)).toBe('Checked yesterday');
+    const now = new Date(2026, 7, 28, 12, 0, 0);
+    expect(formatAmazonRankAsOf('2026-08-28', now)).toBe('Checked today');
+    expect(formatAmazonRankAsOf('2026-08-27', now)).toBe('Checked yesterday');
   });
 
   it('treats a lower rank as an improvement', () => {
@@ -51,17 +51,17 @@ describe('amazonRankings', () => {
     expect(formatAmazonRankDelta(-3)).toBe('↓ 3');
   });
 
-  it('computes deltas from Aug 26 to today', () => {
+  it('computes deltas from Aug 27 to today', () => {
     expect(amazonRankDeltasFromHistory()).toEqual({
-      store: 11_515,
-      personalTransformation: 2,
-      datingRelationships: 3,
-      spiritualHealing: 6,
+      store: 7_084,
+      personalTransformation: 7,
+      datingRelationships: 7,
+      spiritualHealing: 13,
     });
     expect(amazonImprovedCategoryCount()).toBe(4);
     expect(amazonBestMovement()).toEqual({
       label: 'Kindle Store',
-      delta: 11_515,
+      delta: 7_084,
     });
   });
 });
