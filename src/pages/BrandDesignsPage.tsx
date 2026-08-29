@@ -431,7 +431,9 @@ function DesignLightbox({
         onClick={(event) => event.stopPropagation()}
       >
         <figcaption className="text-center">
-          <p className="font-serif text-xl italic text-cream">{preview.title}</p>
+          <p className="font-sans text-xl font-medium tracking-[-0.02em] text-cream">
+            {preview.title}
+          </p>
           <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/55">
             {preview.label}
             {preview.notes ? ` · ${preview.notes}` : ''}
@@ -596,7 +598,7 @@ function DesignMeta({ design, version }: { design: BrandDesign; version: DesignV
   return (
     <>
       <div className="flex flex-wrap items-center gap-3">
-        <h2 className="font-serif text-[1.65rem] italic leading-none tracking-[-0.02em] text-cream md:text-[1.9rem]">
+        <h2 className="font-sans text-[1.65rem] font-semibold leading-none tracking-[-0.03em] text-cream md:text-[1.9rem]">
           {design.title}
         </h2>
         <StatusMark status={design.status} />
