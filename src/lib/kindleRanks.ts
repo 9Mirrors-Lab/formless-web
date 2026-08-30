@@ -4,6 +4,7 @@ import {
 } from '@/lib/supabase';
 import {
   AMAZON_KINDLE_RANK_LABELS,
+  kindleRankHistoryFromCapturedAt,
   type AmazonKindleRankSnapshot,
   type AmazonRankHistoryEntry,
 } from '@/data/amazonRankings';
@@ -25,13 +26,12 @@ export type FetchKindleRanksResult =
 const KINDLE_RANK_SELECT =
   'id, best_seller_rank, personal_transformation_spirituality, dating_relationships_spirituality, spiritual_healing, captured_at, created_at';
 
-/** Calendar date (UTC) for history keys and comparisons. */
+/** @deprecated Prefer kindleRankHistoryFromCapturedAt for CT-aware labels. */
 export function kindleRankAsOf(capturedAt: string): string {
-  const date = new Date(capturedAt);
-  if (Number.isNaN(date.getTime())) return '';
-  return date.toISOString().slice(0, 10);
+  return kindleRankHistoryFromCapturedAt(capturedAt).asOf;
 }
 
+/** @deprecated Prefer kindleRankHistoryFromCapturedAt for CT-aware labels. */
 export function kindleRankHistoryLabel(asOf: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(asOf);
   if (!match) return asOf;
@@ -58,10 +58,9 @@ export function mapKindleRankRows(
   if (!latest) return null;
 
   const history: AmazonRankHistoryEntry[] = ordered.map((row) => {
-    const asOf = kindleRankAsOf(row.captured_at);
+    const stamped = kindleRankHistoryFromCapturedAt(row.captured_at);
     return {
-      asOf,
-      label: kindleRankHistoryLabel(asOf),
+      ...stamped,
       storeRank: row.best_seller_rank,
       personalTransformation: row.personal_transformation_spirituality,
       datingRelationships: row.dating_relationships_spirituality,
@@ -69,7 +68,7 @@ export function mapKindleRankRows(
     };
   });
 
-  const asOf = kindleRankAsOf(latest.captured_at);
+  const latestStamp = kindleRankHistoryFromCapturedAt(latest.captured_at);
 
   return {
     storeRank: latest.best_seller_rank,
@@ -92,7 +91,8 @@ export function mapKindleRankRows(
       shortLabel: AMAZON_KINDLE_RANK_LABELS.spiritualHealing.shortLabel,
       rank: latest.spiritual_healing,
     },
-    asOf,
+    asOf: latestStamp.asOf,
+    capturedAt: latest.captured_at,
     history,
   };
 }

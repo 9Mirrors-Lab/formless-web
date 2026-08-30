@@ -10,6 +10,8 @@ import {
   formatAmazonRank,
   formatAmazonRankAsOf,
   formatAmazonRankDelta,
+  kindleRankHistoryFromCapturedAt,
+  kindleRankNearestCheckSlot,
 } from '@/data/amazonRankings';
 
 describe('amazonRankings', () => {
@@ -24,6 +26,7 @@ describe('amazonRankings', () => {
     expect(AMAZON_KINDLE_RANK.datingRelationships.rank).toBe(37);
     expect(AMAZON_KINDLE_RANK.spiritualHealing.rank).toBe(40);
     expect(AMAZON_KINDLE_RANK.history).toHaveLength(3);
+    expect(AMAZON_KINDLE_RANK.capturedAt).toBe('2026-08-28T19:00:00+00:00');
   });
 
   it('orders Kindle Store first, then the three categories', () => {
@@ -51,7 +54,7 @@ describe('amazonRankings', () => {
     expect(formatAmazonRankDelta(-3)).toBe('↓ 3');
   });
 
-  it('computes deltas from Aug 27 to today', () => {
+  it('computes deltas from the previous capture to the latest', () => {
     expect(amazonRankDeltasFromHistory()).toEqual({
       store: 7_084,
       personalTransformation: 7,
@@ -63,5 +66,25 @@ describe('amazonRankings', () => {
       label: 'Kindle Store',
       delta: 7_084,
     });
+  });
+
+  it('maps Central Time captures onto the six check windows', () => {
+    // 2:00 PM CDT = 19:00 UTC in August
+    const midday = kindleRankHistoryFromCapturedAt('2026-08-28T19:00:00+00:00');
+    expect(midday.asOf).toBe('2026-08-28');
+    expect(midday.timeLabel).toBe('2:00 PM');
+    expect(midday.slotReason).toBe('Midday');
+    expect(midday.label).toBe('Aug 28 · 2:00 PM');
+
+    // 10:00 PM CDT = 03:00 UTC next calendar day in UTC
+    const endOfDay = kindleRankHistoryFromCapturedAt('2026-08-31T03:00:00+00:00');
+    expect(endOfDay.asOf).toBe('2026-08-30');
+    expect(endOfDay.timeLabel).toBe('10:00 PM');
+    expect(endOfDay.slotReason).toBe('End-of-day snapshot');
+
+    expect(kindleRankNearestCheckSlot(2, 5).reason).toBe('Overnight baseline');
+    expect(kindleRankNearestCheckSlot(18, 0).reason).toBe(
+      'Evening shopping window',
+    );
   });
 });

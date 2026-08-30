@@ -43,7 +43,7 @@ function RankDelta({ delta, featured = false }: { delta: number; featured?: bool
       style={{ color: up ? UP : '#c9897a' }}
     >
       {formatAmazonRankDelta(delta)}
-      {featured && up ? ' today' : ''}
+      {featured && up ? ' since last check' : ''}
     </span>
   );
 }
@@ -89,8 +89,12 @@ function RankingsBody({ snapshot }: { snapshot: AmazonKindleRankSnapshot }) {
   const improved = amazonImprovedCategoryCount(snapshot);
   const best = amazonBestMovement(snapshot);
   const [store, ...categories] = rows;
+  const latestHistory = snapshot.history.at(-1);
   const historyRows = useMemo(
-    () => [...snapshot.history].sort((a, b) => b.asOf.localeCompare(a.asOf)),
+    () =>
+      [...snapshot.history].sort((a, b) =>
+        b.capturedAt.localeCompare(a.capturedAt),
+      ),
     [snapshot.history],
   );
 
@@ -104,15 +108,32 @@ function RankingsBody({ snapshot }: { snapshot: AmazonKindleRankSnapshot }) {
           >
             Kindle Rankings
           </h2>
-          <p className="mt-1 flex items-center gap-2 font-sans text-[11px] text-cream/48">
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[11px] text-cream/48">
             <span>
-              {improved} {improved === 1 ? 'category' : 'categories'} improved today
+              {improved} {improved === 1 ? 'category' : 'categories'} improved
+              since last check
             </span>
-            <span
-              className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ backgroundColor: CLAY }}
-              aria-hidden
-            />
+            {latestHistory?.timeLabel ? (
+              <>
+                <span
+                  className="inline-block h-1.5 w-1.5 rounded-full"
+                  style={{ backgroundColor: CLAY }}
+                  aria-hidden
+                />
+                <span>
+                  {latestHistory.timeLabel} CT
+                  {latestHistory.slotReason
+                    ? ` · ${latestHistory.slotReason}`
+                    : ''}
+                </span>
+              </>
+            ) : (
+              <span
+                className="inline-block h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: CLAY }}
+                aria-hidden
+              />
+            )}
           </p>
         </div>
         <a
@@ -149,7 +170,7 @@ function RankingsBody({ snapshot }: { snapshot: AmazonKindleRankSnapshot }) {
           <AccordionContent className="pb-1">
             {best ? (
               <p className="mb-3 font-sans text-[11px] leading-relaxed text-cream/55">
-                Best movement today:{' '}
+                Best movement since last check:{' '}
                 <span style={{ color: UP }}>
                   {formatAmazonRankDelta(best.delta)}
                 </span>{' '}
@@ -157,11 +178,15 @@ function RankingsBody({ snapshot }: { snapshot: AmazonKindleRankSnapshot }) {
               </p>
             ) : null}
 
+            <p className="mb-2 font-sans text-[10px] leading-relaxed text-cream/40">
+              Checked 6× daily in Central Time. Each row is one capture window.
+            </p>
+
             <div className="rounded-md border border-cream/10 bg-black/20">
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr className="border-b border-cream/10 text-[9px] uppercase tracking-[0.1em] text-cream/40">
-                    <th className="px-2 py-2 font-normal">Date</th>
+                    <th className="px-2 py-2 font-normal">Checked (CT)</th>
                     <th className="px-1.5 py-2 font-normal">Personal</th>
                     <th className="px-1.5 py-2 font-normal">Dating</th>
                     <th className="px-1.5 py-2 font-normal">Healing</th>
@@ -170,33 +195,40 @@ function RankingsBody({ snapshot }: { snapshot: AmazonKindleRankSnapshot }) {
                 </thead>
                 <tbody>
                   {historyRows.map((entry) => {
-                    const isLatest = entry.asOf === snapshot.asOf;
+                    const isLatest = entry.capturedAt === snapshot.capturedAt;
                     const tone = isLatest ? 'text-[#c4a574]' : 'text-cream/55';
                     return (
                       <tr
-                        key={entry.asOf}
+                        key={entry.capturedAt}
                         className="border-t border-cream/8 first:border-t-0"
                       >
-                        <td className={`px-2 py-2 font-sans text-[11px] ${tone}`}>
-                          {isLatest ? 'Today' : entry.label}
+                        <td className={`px-2 py-2 align-top ${tone}`}>
+                          <div className="font-sans text-[11px] leading-snug">
+                            {isLatest ? `Latest · ${entry.timeLabel}` : entry.label}
+                          </div>
+                          {entry.slotReason ? (
+                            <div className="mt-0.5 font-sans text-[10px] leading-snug text-cream/35">
+                              {entry.slotReason}
+                            </div>
+                          ) : null}
                         </td>
                         <td
-                          className={`px-1.5 py-2 font-sans text-[12px] tabular-nums ${tone}`}
+                          className={`px-1.5 py-2 align-top font-sans text-[12px] tabular-nums ${tone}`}
                         >
                           {formatAmazonRank(entry.personalTransformation)}
                         </td>
                         <td
-                          className={`px-1.5 py-2 font-sans text-[12px] tabular-nums ${tone}`}
+                          className={`px-1.5 py-2 align-top font-sans text-[12px] tabular-nums ${tone}`}
                         >
                           {formatAmazonRank(entry.datingRelationships)}
                         </td>
                         <td
-                          className={`px-1.5 py-2 font-sans text-[12px] tabular-nums ${tone}`}
+                          className={`px-1.5 py-2 align-top font-sans text-[12px] tabular-nums ${tone}`}
                         >
                           {formatAmazonRank(entry.spiritualHealing)}
                         </td>
                         <td
-                          className={`px-2 py-2 font-sans text-[12px] tabular-nums ${tone}`}
+                          className={`px-2 py-2 align-top font-sans text-[12px] tabular-nums ${tone}`}
                         >
                           {formatAmazonRank(entry.storeRank)}
                         </td>

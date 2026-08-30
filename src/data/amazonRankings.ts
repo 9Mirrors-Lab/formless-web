@@ -13,9 +13,35 @@ export type AmazonRankPoint = {
   rank: number;
 };
 
+export type KindleRankCheckSlot = {
+  hour: number;
+  minute: number;
+  reason: string;
+};
+
+/** Six Central Time capture windows for Kindle rank checks. */
+export const KINDLE_RANK_CT_ZONE = 'America/Chicago';
+
+export const KINDLE_RANK_CHECK_SLOTS: readonly KindleRankCheckSlot[] = [
+  { hour: 2, minute: 0, reason: 'Overnight baseline' },
+  { hour: 6, minute: 0, reason: 'Early-morning state' },
+  { hour: 10, minute: 0, reason: 'Morning shopping activity' },
+  { hour: 14, minute: 0, reason: 'Midday' },
+  { hour: 18, minute: 0, reason: 'Evening shopping window' },
+  { hour: 22, minute: 0, reason: 'End-of-day snapshot' },
+] as const;
+
 export type AmazonRankHistoryEntry = {
+  /** Full capture timestamp from the database. */
+  capturedAt: string;
+  /** Calendar date in Central Time (YYYY-MM-DD). */
   asOf: string;
+  /** Primary history label, e.g. "Aug 30 · 2:00 PM". */
   label: string;
+  /** Clock label in Central Time, e.g. "2:00 PM". */
+  timeLabel: string;
+  /** Matched check-window reason. */
+  slotReason: string;
   storeRank: number;
   personalTransformation: number;
   datingRelationships: number;
@@ -28,8 +54,10 @@ export type AmazonKindleRankSnapshot = {
   personalTransformation: AmazonRankPoint;
   datingRelationships: AmazonRankPoint;
   spiritualHealing: AmazonRankPoint;
-  /** ISO date when ranks were last checked on Amazon. */
+  /** Central Time calendar date of the latest capture. */
   asOf: string;
+  /** ISO timestamp of the latest capture. */
+  capturedAt: string;
   history: AmazonRankHistoryEntry[];
 };
 
@@ -52,6 +80,131 @@ export const AMAZON_KINDLE_RANK_LABELS = {
     shortLabel: 'Spiritual Healing',
   },
 } as const;
+
+type CtClockParts = {
+  asOf: string;
+  month: number;
+  day: number;
+  hour24: number;
+  minute: number;
+};
+
+function readCtPart(
+  parts: Intl.DateTimeFormatPart[],
+  type: Intl.DateTimeFormatPartTypes,
+): string {
+  return parts.find((part) => part.type === type)?.value ?? '';
+}
+
+/** Break a capture timestamp into Central Time calendar + clock parts. */
+export function kindleRankCtParts(capturedAt: string): CtClockParts | null {
+  const date = new Date(capturedAt);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: KINDLE_RANK_CT_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(date);
+
+  const year = readCtPart(parts, 'year');
+  const month = readCtPart(parts, 'month');
+  const day = readCtPart(parts, 'day');
+  const hour = readCtPart(parts, 'hour');
+  const minute = readCtPart(parts, 'minute');
+  if (!year || !month || !day || hour === '' || minute === '') return null;
+
+  return {
+    asOf: `${year}-${month}-${day}`,
+    month: Number(month),
+    day: Number(day),
+    hour24: Number(hour),
+    minute: Number(minute),
+  };
+}
+
+function minutesSinceMidnight(hour: number, minute: number): number {
+  return hour * 60 + minute;
+}
+
+/** Nearest of the six CT check windows for a capture time. */
+export function kindleRankNearestCheckSlot(
+  hour24: number,
+  minute: number,
+): KindleRankCheckSlot {
+  const target = minutesSinceMidnight(hour24, minute);
+  let best = KINDLE_RANK_CHECK_SLOTS[0]!;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  for (const slot of KINDLE_RANK_CHECK_SLOTS) {
+    const slotMinutes = minutesSinceMidnight(slot.hour, slot.minute);
+    const direct = Math.abs(target - slotMinutes);
+    const wrap = 24 * 60 - direct;
+    const distance = Math.min(direct, wrap);
+    if (distance < bestDistance) {
+      best = slot;
+      bestDistance = distance;
+    }
+  }
+
+  return best;
+}
+
+export function formatKindleRankCtTime(hour24: number, minute: number): string {
+  const date = new Date(Date.UTC(2020, 0, 1, hour24, minute));
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date);
+}
+
+export function formatKindleRankCtDayLabel(asOf: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(asOf);
+  if (!match) return asOf;
+  const date = new Date(
+    Number(match[1]),
+    Number(match[2]) - 1,
+    Number(match[3]),
+  );
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+}
+
+/** Build history labels from a capture timestamp in Central Time. */
+export function kindleRankHistoryFromCapturedAt(capturedAt: string): Pick<
+  AmazonRankHistoryEntry,
+  'capturedAt' | 'asOf' | 'label' | 'timeLabel' | 'slotReason'
+> {
+  const parts = kindleRankCtParts(capturedAt);
+  if (!parts) {
+    return {
+      capturedAt,
+      asOf: '',
+      label: capturedAt,
+      timeLabel: '',
+      slotReason: '',
+    };
+  }
+
+  const slot = kindleRankNearestCheckSlot(parts.hour24, parts.minute);
+  const timeLabel = formatKindleRankCtTime(slot.hour, slot.minute);
+  const dayLabel = formatKindleRankCtDayLabel(parts.asOf);
+
+  return {
+    capturedAt,
+    asOf: parts.asOf,
+    label: `${dayLabel} · ${timeLabel}`,
+    timeLabel,
+    slotReason: slot.reason,
+  };
+}
 
 /**
  * Local fixture for unit tests and offline fallback.
@@ -79,26 +232,24 @@ export const AMAZON_KINDLE_RANK: AmazonKindleRankSnapshot = {
     rank: 40,
   },
   asOf: '2026-08-28',
+  capturedAt: '2026-08-28T19:00:00+00:00',
   history: [
     {
-      asOf: '2026-08-26',
-      label: 'Aug 26',
+      ...kindleRankHistoryFromCapturedAt('2026-08-26T19:00:00+00:00'),
       storeRank: 70_468,
       personalTransformation: 32,
       datingRelationships: 47,
       spiritualHealing: 59,
     },
     {
-      asOf: '2026-08-27',
-      label: 'Aug 27',
+      ...kindleRankHistoryFromCapturedAt('2026-08-27T19:00:00+00:00'),
       storeRank: 58_953,
       personalTransformation: 30,
       datingRelationships: 44,
       spiritualHealing: 53,
     },
     {
-      asOf: '2026-08-28',
-      label: 'Today',
+      ...kindleRankHistoryFromCapturedAt('2026-08-28T19:00:00+00:00'),
       storeRank: 51_869,
       personalTransformation: 23,
       datingRelationships: 37,
@@ -143,6 +294,10 @@ export function formatAmazonRankDelta(delta: number): string {
   return delta > 0 ? `↑ ${amount}` : `↓ ${amount}`;
 }
 
+/**
+ * Movement since the previous capture (check-to-check).
+ * With six CT checks per day, this is the last window vs the current one.
+ */
 export function amazonRankDeltasFromHistory(
   snapshot: AmazonKindleRankSnapshot = AMAZON_KINDLE_RANK,
 ): Record<AmazonRankKey, number> {
