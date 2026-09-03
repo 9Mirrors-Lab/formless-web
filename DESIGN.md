@@ -349,6 +349,16 @@ Aligned with production defaults:
 
 ---
 
+## Q&A page direction (`/qa`)
+
+- Route: [`src/pages/QAPage.tsx`](src/pages/QAPage.tsx), wired in [`src/PublicShell.tsx`](src/PublicShell.tsx), indexed in [`src/data/sitePageIndex.ts`](src/data/sitePageIndex.ts).
+- Purpose: give readers a credible answer sample first, then a clear invitation to submit a question.
+- Composition: first viewport uses two columns on desktop; left holds heading and featured question with answer excerpt, right holds the submission form as primary action.
+- Visual language: near-black field, warm gold accents, serif for reflective voice, sans for utility controls, thin borders, and soft depth shadows.
+- v1 interaction scope: submit form is UI-only and returns a local success state.
+
+---
+
 ## Designing new work
 
 1. Read this file and [`formless_design_philosophy.md`](formless_design_philosophy.md).

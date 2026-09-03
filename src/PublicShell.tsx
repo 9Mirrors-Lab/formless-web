@@ -18,6 +18,7 @@ import BookPage from './pages/BookPage';
 import BookInsightsPreviewPage from './pages/BookInsightsPreviewPage';
 import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
+import QAPage from './pages/QAPage';
 import ColorsPage from './pages/ColorsPage';
 import FontsPage from './pages/FontsPage';
 import ComponentsPage from './pages/ComponentsPage';
@@ -128,6 +129,7 @@ export function Root({ path }: { path: string }) {
   const isBookPreview = path === '/book-preview';
   const isScience = path === '/science';
   const isAbout = path === '/about';
+  const isQa = path === '/qa';
   const isColors = path === '/colors';
   const isFonts = path === '/fonts';
   const isComponents = path === '/components';
@@ -194,6 +196,7 @@ export function Root({ path }: { path: string }) {
   if (isBookPreview) return <BookInsightsPreviewPage />;
   if (isScience) return <SciencePage />;
   if (isAbout) return <AboutPage />;
+  if (isQa) return <QAPage />;
   if (isAboutMagazine) return <AboutPage defaultLayout={4} />;
   if (isColors) return <ColorsPage />;
   if (isFonts) return <FontsPage />;
@@ -293,7 +296,8 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/special-preview' ||
     path === '/book-preview' ||
     path === '/preorder' ||
-    path === '/preorder/stay-close'
+    path === '/preorder/stay-close' ||
+    path === '/qa'
   );
 }
 

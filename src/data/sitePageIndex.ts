@@ -147,6 +147,14 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/AboutPage.tsx',
   },
   {
+    id: 'qa',
+    title: 'Q&A with Sonika',
+    path: '/qa',
+    category: 'public',
+    description: 'Featured reader answer, ask form, and recent question cards.',
+    source: 'src/pages/QAPage.tsx',
+  },
+  {
     id: 'about-magazine',
     title: 'About (magazine layout)',
     path: '/about-magazine',
