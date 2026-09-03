@@ -1,4 +1,9 @@
-export type AmazonMarketplace = 'Amazon.com' | 'Amazon.ca';
+export type AmazonMarketplace =
+  | 'Amazon.com'
+  | 'Amazon.ca'
+  | 'Amazon.co.uk'
+  | 'Amazon.de'
+  | 'Amazon.in';
 
 export type AmazonPreorderRow = {
   orderDate: string;
@@ -20,10 +25,18 @@ export type AmazonPreorderSnapshot = {
 
 /** Kindle pre-order units from KDP reports. Update when new orders arrive. */
 export const AMAZON_PREORDERS: AmazonPreorderSnapshot = {
-  asOf: '2026-08-30',
+  asOf: '2026-09-01',
   rows: [
-    { orderDate: '2026-08-30', marketplace: 'Amazon.com', preOrderUnits: 12 },
-    { orderDate: '2026-08-29', marketplace: 'Amazon.com', preOrderUnits: 14 },
+    { orderDate: '2026-09-01', marketplace: 'Amazon.ca', preOrderUnits: 1 },
+    { orderDate: '2026-08-31', marketplace: 'Amazon.com', preOrderUnits: 5 },
+    { orderDate: '2026-08-31', marketplace: 'Amazon.co.uk', preOrderUnits: 1 },
+    { orderDate: '2026-08-31', marketplace: 'Amazon.in', preOrderUnits: 1 },
+    { orderDate: '2026-08-30', marketplace: 'Amazon.com', preOrderUnits: 7 },
+    { orderDate: '2026-08-30', marketplace: 'Amazon.ca', preOrderUnits: 1 },
+    { orderDate: '2026-08-29', marketplace: 'Amazon.com', preOrderUnits: 6 },
+    { orderDate: '2026-08-29', marketplace: 'Amazon.in', preOrderUnits: 1 },
+    { orderDate: '2026-08-28', marketplace: 'Amazon.com', preOrderUnits: 4 },
+    { orderDate: '2026-08-28', marketplace: 'Amazon.de', preOrderUnits: 1 },
     { orderDate: '2026-08-27', marketplace: 'Amazon.com', preOrderUnits: 2 },
     { orderDate: '2026-08-27', marketplace: 'Amazon.ca', preOrderUnits: 1 },
     { orderDate: '2026-08-26', marketplace: 'Amazon.com', preOrderUnits: 6 },

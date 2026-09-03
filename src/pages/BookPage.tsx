@@ -1,11 +1,11 @@
-import { useLayoutEffect, useRef, useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageLayout } from '../components/PageLayout';
 import { ParticleButton } from '../components/ParticleButton';
-import { BookReleaseNotifyForm } from '../components/BookReleaseNotifyForm';
+import { BookHeroPurchasePanel } from '../components/BookHeroPurchasePanel';
 import { BookAvailabilitySection } from '../components/BookAvailabilitySection';
+import { BookChapterSampleSection } from '@/components/book/BookChapterSampleSection';
 import { TeachingIconMark } from '@/components/iconography/TeachingIconMark';
 import {
   HelixTeachingLockup,
@@ -29,29 +29,12 @@ function themesFromContent(api: ContentApi): ThemeCard[] {
   });
 }
 
-const notifyFormProps = (
-  notifySubhead: string,
-  notifyCta: string,
-  notifyMetaRelease: string,
-  notifyMetaUpdates: string,
-  notifySuccess: string,
-  notifyError: string,
-) => ({
-  subheadline: notifySubhead,
-  ctaLabel: notifyCta,
-  metaRelease: notifyMetaRelease,
-  metaUpdates: notifyMetaUpdates,
-  successTitle: notifySuccess || "You're on the list.",
-  errorMessage: notifyError,
-});
-
 export default function BookPage() {
   const pageRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const availabilityRef = useRef<HTMLDivElement>(null);
   const quotesRef = useRef<HTMLDivElement>(null);
   const themesRef = useRef<HTMLDivElement>(null);
-  const [dockRoot, setDockRoot] = useState<HTMLElement | null>(null);
   const content = useContent();
   const { getText, getLink, ordered, textFromEntry } = content;
   const themes = themesFromContent(content);
@@ -61,12 +44,9 @@ export default function BookPage() {
 
   const ctaWork = getLink('book', 'closing', 'cta_work');
   const ctaScience = getLink('book', 'closing', 'cta_science');
-  const notifySubhead = getText('book', 'header', 'notify_heading');
-  const notifyCta = getText('book', 'header', 'notify_cta');
-  const notifyMetaRelease = getText('book', 'header', 'notify_meta_release');
-  const notifyMetaUpdates = getText('book', 'header', 'notify_meta_updates');
-  const notifySuccess = getText('book', 'header', 'notify_success');
-  const notifyError = getText('book', 'header', 'notify_error');
+  const purchaseEyebrow = getText('book', 'header', 'purchase_eyebrow');
+  const purchaseTitle = getText('book', 'header', 'purchase_title');
+  const purchaseCta = getText('book', 'header', 'purchase_cta');
   const headerTitle = getText('book', 'header', 'title');
   const headerTitleMatch = headerTitle.match(/^(The book,\s*Formless)\s*(.*)$/i);
   const headerEyebrow = getText('book', 'header', 'eyebrow');
@@ -74,43 +54,6 @@ export default function BookPage() {
   const availabilityEyebrow = getText('book', 'availability', 'eyebrow') || 'Available on';
   const availabilityTitle =
     getText('book', 'availability', 'title') || 'One book. Three ways in.';
-
-  const sharedNotifyProps = notifyFormProps(
-    notifySubhead,
-    notifyCta,
-    notifyMetaRelease,
-    notifyMetaUpdates,
-    notifySuccess,
-    notifyError,
-  );
-
-  // Portal the dock to body so PageLayout's GSAP transform cannot trap `fixed`.
-  useEffect(() => {
-    setDockRoot(document.body);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!dockRoot) return;
-    const dock = document.querySelector('.book-notify-dock');
-    if (!dock) return;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
-    const tween = gsap.fromTo(
-      dock,
-      { y: 24, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.85,
-        ease: 'power3.out',
-        delay: 0.35,
-        clearProps: 'transform',
-      },
-    );
-    return () => {
-      tween.kill();
-    };
-  }, [dockRoot]);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -158,7 +101,7 @@ export default function BookPage() {
           },
         );
         gsap.fromTo(
-          '.book-notify-panel',
+          '.book-purchase-panel',
           { x: 40, opacity: 0 },
           { x: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.5 },
         );
@@ -251,6 +194,13 @@ export default function BookPage() {
                 <p className="mt-5 max-w-sm font-sans text-base leading-relaxed text-cream/60">
                   {headerLede}
                 </p>
+                <div className="relative z-10 mt-8 md:hidden">
+                  <BookHeroPurchasePanel
+                    eyebrow={purchaseEyebrow}
+                    title={purchaseTitle}
+                    ctaLabel={purchaseCta}
+                  />
+                </div>
               </div>
             </div>
 
@@ -276,9 +226,13 @@ export default function BookPage() {
               </p>
             </div>
 
-            {/* Desktop waitlist card */}
-            <div className="book-notify-panel hidden w-full max-w-md justify-self-end md:block">
-              <BookReleaseNotifyForm variant="card" {...sharedNotifyProps} />
+            {/* Desktop purchase panel */}
+            <div className="hidden w-full max-w-md justify-self-end md:block">
+              <BookHeroPurchasePanel
+                eyebrow={purchaseEyebrow}
+                title={purchaseTitle}
+                ctaLabel={purchaseCta}
+              />
             </div>
           </div>
         </section>
@@ -289,6 +243,8 @@ export default function BookPage() {
             title={availabilityTitle}
           />
         </div>
+
+        <BookChapterSampleSection />
 
         <section
           ref={quotesRef}
@@ -372,7 +328,7 @@ export default function BookPage() {
           </div>
         </section>
 
-        <section className="w-full rounded-t-[2rem] bg-charcoal px-6 pt-16 pb-[7.75rem] text-center md:rounded-t-[3rem] md:px-16 md:py-24 lg:px-24">
+        <section className="w-full rounded-t-[2rem] bg-charcoal px-6 pt-16 pb-16 text-center md:rounded-t-[3rem] md:px-16 md:py-24 lg:px-24">
           <p className="mx-auto mb-8 max-w-lg font-serif text-2xl italic leading-snug text-cream/70 md:mb-10 md:text-4xl">
             {getText('book', 'closing', 'lede')}
           </p>
@@ -395,20 +351,6 @@ export default function BookPage() {
           </div>
         </section>
 
-        {dockRoot
-          ? createPortal(
-              <div
-                className="book-notify-dock fixed inset-x-0 bottom-0 z-30 border-t border-cream/12 bg-[#080a09]/94 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md md:hidden"
-                role="region"
-                aria-label="Book waitlist"
-              >
-                <div className="mx-auto max-w-lg">
-                  <BookReleaseNotifyForm variant="dock" {...sharedNotifyProps} />
-                </div>
-              </div>,
-              dockRoot,
-            )
-          : null}
       </div>
     </PageLayout>
   );

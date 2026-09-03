@@ -23,11 +23,14 @@ export function kindlePreorderHref(): string {
 export const PREORDER_FACTS = {
   format: 'Kindle',
   price: '$0.99',
-  delivers: 'September 1',
+  /** Short status line for hero lockups (e.g. Amazon · $0.99 · Out now). */
+  delivers: 'Out now',
   deliversFull: 'September 1, 2026',
   pages: '183 pages',
   language: 'English',
 } as const;
+
+export const AMAZON_PURCHASE_CTA = 'Buy on Amazon';
 
 export const PREORDER_INTRO_LABEL = 'Introduction';
 
@@ -44,17 +47,17 @@ export const PREORDER_COPY: Record<PreorderAudience, PreorderCopy> = {
   waitlist: {
     relation: 'A special preview',
     title: 'Before you read the book, hear where the journey begins.',
-    deck: 'Pre-order on Amazon · $0.99',
+    deck: 'Out now on Amazon · $0.99',
     lede: 'As a thank you for being here, I wanted to share the introduction to Formless with you in my own voice.',
-    preorderLabel: 'Pre-order on Amazon',
+    preorderLabel: AMAZON_PURCHASE_CTA,
     documentTitle: 'A special preview',
   },
   'stay-close': {
     relation: '',
     title: 'Formless',
-    deck: 'is available to pre-order.',
+    deck: 'is out now.',
     lede: 'You are not the voice in your head. You are the one who hears it. The book is a doorway into that, now on Kindle.',
-    preorderLabel: 'Pre-order on Kindle',
-    documentTitle: 'Formless is available to pre-order',
+    preorderLabel: AMAZON_PURCHASE_CTA,
+    documentTitle: 'Formless is out now',
   },
 };

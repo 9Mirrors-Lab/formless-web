@@ -4,7 +4,6 @@ import { BrandAmazonPreorders } from "@/components/BrandAmazonPreorders";
 import { BrandAmazonRankings } from "@/components/BrandAmazonRankings";
 import { BrandAudienceCharts } from "@/components/BrandAudienceCharts";
 import { BrandShell } from "@/components/app-sidebar";
-import { LaunchCountdownLink } from "@/components/LaunchCountdownLink";
 import { ShaderBackdrop } from "@/components/shader/ShaderBackdrop";
 import { signupPulse, type PulseLoad } from "@/lib/brandPulse";
 import {
@@ -96,11 +95,7 @@ export default function BrandPage() {
           aria-hidden
         />
 
-        <div className="relative z-10 px-5 pt-7 md:px-12 md:pt-9 lg:px-14">
-          <LaunchCountdownLink />
-        </div>
-
-        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-6 md:px-12 md:pb-14 md:pt-7 lg:max-w-[72rem] lg:px-14">
+        <article className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-start px-5 pb-10 pt-7 md:px-12 md:pb-14 md:pt-9 lg:max-w-[72rem] lg:px-14">
           <h1 className="sr-only">Brand Toolkit</h1>
 
           <div className="flex flex-col gap-10 lg:gap-12">

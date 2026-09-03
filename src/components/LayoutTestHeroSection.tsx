@@ -2,7 +2,7 @@ import { useContent } from '@/context/ContentContext';
 import { useSiteAccess } from '@/context/SiteAccessContext';
 import { resolveHeroBookAsideEnabled } from '@/config/featureFlags';
 import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
-import { PREORDER_FACTS, kindlePreorderHref } from '@/data/preorderLanding';
+import { AMAZON_PURCHASE_CTA, PREORDER_FACTS, kindlePreorderHref } from '@/data/preorderLanding';
 import { captureCtaClick } from '@/lib/analytics';
 import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
 
@@ -43,11 +43,11 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-/** Jacket lockup: cover beside Amazon preorder stack (matches cream lockup example). */
+/** Jacket lockup: cover beside Kindle purchase stack (matches cream lockup example). */
 function HeroBookAside() {
   const href = kindlePreorderHref();
   const trackLocation = 'home_hero_book_aside';
-  const factsLine = `Amazon · ${PREORDER_FACTS.price} · ${PREORDER_FACTS.delivers}`;
+  const factsLine = `Amazon · ${PREORDER_FACTS.price} · ${PREORDER_FACTS.format}`;
 
   return (
     <aside className="border-t border-cream/12 pt-8 lg:self-center lg:border-l lg:border-t-0 lg:pl-10 xl:pl-12">
@@ -63,12 +63,12 @@ function HeroBookAside() {
 
         <div className="min-w-0 max-w-[18.5rem]">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.24em] text-cream/90">
-            Now on Amazon
+            Out now
           </p>
           <p className="mt-3 font-serif text-[1.45rem] italic leading-[1.2] text-cream md:text-[1.65rem]">
-            eBook is available to
+            The eBook
             <br />
-            pre-order now!
+            is out now.
           </p>
           <p className="mt-4 whitespace-nowrap font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-clay">
             {factsLine}
@@ -77,10 +77,10 @@ function HeroBookAside() {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => captureCtaClick('Pre-order on Amazon', href, trackLocation)}
-            className="mt-6 inline-flex rounded-full bg-clay px-5 py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-cream transition-transform hover:scale-105"
+            onClick={() => captureCtaClick(AMAZON_PURCHASE_CTA, href, trackLocation)}
+            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-clay px-5 py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-cream transition-transform duration-200 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/50"
           >
-            Pre-order on Amazon
+            {AMAZON_PURCHASE_CTA}
           </a>
         </div>
       </div>
@@ -93,7 +93,7 @@ type LayoutTestHeroSectionProps = {
   showBookAside?: boolean;
 };
 
-/** Home hero lockup with Formless jacket preorder column (default on). */
+/** Home hero lockup with Formless jacket + Kindle CTA column (default on). */
 export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionProps) {
   const { restricted } = useSiteAccess();
   const { getImage, getText } = useContent();

@@ -91,8 +91,17 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     title: 'Formless (book)',
     path: '/book',
     category: 'public',
-    description: 'Book doorway, themes, waitlist, pause/observe/recognize quotes.',
+    description: 'Book doorway, Kindle purchase panel, availability, pause/observe/recognize quotes.',
     source: 'src/pages/BookPage.tsx',
+  },
+  {
+    id: 'book-preview',
+    title: 'Formless book redesign preview',
+    path: '/book-preview',
+    category: 'internal',
+    description:
+      'Editorial book page direction: hero, From Soni Instagram insights, quote, chapter reflection. Preview only until promoted to /book.',
+    source: 'src/pages/BookInsightsPreviewPage.tsx, src/data/bookInsightsPreview.ts',
   },
   {
     id: 'preorder-waitlist',

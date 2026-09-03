@@ -256,10 +256,10 @@ describe('client feedback revision gaps', () => {
     expect(tree.pages.work.categories.byKey.awareness).toBeUndefined();
   });
 
-  it('book page uses pre-release copy and notify form content', () => {
+  it('book page uses launch copy and purchase panel content', () => {
     expect(getText(tree, 'book', 'header', 'lede')).toContain('You are not your thoughts or emotions');
-    expect(getText(tree, 'book', 'header', 'notify_heading')).toContain('Join the waitlist');
-    expect(getText(tree, 'book', 'header', 'notify_cta')).toBe('Notify me');
+    expect(getText(tree, 'book', 'header', 'purchase_eyebrow')).toBe('Out now');
+    expect(getText(tree, 'book', 'header', 'purchase_cta')).toBe('Buy on Amazon');
     expect(getText(tree, 'science', 'header', 'title')).toContain('bridge for the part of you');
   });
 

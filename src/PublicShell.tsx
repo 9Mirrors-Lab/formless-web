@@ -15,6 +15,7 @@ import IconsPage from './pages/IconsPage';
 import WorkPage from './pages/WorkPage';
 import Work2Page from './pages/Work2Page';
 import BookPage from './pages/BookPage';
+import BookInsightsPreviewPage from './pages/BookInsightsPreviewPage';
 import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
 import ColorsPage from './pages/ColorsPage';
@@ -124,6 +125,7 @@ export function Root({ path }: { path: string }) {
   const isWork = path === '/work';
   const isWork2 = path === '/work2';
   const isBook = path === '/book';
+  const isBookPreview = path === '/book-preview';
   const isScience = path === '/science';
   const isAbout = path === '/about';
   const isColors = path === '/colors';
@@ -189,6 +191,7 @@ export function Root({ path }: { path: string }) {
   if (isWork) return <WorkPage />;
   if (isWork2) return <Work2Page />;
   if (isBook) return <BookPage />;
+  if (isBookPreview) return <BookInsightsPreviewPage />;
   if (isScience) return <SciencePage />;
   if (isAbout) return <AboutPage />;
   if (isAboutMagazine) return <AboutPage defaultLayout={4} />;
@@ -288,6 +291,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/audio/send-take' ||
     path === '/audio/files' ||
     path === '/special-preview' ||
+    path === '/book-preview' ||
     path === '/preorder' ||
     path === '/preorder/stay-close'
   );
