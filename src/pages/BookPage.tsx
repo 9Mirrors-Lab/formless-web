@@ -5,7 +5,6 @@ import { PageLayout } from '../components/PageLayout';
 import { ParticleButton } from '../components/ParticleButton';
 import { BookHeroPurchasePanel } from '../components/BookHeroPurchasePanel';
 import { BookAvailabilitySection } from '../components/BookAvailabilitySection';
-import { BookChapterSampleSection } from '@/components/book/BookChapterSampleSection';
 import { TeachingIconMark } from '@/components/iconography/TeachingIconMark';
 import {
   HelixTeachingLockup,
@@ -243,8 +242,6 @@ export default function BookPage() {
             title={availabilityTitle}
           />
         </div>
-
-        <BookChapterSampleSection />
 
         <section
           ref={quotesRef}
