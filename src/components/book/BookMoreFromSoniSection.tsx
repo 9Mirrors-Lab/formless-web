@@ -19,7 +19,7 @@ type MoreItem =
 
 type BookMoreFromSoniSectionProps = {
   title?: string;
-  items?: MoreItem[];
+  items?: readonly MoreItem[];
   exploreLabel?: string;
   exploreHref?: string;
   trackLocation?: string;
@@ -43,7 +43,7 @@ function QuoteTile({ text }: { text: string }) {
 /** Droppable secondary insights row. */
 export function BookMoreFromSoniSection({
   title = BOOK_PREVIEW_MORE.title,
-  items = BOOK_PREVIEW_MORE.items as MoreItem[],
+  items = BOOK_PREVIEW_MORE.items,
   exploreLabel = BOOK_PREVIEW_MORE.exploreLabel,
   exploreHref = BOOK_PREVIEW_MORE.exploreHref,
   trackLocation = 'book_more_from_soni',

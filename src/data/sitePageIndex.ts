@@ -98,10 +98,19 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     id: 'book-preview',
     title: 'Formless book redesign preview',
     path: '/book-preview',
-    category: 'internal',
+    category: 'design',
     description:
-      'Editorial book page direction: hero, From Soni Instagram insights, quote, chapter reflection. Preview only until promoted to /book.',
+      'Editorial book page direction: From Soni Instagram insights, quote, chapter reflection. Preview only until promoted to /book.',
     source: 'src/pages/BookInsightsPreviewPage.tsx, src/data/bookInsightsPreview.ts',
+  },
+  {
+    id: 'book-lockups',
+    title: 'Book lockup exploration',
+    path: '/book-lockups',
+    category: 'design',
+    description:
+      'Cinematic Modules lockups for chapter + From Soni content: sticky stack, curtain, sticky cards, split scroll.',
+    source: 'src/pages/BookLockupsExplorePage.tsx, src/components/book/lockups/',
   },
   {
     id: 'preorder-waitlist',
