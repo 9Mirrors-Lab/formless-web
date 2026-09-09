@@ -6,6 +6,7 @@ import {
   BrandPageBody,
   BrandPageHeader,
 } from "@/components/BrandPageHeader";
+import { FORMLESS_PRINT_COVER } from "@/data/bookCover";
 import logoWhiteSrc from "../../design/eyes-closed-logo-variations/Final-logos/09a-white-ec-notagline.svg";
 import logoBlackSrc from "../../design/eyes-closed-logo-variations/Final-logos/09b-black-ec-notagline.svg";
 import ecPublishingWhiteSrc from "../../design/eyes-closed-logo-variations/EC-White-Publishing.svg";
@@ -76,6 +77,31 @@ const PROFILE_THEMES: ThemeDef[] = [
 ];
 
 const EXPORT_GROUPS: ExportGroup[] = [
+  {
+    id: "formless-cover",
+    name: "Formless cover",
+    shortName: "Cover",
+    category: "logos",
+    sizes: [
+      {
+        id: "jpg",
+        name: "JPEG",
+        width: FORMLESS_PRINT_COVER.width,
+        height: FORMLESS_PRINT_COVER.height,
+        safeZoneType: "none",
+        padding: 0,
+      },
+    ],
+    themes: [
+      {
+        id: "default",
+        name: "Print master",
+        shortName: "Cover",
+        bgColor: "transparent",
+        logo: FORMLESS_PRINT_COVER.src,
+      },
+    ],
+  },
   {
     id: "standard",
     name: "Standard mark",
@@ -458,6 +484,16 @@ export default function BrandKitExportPage() {
       const zip = new JSZip();
 
       for (const group of EXPORT_GROUPS) {
+        if (group.id === "formless-cover") {
+          const folder = zip.folder(group.name);
+          if (!folder) continue;
+          folder.file(
+            "formless-print.jpg",
+            await fetchAssetBuffer(FORMLESS_PRINT_COVER.src),
+          );
+          continue;
+        }
+
         if (group.id === "ec-publishing") {
           const folder = zip.folder(group.name);
           if (!folder) continue;
@@ -529,6 +565,14 @@ export default function BrandKitExportPage() {
   };
 
   const handleDownload = () => {
+    if (activeGroup.id === "formless-cover") {
+      const link = document.createElement("a");
+      link.download = "formless-print.jpg";
+      link.href = FORMLESS_PRINT_COVER.src;
+      link.click();
+      return;
+    }
+
     if (activeGroup.id === "ec-publishing") {
       const isWhite = activeTheme.id === "white-trans";
       const link = document.createElement("a");
@@ -608,7 +652,7 @@ export default function BrandKitExportPage() {
   const paddingPercentage = (activeSize.padding / activeSize.width) * 100;
   const isCircleSafe = activeSize.safeZoneType === "circle";
   const exportLabel =
-    activeGroup.id === "qr"
+    activeGroup.id === "qr" || activeGroup.id === "formless-cover"
       ? `Download ${activeSize.name}`
       : `Export ${activeSize.width} × ${activeSize.height}`;
 
@@ -744,7 +788,10 @@ export default function BrandKitExportPage() {
               <div className="relative flex min-w-0 items-center justify-center px-4 py-4 sm:px-8 sm:py-10 lg:py-12">
                 <div
                   className={[
-                    "relative flex h-[132px] w-full max-w-[20rem] items-center justify-center overflow-hidden border border-cream/10 transition-[border-radius] duration-300 sm:h-[240px] sm:max-w-md lg:h-[280px]",
+                    "relative flex items-center justify-center overflow-hidden border border-cream/10 transition-[border-radius] duration-300",
+                    activeGroup.id === "formless-cover"
+                      ? "h-[220px] w-auto max-w-[9rem] sm:h-[320px] sm:max-w-[12.5rem] lg:h-[360px] lg:max-w-[14rem]"
+                      : "h-[132px] w-full max-w-[20rem] sm:h-[240px] sm:max-w-md lg:h-[280px]",
                     isCircleSafe
                       ? "rounded-full !max-w-[132px] sm:!max-w-[240px] lg:!max-w-[280px]"
                       : "rounded-xl",
@@ -759,6 +806,10 @@ export default function BrandKitExportPage() {
                     backgroundSize:
                       activeTheme.bgColor === "transparent"
                         ? "10px 10px"
+                        : undefined,
+                    aspectRatio:
+                      activeGroup.id === "formless-cover"
+                        ? `${FORMLESS_PRINT_COVER.width} / ${FORMLESS_PRINT_COVER.height}`
                         : undefined,
                   }}
                 >

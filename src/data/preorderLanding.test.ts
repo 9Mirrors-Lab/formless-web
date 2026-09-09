@@ -14,7 +14,7 @@ describe('preorderLanding copy', () => {
 
   it('frames waitlist as a special preview that begins with the Introduction', () => {
     expect(PREORDER_COPY.waitlist.relation.toLowerCase()).toContain('special preview');
-    expect(PREORDER_COPY.waitlist.deck.toLowerCase()).toBe('out now on amazon · $0.99');
+    expect(PREORDER_COPY.waitlist.deck.toLowerCase()).toBe('out now on amazon · $9.99');
     expect(PREORDER_COPY.waitlist.preorderLabel).toBe('Buy on Amazon');
     expect(PREORDER_COPY.waitlist.title.toLowerCase()).toContain('before you read the book');
     expect(PREORDER_COPY.waitlist.lede.toLowerCase()).toContain('own voice');
@@ -27,7 +27,7 @@ describe('preorderLanding copy', () => {
   });
 
   it('names the Kindle facts from the listing', () => {
-    expect(PREORDER_FACTS.price).toBe('$0.99');
+    expect(PREORDER_FACTS.price).toBe('$9.99');
     expect(PREORDER_FACTS.delivers).toBe('Out now');
     expect(PREORDER_FACTS.pages).toContain('183');
   });

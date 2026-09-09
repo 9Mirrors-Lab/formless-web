@@ -22,8 +22,8 @@ export function kindlePreorderHref(): string {
 
 export const PREORDER_FACTS = {
   format: 'Kindle',
-  price: '$0.99',
-  /** Short status line for hero lockups (e.g. Amazon · $0.99 · Out now). */
+  price: '$9.99',
+  /** Short status line for hero lockups (e.g. Amazon · $9.99 · Out now). */
   delivers: 'Out now',
   deliversFull: 'September 1, 2026',
   pages: '183 pages',
@@ -47,7 +47,7 @@ export const PREORDER_COPY: Record<PreorderAudience, PreorderCopy> = {
   waitlist: {
     relation: 'A special preview',
     title: 'Before you read the book, hear where the journey begins.',
-    deck: 'Out now on Amazon · $0.99',
+    deck: 'Out now on Amazon · $9.99',
     lede: 'As a thank you for being here, I wanted to share the introduction to Formless with you in my own voice.',
     preorderLabel: AMAZON_PURCHASE_CTA,
     documentTitle: 'A special preview',

@@ -147,6 +147,7 @@ describe('brandMaterials', () => {
     expect(ids).toEqual(['ebook', 'print']);
     expect(covers?.variants[0]?.src).toBe(FORMLESS_BOOK_COVER.src);
     expect(covers?.variants[0]?.canonicalPath).toBe('/book-covers/formless-ebook.jpg');
+    expect(covers?.variants[1]?.src).toBe('/book-covers/formless-print.jpg');
     expect(covers?.variants[1]?.canonicalPath).toBe('/book-covers/formless-print.jpg');
   });
 

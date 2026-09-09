@@ -436,13 +436,13 @@ export const BRAND_ASSET_FAMILIES: readonly BrandAssetFamily[] = [
       {
         id: 'print',
         label: 'Print book',
-        format: 'Print front',
+        format: 'JPEG · 4480×7168 · 300 dpi',
         status: 'active',
-        src: FORMLESS_BOOK_COVER.src,
+        src: '/book-covers/formless-print.jpg',
         canonicalPath: '/book-covers/formless-print.jpg',
-        usedOn: ['KDP / print listing'],
+        usedOn: ['KDP / print listing', '/brand-kit-export'],
         notes:
-          'Front matches the Kindle jacket. When a distinct wrap exists, put it at /book-covers/formless-print.jpg.',
+          'Same painting as the Kindle jacket, upscaled for ~15" × 24" at 300 dpi. Download from Logo Options.',
       },
     ],
   },
