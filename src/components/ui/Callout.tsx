@@ -136,7 +136,7 @@ function Label({
     <span
       className={cx(
         'font-mono text-[10px] uppercase tracking-[0.25em]',
-        surface === 'dark' ? 'text-cream/55' : 'text-charcoal/55',
+        surface === 'dark' ? 'text-[#9a9a94]' : 'text-charcoal/55',
         className,
       )}
     >
@@ -170,7 +170,7 @@ export function Callout({
           className={cx(
             'inline-flex items-center gap-2.5 rounded-sm border px-3 py-1.5',
             isDark
-              ? 'border-cream/10 bg-black/[0.22] text-cream/32 shadow-[inset_0_1px_2px_rgba(0,0,0,0.55)]'
+              ? 'border-cream/10 bg-black/[0.22] text-[#7a7a74] shadow-[inset_0_1px_2px_rgba(0,0,0,0.55)]'
               : 'border-charcoal/10 bg-charcoal/[0.04] text-charcoal/45 shadow-[inset_0_1px_2px_rgba(0,0,0,0.08)]',
             className,
           )}
@@ -194,7 +194,7 @@ export function Callout({
         <div className={cx('inline-flex flex-col gap-2', className)}>
           <div className="inline-flex items-center gap-2.5">
             <CalloutMark surface={surface} icon={icon} pulse={pulse} size={18} />
-            <Label surface={surface} className={isDark ? 'text-cream/50' : 'text-charcoal/50'}>
+            <Label surface={surface} className={isDark ? 'text-[#8e8e88]' : 'text-charcoal/50'}>
               {children}
             </Label>
           </div>
@@ -222,7 +222,7 @@ export function Callout({
           <span
             className={cx(
               'font-serif text-sm italic leading-none tracking-normal normal-case',
-              isDark ? 'text-cream/50' : 'text-charcoal/55',
+              isDark ? 'text-[#9a9a94]' : 'text-charcoal/55',
             )}
           >
             {children}
@@ -236,7 +236,7 @@ export function Callout({
           className={cx(
             'inline-flex items-center gap-2 rounded-full border px-3 py-1.5',
             isDark
-              ? 'border-cream/15 bg-cream/5 text-cream/50'
+              ? 'border-cream/15 bg-cream/5 text-[#9a9a94]'
               : 'border-charcoal/15 bg-charcoal/5 text-charcoal/50',
             className,
           )}

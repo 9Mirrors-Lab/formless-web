@@ -11,7 +11,9 @@ export function BookInsightCard({ insight, featured = false }: BookInsightCardPr
   return (
     <article
       className={`group relative flex flex-col overflow-hidden bg-cream ${
-        featured ? 'min-h-[28rem] md:min-h-[34rem]' : 'min-h-[22rem] md:min-h-[26rem]'
+        featured
+          ? 'aspect-[3/4] min-h-0'
+          : 'min-h-[22rem] md:min-h-[26rem]'
       }`}
     >
       <a
@@ -37,14 +39,34 @@ export function BookInsightCard({ insight, featured = false }: BookInsightCardPr
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
             aria-hidden
           >
-            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-cream/40 bg-charcoal/35 backdrop-blur-[2px]">
-              <span className="ml-0.5 border-y-[7px] border-l-[12px] border-y-transparent border-l-cream" />
+            <span
+              className={`flex items-center justify-center rounded-full border border-cream/40 bg-charcoal/35 backdrop-blur-[2px] ${
+                featured ? 'h-10 w-10' : 'h-14 w-14'
+              }`}
+            >
+              <span
+                className={`ml-0.5 border-y-transparent border-l-cream ${
+                  featured
+                    ? 'border-y-[5px] border-l-[9px]'
+                    : 'border-y-[7px] border-l-[12px]'
+                }`}
+              />
             </span>
           </div>
         ) : null}
-        <div className="absolute inset-x-0 bottom-0 z-[1] p-5 md:p-6">
-          <p className="font-serif text-lg leading-snug text-cream md:text-xl">{insight.caption}</p>
-          <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-cream/70 transition-colors group-hover:text-cream">
+        <div
+          className={`absolute inset-x-0 bottom-0 z-[1] ${
+            featured ? 'p-4' : 'p-5 md:p-6'
+          }`}
+        >
+          <p
+            className={`font-serif leading-snug text-cream ${
+              featured ? 'text-base md:text-lg' : 'text-lg md:text-xl'
+            }`}
+          >
+            {insight.caption}
+          </p>
+          <span className="mt-3 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-cream/70 transition-colors group-hover:text-cream md:mt-4">
             {insight.ctaLabel}
             <span aria-hidden>↗</span>
           </span>

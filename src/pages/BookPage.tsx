@@ -7,9 +7,9 @@ import { BookHeroPurchasePanel } from '../components/BookHeroPurchasePanel';
 import { BookAvailabilitySection } from '../components/BookAvailabilitySection';
 import { TeachingIconMark } from '@/components/iconography/TeachingIconMark';
 import {
-  HelixTeachingLockup,
-  beatsFromQuotes,
-} from '@/components/HelixTeachingLockup';
+  TeachingQuotesLockup,
+  teachingBeatsFromQuotes,
+} from '@/components/TeachingQuotesLockup';
 import { useContent, type ContentApi } from '@/context/ContentContext';
 import { useIconAnimations } from '@/hooks/useIconAnimations';
 
@@ -38,7 +38,7 @@ export default function BookPage() {
   const { getText, getLink, ordered, textFromEntry } = content;
   const themes = themesFromContent(content);
   const quotes = ordered('book', 'quotes').map(textFromEntry);
-  const helixBeats = beatsFromQuotes(quotes);
+  const teachingBeats = teachingBeatsFromQuotes(quotes);
   useIconAnimations(pageRef);
 
   const ctaWork = getLink('book', 'closing', 'cta_work');
@@ -122,17 +122,17 @@ export default function BookPage() {
           },
         },
       );
-      const desktopQuotes = gsap.utils.toArray<HTMLElement>('.pull-quote-desktop');
+      const quoteBeats = gsap.utils.toArray<HTMLElement>('.teaching-quote-beat');
 
-      if (desktopQuotes.length) {
+      if (quoteBeats.length) {
         gsap.fromTo(
-          desktopQuotes,
-          { y: 40, opacity: 0 },
+          quoteBeats,
+          { y: 32, opacity: 0 },
           {
             y: 0,
             opacity: 1,
             duration: 0.8,
-            stagger: 0.15,
+            stagger: 0.18,
             ease: 'power3.out',
             scrollTrigger: { trigger: quotesRef.current, start: 'top 70%', once: true },
           },
@@ -245,30 +245,9 @@ export default function BookPage() {
 
         <section
           ref={quotesRef}
-          className="w-full border-t border-cream/8 px-6 pt-12 pb-0 md:px-16 md:py-28 lg:px-24"
+          className="w-full border-t border-cream/8 px-6 py-16 md:px-16 md:py-28 lg:px-24"
         >
-          {/* Mobile: Trace helix rooted into the themes hairline (clean stroke, not dust) */}
-          <div className="md:hidden">
-            <HelixTeachingLockup
-              motion="trace"
-              playback="once"
-              beats={helixBeats}
-              brandLabel={null}
-              rooted
-            />
-          </div>
-
-          {/* Desktop pull quotes */}
-          <div className="mx-auto hidden max-w-4xl flex-col gap-16 md:flex md:pb-0">
-            {quotes.map((quote, i) => (
-              <blockquote
-                key={i}
-                className="pull-quote-desktop border-l-2 border-clay/30 pl-8 font-serif text-2xl italic leading-[1.3] text-cream/70 whitespace-pre-line md:text-4xl"
-              >
-                {quote}
-              </blockquote>
-            ))}
-          </div>
+          <TeachingQuotesLockup beats={teachingBeats} />
         </section>
 
         <section

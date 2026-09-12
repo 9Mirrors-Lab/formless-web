@@ -16,6 +16,8 @@ export const INTERNAL_ANALYTICS_PATH_PREFIXES = [
   '/design-framework',
   '/layout-tests',
   '/cosmic-concepts',
+  '/monument-home',
+  '/monument-book',
   '/brand-kit-export',
   '/brand',
   '/speaker-sheet',

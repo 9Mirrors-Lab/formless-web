@@ -79,7 +79,7 @@ function VariantRow({
           <h3
             className={
               isDark
-                ? 'font-sans text-sm font-semibold text-cream'
+                ? 'font-sans text-sm font-semibold text-[#d8d6cf]'
                 : 'font-sans text-sm font-semibold text-charcoal'
             }
           >
@@ -99,7 +99,7 @@ function VariantRow({
         <p
           className={
             isDark
-              ? 'mt-2 text-xs leading-relaxed text-cream/45'
+              ? 'mt-2 text-xs leading-relaxed text-[#8a8a84]'
               : 'mt-2 text-xs leading-relaxed text-charcoal/50'
           }
         >
@@ -140,12 +140,12 @@ function IconMarkGrid() {
   return (
     <section className="mb-16">
       <div className="mb-8 max-w-3xl">
-        <h2 className="font-serif text-3xl italic text-cream">Teaching marks as callout signals</h2>
-        <p className="mt-4 text-base leading-relaxed text-cream/55">
+        <h2 className="font-serif text-3xl italic text-[#d8d6cf]">Teaching marks as callout signals</h2>
+        <p className="mt-4 text-base leading-relaxed text-[#9a9a94]">
           Instead of a generic bullet, pull from the approved marks on{' '}
           <a
             href="/icons"
-            className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream"
+            className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-[#d8d6cf]"
           >
             /icons
           </a>
@@ -172,7 +172,7 @@ function IconMarkGrid() {
                 <TeachingIconMark id={id} theme="dark" size={40} animate />
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-sans text-xs font-semibold uppercase tracking-wide text-cream">
+                <h3 className="font-sans text-xs font-semibold uppercase tracking-wide text-[#d8d6cf]">
                   {spec.title}
                 </h3>
                 {isDefault ? (
@@ -181,7 +181,7 @@ function IconMarkGrid() {
                   </span>
                 ) : null}
               </div>
-              <p className="mt-2 text-[11px] leading-relaxed text-cream/45">{spec.desc}</p>
+              <p className="mt-2 text-[11px] leading-relaxed text-[#8a8a84]">{spec.desc}</p>
               <div className="mt-4 border-t border-cream/8 pt-4">
                 <Callout variant="editorial" surface="dark" icon={id}>
                   {SAMPLE}
@@ -203,7 +203,7 @@ export default function ComponentsPage() {
   return (
     <div
       ref={pageRef}
-      className="min-h-screen bg-[#080a09] text-cream selection:bg-clay/35 selection:text-cream"
+      className="min-h-screen bg-[#080a09] text-[#c4c2bb] selection:bg-clay/35 selection:text-cream"
     >
       <div className="noise-overlay-dark pointer-events-none" aria-hidden />
 
@@ -220,10 +220,10 @@ export default function ComponentsPage() {
             <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.3em] text-moss">
               Component library
             </p>
-            <h1 className="max-w-xl font-serif text-4xl font-light italic leading-tight md:text-5xl">
+            <h1 className="max-w-xl font-serif text-4xl font-light italic leading-tight text-[#d8d6cf] md:text-5xl">
               Components
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-cream/55">
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#9a9a94]">
               Visual options for site patterns that must stay distinct from primary
               navigation. Callouts use teaching marks from the icon system so small
               status moments still feel branded.
@@ -254,25 +254,25 @@ export default function ComponentsPage() {
 
       <main className="mx-auto max-w-6xl px-5 py-12 md:px-8 md:py-16">
         <section className="mb-16 max-w-3xl">
-          <h2 className="font-serif text-3xl italic text-cream">Status callouts</h2>
-          <p className="mt-4 text-base leading-relaxed text-cream/55">
+          <h2 className="font-serif text-3xl italic text-[#d8d6cf]">Status callouts</h2>
+          <p className="mt-4 text-base leading-relaxed text-[#9a9a94]">
             Use for release dates, quiet notices, and other non-interactive meta.
             Do not borrow the nav capsule unless the element is actually a control.
             Prefer a teaching icon over a bullet.
           </p>
-          <ul className="mt-6 space-y-2 text-sm text-cream/45">
+          <ul className="mt-6 space-y-2 text-sm text-[#8a8a84]">
             <li>
-              <span className="text-cream/70">Principle:</span> editorial signal, branded mark.
+              <span className="text-[#b0aea7]">Principle:</span> editorial signal, branded mark.
             </li>
             <li>
-              <span className="text-cream/70">Marks:</span> scaled from{' '}
+              <span className="text-[#b0aea7]">Marks:</span> scaled from{' '}
               <code className="rounded bg-cream/10 px-1.5 py-0.5 font-mono text-[11px] text-[#9fb5aa]">
                 TEACHING_ICONS
               </code>
               .
             </li>
             <li>
-              <span className="text-cream/70">Default on /book:</span>{' '}
+              <span className="text-[#b0aea7]">Default on /book:</span>{' '}
               <code className="rounded bg-cream/10 px-1.5 py-0.5 font-mono text-[11px] text-[#9fb5aa]">
                 variant=&quot;editorial&quot; icon=&quot;formless&quot;
               </code>
@@ -297,7 +297,7 @@ export default function ComponentsPage() {
                 </span>
               ))}
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-cream/45">
+            <p className="mt-4 text-sm leading-relaxed text-[#8a8a84]">
               Interactive chrome. Soft capsule, bordered track, uppercase labels.
             </p>
           </article>
@@ -310,7 +310,7 @@ export default function ComponentsPage() {
                 {SAMPLE}
               </Callout>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-cream/45">
+            <p className="mt-4 text-sm leading-relaxed text-[#8a8a84]">
               Same pill recipe as nav, plus a generic bullet. Status looked clickable and
               carried no teaching language.
             </p>
@@ -323,7 +323,7 @@ export default function ComponentsPage() {
         </section>
 
         <section className="mt-16 max-w-3xl border-t border-cream/10 pt-10">
-          <h2 className="font-serif text-2xl italic text-cream">Usage</h2>
+          <h2 className="font-serif text-2xl italic text-[#d8d6cf]">Usage</h2>
           <pre className="mt-5 overflow-x-auto rounded-xl border border-cream/10 bg-black/30 p-5 font-mono text-[12px] leading-relaxed text-[#9fb5aa]">
 {`import { Callout } from '@/components/ui/Callout';
 
@@ -331,19 +331,19 @@ export default function ComponentsPage() {
   Arriving September 1, 2026
 </Callout>`}
           </pre>
-          <p className="mt-6 text-sm leading-relaxed text-cream/45">
+          <p className="mt-6 text-sm leading-relaxed text-[#8a8a84]">
             Source:{' '}
-            <code className="rounded bg-cream/10 px-1.5 py-0.5 font-mono text-[11px] text-cream/70">
+            <code className="rounded bg-cream/10 px-1.5 py-0.5 font-mono text-[11px] text-[#b0aea7]">
               src/components/ui/Callout.tsx
             </code>
             ,{' '}
-            <code className="rounded bg-cream/10 px-1.5 py-0.5 font-mono text-[11px] text-cream/70">
+            <code className="rounded bg-cream/10 px-1.5 py-0.5 font-mono text-[11px] text-[#b0aea7]">
               TeachingIconMark.tsx
             </code>
             . Full marks at{' '}
             <a
               href="/icons"
-              className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-cream"
+              className="text-[#9fb5aa] underline decoration-[#9fb5aa]/30 underline-offset-4 hover:text-[#d8d6cf]"
             >
               /icons
             </a>
