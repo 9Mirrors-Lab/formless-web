@@ -1,9 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  AUDIBLE_HREF,
+  AMAZON_BOOKS_HREF,
   KINDLE_PREORDER_HREF,
   PREORDER_COPY,
   PREORDER_FACTS,
+  amazonBooksHref,
+  audibleHref,
   kindlePreorderHref,
 } from './preorderLanding';
 
@@ -40,5 +44,20 @@ describe('preorderLanding copy', () => {
   it('prefers the product URL when provided', () => {
     vi.stubEnv('VITE_KINDLE_PREORDER_URL', 'https://www.amazon.com/dp/EXAMPLE');
     expect(kindlePreorderHref()).toBe('https://www.amazon.com/dp/EXAMPLE');
+  });
+
+  it('uses the live Audible listing until env overrides', () => {
+    vi.stubEnv('VITE_AUDIBLE_URL', '');
+    expect(audibleHref()).toBe(AUDIBLE_HREF);
+  });
+
+  it('prefers the Audible URL when provided', () => {
+    vi.stubEnv('VITE_AUDIBLE_URL', 'https://www.audible.com/pd/Example/B0EXAMPLE');
+    expect(audibleHref()).toBe('https://www.audible.com/pd/Example/B0EXAMPLE');
+  });
+
+  it('uses the Amazon Books search until print URL is configured', () => {
+    vi.stubEnv('VITE_AMAZON_BOOKS_URL', '');
+    expect(amazonBooksHref()).toBe(AMAZON_BOOKS_HREF);
   });
 });

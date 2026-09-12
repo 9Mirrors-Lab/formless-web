@@ -121,6 +121,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'public/design/about-page-layouts.html',
   },
   {
+    id: 'science-explore',
+    title: 'Science page concepts (A–E)',
+    href: '/science-explore',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Five science compositions: production observatory baseline, icon atlas, specimen index, witness nucleus, bridge ledger. Teaching marks + orbit grammar.',
+    source: 'src/pages/ScienceExplorePage.tsx',
+  },
+  {
     id: 'science-directions',
     title: 'Science · dark directions',
     href: '/design/science-page-v2-directions.html',
@@ -209,13 +219,13 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
   },
   {
     id: 'audio-advance-listen',
-    title: 'Advance listen',
+    title: 'Advance listen (retired)',
     href: '/advance-listen',
     section: 'layout-pages',
     status: 'experiment',
     description:
-      'Standalone Formless listen: optimized master, mobile now-playing, chapter drawer.',
-    source: 'src/pages/AdvanceListenPage.tsx',
+      'Retired promotion room. Redirects to /book; live audiobook is on Audible.',
+    source: 'src/PublicShell.tsx (AdvanceListenRetiredRedirect)',
   },
   {
     id: 'audio-companion',

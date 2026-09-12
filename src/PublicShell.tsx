@@ -16,6 +16,7 @@ import WorkPage from './pages/WorkPage';
 import Work2Page from './pages/Work2Page';
 import BookPage from './pages/BookPage';
 import BookInsightsPreviewPage from './pages/BookInsightsPreviewPage';
+import BookLockupsExplorePage from './pages/BookLockupsExplorePage';
 import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
 import QAPage from './pages/QAPage';
@@ -34,6 +35,9 @@ import SpeakerSheetPage from './pages/SpeakerSheetPage';
 import ZoomBackgroundsPage from './pages/ZoomBackgroundsPage';
 import LayoutTestsPage from './pages/LayoutTestsPage';
 import CosmicConceptsPage from './pages/CosmicConceptsPage';
+import MonumentHomeExplorePage from './pages/MonumentHomeExplorePage';
+import MonumentBookExplorePage from './pages/MonumentBookExplorePage';
+import ScienceExplorePage from './pages/ScienceExplorePage';
 import PatternMirrorPage from './pages/PatternMirrorPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
@@ -56,7 +60,6 @@ import AudioRecordSessionsPage from './pages/AudioRecordSessionsPage';
 import AudioReRecordsPage from './pages/AudioReRecordsPage';
 import AudioRecordListPage from './pages/AudioRecordListPage';
 import AudioScriptComparePage from './pages/AudioScriptComparePage';
-import AdvanceListenPage from './pages/AdvanceListenPage';
 import PreorderLandingPage from './pages/PreorderLandingPage';
 import AudioCompanionKitPage from './pages/AudioCompanionKitPage';
 import AudioSendTakePage from './pages/AudioSendTakePage';
@@ -69,9 +72,8 @@ import { PostHogPageView } from './components/PostHogPageView';
 import { DevMenu } from './components/DevMenu';
 import { PageLayout } from './components/PageLayout';
 import { HomePageContent } from './components/HomePageContent';
-import { RequireAdvanceListenEmail } from './components/RequireAdvanceListenEmail';
 import { RequireInternalAuth } from './components/RequireInternalAuth';
-import { isAdvanceListenPath, isInternalAuthPath } from './config/internalAccess';
+import { isInternalAuthPath } from './config/internalAccess';
 import { isPreorderPath, preorderAudienceFromPath } from './config/preorderAccess';
 import { hasAuthCallbackCode } from './lib/auth';
 
@@ -88,7 +90,14 @@ function BackgroundsLegacyRedirect() {
 
 function EditorialV2LegacyRedirect() {
   useLayoutEffect(() => {
-    window.location.replace('/advance-listen');
+    window.location.replace('/book');
+  }, []);
+  return null;
+}
+
+function AdvanceListenRetiredRedirect() {
+  useLayoutEffect(() => {
+    window.location.replace('/book');
   }, []);
   return null;
 }
@@ -127,6 +136,7 @@ export function Root({ path }: { path: string }) {
   const isWork2 = path === '/work2';
   const isBook = path === '/book';
   const isBookPreview = path === '/book-preview';
+  const isBookLockups = path === '/book-lockups';
   const isScience = path === '/science';
   const isAbout = path === '/about';
   const isQa = path === '/qa';
@@ -148,6 +158,9 @@ export function Root({ path }: { path: string }) {
   const isZoomBackgrounds = path === '/zoom-backgrounds';
   const isLayoutTests = path === '/layout-tests';
   const isCosmicConcepts = path === '/cosmic-concepts';
+  const isMonumentHome = path === '/monument-home';
+  const isMonumentBook = path === '/monument-book';
+  const isScienceExplore = path === '/science-explore';
   const isPatternMirror = path === '/pattern-mirror';
   const isPrivacy = path === '/privacy';
   const isTerms = path === '/terms';
@@ -194,6 +207,7 @@ export function Root({ path }: { path: string }) {
   if (isWork2) return <Work2Page />;
   if (isBook) return <BookPage />;
   if (isBookPreview) return <BookInsightsPreviewPage />;
+  if (isBookLockups) return <BookLockupsExplorePage />;
   if (isScience) return <SciencePage />;
   if (isAbout) return <AboutPage />;
   if (isQa) return <QAPage />;
@@ -213,6 +227,9 @@ export function Root({ path }: { path: string }) {
   if (isZoomBackgrounds) return <ZoomBackgroundsPage />;
   if (isLayoutTests) return <LayoutTestsPage />;
   if (isCosmicConcepts) return <CosmicConceptsPage />;
+  if (isMonumentHome) return <MonumentHomeExplorePage />;
+  if (isMonumentBook) return <MonumentBookExplorePage />;
+  if (isScienceExplore) return <ScienceExplorePage />;
   if (isPatternMirror) return <PatternMirrorPage />;
   if (isPrivacy) return <PrivacyPage />;
   if (isTerms) return <TermsPage />;
@@ -234,7 +251,7 @@ export function Root({ path }: { path: string }) {
   if (isAudioReRecords) return <AudioReRecordsPage />;
   if (isAudioRecordList) return <AudioRecordListPage />;
   if (isAudioScriptCompare) return <AudioScriptComparePage />;
-  if (isAudioAdvanceListen) return <AdvanceListenPage />;
+  if (isAudioAdvanceListen) return <AdvanceListenRetiredRedirect />;
   if (isAudioEditorialV2Legacy) return <EditorialV2LegacyRedirect />;
   if (isAudioCompanion) return <AudioCompanionKitPage />;
   if (isAudioSendTake) return <AudioSendTakePage />;
@@ -295,6 +312,10 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/audio/files' ||
     path === '/special-preview' ||
     path === '/book-preview' ||
+    path === '/book-lockups' ||
+    path === '/science-explore' ||
+    path === '/monument-home' ||
+    path === '/monument-book' ||
     path === '/preorder' ||
     path === '/preorder/stay-close' ||
     path === '/qa'
@@ -309,15 +330,6 @@ function AppContentShell({ path }: { path: string }) {
   // AuthCallbackPage is built without Navbar/Footer (those call useContent).
   if (path === '/auth/callback' || hasAuthCallbackCode(window.location.search)) {
     return <AuthCallbackPage />;
-  }
-
-  if (isAdvanceListenPath(path)) {
-    return (
-      <>
-        <RequireAdvanceListenEmail>{page}</RequireAdvanceListenEmail>
-        <DevMenu path={path} />
-      </>
-    );
   }
 
   if (isPreorderPath(path)) {

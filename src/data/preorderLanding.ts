@@ -11,6 +11,16 @@ export const PREORDER_WORDMARK_SRC = '/brand/eyes-closed-lockup-on-cream.svg';
 /** Live Kindle listing. Override with VITE_KINDLE_PREORDER_URL if needed. */
 export const KINDLE_PREORDER_HREF = 'https://www.amazon.com/dp/B0HFYC45QC';
 
+/** Live Audible listing. Override with VITE_AUDIBLE_URL if needed. */
+export const AUDIBLE_HREF = 'https://www.audible.com/pd/Formless-Audiobook/B0HHHJXR6W';
+
+/**
+ * Amazon Books (print) listing. Override with VITE_AMAZON_BOOKS_URL when paperback is live.
+ * Until then, search keeps the logo useful without inventing a product page.
+ */
+export const AMAZON_BOOKS_HREF =
+  'https://www.amazon.com/s?k=Formless+Who+You+Truly+Are+Beyond+the+Mind+Sonika+Cottman+paperback';
+
 /** Search listing kept if the product page is unpublished. */
 export const KINDLE_PREORDER_SEARCH_HREF =
   'https://www.amazon.com/s?k=Formless+Who+You+Truly+Are+Beyond+the+Mind+Sonika+Cottman';
@@ -18,6 +28,16 @@ export const KINDLE_PREORDER_SEARCH_HREF =
 export function kindlePreorderHref(): string {
   const fromEnv = import.meta.env.VITE_KINDLE_PREORDER_URL?.trim();
   return fromEnv || KINDLE_PREORDER_HREF;
+}
+
+export function audibleHref(): string {
+  const fromEnv = import.meta.env.VITE_AUDIBLE_URL?.trim();
+  return fromEnv || AUDIBLE_HREF;
+}
+
+export function amazonBooksHref(): string {
+  const fromEnv = import.meta.env.VITE_AMAZON_BOOKS_URL?.trim();
+  return fromEnv || AMAZON_BOOKS_HREF;
 }
 
 export const PREORDER_FACTS = {

@@ -385,6 +385,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/LayoutTestsPage.tsx',
   },
   {
+    id: 'science-explore',
+    title: 'Science page concepts (A–E)',
+    path: '/science-explore',
+    category: 'design',
+    description:
+      'Five science page variants: observatory baseline, icon atlas, specimen index, witness nucleus, bridge ledger.',
+    source: 'src/pages/ScienceExplorePage.tsx',
+  },
+  {
     id: 'cosmic-concepts',
     title: 'Cosmic concepts (A–D)',
     path: '/cosmic-concepts',
@@ -392,6 +401,24 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     description:
       'Four cosmic home variants built from design-system icons and /science orbit language.',
     source: 'src/pages/CosmicConceptsPage.tsx',
+  },
+  {
+    id: 'monument-home',
+    title: 'Monument · home exploration',
+    path: '/monument-home',
+    category: 'design',
+    description:
+      'Southwestern surreal home direction. Matte charcoal, monolithic forms, horizon tension.',
+    source: 'src/pages/MonumentHomeExplorePage.tsx',
+  },
+  {
+    id: 'monument-book',
+    title: 'Monument · book exploration',
+    path: '/monument-book',
+    category: 'design',
+    description:
+      'Book page in monument layout. Slab purchase panel, quote stacks, teaching index.',
+    source: 'src/pages/MonumentBookExplorePage.tsx',
   },
   {
     id: 'pattern-mirror',
@@ -475,12 +502,12 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
   },
   {
     id: 'audio-advance-listen',
-    title: 'Advance listen',
+    title: 'Advance listen (retired)',
     path: '/advance-listen',
     category: 'design',
     description:
-      'Standalone Formless listen world: optimized master, mobile now-playing, chapter drawer.',
-    source: 'src/pages/AdvanceListenPage.tsx',
+      'Retired promotion room. /advance-listen redirects to /book; use live Audible links instead.',
+    source: 'src/PublicShell.tsx (AdvanceListenRetiredRedirect)',
   },
   {
     id: 'audio-companion',

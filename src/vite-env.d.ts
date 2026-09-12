@@ -22,6 +22,10 @@ interface ImportMetaEnv {
   readonly VITE_BYPASS_INTERNAL_AUTH?: string;
   /** Amazon Kindle product URL for the Formless pre-order landing. */
   readonly VITE_KINDLE_PREORDER_URL?: string;
+  /** Live Audible listing for Formless. */
+  readonly VITE_AUDIBLE_URL?: string;
+  /** Amazon Books (print) listing when paperback is live. */
+  readonly VITE_AMAZON_BOOKS_URL?: string;
 }
 
 interface ImportMeta {

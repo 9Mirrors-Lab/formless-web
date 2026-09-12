@@ -1,3 +1,10 @@
+import {
+  amazonBooksHref,
+  audibleHref,
+  kindlePreorderHref,
+} from '@/data/preorderLanding';
+import { captureCtaClick } from '@/lib/analytics';
+
 type AvailabilityPlatform = {
   id: string;
   label: string;
@@ -6,6 +13,7 @@ type AvailabilityPlatform = {
   logoSrc: string;
   logoAlt: string;
   logoClassName: string;
+  href: () => string;
 };
 
 const PLATFORMS: AvailabilityPlatform[] = [
@@ -18,6 +26,7 @@ const PLATFORMS: AvailabilityPlatform[] = [
     logoAlt: 'Amazon Books',
     logoClassName:
       'h-4 w-auto max-w-[72px] object-contain object-center md:h-9 md:max-w-[168px] md:object-left',
+    href: amazonBooksHref,
   },
   {
     id: 'kindle',
@@ -28,6 +37,7 @@ const PLATFORMS: AvailabilityPlatform[] = [
     logoAlt: 'Kindle',
     logoClassName:
       'h-3.5 w-auto max-w-[68px] object-contain object-center md:h-8 md:max-w-[148px] md:object-left',
+    href: kindlePreorderHref,
   },
   {
     id: 'audible',
@@ -38,6 +48,7 @@ const PLATFORMS: AvailabilityPlatform[] = [
     logoAlt: 'Audible',
     logoClassName:
       'h-4 w-auto max-w-[70px] object-contain object-center md:h-9 md:max-w-[160px] md:object-left',
+    href: audibleHref,
   },
 ];
 
@@ -98,13 +109,25 @@ export function BookAvailabilitySection({
               </p>
 
               <div className="order-2 flex min-h-[1.25rem] items-center justify-center md:order-2 md:min-h-[2.75rem] md:justify-start">
-                <img
-                  src={platform.logoSrc}
-                  alt={platform.logoAlt}
-                  className={platform.logoClassName}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <a
+                  href={platform.href()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() =>
+                    captureCtaClick(platform.label, platform.href(), 'book_availability')
+                  }
+                  className="inline-flex rounded-sm transition-opacity duration-200 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/50"
+                  aria-label={`Get Formless on ${platform.label}`}
+                >
+                  <img
+                    src={platform.logoSrc}
+                    alt=""
+                    aria-hidden
+                    className={platform.logoClassName}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
               </div>
             </li>
           ))}
