@@ -117,6 +117,14 @@ function googleDriveMediaProxy(): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+        continuityv2: path.resolve(__dirname, "continuityv2.html"),
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
