@@ -30,8 +30,6 @@ export type ContinuityMapGroupId =
 
 export type ContinuityDeskId = ContinuityNodeId | 'start-here' | 'picture';
 
-export const CONTINUITY_PATH = '/continuity';
-
 export const CONTINUITY_HEADLINE = 'Continuity';
 
 export const CONTINUITY_LEDE =

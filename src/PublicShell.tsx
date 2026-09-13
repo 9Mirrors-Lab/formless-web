@@ -52,7 +52,6 @@ import ClientReviewHeroClassicPage from './pages/ClientReviewHeroClassicPage';
 import ClientReviewHelixLockupPage from './pages/ClientReviewHelixLockupPage';
 import ClientReviewHelixDustPage from './pages/ClientReviewHelixDustPage';
 import SiteHubPage from './pages/SiteHubPage';
-import ContinuityPage from './pages/ContinuityPage';
 import ContinuityV2Page from './pages/ContinuityV2Page';
 import AudioStudioPage from './pages/AudioStudioPage';
 import AudioEditorialPage from './pages/AudioEditorialPage';
@@ -200,7 +199,6 @@ export function Root({ path }: { path: string }) {
   const isDesignFramework = path === '/design-framework';
   const isIcons = path === '/icons';
   const isHub = path === '/hub';
-  const isContinuity = path === '/continuity';
   const isContinuityV2 = path === '/continuityv2';
   const preorderAudience = preorderAudienceFromPath(path);
 
@@ -275,7 +273,6 @@ export function Root({ path }: { path: string }) {
   if (isDesignFramework) return <DesignFrameworkPage />;
   if (isIcons) return <IconsPage />;
   if (isHub) return <SiteHubPage />;
-  if (isContinuity) return <ContinuityPage />;
   if (isContinuityV2) return <ContinuityV2Page />;
   return <App />;
 }
@@ -283,7 +280,6 @@ export function Root({ path }: { path: string }) {
 function isUnrestrictedPath(path: string): boolean {
   return (
     path === '/hub' ||
-    path === '/continuity' ||
     path === '/continuityv2' ||
     path === '/brand' ||
     path === '/brand/signups' ||

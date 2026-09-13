@@ -6,7 +6,6 @@ import {
   CONTINUITY_DESK_TOPICS,
   CONTINUITY_MAP_EDGES,
   CONTINUITY_MAP_NODES,
-  CONTINUITY_PATH,
   CONTINUITY_RUNNING,
   CONTINUITY_START_HERE,
   CONTINUITY_VERCEL,
@@ -17,11 +16,6 @@ import {
 } from '@/data/continuityHome';
 
 describe('continuityHome', () => {
-  it('keeps the private route off the public path list shape', () => {
-    expect(CONTINUITY_PATH).toBe('/continuity');
-    expect(CONTINUITY_PATH.startsWith('/brand')).toBe(false);
-  });
-
   it('maps every ecosystem node once', () => {
     const ids = CONTINUITY_MAP_NODES.map((node) => node.id);
     expect(new Set(ids).size).toBe(12);
