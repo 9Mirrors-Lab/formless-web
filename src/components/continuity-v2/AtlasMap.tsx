@@ -210,7 +210,7 @@ function AtlasDesktop({ onJump }: AtlasMapProps) {
           </motion.g>
         </svg>
 
-        {/* Centre */}
+        {/* Center */}
         <motion.div
           className="pointer-events-none absolute z-20 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center"
           style={{ left: '50%', top: pct(430, VIEW_H) }}
@@ -224,8 +224,8 @@ function AtlasDesktop({ onJump }: AtlasMapProps) {
             transition={{ duration: 1, ease: EASE }}
           >
             <img src={logoWhiteSrc} alt="" width={1929} height={865} className="h-7 w-auto" />
-            <p className="mt-3 font-sans text-[10px] uppercase tracking-[0.34em] text-cream/40">
-              The centre
+            <p className="mt-3 font-sans text-[10px] uppercase tracking-[0.28em] [word-spacing:0.45em] text-cream/40">
+              The center
             </p>
           </motion.div>
         </motion.div>
@@ -593,7 +593,7 @@ function AtlasSemantics() {
     <div className="sr-only">
       <h3>Continuity map of Eyes Closed</h3>
       <p>
-        Eyes Closed sits at the centre. Everything connected to it is grouped into four
+        Eyes Closed sits at the center. Everything connected to it is grouped into four
         territories.
       </p>
       {ATLAS_TERRITORIES.map((territory) => (

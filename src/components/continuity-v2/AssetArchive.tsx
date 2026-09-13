@@ -29,7 +29,7 @@ export function AssetArchive() {
     <div>
       <Reveal className="max-w-[58ch]">
         <p className="font-sans text-[1.02rem] leading-[1.8] text-cream/65 md:text-[1.12rem]">
-          This is the organised creative archive behind the brand: where every original lives, where
+          This is the organized creative archive behind the brand: where every original lives, where
           a second copy is kept, and which collections still sit in more than one place.
         </p>
       </Reveal>
@@ -49,6 +49,9 @@ export function AssetArchive() {
                 type="button"
                 onClick={() => setOpenId(isOpen ? null : collection.id)}
                 aria-expanded={isOpen}
+                aria-label={`${String(index + 1).padStart(2, '0')}. ${collection.label}. ${collection.blurb.replace(/\.$/, '')}${
+                  needsWork ? `. Needs consolidation: ${needsWork}` : ''
+                }`}
                 className={`group relative flex h-full w-full cursor-pointer flex-col justify-end overflow-hidden border p-5 text-left transition-colors duration-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70 ${
                   isOpen
                     ? 'border-cream/45 bg-cream/[0.07]'

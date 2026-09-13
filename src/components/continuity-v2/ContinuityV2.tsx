@@ -72,7 +72,7 @@ export function ContinuityV2() {
         id: 'atlas',
         eyebrow: 'The Continuity Map',
         title: 'An atlas of everything Eyes Closed is made of',
-        lede: 'Eyes Closed sits at the centre. Around it are the four territories that keep it alive. Follow a path to see what connects to what.',
+        lede: 'Eyes Closed sits at the center. Around it are the four territories that keep it alive. Follow a path to see what connects to what.',
         body: <AtlasMap onJump={jump} />,
         wide: true,
       },
@@ -255,7 +255,7 @@ export function ContinuityV2() {
               {ATLAS_HEADLINE}
             </motion.h1>
             <motion.p
-              className="mt-8 max-w-[38ch] font-sans text-[1.15rem] leading-[1.5] tracking-[-0.015em] text-cream/80 md:text-[1.5rem]"
+              className="mt-8 max-w-[38ch] font-sans text-[1.15rem] leading-[1.5] text-cream/80 md:text-[1.5rem]"
               initial={reduce ? false : { opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.28, ease: EASE }}
@@ -329,8 +329,8 @@ export function ContinuityV2() {
           ))}
 
           <Reveal className="border-t border-cream/10 pt-14">
-            <p className="max-w-[50ch] font-sans text-[1.2rem] leading-[1.6] tracking-[-0.02em] text-cream/75 md:text-[1.45rem]">
-              I already organised this for you. Nothing here needs to be solved today.
+            <p className="max-w-[50ch] font-sans text-[1.2rem] leading-[1.6] text-cream/75 md:text-[1.45rem]">
+              I already organized this for you. Nothing here needs to be solved today.
             </p>
             <p className="mt-6 max-w-[56ch] font-sans text-[14px] leading-relaxed text-cream/45">
               Continuity holds orientation, ownership context, and where access is kept. It is
@@ -358,7 +358,7 @@ function PathRailDesktop({
       aria-label="Continuity paths"
       className="sticky top-8 hidden h-fit w-[15.5rem] shrink-0 self-start pt-10 lg:block xl:w-[17.5rem]"
     >
-      <p className="font-sans text-[10.5px] uppercase tracking-[0.34em] text-cream/30">
+      <p className="font-sans text-[10.5px] uppercase tracking-[0.28em] [word-spacing:0.45em] text-cream/30">
         Four ways in
       </p>
       <ol className="mt-7 flex flex-col gap-7">

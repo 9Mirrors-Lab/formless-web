@@ -48,7 +48,7 @@ export function AccessLandscape() {
   return (
     <div>
       <Reveal className="max-w-[56ch]">
-        <p className="font-sans text-[1.15rem] leading-[1.7] tracking-[-0.01em] text-cream/85 md:text-[1.3rem]">
+        <p className="font-sans text-[1.15rem] leading-[1.7] text-cream/85 md:text-[1.3rem]">
           {ACCESS_PRINCIPLE}
         </p>
         <p className="mt-5 font-sans text-[14.5px] leading-relaxed text-cream/50">
@@ -72,6 +72,7 @@ export function AccessLandscape() {
                       setOpenService(null);
                     }}
                     aria-pressed={isActive}
+                    aria-label={`${item.label}. ${item.blurb}`}
                     className={`min-h-11 w-full cursor-pointer border px-4 py-3 text-left font-sans transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70 lg:border-0 lg:px-0 lg:py-5 ${
                       isActive
                         ? 'border-cream/50 text-cream lg:border-0'
@@ -163,6 +164,13 @@ function AccessChain({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-label={`${entry.service}. Key kept in ${entry.credentialLocation.replace(/\.$/, '')}. ${
+          entry.importance === 'critical'
+            ? 'Critical'
+            : entry.importance === 'important'
+              ? 'Important'
+              : 'Supporting'
+        }`}
         className="group flex w-full cursor-pointer items-center gap-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream/70"
       >
         <span className="flex size-11 shrink-0 items-center justify-center rounded-full border border-cream/20 text-cream/70 transition-colors group-hover:border-cream/45">

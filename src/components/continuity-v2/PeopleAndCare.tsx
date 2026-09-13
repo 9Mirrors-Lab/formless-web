@@ -34,6 +34,7 @@ export function HelpSituations() {
                 type="button"
                 onClick={() => setOpenId(isOpen ? null : situation.id)}
                 aria-expanded={isOpen}
+                aria-label={`${situation.situation}. ${situation.role}`}
                 className="group grid w-full cursor-pointer grid-cols-1 items-baseline gap-3 py-8 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70 md:grid-cols-[4rem_minmax(0,1fr)_10rem_2rem] md:gap-8"
               >
                 <span className="font-mono text-[11.5px] tracking-[0.26em] text-cream/30">

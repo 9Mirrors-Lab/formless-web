@@ -214,7 +214,9 @@ export function WebsiteSystem() {
             className="absolute -translate-x-1/2 text-center"
             style={{ left: `${(903 / 1200) * 100}%`, top: `${(400 / 520) * 100}%` }}
           >
-            <p className="font-sans text-[12.5px] tracking-[0.16em] text-cream/45">THE LIVE WEBSITE</p>
+            <p className="font-sans text-[12.5px] uppercase tracking-[0.16em] [word-spacing:0.35em] text-cream/45">
+              The live website
+            </p>
           </div>
         </motion.div>
 
@@ -276,6 +278,7 @@ export function WebsiteSystem() {
                 type="button"
                 onClick={() => setOpenId(isOpen ? null : id)}
                 aria-expanded={isOpen}
+                aria-label={`${node.label}. ${node.recognition}`}
                 className="flex min-h-[4.5rem] w-full cursor-pointer items-center gap-5 py-5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70"
               >
                 <ServiceMark id={node.mark} className="size-5 shrink-0 text-cream/55" />

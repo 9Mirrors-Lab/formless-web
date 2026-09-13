@@ -154,7 +154,7 @@ export function RunningSystems() {
         </svg>
 
         <div className="absolute left-0 right-0" style={{ top: `${((CONVERGE.y - 92) / H) * 100}%` }}>
-          <p className="text-center font-sans text-[11px] uppercase tracking-[0.4em] text-cream/45">
+          <p className="text-center font-sans text-[11px] uppercase tracking-[0.28em] [word-spacing:0.45em] text-cream/45">
             Eyes Closed, running
           </p>
         </div>

@@ -219,7 +219,7 @@ export type AtlasNode = {
   mark: ServiceMarkId;
   /** Compass degrees, 0 = top, clockwise. */
   angle: number;
-  /** Distance from centre in viewBox units. */
+  /** Distance from center in viewBox units. */
   radius: number;
   /** Level 1 — recognition. One plain sentence. */
   recognition: string;
@@ -303,7 +303,7 @@ export const ATLAS_NODES: readonly AtlasNode[] = [
     mark: 'formless',
     angle: 46,
     radius: 322,
-    recognition: 'The book and audiobook at the centre of the work.',
+    recognition: 'The book and audiobook at the center of the work.',
     matters: 'Everything else exists to carry this to a reader.',
     practical: [
       { label: 'Title', value: `${CONTINUITY_FORMLESS.title} — ${CONTINUITY_FORMLESS.subtitle}` },
@@ -1172,7 +1172,7 @@ export function polarPoint(angle: number, radius: number): { x: number; y: numbe
 }
 
 /**
- * Quadratic path bundled toward the centre, the way a radial atlas reads:
+ * Quadratic path bundled toward the center, the way a radial atlas reads:
  * short hops stay near the rim, long relationships pass through the middle.
  */
 export function bundledPath(

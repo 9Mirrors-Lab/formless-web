@@ -161,6 +161,7 @@ export function SocialEcosystem() {
                 setOpenName((current) => (current === entry.channel.name ? null : entry.channel.name))
               }
               aria-expanded={openName === entry.channel.name}
+              aria-label={`${entry.channel.name}. ${entry.channel.username}`}
             >
               <span
                 className={`flex size-10 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${
@@ -201,6 +202,7 @@ export function SocialEcosystem() {
                         setOpenName((current) => (current === item.name ? null : item.name))
                       }
                       aria-expanded={openName === item.name}
+                      aria-label={`${item.name}. ${item.username}`}
                       className="flex min-h-[3.9rem] w-full cursor-pointer items-center gap-4 py-3.5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70"
                     >
                       <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-cream/20 text-cream/65">

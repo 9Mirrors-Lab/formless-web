@@ -43,7 +43,7 @@ export function FormlessEcosystem() {
         </p>
       </Reveal>
 
-      {/* The work at the centre */}
+      {/* The work at the center */}
       <div
         className="relative mt-12 hidden w-full md:block"
         style={{ aspectRatio: `${W} / ${H}` }}
@@ -142,6 +142,7 @@ export function FormlessEcosystem() {
               onBlur={() => setHovered(null)}
               onClick={() => setOpenId((current) => (current === branch.id ? null : branch.id))}
               aria-expanded={openId === branch.id}
+              aria-label={`${branch.label}. ${branch.blurb}`}
             >
               <span
                 className={`block border-cream/25 pb-2 font-sans text-[1.05rem] transition-colors duration-300 ${
@@ -177,6 +178,7 @@ export function FormlessEcosystem() {
                 type="button"
                 onClick={() => setOpenId((current) => (current === branch.id ? null : branch.id))}
                 aria-expanded={openId === branch.id}
+                aria-label={`${branch.label}. ${branch.blurb}`}
                 className="flex min-h-[4rem] w-full cursor-pointer items-center justify-between gap-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/70"
               >
                 <span>

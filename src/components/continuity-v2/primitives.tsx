@@ -44,7 +44,7 @@ export function SectionHeading({
 }) {
   return (
     <Reveal className="max-w-[62ch]">
-      <p className="font-sans text-[11px] uppercase tracking-[0.42em] text-cream/40">{eyebrow}</p>
+      <p className="font-sans text-[11px] uppercase tracking-[0.28em] [word-spacing:0.45em] text-cream/40">{eyebrow}</p>
       <h2
         id={id}
         className="mt-5 font-sans text-[2.1rem] font-light leading-[1.06] tracking-[-0.035em] text-cream sm:text-[2.75rem] lg:text-[3.4rem]"
