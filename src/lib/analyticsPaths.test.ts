@@ -24,6 +24,8 @@ describe('analyticsPaths', () => {
     expect(isInternalAnalyticsPath('/audio/re-records')).toBe(true);
     expect(isInternalAnalyticsPath('/components')).toBe(true);
     expect(isInternalAnalyticsPath('/design-lab')).toBe(true);
+    expect(isInternalAnalyticsPath('/continuity')).toBe(true);
+    expect(isInternalAnalyticsPath('/continuityv2')).toBe(true);
     expect(isInternalAnalyticsPath('/revised')).toBe(true);
     expect(isInternalAnalyticsPath('/book')).toBe(false);
     expect(isInternalAnalyticsPath('/preorder')).toBe(false);

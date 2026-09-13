@@ -45,6 +45,9 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/preorder/stay-close')).toBe(false);
     expect(isInternalAuthPath('/audio/files')).toBe(true);
     expect(isInternalAuthPath('/eyes-closed-logo-options')).toBe(true);
+    expect(isInternalAuthPath('/continuity')).toBe(true);
+    expect(isInternalAuthPath('/continuityv2')).toBe(true);
+    expect(isInternalAuthPath('/Continuity/')).toBe(true);
     expect(isInternalAuthPath('/')).toBe(false);
     expect(isInternalAuthPath('/book')).toBe(false);
     expect(isInternalAuthPath('/login')).toBe(false);

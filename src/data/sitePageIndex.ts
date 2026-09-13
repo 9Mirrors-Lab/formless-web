@@ -233,6 +233,24 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/BrandPage.tsx',
   },
   {
+    id: 'continuity',
+    title: 'Continuity',
+    path: '/continuity',
+    category: 'design',
+    description:
+      'Private continuity home: how to understand, protect, and continue Eyes Closed if Ryan is not available. Not in public navigation.',
+    source: 'src/pages/ContinuityPage.tsx, src/data/continuityHome.ts',
+  },
+  {
+    id: 'continuity-v2',
+    title: 'Continuity v2',
+    path: '/continuityv2',
+    category: 'design',
+    description:
+      'Private visual handoff experience: the Eyes Closed atlas, the four ways in, and where everything lives. Not in public navigation.',
+    source: 'src/pages/ContinuityV2Page.tsx, src/data/continuityAtlas.ts',
+  },
+  {
     id: 'brand-signups',
     title: 'Signups',
     path: '/brand/signups',
