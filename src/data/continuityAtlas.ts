@@ -29,6 +29,14 @@ import {
 
 export const CONTINUITY_V2_PATH = '/continuityv2';
 
+/** Shared by the continuityv2 HTML shell (link previews) and the live page title. */
+export const CONTINUITY_V2_META = {
+  title: 'Continuity · Eyes Closed',
+  description: 'Everything needed to understand, access, and continue Eyes Closed.',
+  canonicalUrl: 'https://eyesclosed.love/continuityv2',
+  imageUrl: 'https://eyesclosed.love/brand/eyes-closed-lockup-on-dusk.svg',
+} as const;
+
 export const ATLAS_HEADLINE = 'Continuity';
 
 export const ATLAS_LEDE =
