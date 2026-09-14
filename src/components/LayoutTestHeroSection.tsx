@@ -1,10 +1,18 @@
 import { useContent } from '@/context/ContentContext';
 import { useSiteAccess } from '@/context/SiteAccessContext';
 import { resolveHeroBookAsideEnabled } from '@/config/featureFlags';
-import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
-import { AMAZON_PURCHASE_CTA, PREORDER_FACTS, kindlePreorderHref } from '@/data/preorderLanding';
-import { captureCtaClick } from '@/lib/analytics';
+import { FormatLogoDoors } from '@/components/FormatLogoDoors';
 import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
+
+const HERO_PRODUCT_SRC = '/design/3d-mockups/formless-book-phone.png';
+
+function heroLedeLines(lede: string): string[] {
+  return lede
+    .replace(/\sfor fulfillment\./gi, '\u00a0for fulfillment.')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
 
 function HeroReflectionCta() {
   const { restricted } = useSiteAccess();
@@ -37,51 +45,46 @@ function HeroReflectionCta() {
 
 function SectionLabel({ children }: { children: string }) {
   return (
-    <span className="mb-5 block font-mono text-[clamp(0.65rem,0.2vw+0.6rem,0.875rem)] uppercase tracking-[0.3em] text-cream/60 md:mb-4">
+    <span className="mb-3 block font-mono text-[clamp(0.65rem,0.2vw+0.6rem,0.875rem)] uppercase tracking-[0.3em] text-cream/60 md:mb-3">
       {children}
     </span>
   );
 }
 
-/** Jacket lockup: cover beside Kindle purchase stack (matches cream lockup example). */
+/** Product lockup: book + phone beside Kindle and Audible doors. */
 function HeroBookAside() {
-  const href = kindlePreorderHref();
   const trackLocation = 'home_hero_book_aside';
-  const factsLine = `Amazon · ${PREORDER_FACTS.price} · ${PREORDER_FACTS.format}`;
 
   return (
-    <aside className="border-t border-cream/12 pt-8 lg:self-center lg:border-l lg:border-t-0 lg:pl-10 xl:pl-12">
-      <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-7">
+    <aside
+      className="pt-8 lg:pt-0"
+      aria-label="Get Formless on Kindle or Audible"
+    >
+      <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-5 lg:gap-6">
         <img
-          src={FORMLESS_BOOK_COVER.src}
-          alt={FORMLESS_BOOK_COVER.alt}
-          width={FORMLESS_BOOK_COVER.width}
-          height={FORMLESS_BOOK_COVER.height}
+          src={HERO_PRODUCT_SRC}
+          alt="Formless hardcover beside the audiobook playing on a phone"
+          width={1024}
+          height={935}
           decoding="async"
-          className="aspect-[5/8] h-auto w-[12.5rem] shrink-0 object-contain shadow-[0_22px_48px_rgba(0,0,0,0.45)] sm:w-[13.5rem] xl:w-[14.5rem]"
+          className="-ml-1 h-auto w-[19.5rem] shrink-0 object-contain sm:w-[21.5rem] lg:-ml-2 lg:w-[24rem] xl:w-[27rem]"
         />
 
-        <div className="min-w-0 max-w-[18.5rem]">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.24em] text-cream/90">
+        <div className="min-w-[15.5rem] shrink-0">
+          <p className="font-sans text-[0.8rem] font-medium uppercase tracking-[0.28em] text-cream md:text-[0.9rem]">
             Out now
           </p>
-          <p className="mt-3 font-serif text-[1.45rem] italic leading-[1.2] text-cream md:text-[1.65rem]">
-            The eBook
-            <br />
-            is out now.
+          <p className="mt-4 whitespace-nowrap font-serif text-[1.85rem] italic leading-[1.15] text-cream md:text-[2.15rem]">
+            Read it. Or listen.
           </p>
-          <p className="mt-4 whitespace-nowrap font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-clay">
-            {factsLine}
+          <p className="mt-4 whitespace-nowrap font-sans text-[1.05rem] leading-snug text-cream/80 md:text-[1.125rem]">
+            Now available on Kindle and Audible.
           </p>
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => captureCtaClick(AMAZON_PURCHASE_CTA, href, trackLocation)}
-            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-clay px-5 py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-cream transition-transform duration-200 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/50"
-          >
-            {AMAZON_PURCHASE_CTA}
-          </a>
+
+          <FormatLogoDoors
+            trackLocation={trackLocation}
+            className="mt-7 grid w-full max-w-[13.5rem] grid-cols-2 gap-2.5 sm:max-w-[14.5rem]"
+          />
         </div>
       </div>
     </aside>
@@ -109,14 +112,14 @@ export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionPr
     <h1
       className={
         bookAsideEnabled
-          ? 'font-serif text-[clamp(2.35rem,4.2vw,4.25rem)] italic leading-[1.08] tracking-normal text-cream'
+          ? 'font-serif text-[clamp(2rem,3.05vw,3.65rem)] italic leading-[1.08] tracking-normal text-cream'
           : 'font-serif text-[clamp(2.75rem,5.8vw,6.5rem)] italic leading-[1.05] tracking-normal text-cream'
       }
     >
-      <span className={bookAsideEnabled ? 'block' : 'block sm:whitespace-nowrap'}>
+      <span className="block max-w-none whitespace-nowrap">
         {cx('headline_primary')}
       </span>
-      <span className={bookAsideEnabled ? 'block' : 'block sm:whitespace-nowrap'}>
+      <span className="block max-w-none whitespace-nowrap">
         {cx('headline_secondary')}
       </span>
     </h1>
@@ -126,8 +129,15 @@ export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionPr
     <>
       <SectionLabel>{cx('eyebrow')}</SectionLabel>
       {headline}
-      <p className="mt-8 max-w-xl whitespace-pre-line text-lg leading-relaxed text-cream/66 md:mt-10 md:text-xl">
-        {cx('lede')}
+      <p className="mt-6 max-w-xl text-lg leading-relaxed text-cream/66 md:mt-7 md:text-xl">
+        {heroLedeLines(cx('lede')).map((line, index) => (
+          <span
+            key={line}
+            className={index === 0 ? 'block lg:whitespace-nowrap' : 'block'}
+          >
+            {line}
+          </span>
+        ))}
       </p>
       <HeroReflectionCta />
     </>
@@ -153,9 +163,9 @@ export function LayoutTestHeroSection({ showBookAside }: LayoutTestHeroSectionPr
         <div className="home-hero__overlay-readability" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl pt-12 md:pt-24">
+      <div className="relative z-10 mx-auto max-w-7xl pt-10 md:pt-20">
         {bookAsideEnabled ? (
-          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(26rem,32rem)] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(28rem,34rem)] xl:gap-14">
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(34rem,44rem)] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(36rem,46rem)] xl:gap-14">
             <div className="min-w-0">{copyStack}</div>
             <HeroBookAside />
           </div>

@@ -305,8 +305,14 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'You are not your thoughts or emotions. Formless takes you within to discover what exists beyond them.',
   );
   upsertText(revised, 'book', 'header', 'purchase_eyebrow', 'Out now', 8);
-  upsertText(revised, 'book', 'header', 'purchase_title', 'Start reading today.', 9);
-  upsertText(revised, 'book', 'header', 'purchase_cta', 'Buy on Amazon', 10);
+  upsertText(
+    revised,
+    'book',
+    'header',
+    'purchase_lede',
+    'Now available on Kindle and Audible.',
+    9,
+  );
 
   upsertText(revised, 'book', 'availability', 'eyebrow', 'Available on', 0);
   upsertText(revised, 'book', 'availability', 'title', 'One book. Three ways in.', 1);

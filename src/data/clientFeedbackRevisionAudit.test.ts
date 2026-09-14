@@ -259,7 +259,9 @@ describe('client feedback revision gaps', () => {
   it('book page uses launch copy and purchase panel content', () => {
     expect(getText(tree, 'book', 'header', 'lede')).toContain('You are not your thoughts or emotions');
     expect(getText(tree, 'book', 'header', 'purchase_eyebrow')).toBe('Out now');
-    expect(getText(tree, 'book', 'header', 'purchase_cta')).toBe('Buy on Amazon');
+    expect(getText(tree, 'book', 'header', 'purchase_lede')).toBe(
+      'Now available on Kindle and Audible.',
+    );
     expect(getText(tree, 'science', 'header', 'title')).toContain('bridge for the part of you');
   });
 

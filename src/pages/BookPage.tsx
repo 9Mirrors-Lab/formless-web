@@ -44,8 +44,7 @@ export default function BookPage() {
   const ctaWork = getLink('book', 'closing', 'cta_work');
   const ctaScience = getLink('book', 'closing', 'cta_science');
   const purchaseEyebrow = getText('book', 'header', 'purchase_eyebrow');
-  const purchaseTitle = getText('book', 'header', 'purchase_title');
-  const purchaseCta = getText('book', 'header', 'purchase_cta');
+  const purchaseLede = getText('book', 'header', 'purchase_lede');
   const headerTitle = getText('book', 'header', 'title');
   const headerTitleMatch = headerTitle.match(/^(The book,\s*Formless)\s*(.*)$/i);
   const headerEyebrow = getText('book', 'header', 'eyebrow');
@@ -166,7 +165,7 @@ export default function BookPage() {
             <div className="sci-blob-2 absolute bottom-[5%] right-[10%] h-[400px] w-[400px] rounded-full bg-clay/6 blur-[100px] will-change-transform" />
           </div>
 
-          <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-20">
+          <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-start gap-10 md:grid-cols-2 md:gap-12 lg:gap-20">
             {/* Mobile: type owns the first beat · vesica as off-center top mark */}
             <div className="book-mobile-brand relative flex flex-col md:hidden">
               <div
@@ -193,12 +192,8 @@ export default function BookPage() {
                 <p className="mt-5 max-w-sm font-sans text-base leading-relaxed text-cream/60">
                   {headerLede}
                 </p>
-                <div className="relative z-10 mt-8 md:hidden">
-                  <BookHeroPurchasePanel
-                    eyebrow={purchaseEyebrow}
-                    title={purchaseTitle}
-                    ctaLabel={purchaseCta}
-                  />
+                <div className="relative z-10 mx-auto mt-8 w-full max-w-sm md:hidden">
+                  <BookHeroPurchasePanel eyebrow={purchaseEyebrow} lede={purchaseLede} />
                 </div>
               </div>
             </div>
@@ -226,11 +221,10 @@ export default function BookPage() {
             </div>
 
             {/* Desktop purchase panel */}
-            <div className="hidden w-full max-w-md justify-self-end md:block">
+            <div className="hidden w-full max-w-xl justify-self-start md:block lg:max-w-2xl">
               <BookHeroPurchasePanel
                 eyebrow={purchaseEyebrow}
-                title={purchaseTitle}
-                ctaLabel={purchaseCta}
+                lede={purchaseLede}
               />
             </div>
           </div>

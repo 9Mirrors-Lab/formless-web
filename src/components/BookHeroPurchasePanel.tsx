@@ -1,76 +1,73 @@
 import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
-import {
-  AMAZON_PURCHASE_CTA,
-  PREORDER_FACTS,
-  kindlePreorderHref,
-} from '@/data/preorderLanding';
-import { captureCtaClick } from '@/lib/analytics';
+import { FormatLogoDoors } from '@/components/FormatLogoDoors';
 
 type BookHeroPurchasePanelProps = {
   trackLocation?: string;
-  formatsHref?: string;
   eyebrow?: string;
-  title?: string;
-  ctaLabel?: string;
+  lede?: string;
+  /** panel = book-page card · inline = home slab without card chrome */
+  variant?: 'panel' | 'inline';
+  coverClassName?: string;
+  className?: string;
 };
 
 const DEFAULT_EYEBROW = 'Out now';
-const DEFAULT_TITLE = 'Start reading today.';
+const DEFAULT_LEDE = 'Now available on Kindle and Audible.';
+
+function resolvePurchaseLede(lede?: string): string {
+  const trimmed = lede?.trim();
+  if (!trimmed) return DEFAULT_LEDE;
+  return trimmed.replace(/^Formless is now available/i, 'Now available');
+}
 
 export function BookHeroPurchasePanel({
   trackLocation = 'book_hero_purchase',
-  formatsHref = '#book-availability',
   eyebrow,
-  title,
-  ctaLabel,
+  lede,
+  variant = 'panel',
+  coverClassName,
+  className,
 }: BookHeroPurchasePanelProps) {
-  const href = kindlePreorderHref();
-  const factsLine = `Amazon · ${PREORDER_FACTS.price} · ${PREORDER_FACTS.format}`;
   const resolvedEyebrow = eyebrow?.trim() || DEFAULT_EYEBROW;
-  const resolvedTitle = title?.trim() || DEFAULT_TITLE;
-  const resolvedCta = ctaLabel?.trim() || AMAZON_PURCHASE_CTA;
+  const resolvedLede = resolvePurchaseLede(lede);
 
   return (
     <aside
-      className="book-purchase-panel rounded-2xl border border-cream/15 bg-cream/[0.06] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)] sm:p-8 md:p-10"
-      aria-label="Buy Formless on Amazon"
+      className={['book-purchase-panel w-full', className].filter(Boolean).join(' ')}
+      aria-label="Get Formless on Kindle or Audible"
     >
-      <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+      <div
+        className={[
+          'flex flex-col items-center text-center',
+          variant === 'inline' ? '' : 'md:flex-row md:items-start md:gap-6 md:text-left lg:gap-8',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
         <img
           src={FORMLESS_BOOK_COVER.src}
           alt={FORMLESS_BOOK_COVER.alt}
           width={FORMLESS_BOOK_COVER.width}
           height={FORMLESS_BOOK_COVER.height}
           decoding="async"
-          className="aspect-[5/8] h-auto w-[7.5rem] shrink-0 object-contain shadow-[0_18px_40px_rgba(0,0,0,0.42)] sm:w-[8.5rem] md:w-[9.5rem]"
+          className={
+            coverClassName ||
+            'aspect-[5/8] h-auto w-[10.5rem] shrink-0 object-contain shadow-[0_18px_40px_rgba(0,0,0,0.42)] sm:w-[11.5rem] md:w-[11rem] lg:w-[12rem]'
+          }
         />
 
-        <div className="min-w-0 flex-1">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.24em] text-cream/90">
+        <div className="mt-6 flex w-full flex-col items-center md:mt-0 md:items-start md:pt-1">
+          <p className="font-sans text-[0.8rem] font-medium uppercase tracking-[0.28em] text-cream md:text-[0.9rem]">
             {resolvedEyebrow}
           </p>
-          <p className="mt-3 font-serif text-[1.45rem] italic leading-[1.2] text-cream md:text-[1.65rem]">
-            {resolvedTitle}
+          <p className="mt-3 max-w-[24ch] font-sans text-sm leading-snug text-cream/80 md:max-w-[18ch] md:text-[0.95rem]">
+            {resolvedLede}
           </p>
-          <p className="mt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-clay">
-            {factsLine}
-          </p>
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => captureCtaClick(resolvedCta, href, trackLocation)}
-            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-clay px-5 py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-cream transition-transform duration-200 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream/50"
-          >
-            {resolvedCta}
-          </a>
-          <a
-            href={formatsHref}
-            className="mt-4 inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 transition-colors duration-200 hover:text-cream/80"
-          >
-            See all formats
-            <span className="sr-only"> (Amazon Books, Kindle, Audible)</span>
-          </a>
+
+          <FormatLogoDoors
+            trackLocation={trackLocation}
+            className="mt-7 grid w-full max-w-[14.5rem] grid-cols-2 gap-2.5"
+          />
         </div>
       </div>
     </aside>
