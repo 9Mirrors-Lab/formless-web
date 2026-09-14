@@ -3,7 +3,7 @@ import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
 /**
  * Canonical ledger of active and in-work designs, Zoho templates, and final files.
  * Agents: read this file before hunting Drive, chat, or public/.
- * Studio page: /brand/designs (Active | In work | Template ideas)
+ * Studio page: /brand/designs (Review | Shipped | Pages | Email | Print & social | Files)
  *
  * One row is one job. Explorations, system boards, and intended mocks
  * sit as versions on that row. Do not flatten them into sibling designs.
@@ -314,7 +314,7 @@ export const BRAND_DESIGNS: readonly BrandDesign[] = [
     audience: 'Teaching list',
     channel: 'Email',
     owner: 'Soni',
-    currentVersionId: 'template',
+    currentVersionId: 'waitlist-thankyou-brandkit',
     versions: [
       {
         id: 'waitlist-thankyou-brandkit',

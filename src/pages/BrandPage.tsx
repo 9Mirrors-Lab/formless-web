@@ -32,7 +32,7 @@ const MATERIALS = [
   {
     href: "/brand/designs",
     title: "Designs",
-    detail: "Live pages, what they are for, and the files they rest on.",
+    detail: "Shipped work, page directions, email letters, and print ideas.",
   },
   {
     href: "/brand-kit-export",

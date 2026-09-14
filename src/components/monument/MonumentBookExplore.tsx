@@ -3,11 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent, type ContentApi } from '@/context/ContentContext';
 import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
-import {
-  AMAZON_PURCHASE_CTA,
-  PREORDER_FACTS,
-  kindlePreorderHref,
-} from '@/data/preorderLanding';
+import { audibleHref, kindlePreorderHref } from '@/data/preorderLanding';
 import { captureCtaClick } from '@/lib/analytics';
 import { MonumentAtmosphere } from './MonumentAtmosphere';
 import { MonumentLabChrome, MonumentLabFooter } from './MonumentLabChrome';
@@ -29,9 +25,26 @@ function themesFromContent(api: ContentApi): ThemeCard[] {
 }
 
 const PLATFORMS = [
-  { id: 'amazon-books', label: 'Amazon Books', verb: 'Hold it.' },
-  { id: 'kindle', label: 'Kindle', verb: 'Read it.' },
-  { id: 'audible', label: 'Audible', verb: 'Listen.' },
+  { id: 'amazon-books', label: 'Amazon Books', verb: 'Hold it.', status: 'coming_soon' as const },
+  { id: 'kindle', label: 'Kindle', verb: 'Read it.', status: 'live' as const },
+  { id: 'audible', label: 'Audible', verb: 'Listen.', status: 'live' as const },
+];
+
+const FORMAT_DOORS = [
+  {
+    id: 'kindle',
+    index: '01',
+    label: 'Kindle',
+    verb: 'Read the book',
+    href: kindlePreorderHref,
+  },
+  {
+    id: 'audible',
+    index: '02',
+    label: 'Audible',
+    verb: 'Listen to the audiobook',
+    href: audibleHref,
+  },
 ] as const;
 
 function MonumentEyebrow({ children }: { children: string }) {
@@ -54,8 +67,6 @@ export function MonumentBookExplore() {
 
   const headerTitle = getText('book', 'header', 'title');
   const headerTitleMatch = headerTitle.match(/^(The book,\s*Formless)\s*(.*)$/i);
-  const purchaseHref = kindlePreorderHref();
-  const factsLine = `Amazon · ${PREORDER_FACTS.price} · ${PREORDER_FACTS.format}`;
   const ctaWork = getLink('book', 'closing', 'cta_work');
   const ctaScience = getLink('book', 'closing', 'cta_science');
 
@@ -106,7 +117,7 @@ export function MonumentBookExplore() {
       <MonumentLabChrome active="book" />
 
       <div ref={pageRef}>
-        <section className="relative px-6 pb-20 pt-32 md:px-16 md:pb-28 lg:px-24">
+        <section className="relative px-6 pb-24 pt-16 md:px-16 md:pb-28 lg:px-24">
           <div className="monument-book-hero mx-auto grid max-w-7xl grid-cols-1 items-start gap-14 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)] lg:gap-20">
             <div
               className="relative border p-6 md:p-8"
@@ -125,24 +136,46 @@ export function MonumentBookExplore() {
                 decoding="async"
                 className="mx-auto aspect-[5/8] h-auto w-full max-w-[14rem] object-contain"
               />
-              <p
-                className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.2em]"
-                style={{ color: MONUMENT.textFaint }}
-              >
-                {factsLine}
+              <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.24em]">
+                Out now
               </p>
-              <a
-                href={purchaseHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() =>
-                  captureCtaClick(AMAZON_PURCHASE_CTA, purchaseHref, 'monument_book_hero')
-                }
-                className="mt-6 flex min-h-11 w-full items-center justify-center font-mono text-[10px] uppercase tracking-[0.18em]"
-                style={{ backgroundColor: MONUMENT.dustRed, color: MONUMENT.text }}
+              <p className="mt-3 text-center font-serif text-xl not-italic md:text-2xl">
+                Read it. Or listen.
+              </p>
+              <p
+                className="mt-3 text-center font-sans text-sm leading-relaxed"
+                style={{ color: MONUMENT.textMuted }}
               >
-                {AMAZON_PURCHASE_CTA}
-              </a>
+                Formless is now available on Kindle and Audible.
+              </p>
+              <ul className="mt-6 grid grid-cols-1 gap-3">
+                {FORMAT_DOORS.map((door) => {
+                  const href = door.href();
+                  const trackLabel = `${door.label}: ${door.verb}`;
+                  return (
+                    <li key={door.id}>
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          captureCtaClick(trackLabel, href, 'monument_book_hero')
+                        }
+                        className="flex flex-col border px-4 py-3 transition-colors duration-300"
+                        style={{ borderColor: MONUMENT.rule }}
+                      >
+                        <span
+                          className="font-mono text-[10px] uppercase tracking-[0.2em]"
+                          style={{ color: MONUMENT.textFaint }}
+                        >
+                          {door.index} — {door.label}
+                        </span>
+                        <span className="mt-1.5 font-serif text-base not-italic">{door.verb}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
 
             <div className="lg:pt-6">
@@ -167,14 +200,6 @@ export function MonumentBookExplore() {
               >
                 {getText('book', 'header', 'lede')}
               </p>
-              <div className="mt-10 max-w-md border-t pt-8" style={{ borderColor: MONUMENT.rule }}>
-                <p className="font-mono text-[10px] uppercase tracking-[0.24em]">
-                  {getText('book', 'header', 'purchase_eyebrow') || 'Out now'}
-                </p>
-                <p className="mt-3 font-serif text-xl not-italic md:text-2xl">
-                  {getText('book', 'header', 'purchase_title') || 'Start reading today.'}
-                </p>
-              </div>
             </div>
           </div>
         </section>
@@ -196,7 +221,10 @@ export function MonumentBookExplore() {
                 <li
                   key={platform.id}
                   className="flex flex-col gap-4 px-6 py-8 md:px-8 md:py-10"
-                  style={{ backgroundColor: MONUMENT.stone }}
+                  style={{
+                    backgroundColor: MONUMENT.stone,
+                    opacity: platform.status === 'coming_soon' ? 0.72 : 1,
+                  }}
                 >
                   <span
                     className="font-mono text-[10px] tabular-nums tracking-[0.2em]"
@@ -206,6 +234,14 @@ export function MonumentBookExplore() {
                   </span>
                   <span className="font-mono text-[10px] uppercase tracking-[0.24em]">{platform.label}</span>
                   <p className="font-serif text-2xl not-italic md:text-3xl">{platform.verb}</p>
+                  {platform.status === 'coming_soon' ? (
+                    <span
+                      className="font-mono text-[10px] uppercase tracking-[0.22em]"
+                      style={{ color: MONUMENT.textFaint }}
+                    >
+                      Coming soon
+                    </span>
+                  ) : null}
                 </li>
               ))}
             </ul>

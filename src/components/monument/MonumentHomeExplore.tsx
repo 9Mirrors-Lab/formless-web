@@ -3,19 +3,32 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '@/context/ContentContext';
 import { useSiteAccess } from '@/context/SiteAccessContext';
-import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
-import {
-  AMAZON_PURCHASE_CTA,
-  PREORDER_FACTS,
-  kindlePreorderHref,
-} from '@/data/preorderLanding';
+import { audibleHref, kindlePreorderHref } from '@/data/preorderLanding';
 import { captureCtaClick } from '@/lib/analytics';
 import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
+import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
 import { MonumentAtmosphere } from './MonumentAtmosphere';
 import { MonumentLabChrome, MonumentLabFooter } from './MonumentLabChrome';
 import { MONUMENT } from './monumentShared';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const FORMAT_DOORS = [
+  {
+    id: 'kindle',
+    index: '01',
+    label: 'Kindle',
+    verb: 'Read the book',
+    href: kindlePreorderHref,
+  },
+  {
+    id: 'audible',
+    index: '02',
+    label: 'Audible',
+    verb: 'Listen to the audiobook',
+    href: audibleHref,
+  },
+] as const;
 
 function MonumentEyebrow({ children }: { children: string }) {
   return (
@@ -74,8 +87,6 @@ export function MonumentHomeExplore() {
   };
 
   const cta = restricted ? null : getLink('home', 'hero', 'cta_reflection');
-  const purchaseHref = kindlePreorderHref();
-  const factsLine = `Amazon · ${PREORDER_FACTS.price} · ${PREORDER_FACTS.format}`;
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -120,9 +131,9 @@ export function MonumentHomeExplore() {
 
       <section
         ref={heroRef}
-        className="relative flex min-h-[100dvh] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24 lg:px-24"
+        className="relative flex min-h-[100dvh] flex-col justify-end px-6 pb-24 pt-16 md:px-16 md:pb-28 lg:px-24"
       >
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,22rem)] lg:gap-10">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] lg:gap-10">
           <div className="monument-hero-copy max-w-2xl lg:pb-8">
             <MonumentEyebrow>{t('eyebrow')}</MonumentEyebrow>
             <h1 className="font-serif text-[clamp(2.5rem,6vw,5.5rem)] leading-[0.95] tracking-[-0.02em] not-italic">
@@ -155,14 +166,14 @@ export function MonumentHomeExplore() {
               borderColor: MONUMENT.rule,
               backgroundColor: `${MONUMENT.stone}cc`,
             }}
-            aria-label="Formless eBook"
+            aria-label="Get Formless on Kindle or Audible"
           >
             <div
               className="pointer-events-none absolute -left-px top-8 h-24 w-px"
               style={{ backgroundColor: MONUMENT.dustRed }}
               aria-hidden
             />
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-end">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
               <img
                 src={FORMLESS_BOOK_COVER.src}
                 alt={FORMLESS_BOOK_COVER.alt}
@@ -171,31 +182,42 @@ export function MonumentHomeExplore() {
                 decoding="async"
                 className="aspect-[5/8] h-auto w-[9.5rem] shrink-0 object-contain"
               />
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em]">Out now</p>
                 <p className="mt-3 font-serif text-[1.35rem] leading-[1.15] not-italic md:text-[1.5rem]">
-                  The eBook
-                  <br />
-                  is out now.
+                  Read it. Or listen.
                 </p>
-                <p
-                  className="mt-4 font-mono text-[10px] uppercase tracking-[0.14em]"
-                  style={{ color: MONUMENT.horizon }}
-                >
-                  {factsLine}
+                <p className="mt-3 font-sans text-sm leading-relaxed" style={{ color: MONUMENT.textMuted }}>
+                  Formless is now available on Kindle and Audible.
                 </p>
-                <a
-                  href={purchaseHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() =>
-                    captureCtaClick(AMAZON_PURCHASE_CTA, purchaseHref, 'monument_home_book_slab')
-                  }
-                  className="mt-6 inline-flex min-h-11 items-center justify-center px-5 py-3 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors duration-300"
-                  style={{ backgroundColor: MONUMENT.dustRed, color: MONUMENT.text }}
-                >
-                  {AMAZON_PURCHASE_CTA}
-                </a>
+                <ul className="mt-6 grid grid-cols-1 gap-3">
+                  {FORMAT_DOORS.map((door) => {
+                    const href = door.href();
+                    const trackLabel = `${door.label}: ${door.verb}`;
+                    return (
+                      <li key={door.id}>
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() =>
+                            captureCtaClick(trackLabel, href, 'monument_home_book_slab')
+                          }
+                          className="flex flex-col border px-4 py-3 transition-colors duration-300"
+                          style={{ borderColor: MONUMENT.rule }}
+                        >
+                          <span
+                            className="font-mono text-[10px] uppercase tracking-[0.2em]"
+                            style={{ color: MONUMENT.textFaint }}
+                          >
+                            {door.index} — {door.label}
+                          </span>
+                          <span className="mt-1.5 font-serif text-base not-italic">{door.verb}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             </div>
           </aside>

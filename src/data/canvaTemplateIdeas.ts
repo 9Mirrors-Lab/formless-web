@@ -29,6 +29,13 @@ export type Formless3dMockup = {
 /** Branded 3D product mockups. Shown above Canva links on Template ideas. */
 export const FORMLESS_3D_MOCKUPS: readonly Formless3dMockup[] = [
   {
+    id: 'out-now-read-listen',
+    title: 'Out now · Read or listen',
+    label: 'Book + phone · Kindle & Audible CTAs',
+    previewSrc: '/design/3d-mockups/out-now-read-listen-mockup.png',
+    filename: 'out-now-read-listen-mockup.png',
+  },
+  {
     id: 'composite',
     title: 'Composite',
     label: 'Book + tablet + phone',

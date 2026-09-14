@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DesignReviewSwitcher } from '@/components/design-lab/DesignReviewSwitcher';
 import { PageLayout } from '../components/PageLayout';
 import { StayCloseNotifyForm } from '../components/StayCloseNotifyForm';
 import { textFromEntry } from '@/lib/content';
@@ -204,20 +205,15 @@ export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4
 
         <StayCloseSection content={content} />
 
-        <div className="switcher" role="tablist" aria-label="About page layout">
-          <button 
-            className={layout === 1 ? 'active' : ''} 
-            onClick={() => setLayout(1)}
-          >
-            <span className="n">01</span><span className="lbl">Editorial Split</span>
-          </button>
-          <button 
-            className={layout === 4 ? 'active' : ''} 
-            onClick={() => setLayout(4)}
-          >
-            <span className="n">04</span><span className="lbl">Magazine</span>
-          </button>
-        </div>
+        <DesignReviewSwitcher
+          ariaLabel="About page layout"
+          activeId={String(layout)}
+          onSelect={(id) => setLayout(Number(id) as 1 | 4)}
+          items={[
+            { id: '1', index: '01', label: 'Editorial Split' },
+            { id: '4', index: '04', label: 'Magazine' },
+          ]}
+        />
       </div>
     </PageLayout>
   );

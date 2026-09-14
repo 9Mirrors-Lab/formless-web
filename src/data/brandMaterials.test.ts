@@ -46,7 +46,10 @@ describe('brandMaterials', () => {
     expect(design?.kind).toBe('zoho-email');
     expect(design?.campaign).toBe('Stay Close');
     expect(design?.audience).toBe('Teaching list');
-    expect(designCurrentVersion(design!).id).toBe('template');
+    expect(designCurrentVersion(design!).id).toBe('waitlist-thankyou-brandkit');
+    expect(designPreviewSrc(design!)).toBe(
+      '/design/previews/formless-waitlist-thankyou-brandkit.png',
+    );
     expect(design?.usedFor).toBeUndefined();
     expect(design?.versions.map((version) => version.filename)).toEqual([
       'formless-waitlist-thankyou-brandkit.png',

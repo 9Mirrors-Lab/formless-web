@@ -9,8 +9,9 @@ import {
 
 describe('canvaTemplateIdeas', () => {
   it('lists branded 3D mockups before Canva ideas', () => {
-    expect(FORMLESS_3D_MOCKUPS).toHaveLength(5);
+    expect(FORMLESS_3D_MOCKUPS).toHaveLength(6);
     expect(FORMLESS_3D_MOCKUPS.map((mockup) => mockup.id)).toEqual([
+      'out-now-read-listen',
       'composite',
       'hardcover',
       'paperback',
@@ -18,7 +19,7 @@ describe('canvaTemplateIdeas', () => {
       'ereader',
     ]);
     expect(formless3dMockupPreviews()[0]?.previewSrc).toBe(
-      '/design/3d-mockups/composite-3d-mockup.png',
+      '/design/3d-mockups/out-now-read-listen-mockup.png',
     );
   });
 

@@ -50,7 +50,7 @@ export function CosmicNucleusWitness() {
   return (
     <section
       ref={stageRef}
-      className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden px-6 pb-16 pt-24 md:px-16 md:pt-28 lg:px-24"
+      className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden px-6 pb-28 pt-16 md:px-16 md:pt-20 lg:px-24"
     >
       {/* Full-bleed orbit field */}
       <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center" aria-hidden>

@@ -6,38 +6,26 @@ import BrandDesignsPage from './BrandDesignsPage';
 describe('BrandDesignsPage', () => {
   const html = renderToStaticMarkup(<BrandDesignsPage />);
 
-  it('keeps special preview as a live page link on Active', () => {
-    expect(html).toContain('href="/special-preview"');
-    expect(html).toContain('aria-label="Open Special preview: Live page"');
-    expect(html).not.toMatch(
-      /<button[^>]*aria-label="Open Special preview: Live page"/,
-    );
+  it('groups page directions under primary pages', () => {
+    expect(html).toContain('id="page-group-home"');
+    expect(html).toContain('id="page-group-formless"');
+    expect(html).toContain('>Formless<');
+    expect(html).toContain('/design/previews/page-layout-tests.jpg');
+    expect(html).toContain('Monument · home');
+    expect(html).toContain('Monument · book');
+    expect(html).toContain('Live page');
   });
 
-  it('shows Active designs only on the default tab', () => {
-    expect(html).toContain('Kindle preorder');
-    expect(html).toContain('Special preview');
-    expect(html).not.toContain('Audible Master · Illuminated Manuscript');
-    expect(html).not.toContain('Stay Close');
-    expect(html).not.toContain('Waitlist letter');
-    expect(html).not.toContain('/emails/formless-waitlist-preview.html');
+  it('lists studio section tabs', () => {
+    expect(html).toContain('aria-label="Design studio sections"');
+    expect(html).toContain('Print &amp; social');
+    expect(html).toContain('Final files');
+    expect(html).toContain('Shipped');
+    expect(html).toContain('Email');
   });
 
-  it('opens coded Kindle letters as page links', () => {
-    expect(html).toMatch(
-      /<a[^>]*href="\/emails\/formless-preorder.html"[^>]*aria-label="Open Kindle preorder: Jacket lockup"/,
-    );
-    expect(html).not.toMatch(
-      /<button[^>]*aria-label="Open Kindle preorder: Jacket lockup"/,
-    );
-  });
-
-  it('exposes Active, In work, and Template ideas tabs', () => {
-    expect(html).toContain('Template ideas');
-    expect(html).toContain('In work');
-    expect(html).toContain('aria-label="Designs sections"');
-    expect(html).toMatch(/role="tab"[^>]*aria-selected="true"[^>]*>Active</);
-    expect(html).toMatch(/role="tab"[^>]*>In work</);
-    expect(html).toMatch(/role="tab"[^>]*>Template ideas</);
+  it('includes shipped and email shelves in the tab list', () => {
+    expect(html).toContain('Live pages and letters');
+    expect(html).toContain('Zoho letters and previews');
   });
 });

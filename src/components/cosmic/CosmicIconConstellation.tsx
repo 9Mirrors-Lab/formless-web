@@ -47,7 +47,7 @@ export function CosmicIconConstellation() {
   const [active, setActive] = useState<string | null>('observer');
 
   return (
-    <section className="relative min-h-[100dvh] w-full overflow-hidden px-6 pb-20 pt-28 md:px-16 md:pt-32 lg:px-24">
+    <section className="relative min-h-[100dvh] w-full overflow-hidden px-6 pb-28 pt-16 md:px-16 md:pt-20 lg:px-24">
       <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1fr_1.15fr] lg:gap-14">
         <CosmicHeroCopyBlock className="relative z-10 max-w-[520px]" />
 

@@ -108,7 +108,7 @@ export function CosmicPillarIndexHome() {
 
   return (
     <div ref={pageRef}>
-      <section className="relative w-full overflow-hidden px-6 pb-14 pt-28 md:px-16 md:pb-16 md:pt-32 lg:px-24">
+      <section className="relative w-full overflow-hidden px-6 pb-28 pt-16 md:px-16 md:pb-20 md:pt-20 lg:px-24">
         <div className="mx-auto grid max-w-6xl items-end gap-12 md:grid-cols-[1.35fr_1fr] md:gap-16">
           <CosmicHeroCopyBlock />
           <div>

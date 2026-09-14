@@ -271,11 +271,18 @@
   .l4-fi p{font-size:.94rem;line-height:1.6;color:var(--fg-55);}
 
   /* ---------- switcher ---------- */
+  .switcher-dock{
+    position:fixed;z-index:80;left:0;right:0;bottom:0;
+    display:flex;justify-content:center;
+    padding:3.6rem 1rem 1.4rem;
+    background:linear-gradient(to top, rgba(14,18,15,.78) 0%, rgba(14,18,15,.32) 52%, transparent 100%);
+    pointer-events:none;
+  }
   .switcher{
-    position:fixed;z-index:80;left:50%;bottom:1.4rem;transform:translateX(-50%);
+    pointer-events:auto;
     display:flex;align-items:center;gap:.25rem;
-    background:rgba(14,18,15,.86);backdrop-filter:blur(14px);
-    border:1px solid rgba(242,240,233,.14);
+    background:rgba(14,18,15,.80);backdrop-filter:blur(14px);
+    border:1px solid rgba(242,240,233,.15);
     border-radius:999px;padding:.4rem;box-shadow:0 24px 60px -24px rgba(0,0,0,.8);
   }
   .switcher button{
@@ -606,11 +613,13 @@
 </section>
 
 <!-- ========================= SWITCHER ========================= -->
+<div class="switcher-dock">
 <div class="switcher" role="tablist" aria-label="About page layout">
   <button data-go="1" class="active"><span class="n">01</span><span class="lbl">Editorial Split</span></button>
   <button data-go="2"><span class="n">02</span><span class="lbl">Portrait Hero</span></button>
   <button data-go="3"><span class="n">03</span><span class="lbl">Centered</span></button>
   <button data-go="4"><span class="n">04</span><span class="lbl">Magazine</span></button>
+</div>
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
