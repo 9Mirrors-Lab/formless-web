@@ -9,10 +9,10 @@ export const PREORDER_COVER_HEIGHT = FORMLESS_BOOK_COVER.height;
 export const PREORDER_WORDMARK_SRC = '/brand/eyes-closed-lockup-on-cream.svg';
 
 /** Live Kindle listing. Override with VITE_KINDLE_PREORDER_URL if needed. */
-export const KINDLE_PREORDER_HREF = 'https://www.amazon.com/dp/B0HFYC45QC';
+export const KINDLE_PREORDER_HREF = 'https://amzn.to/4gWu1hZ';
 
 /** Live Audible listing. Override with VITE_AUDIBLE_URL if needed. */
-export const AUDIBLE_HREF = 'https://www.audible.com/pd/Formless-Audiobook/B0HHHJXR6W';
+export const AUDIBLE_HREF = 'https://amzn.to/4xXM11k';
 
 /**
  * Amazon Books (print) listing. Override with VITE_AMAZON_BOOKS_URL when paperback is live.
