@@ -51,14 +51,14 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-/** Product lockup: book + phone beside Kindle and Audible doors. */
+/** Product lockup: book + phone beside Kindle, Audible, and Amazon Books doors. */
 function HeroBookAside() {
   const trackLocation = 'home_hero_book_aside';
 
   return (
     <aside
       className="pt-8 lg:pt-0"
-      aria-label="Get Formless on Kindle or Audible"
+      aria-label="Get Formless on Kindle, Audible, or Amazon Books"
     >
       <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-5 lg:gap-6">
         <img
@@ -74,16 +74,16 @@ function HeroBookAside() {
           <p className="font-sans text-[0.8rem] font-medium uppercase tracking-[0.28em] text-cream md:text-[0.9rem]">
             Out now
           </p>
-          <p className="mt-4 whitespace-nowrap font-serif text-[1.85rem] italic leading-[1.15] text-cream md:text-[2.15rem]">
-            Read it. Or listen.
+          <p className="mt-4 font-serif text-[1.85rem] italic leading-[1.15] text-cream md:text-[2.15rem]">
+            Read it. Listen. Or hold it.
           </p>
-          <p className="mt-4 whitespace-nowrap font-sans text-[1.05rem] leading-snug text-cream/80 md:text-[1.125rem]">
-            Now available on Kindle and Audible.
+          <p className="mt-4 max-w-[22ch] font-sans text-[1.05rem] leading-snug text-cream/80 md:text-[1.125rem]">
+            Now available on Kindle, Audible, and Amazon Books.
           </p>
 
           <FormatLogoDoors
             trackLocation={trackLocation}
-            className="mt-7 grid w-full max-w-[13.5rem] grid-cols-2 gap-2.5 sm:max-w-[14.5rem]"
+            className="mt-7 grid w-full max-w-[21rem] grid-cols-3 gap-2.5"
           />
         </div>
       </div>

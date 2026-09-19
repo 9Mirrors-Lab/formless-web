@@ -24,7 +24,7 @@ interface ImportMetaEnv {
   readonly VITE_KINDLE_PREORDER_URL?: string;
   /** Live Audible listing for Formless. */
   readonly VITE_AUDIBLE_URL?: string;
-  /** Amazon Books (print) listing when paperback is live. */
+  /** Amazon Books (print) listing URL. */
   readonly VITE_AMAZON_BOOKS_URL?: string;
 }
 

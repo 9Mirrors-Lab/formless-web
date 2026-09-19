@@ -3,7 +3,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '@/context/ContentContext';
 import { useSiteAccess } from '@/context/SiteAccessContext';
-import { audibleHref, kindlePreorderHref } from '@/data/preorderLanding';
+import {
+  amazonBooksHref,
+  audibleHref,
+  kindlePreorderHref,
+} from '@/data/preorderLanding';
 import { captureCtaClick } from '@/lib/analytics';
 import { stripAnchorsFromCopy } from '@/lib/stripCopyLinks';
 import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
@@ -27,6 +31,13 @@ const FORMAT_DOORS = [
     label: 'Audible',
     verb: 'Listen to the audiobook',
     href: audibleHref,
+  },
+  {
+    id: 'amazon-books',
+    index: '03',
+    label: 'Amazon Books',
+    verb: 'Get the print book',
+    href: amazonBooksHref,
   },
 ] as const;
 
@@ -166,7 +177,7 @@ export function MonumentHomeExplore() {
               borderColor: MONUMENT.rule,
               backgroundColor: `${MONUMENT.stone}cc`,
             }}
-            aria-label="Get Formless on Kindle or Audible"
+            aria-label="Get Formless on Kindle, Audible, or Amazon Books"
           >
             <div
               className="pointer-events-none absolute -left-px top-8 h-24 w-px"
@@ -185,10 +196,10 @@ export function MonumentHomeExplore() {
               <div className="min-w-0 flex-1">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em]">Out now</p>
                 <p className="mt-3 font-serif text-[1.35rem] leading-[1.15] not-italic md:text-[1.5rem]">
-                  Read it. Or listen.
+                  Read it. Listen. Or hold it.
                 </p>
                 <p className="mt-3 font-sans text-sm leading-relaxed" style={{ color: MONUMENT.textMuted }}>
-                  Formless is now available on Kindle and Audible.
+                  Formless is now available on Kindle, Audible, and Amazon Books.
                 </p>
                 <ul className="mt-6 grid grid-cols-1 gap-3">
                   {FORMAT_DOORS.map((door) => {

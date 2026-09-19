@@ -3,7 +3,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent, type ContentApi } from '@/context/ContentContext';
 import { FORMLESS_BOOK_COVER } from '@/data/bookCover';
-import { audibleHref, kindlePreorderHref } from '@/data/preorderLanding';
+import {
+  amazonBooksHref,
+  audibleHref,
+  kindlePreorderHref,
+} from '@/data/preorderLanding';
 import { captureCtaClick } from '@/lib/analytics';
 import { MonumentAtmosphere } from './MonumentAtmosphere';
 import { MonumentLabChrome, MonumentLabFooter } from './MonumentLabChrome';
@@ -25,9 +29,9 @@ function themesFromContent(api: ContentApi): ThemeCard[] {
 }
 
 const PLATFORMS = [
-  { id: 'amazon-books', label: 'Amazon Books', verb: 'Hold it.', status: 'coming_soon' as const },
   { id: 'kindle', label: 'Kindle', verb: 'Read it.', status: 'live' as const },
   { id: 'audible', label: 'Audible', verb: 'Listen.', status: 'live' as const },
+  { id: 'amazon-books', label: 'Amazon Books', verb: 'Hold it.', status: 'live' as const },
 ];
 
 const FORMAT_DOORS = [
@@ -44,6 +48,13 @@ const FORMAT_DOORS = [
     label: 'Audible',
     verb: 'Listen to the audiobook',
     href: audibleHref,
+  },
+  {
+    id: 'amazon-books',
+    index: '03',
+    label: 'Amazon Books',
+    verb: 'Get the print book',
+    href: amazonBooksHref,
   },
 ] as const;
 
@@ -140,13 +151,13 @@ export function MonumentBookExplore() {
                 Out now
               </p>
               <p className="mt-3 text-center font-serif text-xl not-italic md:text-2xl">
-                Read it. Or listen.
+                Read it. Listen. Or hold it.
               </p>
               <p
                 className="mt-3 text-center font-sans text-sm leading-relaxed"
                 style={{ color: MONUMENT.textMuted }}
               >
-                Formless is now available on Kindle and Audible.
+                Formless is now available on Kindle, Audible, and Amazon Books.
               </p>
               <ul className="mt-6 grid grid-cols-1 gap-3">
                 {FORMAT_DOORS.map((door) => {

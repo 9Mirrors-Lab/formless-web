@@ -12,7 +12,7 @@ type BookHeroPurchasePanelProps = {
 };
 
 const DEFAULT_EYEBROW = 'Out now';
-const DEFAULT_LEDE = 'Now available on Kindle and Audible.';
+const DEFAULT_LEDE = 'Now available on Kindle, Audible, and Amazon Books.';
 
 function resolvePurchaseLede(lede?: string): string {
   const trimmed = lede?.trim();
@@ -34,7 +34,7 @@ export function BookHeroPurchasePanel({
   return (
     <aside
       className={['book-purchase-panel w-full', className].filter(Boolean).join(' ')}
-      aria-label="Get Formless on Kindle or Audible"
+      aria-label="Get Formless on Kindle, Audible, or Amazon Books"
     >
       <div
         className={[
@@ -60,13 +60,13 @@ export function BookHeroPurchasePanel({
           <p className="font-sans text-[0.8rem] font-medium uppercase tracking-[0.28em] text-cream md:text-[0.9rem]">
             {resolvedEyebrow}
           </p>
-          <p className="mt-3 max-w-[24ch] font-sans text-sm leading-snug text-cream/80 md:max-w-[18ch] md:text-[0.95rem]">
+          <p className="mt-3 max-w-[28ch] font-sans text-sm leading-snug text-cream/80 md:max-w-[22ch] md:text-[0.95rem]">
             {resolvedLede}
           </p>
 
           <FormatLogoDoors
             trackLocation={trackLocation}
-            className="mt-7 grid w-full max-w-[14.5rem] grid-cols-2 gap-2.5"
+            className="mt-7 grid w-full max-w-[21rem] grid-cols-3 gap-2.5"
           />
         </div>
       </div>

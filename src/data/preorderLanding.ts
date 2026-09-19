@@ -14,12 +14,8 @@ export const KINDLE_PREORDER_HREF = 'https://amzn.to/4gWu1hZ';
 /** Live Audible listing. Override with VITE_AUDIBLE_URL if needed. */
 export const AUDIBLE_HREF = 'https://amzn.to/4xXM11k';
 
-/**
- * Amazon Books (print) listing. Override with VITE_AMAZON_BOOKS_URL when paperback is live.
- * Until then, search keeps the logo useful without inventing a product page.
- */
-export const AMAZON_BOOKS_HREF =
-  'https://www.amazon.com/s?k=Formless+Who+You+Truly+Are+Beyond+the+Mind+Sonika+Cottman+paperback';
+/** Live Amazon Books (print) listing. Override with VITE_AMAZON_BOOKS_URL if needed. */
+export const AMAZON_BOOKS_HREF = 'https://amzn.to/4haE1mD';
 
 /** Search listing kept if the product page is unpublished. */
 export const KINDLE_PREORDER_SEARCH_HREF =

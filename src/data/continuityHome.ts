@@ -502,7 +502,7 @@ export const CONTINUITY_VERCEL = {
     },
     {
       name: 'VITE_AMAZON_BOOKS_URL',
-      containedIn: 'Optional override for the print listing when it is live.',
+      containedIn: 'Optional override for the Amazon Books print listing URL.',
     },
     {
       name: 'SUPABASE_SERVICE_ROLE_KEY',
@@ -839,7 +839,8 @@ export const CONTINUITY_FORMLESS = {
   acx: 'ACX is how the audiobook was delivered to Audible. Chapter names use Chicago-style title case.',
   websitePages: ['/book', '/special-preview', 'home book doorway'],
   printIsbn: '9798996734511',
-  printStatus: 'Print is forthcoming. Do not publish a fake store listing.',
+  printUrl: 'https://amzn.to/4haE1mD',
+  printStatus: 'Live on Amazon Books',
   royaltyDestination: 'Confirm the bank or Amazon payments account in 1Password. Do not store account numbers here.',
   publishingRights: 'Author-owned. Confirm contracts in 1Password or the legal folder named there.',
   supportContacts: [
@@ -847,7 +848,7 @@ export const CONTINUITY_FORMLESS = {
     'ACX Support, through the ACX dashboard (formatted Audible description updates go through ACX Support)',
   ],
   explainer:
-    'Formless is the book inside Eyes Closed: Kindle is for sale, Audible is live, print is on the way. The website is the doorway. Amazon and Audible are where most readers buy.',
+    'Formless is the book inside Eyes Closed: Kindle, Audible, and print are all live. The website is the doorway. Amazon and Audible are where most readers buy.',
 } as const;
 
 export type ContinuitySocialChannel = {

@@ -1,4 +1,8 @@
-import { audibleHref, kindlePreorderHref } from '@/data/preorderLanding';
+import {
+  amazonBooksHref,
+  audibleHref,
+  kindlePreorderHref,
+} from '@/data/preorderLanding';
 import { captureCtaClick } from '@/lib/analytics';
 
 const FORMAT_LOGO_DOORS = [
@@ -16,6 +20,13 @@ const FORMAT_LOGO_DOORS = [
     logoClassName: 'mx-auto block h-5 w-full max-w-[5.5rem] object-contain object-center',
     href: audibleHref,
   },
+  {
+    id: 'amazon-books',
+    label: 'Amazon Books',
+    logoSrc: '/brand/amazon-books-on-dark.svg',
+    logoClassName: 'mx-auto block h-4 w-full max-w-[6.25rem] object-contain object-center',
+    href: amazonBooksHref,
+  },
 ] as const;
 
 type FormatLogoDoorsProps = {
@@ -25,7 +36,7 @@ type FormatLogoDoorsProps = {
 
 export function FormatLogoDoors({
   trackLocation,
-  className = 'grid w-full max-w-[13.5rem] grid-cols-2 gap-2.5 sm:max-w-[14.5rem]',
+  className = 'grid w-full max-w-[21rem] grid-cols-3 gap-2.5',
 }: FormatLogoDoorsProps) {
   return (
     <ul className={className}>

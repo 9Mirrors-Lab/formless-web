@@ -310,7 +310,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
     'book',
     'header',
     'purchase_lede',
-    'Now available on Kindle and Audible.',
+    'Now available on Kindle, Audible, and Amazon Books.',
     9,
   );
 

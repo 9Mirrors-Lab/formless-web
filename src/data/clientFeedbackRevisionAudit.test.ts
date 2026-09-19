@@ -260,7 +260,7 @@ describe('client feedback revision gaps', () => {
     expect(getText(tree, 'book', 'header', 'lede')).toContain('You are not your thoughts or emotions');
     expect(getText(tree, 'book', 'header', 'purchase_eyebrow')).toBe('Out now');
     expect(getText(tree, 'book', 'header', 'purchase_lede')).toBe(
-      'Now available on Kindle and Audible.',
+      'Now available on Kindle, Audible, and Amazon Books.',
     );
     expect(getText(tree, 'science', 'header', 'title')).toContain('bridge for the part of you');
   });

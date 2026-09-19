@@ -1,4 +1,5 @@
 import {
+  amazonBooksHref,
   audibleHref,
   kindlePreorderHref,
 } from '@/data/preorderLanding';
@@ -49,8 +50,9 @@ const PLATFORMS: AvailabilityPlatform[] = [
     logoSrc: '/brand/amazon-books-on-dark.svg',
     logoAlt: 'Amazon Books',
     logoClassName:
-      'h-4 w-auto max-w-[72px] object-contain object-center opacity-55 md:h-9 md:max-w-[168px] md:object-left',
-    status: 'coming_soon',
+      'h-4 w-auto max-w-[72px] object-contain object-center md:h-9 md:max-w-[168px] md:object-left',
+    status: 'live',
+    href: amazonBooksHref,
   },
 ];
 

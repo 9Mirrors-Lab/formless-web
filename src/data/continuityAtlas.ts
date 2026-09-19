@@ -423,7 +423,7 @@ export const ATLAS_NODES: readonly AtlasNode[] = [
     recognition: 'Where Formless is actually sold and listened to.',
     matters: 'These accounts hold the listings, the rights, and the royalties.',
     practical: [
-      { label: 'Written work', value: 'Amazon KDP → Kindle → print (forthcoming)' },
+      { label: 'Written work', value: 'Amazon KDP → Kindle → print' },
       { label: 'Spoken work', value: 'ACX → Audible' },
       { label: 'Rights', value: CONTINUITY_FORMLESS.publishingRights },
       { label: 'Royalties', value: CONTINUITY_FORMLESS.royaltyDestination },
@@ -931,7 +931,12 @@ export const FORMLESS_BRANCHES: readonly FormlessBranch[] = [
     items: [
       { label: 'Kindle', detail: `Live · ASIN ${CONTINUITY_FORMLESS.kindleAsin}`, mark: 'kindle', href: CONTINUITY_FORMLESS.kindleUrl },
       { label: 'Amazon KDP', detail: CONTINUITY_FORMLESS.kdpAccount, mark: 'amazon' },
-      { label: 'Print', detail: `ISBN ${CONTINUITY_FORMLESS.printIsbn} · ${CONTINUITY_FORMLESS.printStatus}`, mark: 'amazon' },
+      {
+        label: 'Print',
+        detail: `ISBN ${CONTINUITY_FORMLESS.printIsbn} · ${CONTINUITY_FORMLESS.printStatus}`,
+        mark: 'amazon',
+        href: CONTINUITY_FORMLESS.printUrl,
+      },
     ],
   },
   {

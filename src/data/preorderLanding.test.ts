@@ -56,8 +56,14 @@ describe('preorderLanding copy', () => {
     expect(audibleHref()).toBe('https://www.audible.com/pd/Example/B0EXAMPLE');
   });
 
-  it('uses the Amazon Books search until print URL is configured', () => {
+  it('uses the live Amazon Books listing until env overrides', () => {
     vi.stubEnv('VITE_AMAZON_BOOKS_URL', '');
     expect(amazonBooksHref()).toBe(AMAZON_BOOKS_HREF);
+    expect(AMAZON_BOOKS_HREF).toBe('https://amzn.to/4haE1mD');
+  });
+
+  it('prefers the Amazon Books URL when provided', () => {
+    vi.stubEnv('VITE_AMAZON_BOOKS_URL', 'https://www.amazon.com/dp/EXAMPLE');
+    expect(amazonBooksHref()).toBe('https://www.amazon.com/dp/EXAMPLE');
   });
 });
