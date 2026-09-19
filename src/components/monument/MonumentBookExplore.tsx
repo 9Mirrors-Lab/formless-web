@@ -29,9 +29,9 @@ function themesFromContent(api: ContentApi): ThemeCard[] {
 }
 
 const PLATFORMS = [
-  { id: 'kindle', label: 'Kindle', verb: 'Read it.', status: 'live' as const },
-  { id: 'audible', label: 'Audible', verb: 'Listen.', status: 'live' as const },
-  { id: 'amazon-books', label: 'Amazon Books', verb: 'Hold it.', status: 'live' as const },
+  { id: 'kindle', label: 'Kindle', verb: 'Read it.' },
+  { id: 'audible', label: 'Audible', verb: 'Listen.' },
+  { id: 'amazon-books', label: 'Amazon Books', verb: 'Hold it.' },
 ];
 
 const FORMAT_DOORS = [
@@ -232,10 +232,7 @@ export function MonumentBookExplore() {
                 <li
                   key={platform.id}
                   className="flex flex-col gap-4 px-6 py-8 md:px-8 md:py-10"
-                  style={{
-                    backgroundColor: MONUMENT.stone,
-                    opacity: platform.status === 'coming_soon' ? 0.72 : 1,
-                  }}
+                  style={{ backgroundColor: MONUMENT.stone }}
                 >
                   <span
                     className="font-mono text-[10px] tabular-nums tracking-[0.2em]"
@@ -245,14 +242,6 @@ export function MonumentBookExplore() {
                   </span>
                   <span className="font-mono text-[10px] uppercase tracking-[0.24em]">{platform.label}</span>
                   <p className="font-serif text-2xl not-italic md:text-3xl">{platform.verb}</p>
-                  {platform.status === 'coming_soon' ? (
-                    <span
-                      className="font-mono text-[10px] uppercase tracking-[0.22em]"
-                      style={{ color: MONUMENT.textFaint }}
-                    >
-                      Coming soon
-                    </span>
-                  ) : null}
                 </li>
               ))}
             </ul>
