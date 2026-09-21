@@ -170,6 +170,15 @@ export const BRAND_PAGE_EXPLORATIONS: readonly PageExploration[] = [
     description: 'Teaching visual for mind-body pattern mirroring.',
   },
   {
+    id: 'inquire-with-sonika',
+    title: 'Inquire with Sonika',
+    href: '/inquire',
+    area: 'other',
+    previewSrc: '/design/previews/page-layout-tests.jpg',
+    description:
+      'Anonymous inquiry doorway with six live Q&As. Demo shell remains at /qa.',
+  },
+  {
     id: 'colors',
     title: 'Supporting page themes',
     href: '/colors',

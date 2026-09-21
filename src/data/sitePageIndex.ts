@@ -155,6 +155,14 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/QAPage.tsx',
   },
   {
+    id: 'inquire-with-sonika',
+    title: 'Inquire with Sonika',
+    path: '/inquire',
+    category: 'public',
+    description: 'Real inquiry copy, six featured Q&As, and anonymous submit tray.',
+    source: 'src/pages/InquireWithSonikaPage.tsx',
+  },
+  {
     id: 'about-magazine',
     title: 'About (magazine layout)',
     path: '/about-magazine',

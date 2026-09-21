@@ -20,6 +20,7 @@ import BookLockupsExplorePage from './pages/BookLockupsExplorePage';
 import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
 import QAPage from './pages/QAPage';
+import InquireWithSonikaPage from './pages/InquireWithSonikaPage';
 import ColorsPage from './pages/ColorsPage';
 import FontsPage from './pages/FontsPage';
 import ComponentsPage from './pages/ComponentsPage';
@@ -141,6 +142,7 @@ export function Root({ path }: { path: string }) {
   const isScience = path === '/science';
   const isAbout = path === '/about';
   const isQa = path === '/qa';
+  const isInquireWithSonika = path === '/inquire';
   const isColors = path === '/colors';
   const isFonts = path === '/fonts';
   const isComponents = path === '/components';
@@ -213,6 +215,7 @@ export function Root({ path }: { path: string }) {
   if (isScience) return <SciencePage />;
   if (isAbout) return <AboutPage />;
   if (isQa) return <QAPage />;
+  if (isInquireWithSonika) return <InquireWithSonikaPage />;
   if (isAboutMagazine) return <AboutPage defaultLayout={4} />;
   if (isColors) return <ColorsPage />;
   if (isFonts) return <FontsPage />;
@@ -322,7 +325,8 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/monument-book' ||
     path === '/preorder' ||
     path === '/preorder/stay-close' ||
-    path === '/qa'
+    path === '/qa' ||
+    path === '/inquire'
   );
 }
 
