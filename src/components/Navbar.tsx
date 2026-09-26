@@ -106,6 +106,79 @@ function AccountNavLink({
   );
 }
 
+function QAStar({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M12 2.3 13.4 9l6.3 3-6.3 3L12 21.7 10.6 15 4.3 12l6.3-3L12 2.3Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function QANavLink({
+  isActive,
+  onNavigate,
+  mobile = false,
+}: {
+  isActive: boolean;
+  onNavigate?: () => void;
+  mobile?: boolean;
+}) {
+  if (mobile) {
+    return (
+      <a
+        href="/qa"
+        aria-current={isActive ? 'page' : undefined}
+        onClick={() => {
+          captureCtaClick('Q&A', '/qa', 'navbar_mobile_featured');
+          onNavigate?.();
+        }}
+        className={`group flex min-h-14 w-full items-center justify-between rounded-2xl border px-4 py-3 transition-colors ${linkFocus} ${
+          isActive
+            ? 'border-[#d5ae73]/55 bg-[#d5ae73]/12 text-cream'
+            : 'border-[#d5ae73]/30 bg-[#d5ae73]/7 text-cream hover:border-[#d5ae73]/50 hover:bg-[#d5ae73]/10'
+        }`}
+      >
+        <span className="flex items-center gap-3">
+          <QAStar className="h-4 w-4 text-[#d5ae73]" />
+          <span className="font-serif text-xl leading-none">Q&amp;A</span>
+        </span>
+        <span className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-[#d9bd8c]">
+          Ask Sonika
+        </span>
+      </a>
+    );
+  }
+
+  return (
+    <a
+      href="/qa"
+      aria-label="Q&A with Sonika"
+      aria-current={isActive ? 'page' : undefined}
+      onClick={() => captureCtaClick('Q&A', '/qa', 'navbar_featured')}
+      className={`group relative inline-flex h-[4.15rem] w-[4.15rem] shrink-0 items-center justify-center rounded-full border bg-[#080a09]/78 text-cream backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-[#d5ae73]/70 hover:bg-[#111310] ${linkFocus} ${
+        isActive ? 'border-[#d5ae73]/75' : 'border-[#d5ae73]/42'
+      }`}
+    >
+      <span
+        className={`absolute inset-[0.32rem] rounded-full border transition-transform duration-500 group-hover:scale-105 ${
+          isActive ? 'border-[#d5ae73]/38' : 'border-white/10'
+        }`}
+        aria-hidden
+      />
+      <span className="relative flex flex-col items-center">
+        <span className="font-serif text-[1.03rem] leading-none">Q&amp;A</span>
+        <span className="mt-1 text-[0.38rem] font-semibold uppercase tracking-[0.15em] text-[#d9bd8c]">
+          Ask Sonika
+        </span>
+      </span>
+      <QAStar className="absolute -right-0.5 top-1 h-3 w-3 text-[#d5ae73]" />
+    </a>
+  );
+}
+
 function MobileNavLink({
   href,
   text,
@@ -179,6 +252,7 @@ export type MobileNavPanelProps = {
   navLinks: NavLinkItem[];
   aboutCta: { text: string; href: string };
   aboutIsActive: boolean;
+  qaIsActive: boolean;
   onClose: () => void;
 };
 
@@ -187,6 +261,7 @@ function MobileNavPanel({
   navLinks,
   aboutCta,
   aboutIsActive,
+  qaIsActive,
   onClose,
 }: MobileNavPanelProps) {
   return createPortal(
@@ -216,7 +291,11 @@ function MobileNavPanel({
           </button>
         </div>
 
-        <ul className="flex flex-col gap-1">
+        <div className="mb-4">
+          <QANavLink isActive={qaIsActive} onNavigate={onClose} mobile />
+        </div>
+
+        <ul className="flex flex-col gap-1 border-t border-cream/10 pt-3">
           {navLinks.map((link) => (
             <li key={link.key}>
               <MobileNavLink
@@ -255,18 +334,21 @@ export function Navbar() {
   const linkEntries = ordered('nav', 'links').filter((e) => e.type === 'link');
   const aboutCta = getLink('nav', 'cta', 'about');
 
-  const navLinks: NavLinkItem[] = linkEntries.map((entry) => {
-    const text = typeof entry.value.text === 'string' ? entry.value.text : '';
-    const href = typeof entry.value.href === 'string' ? entry.value.href : '#';
-    return {
-      key: entry.key,
-      text,
-      href,
-      isActive: currentPath === href,
-    };
-  });
+  const navLinks: NavLinkItem[] = linkEntries
+    .map((entry) => {
+      const text = typeof entry.value.text === 'string' ? entry.value.text : '';
+      const href = typeof entry.value.href === 'string' ? entry.value.href : '#';
+      return {
+        key: entry.key,
+        text,
+        href,
+        isActive: currentPath === href,
+      };
+    })
+    .filter((link) => link.href !== '/qa');
 
   const aboutIsActive = currentPath === aboutCta.href;
+  const qaIsActive = currentPath === '/qa';
   const accountHref = user ? '/account' : '/login';
   const accountLabel = user ? 'Account' : 'Sign in';
   const accountIsActive = currentPath === accountHref;
@@ -357,6 +439,7 @@ export function Navbar() {
                   position="last"
                 />
               </div>
+              <QANavLink isActive={qaIsActive} />
               {backgroundPicker}
               {showAccountLink ? (
                 <AccountNavLink
@@ -401,6 +484,7 @@ export function Navbar() {
             navLinks={navLinks}
             aboutCta={aboutCta}
             aboutIsActive={aboutIsActive}
+            qaIsActive={qaIsActive}
             onClose={closeMobile}
           />
         ) : mobileNavVariant === 'bloom' ? (
@@ -409,6 +493,7 @@ export function Navbar() {
             navLinks={navLinks}
             aboutCta={aboutCta}
             aboutIsActive={aboutIsActive}
+            qaIsActive={qaIsActive}
             onClose={closeMobile}
           />
         ) : (
@@ -417,6 +502,7 @@ export function Navbar() {
             navLinks={navLinks}
             aboutCta={aboutCta}
             aboutIsActive={aboutIsActive}
+            qaIsActive={qaIsActive}
             onClose={closeMobile}
           />
         )

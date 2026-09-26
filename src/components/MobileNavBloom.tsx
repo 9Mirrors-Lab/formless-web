@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { X } from 'lucide-react';
-import type { MobileNavPanelProps, NavLinkItem } from './Navbar';
+import { QANavLink, type MobileNavPanelProps, type NavLinkItem } from './Navbar';
 import { captureCtaClick } from '@/lib/analytics';
 
 const linkFocus =
@@ -44,6 +44,7 @@ export function MobileNavBloom({
   navLinks,
   aboutCta,
   aboutIsActive,
+  qaIsActive,
   onClose,
 }: MobileNavPanelProps) {
   const scrimRef = useRef<HTMLDivElement>(null);
@@ -159,9 +160,12 @@ export function MobileNavBloom({
 
         {/* Centered nav links */}
         <div className="flex h-full flex-col items-center justify-center px-8">
+          <div className="mb-5 w-full max-w-xs">
+            <QANavLink isActive={qaIsActive} onNavigate={handleClose} mobile />
+          </div>
           <ul
             ref={linksRef}
-            className="flex w-full max-w-xs flex-col items-center gap-3"
+            className="flex w-full max-w-xs flex-col items-center gap-3 border-t border-cream/10 pt-5"
           >
             {allLinks.map((link) => (
               <li key={link.key} className="w-full">

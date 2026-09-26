@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { X } from 'lucide-react';
-import type { MobileNavPanelProps, NavLinkItem } from './Navbar';
+import { QANavLink, type MobileNavPanelProps, type NavLinkItem } from './Navbar';
 import { captureCtaClick } from '@/lib/analytics';
 import logoWhiteSrc from '../../design/eyes-closed-logo-variations/Final-logos/09a-white-ec-notagline.svg';
 
@@ -42,6 +42,7 @@ export function MobileNavShroud({
   navLinks,
   aboutCta,
   aboutIsActive,
+  qaIsActive,
   onClose,
 }: MobileNavPanelProps) {
   const backdropRef = useRef<HTMLButtonElement>(null);
@@ -152,8 +153,12 @@ export function MobileNavShroud({
           />
         </div>
 
+        <div className="shroud-link px-6 pb-4">
+          <QANavLink isActive={qaIsActive} onNavigate={handleClose} mobile />
+        </div>
+
         {/* Nav links */}
-        <ul ref={linksRef} className="flex flex-col">
+        <ul ref={linksRef} className="flex flex-col border-t border-cream/10 pt-2">
           {allLinks.map((link) => (
             <li key={link.key}>
               <ShroudNavLink
