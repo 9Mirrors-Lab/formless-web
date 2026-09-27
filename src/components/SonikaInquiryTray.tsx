@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import {
   submitSonikaInquiry,
@@ -15,7 +15,8 @@ type SonikaInquiryTrayProps = {
   onClose: () => void;
   source: SonikaInquirySource;
   title: string;
-  lede: string;
+  /** Optional intro under the title. When omitted, space is kept so the form does not jump up. */
+  lede?: string;
   questionLabel?: string;
   questionPlaceholder?: string;
   questionHint?: string;
@@ -47,7 +48,6 @@ export function SonikaInquiryTray({
   showOptionalDetails = false,
   topics = [],
 }: SonikaInquiryTrayProps) {
-  const titleId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [question, setQuestion] = useState('');
   const [name, setName] = useState('');
@@ -145,7 +145,7 @@ export function SonikaInquiryTray({
         }`}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={titleId}
+        aria-label={title}
         aria-hidden={!open}
       >
         <div className="pointer-events-none absolute inset-0" aria-hidden>
@@ -156,10 +156,15 @@ export function SonikaInquiryTray({
         <div className="relative flex shrink-0 items-start justify-between gap-4 border-b border-[#e3c186]/14 px-5 pb-4 pt-5 sm:px-7 sm:pt-7">
           <div className="min-w-0 flex-1">
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[#e3c186]/35 sm:hidden" aria-hidden />
-            <h2 id={titleId} className="font-serif text-[1.65rem] leading-[1.15] text-[#f3e9d5] sm:text-2xl">
-              {title}
-            </h2>
-            <p className="mt-2.5 text-base leading-relaxed text-[#e0d0b6]">{lede}</p>
+            {lede ? (
+              <p className="mt-2.5 text-base leading-relaxed text-[#e0d0b6]">{lede}</p>
+            ) : (
+              <div
+                className="mt-2.5"
+                style={{ minHeight: '6.75rem' }}
+                aria-hidden
+              />
+            )}
           </div>
           <button
             ref={closeRef}
