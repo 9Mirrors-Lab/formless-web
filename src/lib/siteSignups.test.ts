@@ -60,9 +60,9 @@ describe('siteSignups', () => {
   });
 
   it('opens a signup desk tab from a brand metric', () => {
-    expect(signupDeskHref()).toBe('/brand/signups');
-    expect(signupDeskHref('all')).toBe('/brand/signups');
-    expect(signupDeskHref('newsletter')).toBe('/brand/signups?list=newsletter');
+    expect(signupDeskHref()).toBe('/brand/engagement');
+    expect(signupDeskHref('all')).toBe('/brand/engagement');
+    expect(signupDeskHref('newsletter')).toBe('/brand/engagement?list=newsletter');
     expect(signupDeskListFromSearch('?list=advance_listen')).toBe('advance_listen');
     expect(signupDeskListFromSearch('?list=account')).toBe('all');
   });

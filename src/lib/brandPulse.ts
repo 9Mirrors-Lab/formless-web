@@ -15,7 +15,7 @@ export type AudibleProgress = {
   counts: Record<StudioRungId, number>;
 };
 
-const SIGNUP_HREF = '/brand/signups';
+const SIGNUP_HREF = '/brand/engagement';
 const AUDIBLE_HREF = '/audio/editorial2';
 
 export const AUDIENCE_CHART_WEEKS = 12;

@@ -1,6 +1,7 @@
 export type BrandNavId =
   | "brand"
   | "schedule"
+  | "engagement"
   | "signups"
   | "endorsements"
   | "book-launch"
@@ -47,10 +48,10 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         description: "Who does what, when",
       },
       {
-        id: "signups",
-        title: "Signups",
-        href: "/brand/signups",
-        description: "Waitlist and listen",
+        id: "engagement",
+        title: "Engagement",
+        href: "/brand/engagement",
+        description: "Signups and inquiries",
       },
       {
         id: "endorsements",
@@ -158,6 +159,8 @@ export const AUDIBLE_DESK_TABS: readonly BrandNavItem[] = [
 
 export function navHighlightId(activeId: BrandNavId): BrandNavId {
   switch (activeId) {
+    case "signups":
+      return "engagement";
     case "record-list":
     case "audible-studio":
     case "audible-process":
@@ -220,8 +223,11 @@ export function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/brand/schedule" || pathname.startsWith("/brand/schedule")) {
     return "schedule";
   }
+  if (pathname === "/brand/engagement" || pathname.startsWith("/brand/engagement")) {
+    return "engagement";
+  }
   if (pathname === "/brand/signups" || pathname.startsWith("/brand/signups")) {
-    return "signups";
+    return "engagement";
   }
   if (
     pathname === "/brand/endorsements" ||
@@ -262,6 +268,7 @@ export function brandNavPlace(activeId: BrandNavId): {
     case "client-review":
       return { title: "Client review", room: "Toolkit" };
     case "schedule":
+    case "engagement":
     case "signups":
     case "endorsements":
     case "book-launch":

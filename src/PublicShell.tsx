@@ -27,7 +27,7 @@ import ComponentsPage from './pages/ComponentsPage';
 import EyesClosedLogoOptionsPage from './pages/EyesClosedLogoOptionsPage';
 import BrandKitExportPage from './pages/BrandKitExportPage';
 import BrandPage from './pages/BrandPage';
-import BrandSignupsPage from './pages/BrandSignupsPage';
+import BrandEngagementPage from './pages/BrandEngagementPage';
 import BrandEndorsementsPage from './pages/BrandEndorsementsPage';
 import BrandBookLaunchCampaignPage from './pages/BrandBookLaunchCampaignPage';
 import BrandSchedulePage from './pages/BrandSchedulePage';
@@ -152,6 +152,7 @@ export function Root({ path }: { path: string }) {
     path === '/design/eyes-closed-logo-variations/04-options.html';
   const isBrandKitExport = path === '/brand-kit-export';
   const isBrand = path === '/brand';
+  const isBrandEngagement = path === '/brand/engagement';
   const isBrandSignups = path === '/brand/signups';
   const isBrandEndorsements = path === '/brand/endorsements';
   const isBrandBookLaunch = path === '/brand/book-launch-campaign';
@@ -222,7 +223,7 @@ export function Root({ path }: { path: string }) {
   if (isComponents) return <ComponentsPage />;
   if (isEyesClosedLogoOptions) return <EyesClosedLogoOptionsPage />;
   if (isBrandKitExport) return <BrandKitExportPage />;
-  if (isBrandSignups) return <BrandSignupsPage />;
+  if (isBrandEngagement || isBrandSignups) return <BrandEngagementPage />;
   if (isBrandEndorsements) return <BrandEndorsementsPage />;
   if (isBrandBookLaunch) return <BrandBookLaunchCampaignPage />;
   if (isBrandSchedule) return <BrandSchedulePage />;
@@ -285,6 +286,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/hub' ||
     path === '/continuityv2' ||
     path === '/brand' ||
+    path === '/brand/engagement' ||
     path === '/brand/signups' ||
     path === '/brand/endorsements' ||
     path === '/brand/book-launch-campaign' ||
@@ -354,7 +356,9 @@ function AppContentShell({ path }: { path: string }) {
       <>
         <RequireInternalAuth
           gate="internal"
-          allowBypass={path !== '/brand/signups'}
+          allowBypass={
+            path !== '/brand/signups' && path !== '/brand/engagement'
+          }
         >
           {page}
         </RequireInternalAuth>

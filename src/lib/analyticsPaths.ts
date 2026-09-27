@@ -31,6 +31,7 @@ export const INTERNAL_ANALYTICS_PATH_PREFIXES = [
   '/client/review',
   '/hub',
   '/continuityv2',
+  '/atlas',
 ] as const;
 
 /** Production content routes where session replay is enabled. */

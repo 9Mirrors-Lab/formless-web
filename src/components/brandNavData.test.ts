@@ -39,5 +39,12 @@ describe('Audible navigation', () => {
     expect(navHighlightId('audible')).toBe('audible');
     expect(navHighlightId('record-sessions')).toBe('record-sessions');
     expect(navHighlightId('re-records')).toBe('re-records');
+    expect(navHighlightId('signups')).toBe('engagement');
+  });
+
+  it('lists Engagement in the Audience room', () => {
+    const audience = NAV_ROOMS.find((room) => room.id === 'audience');
+    expect(audience?.items.some((item) => item.id === 'engagement')).toBe(true);
+    expect(audience?.items.some((item) => item.id === 'signups')).toBe(false);
   });
 });

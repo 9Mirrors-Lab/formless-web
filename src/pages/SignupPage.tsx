@@ -1,19 +1,11 @@
-import { AuthForm } from '@/components/AuthForm';
-import { authLinkClassName, AuthPageShell } from '@/components/auth/AuthPageShell';
+import { authLinkClassName, AuthPagePanel, AuthPageShell } from '@/components/auth/AuthPageShell';
 import { useAuth } from '@/context/AuthContext';
 
+/**
+ * Public account creation is closed. Existing allowlisted operators use /login.
+ */
 export function SignupPage() {
-  const { status, user, signUp } = useAuth();
-
-  if (status === 'misconfigured') {
-    return (
-      <AuthPageShell>
-        <p className="max-w-md text-center font-sans text-sm text-cream/70">
-          Account creation is not configured yet. Add your Supabase URL and anon key to the environment.
-        </p>
-      </AuthPageShell>
-    );
-  }
+  const { status, user } = useAuth();
 
   if (status === 'ready' && user) {
     window.location.replace('/account');
@@ -22,37 +14,29 @@ export function SignupPage() {
 
   return (
     <AuthPageShell>
-      <AuthForm
-        title="Create your account"
-        description="Register now so you are ready when additional member content opens."
-        submitLabel="Create account"
-        mode="signup"
-        passwordAutoComplete="new-password"
-        alternateAction={
-          <>
-            Already have an account?{' '}
+      <AuthPagePanel
+        eyebrow="Member access"
+        title="Account creation closed"
+        description={
+          <p>
+            New accounts are not open right now. Approved Eyes Closed operators can{' '}
             <a href="/login" className={authLinkClassName}>
-              Sign in
+              sign in
             </a>
-          </>
+            .
+          </p>
         }
-        onSubmit={async (credentials) => {
-          const result = await signUp(credentials);
-          if (result.errorMessage) {
-            return { errorMessage: result.errorMessage };
-          }
-
-          if (result.needsEmailConfirmation) {
-            return {
-              successMessage:
-                'Check your email for a confirmation link, then return here to sign in.',
-            };
-          }
-
-          window.location.replace('/account');
-          return {};
-        }}
-      />
+      >
+        <a
+          href="/login"
+          className="mt-10 inline-flex w-full items-center justify-center rounded-full border border-cream/15 bg-charcoal/60 px-5 py-3.5 font-sans text-xs font-semibold uppercase tracking-[0.18em] text-cream transition-colors hover:border-cream/30 hover:bg-charcoal/80"
+        >
+          Sign in
+        </a>
+        <a href="/" className={`mt-6 inline-block ${authLinkClassName}`}>
+          Back to home
+        </a>
+      </AuthPagePanel>
     </AuthPageShell>
   );
 }

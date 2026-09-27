@@ -260,8 +260,7 @@ export default function QAPage() {
           onClose={() => setIsQuestionTrayOpen(false)}
           source="qa"
           title="Submit your inquiry"
-          lede={INQUIRE_WITH_SONIKA_HERO.invitation}
-          questionLabel="Inquiry"
+          questionLabel="Submit your inquiry"
           questionPlaceholder=""
           questionHint=""
           submitLabel="Submit your inquiry"

@@ -39,13 +39,14 @@ export function LoginPage() {
     <AuthPageShell>
       <AuthForm
         title="Welcome back"
-        description="Sign in to open Brand Studio, the hub, and other internal materials."
+        description="Sign in with an approved Eyes Closed account to open Brand Studio and other internal materials."
         submitLabel="Sign in"
+        showGoogleAuth={false}
         alternateAction={
           <>
-            New here?{' '}
-            <a href="/signup" className={authLinkClassName}>
-              Create an account
+            Need an account? Account creation is closed for now.{' '}
+            <a href="/" className={authLinkClassName}>
+              Back to home
             </a>
           </>
         }

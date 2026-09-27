@@ -16,6 +16,7 @@ describe('analyticsPaths', () => {
     expect(isInternalAnalyticsPath('/design-system')).toBe(true);
     expect(isInternalAnalyticsPath('/brand')).toBe(true);
     expect(isInternalAnalyticsPath('/brand/signups')).toBe(true);
+    expect(isInternalAnalyticsPath('/brand/engagement')).toBe(true);
     expect(isInternalAnalyticsPath('/brand/endorsements')).toBe(true);
     expect(isInternalAnalyticsPath('/brand/book-launch-campaign')).toBe(true);
     expect(isInternalAnalyticsPath('/brand/schedule')).toBe(true);

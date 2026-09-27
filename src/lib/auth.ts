@@ -14,6 +14,14 @@ const AUTH_NEXT_STORAGE_KEY = 'eyesclosed.auth.next';
 /** Where Brand Studio login lands when no `next` path is stashed. */
 export const DEFAULT_POST_LOGIN_PATH = '/brand';
 
+/** Public account creation is closed; operators use existing allowlisted accounts. */
+export const SIGNUP_CLOSED_MESSAGE =
+  'Account creation is closed. Sign in with an approved Eyes Closed account.';
+
+/** Shown when a non-allowlisted account signs in successfully, then is signed out. */
+export const ACCESS_LIMITED_MESSAGE =
+  'This account is signed in, but it is not approved for Eyes Closed member access.';
+
 export function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
@@ -40,7 +48,13 @@ export function getAuthErrorMessage(error: AuthError | null | undefined): string
       return 'Confirm your email before signing in. Check your inbox for the link.';
     case 'Password should be at least 6 characters':
       return 'Use a password with at least 6 characters.';
+    case 'Signups not allowed for this instance':
+    case 'Signup is disabled':
+      return SIGNUP_CLOSED_MESSAGE;
     default:
+      if (/sign.?up.*(disabled|not allowed)/i.test(error.message)) {
+        return SIGNUP_CLOSED_MESSAGE;
+      }
       return error.message;
   }
 }
@@ -93,29 +107,21 @@ export async function signInWithPassword({ email, password }: AuthCredentials) {
   });
 }
 
-export async function signUpWithPassword({
-  email,
-  password,
-  firstName,
-  lastName,
-}: AuthCredentials) {
-  const supabase = getBrowserSupabaseClient();
-  const trimmedFirst = firstName?.trim();
-  const trimmedLast = lastName?.trim();
-
-  return supabase.auth.signUp({
-    email: normalizeEmail(email),
-    password,
-    options: {
-      emailRedirectTo: getAuthCallbackUrl(),
-      data: {
-        ...(trimmedFirst ? { first_name: trimmedFirst } : {}),
-        ...(trimmedLast ? { last_name: trimmedLast } : {}),
-      },
-    },
-  });
+export async function signUpWithPassword(_credentials: AuthCredentials) {
+  return {
+    data: { user: null, session: null },
+    error: {
+      name: 'AuthApiError',
+      message: SIGNUP_CLOSED_MESSAGE,
+      status: 403,
+    } as AuthError,
+  };
 }
 
+/**
+ * Google OAuth can create new Auth users. Kept for recovery only; login UI hides it
+ * while public signup is closed.
+ */
 export async function signInWithGoogle(nextPath?: string | null) {
   const supabase = getBrowserSupabaseClient();
   const fromQuery = new URLSearchParams(window.location.search).get('next');

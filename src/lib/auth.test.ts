@@ -1,7 +1,13 @@
 import type { AuthError } from '@supabase/supabase-js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getAuthErrorMessage, isValidEmail, normalizeEmail } from '@/lib/auth';
+import {
+  getAuthErrorMessage,
+  isValidEmail,
+  normalizeEmail,
+  SIGNUP_CLOSED_MESSAGE,
+  signUpWithPassword,
+} from '@/lib/auth';
 
 describe('auth helpers', () => {
   afterEach(() => {
@@ -26,6 +32,20 @@ describe('auth helpers', () => {
     ).toBe('Email or password is incorrect.');
 
     expect(getAuthErrorMessage(null)).toBe('Something went wrong. Please try again.');
+    expect(
+      getAuthErrorMessage({ message: 'Signups not allowed for this instance' } as AuthError),
+    ).toBe(SIGNUP_CLOSED_MESSAGE);
+  });
+
+  it('refuses password signup while public registration is closed', async () => {
+    const result = await signUpWithPassword({
+      email: 'new@example.com',
+      password: 'secret12',
+      firstName: 'New',
+      lastName: 'Person',
+    });
+    expect(result.data.session).toBeNull();
+    expect(result.error?.message).toBe(SIGNUP_CLOSED_MESSAGE);
   });
 
   it('builds the auth callback URL from the current origin', async () => {

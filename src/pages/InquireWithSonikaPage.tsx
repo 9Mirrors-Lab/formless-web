@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
 import { PageLayout } from '../components/PageLayout';
+import { SonikaInquiryTray } from '../components/SonikaInquiryTray';
 import {
   FEATURED_INQUIRY_ID,
   INQUIRE_WITH_SONIKA_HERO,
@@ -11,7 +12,6 @@ import { usePageMeta } from '../hooks/usePageMeta';
 const PORTRAIT_PHOTO = '/assets/Soni-shot1.png';
 
 export default function InquireWithSonikaPage() {
-  const [submitted, setSubmitted] = useState(false);
   const [isInquiryTrayOpen, setIsInquiryTrayOpen] = useState(false);
   const [activeInquiryId, setActiveInquiryId] = useState<string>(FEATURED_INQUIRY_ID);
 
@@ -24,12 +24,6 @@ export default function InquireWithSonikaPage() {
     title: 'Inquire with Sonika | Eyes Closed',
     description: INQUIRE_WITH_SONIKA_HERO.lede,
   });
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitted(true);
-    event.currentTarget.reset();
-  };
 
   const selectInquiry = (id: string) => {
     setActiveInquiryId(id);
@@ -144,11 +138,18 @@ export default function InquireWithSonikaPage() {
           </div>
         </section>
 
-        <InquiryTray
+        <SonikaInquiryTray
           open={isInquiryTrayOpen}
           onClose={() => setIsInquiryTrayOpen(false)}
-          onSubmit={onSubmit}
-          submitted={submitted}
+          source="inquire"
+          title="Submit your inquiry"
+          lede="Your message stays anonymous. Sonika reads each inquiry personally."
+          questionLabel="Your inquiry"
+          questionPlaceholder="What question is alive for you right now?"
+          questionHint="Be as honest and specific as you can. You do not need to share your name."
+          submitLabel="Send inquiry"
+          successTitle="Thank you"
+          successBody="Your inquiry has been received."
         />
       </div>
     </PageLayout>
@@ -240,88 +241,6 @@ function InquirySpread({
         </div>
       </div>
     </article>
-  );
-}
-
-function InquiryTray({
-  open,
-  onClose,
-  onSubmit,
-  submitted,
-}: {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  submitted: boolean;
-}) {
-  return (
-    <>
-      <div
-        className={`fixed inset-0 z-40 bg-black/45 transition-opacity duration-300 ${
-          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-        }`}
-        onClick={onClose}
-        aria-hidden={!open}
-      />
-      <aside
-        className={`fixed right-0 top-0 z-50 h-full w-full max-w-[25.5rem] overflow-y-auto border-l border-[#e3c186]/26 bg-[#0c0f13]/96 p-6 shadow-[-24px_0_54px_-32px_rgba(0,0,0,0.85)] backdrop-blur-xl transition-transform duration-400 md:p-7 ${
-          open ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        aria-hidden={!open}
-      >
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_8%,rgba(232,196,128,0.16),rgba(13,16,19,0)_56%)]" />
-          <div className="absolute -right-20 -top-14 h-64 w-64 rounded-full border border-[#d0a95f]/26" />
-        </div>
-
-        <div className="relative flex items-center justify-between gap-4">
-          <h2 className="font-serif text-2xl leading-tight text-[#f3e9d5]">Submit your inquiry</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#e3c186]/28 text-[#e6c995] transition hover:border-[#e6c995]/70 hover:text-[#f4ddba]"
-            aria-label="Close inquiry tray"
-          >
-            ×
-          </button>
-        </div>
-        <p className="relative mt-3 text-sm leading-relaxed text-[#e0d0b6]">
-          Your message stays anonymous. Sonika reads each inquiry personally.
-        </p>
-
-        <form className="relative mt-6 space-y-4" onSubmit={onSubmit}>
-          <label htmlFor="inquire-question" className="block text-[0.7rem] uppercase tracking-[0.2em] text-[#e0c79e]">
-            Your inquiry
-          </label>
-          <textarea
-            id="inquire-question"
-            name="question"
-            required
-            rows={6}
-            className="block w-full resize-y rounded-xl border border-[#f0ddbc]/20 bg-[#0b0e12]/72 px-3 py-2.5 text-sm text-[#f2eee6] outline-none placeholder:text-[#e2d4bd]/66 transition focus:border-[#d3ad75]/70 focus:ring-2 focus:ring-[#d3ad75]/28"
-            placeholder="What question is alive for you right now?"
-          />
-          <p className="text-xs leading-relaxed text-[#dac7a7]">
-            Be as honest and specific as you can. You do not need to share your name.
-          </p>
-
-          <button
-            type="submit"
-            className="group flex w-full items-center justify-center gap-3 rounded-xl border border-[#d5ae73]/58 bg-[linear-gradient(90deg,rgba(213,174,115,0.13),rgba(213,174,115,0.05))] px-4 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#f2e3ca] transition hover:border-[#e2bc84] hover:bg-[linear-gradient(90deg,rgba(213,174,115,0.22),rgba(213,174,115,0.1))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d3ad75]/45"
-          >
-            Send inquiry
-            <span className="transition-transform group-hover:translate-x-1" aria-hidden>
-              →
-            </span>
-          </button>
-          {submitted ? (
-            <p className="rounded-xl border border-[#d3ad75]/40 bg-[#0c1012] px-3 py-2 text-xs text-[#e6c995]">
-              Thank you. Your inquiry has been received.
-            </p>
-          ) : null}
-        </form>
-      </aside>
-    </>
   );
 }
 

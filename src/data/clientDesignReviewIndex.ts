@@ -324,11 +324,20 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
   {
     id: 'brand-signups',
     title: 'Signups',
-    href: '/brand/signups',
+    href: '/brand/engagement',
     section: 'brand-identity',
     status: 'live',
     description: 'Collected emails from the book waitlist, newsletter, and advance listen accounts.',
-    source: 'src/pages/BrandSignupsPage.tsx',
+    source: 'src/pages/BrandEngagementPage.tsx',
+  },
+  {
+    id: 'brand-engagement',
+    title: 'Engagement',
+    href: '/brand/engagement',
+    section: 'brand-identity',
+    status: 'live',
+    description: 'Signups and Sonika inquiry submissions in one Brand Studio desk.',
+    source: 'src/pages/BrandEngagementPage.tsx',
   },
   {
     id: 'brand-endorsements',

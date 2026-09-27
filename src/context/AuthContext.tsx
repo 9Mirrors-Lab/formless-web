@@ -10,8 +10,11 @@ import {
 } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 
+import { isInternalAccessEmail } from '@/config/internalAccess';
 import {
+  ACCESS_LIMITED_MESSAGE,
   getAuthErrorMessage,
+  SIGNUP_CLOSED_MESSAGE,
   signInWithGoogle,
   signInWithPassword,
   signOut as authSignOut,
@@ -37,6 +40,10 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function sessionIsAllowlisted(session: Session | null): boolean {
+  return isInternalAccessEmail(session?.user?.email);
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('loading');
   const [session, setSession] = useState<Session | null>(null);
@@ -50,17 +57,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const supabase = getBrowserSupabaseClient();
     let active = true;
 
-    supabase.auth.getSession().then(({ data }) => {
+    async function acceptOrRejectSession(next: Session | null): Promise<Session | null> {
+      if (!next) return null;
+      if (sessionIsAllowlisted(next)) return next;
+      await supabase.auth.signOut();
+      return null;
+    }
+
+    supabase.auth.getSession().then(async ({ data }) => {
       if (!active) return;
-      setSession(data.session);
+      const allowed = await acceptOrRejectSession(data.session);
+      if (!active) return;
+      setSession(allowed);
       setStatus('ready');
     });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-      setStatus('ready');
+    } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      // Avoid feedback loops from our own signOut of rejected sessions.
+      if (event === 'SIGNED_OUT') {
+        setSession(null);
+        setStatus('ready');
+        return;
+      }
+
+      void (async () => {
+        const allowed = await acceptOrRejectSession(nextSession);
+        if (!active) return;
+        setSession(allowed);
+        setStatus('ready');
+      })();
     });
 
     return () => {
@@ -70,21 +97,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (credentials: AuthCredentials) => {
-    const { error } = await signInWithPassword(credentials);
+    const { data, error } = await signInWithPassword(credentials);
     if (error) {
       return { errorMessage: getAuthErrorMessage(error) };
     }
+
+    if (!sessionIsAllowlisted(data.session)) {
+      await authSignOut();
+      return { errorMessage: ACCESS_LIMITED_MESSAGE };
+    }
+
     return {};
   }, []);
 
-  const signUp = useCallback(async (credentials: AuthCredentials) => {
-    const { data, error } = await signUpWithPassword(credentials);
-    if (error) {
-      return { errorMessage: getAuthErrorMessage(error) };
-    }
-
-    const needsEmailConfirmation = Boolean(data.user) && !data.session;
-    return { needsEmailConfirmation };
+  const signUp = useCallback(async (_credentials: AuthCredentials) => {
+    const { error } = await signUpWithPassword(_credentials);
+    return {
+      errorMessage: error ? getAuthErrorMessage(error) : SIGNUP_CLOSED_MESSAGE,
+    };
   }, []);
 
   const signOut = useCallback(async () => {

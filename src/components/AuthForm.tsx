@@ -81,7 +81,7 @@ export function AuthForm({
   mode = 'signin',
   theme = 'dark',
   passwordAutoComplete = 'current-password',
-  showGoogleAuth = true,
+  showGoogleAuth = false,
   hideIntro = false,
   googleNextPath,
   alternateAction,

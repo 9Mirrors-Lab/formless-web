@@ -1919,3 +1919,25 @@
   }
 }
 
+
+/* Inquire hero: the invitation lockup arrives in two beats, headline then ask panel. */
+@keyframes inquire-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.inquire-rise {
+  animation: inquire-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inquire-rise {
+    animation: none;
+  }
+}

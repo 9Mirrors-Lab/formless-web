@@ -1,5 +1,7 @@
 import { getBrowserSupabaseClient, hasSupabaseEnv } from '@/lib/supabase';
 
+import { ENGAGEMENT_DESK_PATH } from '@/lib/engagementDesk';
+
 export const SIGNUP_LISTS = [
   'book_release',
   'newsletter',
@@ -101,7 +103,7 @@ export function signupMetricHelp(key: SignupMetricKey): string {
   }
 }
 
-export const SIGNUP_DESK_PATH = '/brand/signups';
+export const SIGNUP_DESK_PATH = ENGAGEMENT_DESK_PATH;
 
 export type SignupDeskList = Exclude<SignupList, 'account'>;
 

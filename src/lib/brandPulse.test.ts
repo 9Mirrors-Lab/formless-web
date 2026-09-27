@@ -61,7 +61,7 @@ describe('brandPulse', () => {
     const pulse = signupPulse('ready', summary, latest, now);
     expect(pulse.headline).toBe('47 people have signed up.');
     expect(pulse.detail).toMatch(/last arrived yesterday/i);
-    expect(pulse.href).toBe('/brand/signups');
+    expect(pulse.href).toBe('/brand/engagement');
   });
 
   it('uses singular copy for one person', () => {

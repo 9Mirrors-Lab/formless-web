@@ -148,7 +148,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
   },
   {
     id: 'qa',
-    title: 'Q&A with Sonika',
+    title: 'Inquire with Sonika',
     path: '/qa',
     category: 'public',
     description: 'Featured reader answer, ask form, and recent question cards.',
@@ -211,7 +211,7 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     title: 'Sign up',
     path: '/signup',
     category: 'auth',
-    description: 'Member registration.',
+    description: 'Account creation closed; points operators to sign in.',
     source: 'src/pages/SignupPage.tsx',
   },
   {
@@ -252,10 +252,18 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
   {
     id: 'brand-signups',
     title: 'Signups',
-    path: '/brand/signups',
+    path: '/brand/engagement',
     category: 'design',
     description: 'Brand Studio list of emails from the book waitlist, newsletter, and advance listen.',
-    source: 'src/pages/BrandSignupsPage.tsx, src/lib/siteSignups.ts',
+    source: 'src/pages/BrandEngagementPage.tsx, src/lib/siteSignups.ts',
+  },
+  {
+    id: 'brand-engagement',
+    title: 'Engagement',
+    path: '/brand/engagement',
+    category: 'design',
+    description: 'Brand Studio desk for signups and Sonika inquiry submissions.',
+    source: 'src/pages/BrandEngagementPage.tsx, src/lib/sonikaInquiries.ts',
   },
   {
     id: 'brand-endorsements',

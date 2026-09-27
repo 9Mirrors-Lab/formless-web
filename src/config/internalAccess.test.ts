@@ -26,6 +26,7 @@ describe('internalAccess', () => {
     expect(isInternalAuthPath('/Brand')).toBe(true);
     expect(isInternalAuthPath('/BRAND/')).toBe(true);
     expect(isInternalAuthPath('/brand/signups')).toBe(true);
+    expect(isInternalAuthPath('/brand/engagement')).toBe(true);
     expect(isInternalAuthPath('/brand/endorsements')).toBe(true);
     expect(isInternalAuthPath('/brand/book-launch-campaign')).toBe(true);
     expect(isInternalAuthPath('/brand/schedule')).toBe(true);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { XIcon } from 'lucide-react';
 
 import { AuthForm } from '@/components/AuthForm';
@@ -12,7 +12,6 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { safeAuthNextPath, stashAuthNextPath } from '@/lib/auth';
 
-type AuthMode = 'signin' | 'signup';
 export type InternalLoginGate = 'internal' | 'advance-listen';
 
 function currentLocationPath(): string {
@@ -33,16 +32,16 @@ function copyForGate(gate: InternalLoginGate): {
     case 'advance-listen':
       return {
         eyebrow: 'Advance Listening Access',
-        title: 'Sign up or sign in',
+        title: 'Sign in',
         description:
-          'The mastered Formless tracks are already in the room. Twelve chapters. One voice. The whole journey inward.',
+          'This listening room is for approved accounts only. New signups are closed.',
         defaultPath: '/advance-listen',
       };
     case 'internal':
       return {
         eyebrow: 'Member access',
         title: 'Sign in',
-        description: 'Brand Studio is only open to approved Eyes Closed accounts.',
+        description: 'This area is only open to approved Eyes Closed accounts.',
         defaultPath: '/brand',
       };
     default: {
@@ -55,25 +54,20 @@ function copyForGate(gate: InternalLoginGate): {
 /**
  * Login dialog for Brand Studio and other internal routes.
  * Closing it returns home; the protected page is not rendered behind it.
+ * Sign-in only; public account creation is closed.
  */
 export function InternalLoginModal({
   gate = 'internal',
 }: {
   gate?: InternalLoginGate;
 }) {
-  const { signIn, signUp } = useAuth();
+  const { signIn } = useAuth();
   const copy = copyForGate(gate);
   const nextPath = safeAuthNextPath(currentLocationPath(), copy.defaultPath);
-  const [mode, setMode] = useState<AuthMode>(
-    gate === 'advance-listen' ? 'signup' : 'signin',
-  );
 
   useEffect(() => {
     stashAuthNextPath(nextPath);
   }, [nextPath]);
-
-  const isAdvanceListen = gate === 'advance-listen';
-  const isSignup = isAdvanceListen && mode === 'signup';
 
   return (
     <div className="min-h-[100dvh] bg-[#080a09]">
@@ -115,64 +109,22 @@ export function InternalLoginModal({
           <AuthForm
             title={copy.title}
             description={copy.description}
-            submitLabel={isSignup ? 'Sign up' : 'Sign in'}
-            mode={isSignup ? 'signup' : 'signin'}
-            passwordAutoComplete={isSignup ? 'new-password' : 'current-password'}
+            submitLabel="Sign in"
+            mode="signin"
+            passwordAutoComplete="current-password"
+            showGoogleAuth={false}
             hideIntro
             googleNextPath={nextPath}
             alternateAction={
-              <div className="space-y-3">
-                {isAdvanceListen ? (
-                  <p>
-                    {isSignup ? (
-                      <>
-                        Already have an account?{' '}
-                        <button
-                          type="button"
-                          className="font-medium text-cream underline-offset-4 hover:text-white hover:underline"
-                          onClick={() => setMode('signin')}
-                        >
-                          Sign in
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        New here?{' '}
-                        <button
-                          type="button"
-                          className="font-medium text-cream underline-offset-4 hover:text-white hover:underline"
-                          onClick={() => setMode('signup')}
-                        >
-                          Sign up
-                        </button>
-                      </>
-                    )}
-                  </p>
-                ) : null}
-                <button
-                  type="button"
-                  className="font-medium text-cream underline-offset-4 hover:text-white hover:underline"
-                  onClick={goHome}
-                >
-                  Back to home
-                </button>
-              </div>
+              <button
+                type="button"
+                className="font-medium text-cream underline-offset-4 hover:text-white hover:underline"
+                onClick={goHome}
+              >
+                Back to home
+              </button>
             }
             onSubmit={async (credentials) => {
-              if (isSignup) {
-                const result = await signUp(credentials);
-                if (result.errorMessage) {
-                  return { errorMessage: result.errorMessage };
-                }
-                if (result.needsEmailConfirmation) {
-                  return {
-                    successMessage:
-                      'Check your email for a confirmation link, then sign in to listen.',
-                  };
-                }
-                return {};
-              }
-
               const result = await signIn(credentials);
               if (result.errorMessage) {
                 return result;

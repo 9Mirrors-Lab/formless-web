@@ -355,7 +355,7 @@ Aligned with production defaults:
 - Purpose: give readers a credible answer sample first, then a clear invitation to submit a question.
 - Composition: first viewport uses two columns on desktop; left holds heading and featured question with answer excerpt, right holds the submission form as primary action.
 - Visual language: near-black field, warm gold accents, serif for reflective voice, sans for utility controls, thin borders, and soft depth shadows.
-- v1 interaction scope: submit form is UI-only and returns a local success state.
+- v1 interaction scope: submit form stores rows in `sonika_inquiries` (question required; name/email/topic optional) and shows a confirmation state.
 
 ---
 
