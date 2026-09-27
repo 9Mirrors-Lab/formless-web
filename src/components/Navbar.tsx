@@ -129,10 +129,10 @@ export function QANavLink({
   if (mobile) {
     return (
       <a
-        href="/qa"
+        href="/inquire"
         aria-current={isActive ? 'page' : undefined}
         onClick={() => {
-          captureCtaClick('Inquire', '/qa', 'navbar_mobile_featured');
+          captureCtaClick('Inquire', '/inquire', 'navbar_mobile_featured');
           onNavigate?.();
         }}
         className={`group flex min-h-14 w-full items-center justify-between rounded-2xl border px-4 py-3 transition-colors ${linkFocus} ${
@@ -154,10 +154,10 @@ export function QANavLink({
 
   return (
     <a
-      href="/qa"
+      href="/inquire"
       aria-label="Inquire with Sonika"
       aria-current={isActive ? 'page' : undefined}
-      onClick={() => captureCtaClick('Inquire', '/qa', 'navbar_featured')}
+      onClick={() => captureCtaClick('Inquire', '/inquire', 'navbar_featured')}
       className={`group relative inline-flex h-[4.15rem] w-[4.15rem] shrink-0 items-center justify-center rounded-full border bg-[#080a09]/78 text-cream backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-[#d5ae73]/70 hover:bg-[#111310] ${linkFocus} ${
         isActive ? 'border-[#d5ae73]/75' : 'border-[#d5ae73]/42'
       }`}
@@ -345,10 +345,10 @@ export function Navbar() {
         isActive: currentPath === href,
       };
     })
-    .filter((link) => link.href !== '/qa');
+    .filter((link) => link.href !== '/qa' && link.href !== '/inquire');
 
   const aboutIsActive = currentPath === aboutCta.href;
-  const qaIsActive = currentPath === '/qa';
+  const qaIsActive = currentPath === '/inquire' || currentPath === '/qa';
   const accountHref = user ? '/account' : '/login';
   const accountLabel = user ? 'Account' : 'Sign in';
   const accountIsActive = currentPath === accountHref;

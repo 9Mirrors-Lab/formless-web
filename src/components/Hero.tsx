@@ -84,7 +84,10 @@ export function Hero({ showCta = true }: { showCta?: boolean }) {
               {lede}
             </p>
             {ctaEnabled && cta ? (
-              <span className="hero-elem group mt-6 inline-flex w-fit items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-cream/70 transition-colors duration-500 hover:text-cream">
+              <a
+                href={cta.href}
+                className="hero-elem group mt-6 inline-flex w-fit items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-cream/70 transition-colors duration-500 hover:text-cream"
+              >
                 {cta.text}
                 <svg
                   className="h-4 w-4 transform transition-transform duration-500 group-hover:translate-y-1"
@@ -94,10 +97,11 @@ export function Hero({ showCta = true }: { showCta?: boolean }) {
                   strokeWidth="1.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  aria-hidden
                 >
                   <path d="M12 5v14M5 12l7 7 7-7" />
                 </svg>
-              </span>
+              </a>
             ) : null}
           </div>
         </div>

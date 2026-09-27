@@ -176,7 +176,7 @@ export const BRAND_PAGE_EXPLORATIONS: readonly PageExploration[] = [
     area: 'other',
     previewSrc: '/design/previews/page-layout-tests.jpg',
     description:
-      'Anonymous inquiry doorway with six live Q&As. Demo shell remains at /qa.',
+      'Live Ask Sonika / inquire doorway. Archived prior layout at /inquire-archive.',
   },
   {
     id: 'colors',

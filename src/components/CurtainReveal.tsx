@@ -87,7 +87,8 @@ export function CurtainReveal() {
   return (
     <section
       ref={containerRef}
-      className="curtain-reveal relative w-full overflow-hidden bg-charcoal"
+      id="reflection"
+      className="curtain-reveal relative w-full overflow-hidden bg-charcoal scroll-mt-16"
     >
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 bg-charcoal">
         <h2 className="font-serif italic text-3xl leading-[1.1] text-cream mb-4 max-w-4xl md:mb-8 md:text-6xl lg:text-[5rem]">

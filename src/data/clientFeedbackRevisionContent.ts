@@ -100,6 +100,40 @@ function setLink(
   setEntry(tree, page, section, key, { text, href });
 }
 
+function upsertLink(
+  tree: ContentTree,
+  page: string,
+  section: string,
+  key: string,
+  text: string,
+  href: string,
+  order = 0,
+) {
+  const target = ensureSection(tree, page, section);
+
+  if (target.byKey[key]) {
+    setLink(tree, page, section, key, text, href);
+    const existing = target.byKey[key];
+    if (existing && existing.order !== order) {
+      const nextEntry: ContentEntry = { ...existing, order };
+      target.byKey[key] = nextEntry;
+      target.ordered = target.ordered.map((entry) => (entry.key === key ? nextEntry : entry));
+      target.ordered.sort((a, b) => a.order - b.order || a.key.localeCompare(b.key));
+    }
+    return;
+  }
+
+  const entry: ContentEntry = {
+    key,
+    type: 'link',
+    order,
+    value: { text, href },
+  };
+  target.byKey[key] = entry;
+  target.ordered.push(entry);
+  target.ordered.sort((a, b) => a.order - b.order || a.key.localeCompare(b.key));
+}
+
 function setImage(
   tree: ContentTree,
   page: string,
@@ -155,6 +189,7 @@ export function applyClientFeedbackRevision(tree: ContentTree): ContentTree {
   setLink(revised, 'nav', 'links', 'work', 'The Practice', '/work');
   setLink(revised, 'nav', 'links', 'book', 'Formless', '/book');
   setLink(revised, 'nav', 'links', 'science', 'Spirituality & Science', '/science');
+  upsertLink(revised, 'nav', 'links', 'ask_sonika', 'Ask Sonika', '/inquire', 3);
   setLink(revised, 'nav', 'cta', 'about', 'About', '/about');
 
   setText(revised, 'footer', 'brand', 'name', 'Eyes Closed');

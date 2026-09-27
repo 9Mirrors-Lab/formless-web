@@ -349,9 +349,9 @@ Aligned with production defaults:
 
 ---
 
-## Q&A page direction (`/qa`)
+## Q&A page direction (`/inquire`)
 
-- Route: [`src/pages/QAPage.tsx`](src/pages/QAPage.tsx), wired in [`src/PublicShell.tsx`](src/PublicShell.tsx), indexed in [`src/data/sitePageIndex.ts`](src/data/sitePageIndex.ts).
+- Route: [`src/pages/InquireWithSonikaPage.tsx`](src/pages/InquireWithSonikaPage.tsx), wired in [`src/PublicShell.tsx`](src/PublicShell.tsx), indexed in [`src/data/sitePageIndex.ts`](src/data/sitePageIndex.ts). Legacy `/qa` redirects here. Archived prior layout: [`src/pages/InquireWithSonikaArchivePage.tsx`](src/pages/InquireWithSonikaArchivePage.tsx) at `/inquire-archive`.
 - Purpose: give readers a credible answer sample first, then a clear invitation to submit a question.
 - Composition: first viewport uses two columns on desktop; left holds heading and featured question with answer excerpt, right holds the submission form as primary action.
 - Visual language: near-black field, warm gold accents, serif for reflective voice, sans for utility controls, thin borders, and soft depth shadows.

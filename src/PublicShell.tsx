@@ -19,8 +19,8 @@ import BookInsightsPreviewPage from './pages/BookInsightsPreviewPage';
 import BookLockupsExplorePage from './pages/BookLockupsExplorePage';
 import SciencePage from './pages/SciencePage';
 import AboutPage from './pages/AboutPage';
-import QAPage from './pages/QAPage';
 import InquireWithSonikaPage from './pages/InquireWithSonikaPage';
+import InquireWithSonikaArchivePage from './pages/InquireWithSonikaArchivePage';
 import ColorsPage from './pages/ColorsPage';
 import FontsPage from './pages/FontsPage';
 import ComponentsPage from './pages/ComponentsPage';
@@ -104,6 +104,13 @@ function AdvanceListenRetiredRedirect() {
   return null;
 }
 
+function QaToInquireRedirect() {
+  useLayoutEffect(() => {
+    window.location.replace('/inquire');
+  }, []);
+  return null;
+}
+
 function LegacyLayoutTestsRedirect() {
   useLayoutEffect(() => {
     window.location.replace('/layout-tests');
@@ -143,6 +150,7 @@ export function Root({ path }: { path: string }) {
   const isAbout = path === '/about';
   const isQa = path === '/qa';
   const isInquireWithSonika = path === '/inquire';
+  const isInquireWithSonikaArchive = path === '/inquire-archive';
   const isColors = path === '/colors';
   const isFonts = path === '/fonts';
   const isComponents = path === '/components';
@@ -215,8 +223,9 @@ export function Root({ path }: { path: string }) {
   if (isBookLockups) return <BookLockupsExplorePage />;
   if (isScience) return <SciencePage />;
   if (isAbout) return <AboutPage />;
-  if (isQa) return <QAPage />;
+  if (isQa) return <QaToInquireRedirect />;
   if (isInquireWithSonika) return <InquireWithSonikaPage />;
+  if (isInquireWithSonikaArchive) return <InquireWithSonikaArchivePage />;
   if (isAboutMagazine) return <AboutPage defaultLayout={4} />;
   if (isColors) return <ColorsPage />;
   if (isFonts) return <FontsPage />;
@@ -328,7 +337,8 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/preorder' ||
     path === '/preorder/stay-close' ||
     path === '/qa' ||
-    path === '/inquire'
+    path === '/inquire' ||
+    path === '/inquire-archive'
   );
 }
 

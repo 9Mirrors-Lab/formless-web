@@ -5,17 +5,12 @@ import {
   type SonikaInquirySource,
 } from '@/lib/sonikaInquiries';
 
-export type InquiryTopicOption = {
-  value: string;
-  label: string;
-};
-
 type SonikaInquiryTrayProps = {
   open: boolean;
   onClose: () => void;
   source: SonikaInquirySource;
   title: string;
-  /** Optional intro under the title. When omitted, space is kept so the form does not jump up. */
+  /** Optional intro under the title. */
   lede?: string;
   questionLabel?: string;
   questionPlaceholder?: string;
@@ -23,9 +18,8 @@ type SonikaInquiryTrayProps = {
   submitLabel?: string;
   successTitle?: string;
   successBody?: string;
-  /** When true, show optional name / email / topic fields. */
+  /** When true, show optional name / email fields. */
   showOptionalDetails?: boolean;
-  topics?: readonly InquiryTopicOption[];
 };
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
@@ -46,13 +40,11 @@ export function SonikaInquiryTray({
   successTitle = 'Thank you',
   successBody = 'Your inquiry has been received. Sonika reads each one personally.',
   showOptionalDetails = false,
-  topics = [],
 }: SonikaInquiryTrayProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const [question, setQuestion] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [topic, setTopic] = useState('');
   const [status, setStatus] = useState<FormStatus>('idle');
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -80,7 +72,6 @@ export function SonikaInquiryTray({
     setQuestion('');
     setName('');
     setEmail('');
-    setTopic('');
   }
 
   function clearError() {
@@ -101,7 +92,7 @@ export function SonikaInquiryTray({
       question,
       name: showOptionalDetails ? name : null,
       email: showOptionalDetails ? email : null,
-      topic: showOptionalDetails ? topic : null,
+      topic: null,
       source,
     });
 
@@ -150,31 +141,24 @@ export function SonikaInquiryTray({
       >
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_8%,rgba(232,196,128,0.16),rgba(13,16,19,0)_56%)]" />
-          <div className="absolute -right-20 -top-14 h-64 w-64 rounded-full border border-[#d0a95f]/26" />
         </div>
 
-        <div className="relative flex shrink-0 items-start justify-between gap-4 border-b border-[#e3c186]/14 px-5 pb-4 pt-5 sm:px-7 sm:pt-7">
+        <div className="relative flex shrink-0 items-start justify-between gap-4 border-b border-[#e3c186]/14 px-5 pb-4 pt-5 sm:px-7 sm:pt-6">
           <div className="min-w-0 flex-1">
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[#e3c186]/35 sm:hidden" aria-hidden />
             {lede ? (
-              <p className="mt-2.5 text-base leading-relaxed text-[#e0d0b6]">{lede}</p>
-            ) : (
-              <div
-                className="mt-2.5"
-                style={{ minHeight: '6.75rem' }}
-                aria-hidden
-              />
-            )}
+              <p className="pr-2 text-base leading-relaxed text-[#e0d0b6]">{lede}</p>
+            ) : null}
           </div>
           <button
             ref={closeRef}
             type="button"
             onClick={handleClose}
             disabled={submitting}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#e3c186]/28 text-xl leading-none text-[#e6c995] transition hover:border-[#e6c995]/70 hover:text-[#f4ddba] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d3ad75]/45 disabled:opacity-50"
+            className="inline-flex min-h-11 shrink-0 items-center justify-center px-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#e6c995]/80 transition hover:text-[#f4ddba] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d3ad75]/45 disabled:opacity-50"
             aria-label="Close inquiry tray"
           >
-            ×
+            Close
           </button>
         </div>
 
@@ -257,32 +241,6 @@ export function SonikaInquiryTray({
                         className={FIELD_CONTROL}
                       />
                     </Field>
-
-                    {topics.length > 0 ? (
-                      <Field id={`${source}-topic`} label="Topic" optional>
-                        <select
-                          id={`${source}-topic`}
-                          name="topic"
-                          value={topic}
-                          disabled={submitting}
-                          onChange={(event) => {
-                            setTopic(event.target.value);
-                            clearError();
-                          }}
-                          className={FIELD_CONTROL}
-                        >
-                          {topics.map((option) => (
-                            <option
-                              key={option.value || 'default'}
-                              value={option.value}
-                              className="bg-[#0b0e12]"
-                            >
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      </Field>
-                    ) : null}
                   </div>
                 ) : null}
 

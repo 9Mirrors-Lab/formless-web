@@ -125,7 +125,7 @@ export function InquiriesDesk({ onActionsChange }: InquiriesDeskProps = {}) {
 
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <p className="font-sans text-sm text-cream/45">
-          {state === 'ready' ? `${rows.length} submitted` : 'Questions from /qa and /inquire'}
+          {state === 'ready' ? `${rows.length} submitted` : 'Questions from /inquire'}
         </p>
         <label className="relative block w-full md:max-w-xs">
           <span className="sr-only">Search inquiries</span>

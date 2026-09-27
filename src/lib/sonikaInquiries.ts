@@ -171,7 +171,7 @@ export function inquirySourceLabel(source: string): string {
 export function inquirySourcePath(source: string): string {
   switch (source) {
     case 'qa':
-      return '/qa';
+      return '/inquire';
     case 'inquire':
       return '/inquire';
     default:

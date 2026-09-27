@@ -103,6 +103,11 @@ describe('client feedback revision audit (/revised)', () => {
     expect(getLink(tree, 'nav', 'links', 'science').text).toBe('Spirituality & Science');
   });
 
+  it('nav includes Ask Sonika → /inquire', () => {
+    expect(getLink(tree, 'nav', 'links', 'ask_sonika').text).toBe('Ask Sonika');
+    expect(getLink(tree, 'nav', 'links', 'ask_sonika').href).toBe('/inquire');
+  });
+
   it('#6 footer connect language aligns Stay Close → Connect', () => {
     expect(getText(tree, 'footer', 'connect', 'heading')).toBe('Connect');
     expect(getLink(tree, 'footer', 'connect', 'stay_close').text).toBe('Connect');
