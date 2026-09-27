@@ -3,6 +3,7 @@ import { PageLayout } from '../components/PageLayout';
 import { SonikaInquiryTray, type InquiryTopicOption } from '../components/SonikaInquiryTray';
 import {
   FEATURED_INQUIRY_ID,
+  INQUIRE_WITH_SONIKA_HERO,
   SONIKA_INQUIRIES,
   type SonikaInquiry,
 } from '../data/sonikaInquiriesContent';
@@ -24,8 +25,11 @@ export default function QAPage() {
   const [isQuestionTrayOpen, setIsQuestionTrayOpen] = useState(false);
   const [activeQuestionId, setActiveQuestionId] = useState(RECENT_QUESTIONS[0]?.id ?? '');
 
+  const featured = SONIKA_INQUIRIES.find((item) => item.id === FEATURED_INQUIRY_ID)!;
   const activeQuestion =
     RECENT_QUESTIONS.find((item) => item.id === activeQuestionId) ?? RECENT_QUESTIONS[0];
+  const featuredFirst = featured.answerParagraphs[0] ?? '';
+  const featuredRest = featured.answerParagraphs.slice(1);
 
   return (
     <PageLayout dark>
@@ -39,38 +43,93 @@ export default function QAPage() {
           aria-hidden
         />
 
-        <section className="site-page-header relative z-10 px-6 pb-14 md:px-16 md:pb-16 lg:px-24">
+        <section className="site-page-header relative z-10 px-6 pb-10 md:px-16 md:pb-12 lg:px-24">
           <div className="mx-auto max-w-6xl">
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_13.5rem] lg:items-start lg:gap-14">
-              <div className="max-w-2xl">
-                <h1 className="text-balance font-serif text-4xl leading-[1.08] text-[#f3efe7] md:text-[3.35rem]">
-                  Q&amp;A with Sonika
+            <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch lg:justify-between lg:gap-16">
+              <div className="inquire-rise min-w-0 max-w-3xl flex-1 lg:max-w-none">
+                <div className="flex max-w-md items-center gap-4">
+                  <span className="shrink-0 font-serif text-[0.95rem] leading-none tracking-[0.04em] text-[#f2eee6]/85 md:text-[1.05rem]">
+                    01
+                  </span>
+                  <span className="h-px w-28 shrink-0 bg-[#d9b978] md:w-36" aria-hidden />
+                </div>
+
+                <h1 className="mt-7 text-balance font-serif text-[2.85rem] font-medium uppercase leading-[0.98] tracking-[0.01em] text-[#f5f1e9] md:mt-8 md:text-[3.75rem] lg:text-[4.15rem]">
+                  <span className="block">Inquire</span>
+                  <span className="block">
+                    With <span className="text-[#d9b978]">Sonika</span>
+                  </span>
                 </h1>
-                <p className="mt-6 max-w-[38rem] text-base leading-relaxed text-[#ede4d3] md:text-[1.05rem]">
-                  Explore insights from Sonika around the questions that arise in everyday life.
-                  Submit a question and receive a perspective rooted in presence and awareness.
+
+                <p className="mt-7 max-w-[38rem] font-sans text-[1.02rem] leading-[1.7] text-[#e8e0d2]/88 md:mt-8 md:text-[1.06rem]">
+                  {INQUIRE_WITH_SONIKA_HERO.lede}
                 </p>
-                <p className="mt-5 max-w-[34rem] border-l border-[#d5ae73]/35 pl-4 font-serif text-[1.05rem] leading-relaxed text-[#e8d5b4]/92 md:text-[1.12rem]">
-                  And always remember, the answers you seek are already within you.
-                </p>
+
+                <figure className="mt-9 max-w-[36rem] border-l border-[#d9b978] pl-5 md:mt-10">
+                  <blockquote className="font-serif text-[0.92rem] font-medium uppercase leading-[1.45] tracking-[0.06em] text-[#f2eee6]/88 md:text-[1rem] md:leading-[1.5] md:tracking-[0.07em]">
+                    {INQUIRE_WITH_SONIKA_HERO.remembrance}
+                  </blockquote>
+                </figure>
               </div>
 
-              <aside className="relative max-w-xs border-t border-[#e3c186]/18 pt-5 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-5">
-                <div className="flex items-center gap-2 text-[#e4c58f]">
-                  <StarGlyph />
-                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.2em]">Ask Sonika</p>
-                </div>
-                <p className="mt-2.5 font-serif text-[0.95rem] leading-[1.4] text-[#e6d5b8]/92">
-                  Share what is alive for you.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setIsQuestionTrayOpen(true)}
-                  className="mt-4 inline-flex min-h-11 items-center gap-2 px-0 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#f2e3ca] underline decoration-[#d5ae73]/65 underline-offset-[5px] transition hover:text-[#f4ddba] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d3ad75]/45"
+              <aside
+                className="inquire-rise w-full shrink-0 lg:w-[20.5rem]"
+                style={{ animationDelay: '140ms' }}
+              >
+                <div
+                  className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#e3c186]/25 px-5 py-7 text-left shadow-[0_28px_64px_-40px_rgba(0,0,0,0.9)] md:px-6 md:py-8"
+                  style={{
+                    background:
+                      'radial-gradient(92% 72% at 50% 28%, rgba(58,48,34,0.38) 0%, rgba(22,20,16,0.18) 42%, rgba(6,7,9,0) 74%), radial-gradient(120% 90% at 50% 110%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 58%), linear-gradient(180deg, rgba(22,19,26,0.55) 0%, rgba(10,11,14,0.42) 48%, rgba(4,5,6,0.5) 100%)',
+                  }}
                 >
-                  Submit question
-                  <span aria-hidden>→</span>
-                </button>
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-40"
+                    style={{
+                      background:
+                        'radial-gradient(70% 55% at 50% 40%, rgba(217,185,120,0.08), rgba(217,185,120,0) 68%)',
+                    }}
+                    aria-hidden
+                  />
+                  <div className="relative flex h-full flex-col">
+                    <div className="flex items-center gap-3">
+                      <p className="shrink-0 text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[#d9b978]">
+                        Your inquiries
+                      </p>
+                      <span className="h-px min-w-0 flex-1 bg-[#d9b978]" aria-hidden />
+                    </div>
+
+                    <p className="mt-6 text-left font-serif text-[1.55rem] leading-[1.22] text-[#f5f1e9] md:text-[1.65rem]">
+                      Submit your inquiry here
+                      <br />
+                      and <em className="italic text-[#d9b978]">remain anonymous.</em>
+                    </p>
+
+                    <p className="mt-5 flex-1 text-left font-serif text-[1.05rem] leading-[1.65] text-[#e8e0d2]/90 md:text-[1.12rem]">
+                      Sonika personally reads each inquiry,
+                      <br />
+                      offering her insights and perspective
+                      <br />
+                      while always pointing you back to the
+                      <br />
+                      wisdom within yourself.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsQuestionTrayOpen(true)}
+                      className="group mt-7 inline-flex min-h-12 w-full items-center justify-between gap-3 rounded-xl border border-[#e0bc7a]/75 bg-[linear-gradient(100deg,rgba(215,176,116,0.42),rgba(215,176,116,0.14))] px-5 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#faf3e4] shadow-[0_10px_28px_-16px_rgba(0,0,0,0.85)] transition hover:border-[#efd09a] hover:bg-[linear-gradient(100deg,rgba(215,176,116,0.52),rgba(215,176,116,0.2))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d3ad75]/50"
+                    >
+                      Submit your inquiry
+                      <span
+                        className="text-base transition-transform duration-300 group-hover:translate-x-1"
+                        aria-hidden
+                      >
+                        →
+                      </span>
+                    </button>
+                  </div>
+                </div>
               </aside>
             </div>
           </div>
@@ -90,10 +149,7 @@ export default function QAPage() {
                     Reader question
                   </p>
                   <p className="mt-3 font-serif text-[1.72rem] leading-[1.22] text-[#f4eee1] md:text-[2rem]">
-                    How do I find peace when my mind is constantly overthinking?
-                  </p>
-                  <p className="mt-6 text-[0.78rem] font-semibold uppercase tracking-[0.2em] text-[#d0a86d]">
-                    A reader
+                    {featured.question}
                   </p>
 
                   <div className="mt-auto border-t border-[#f2d8aa]/12 pt-6">
@@ -106,11 +162,6 @@ export default function QAPage() {
                       <div>
                         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#ddb884]">
                           Sonika
-                        </p>
-                        <p className="mt-1 text-sm leading-relaxed text-[#e7dac5]/88">
-                          Author. Guide.
-                          <br />
-                          Student of life.
                         </p>
                         <a
                           href="/about"
@@ -130,25 +181,15 @@ export default function QAPage() {
                   <div className="mt-4 space-y-3 text-[1.12rem] leading-[1.6] text-[#ecdfc6] md:text-[1.26rem]">
                     <p>
                       <span className="mr-1.5 inline-block align-top font-serif text-[2.7rem] leading-[0.82] text-[#ddb77f]">
-                        O
+                        {featuredFirst.charAt(0)}
                       </span>
-                      <span className="font-serif">
-                        verthinking is often our mind&apos;s way of trying to protect us. It replays, it
-                        prepares, and it tries to control outcomes.
-                      </span>
+                      <span className="font-serif">{featuredFirst.slice(1)}</span>
                     </p>
-                    <p className="font-serif">
-                      But peace isn&apos;t found in controlling your thoughts; it&apos;s found in returning
-                      to the present moment, again and again.
-                    </p>
-                    <p className="font-serif">
-                      Peace returns when awareness interrupts the loop. Feel your breath, feel your
-                      body, and come back to what is actually here.
-                    </p>
-                    <p className="font-serif">
-                      Start small and repeat often. You are not your thoughts. You are the one aware
-                      of them.
-                    </p>
+                    {featuredRest.map((paragraph) => (
+                      <p key={paragraph.slice(0, 32)} className="font-serif">
+                        {paragraph}
+                      </p>
+                    ))}
                   </div>
                   <p
                     className="mt-6 text-[3rem] leading-none text-[#d7ad70] md:text-[3.4rem]"
@@ -193,9 +234,6 @@ export default function QAPage() {
                     <p className="mt-1 font-serif text-[1.2rem] leading-[1.28] text-[#f0e8d8] md:text-[1.28rem]">
                       {item.question}
                     </p>
-                    <p className="mt-3 text-[0.65rem] uppercase tracking-[0.2em] text-[#cfa970]">
-                      {item.topic}
-                    </p>
                     <span className="mt-4 inline-block text-[0.82rem] text-[#e6c88e]">
                       {isActive ? 'Reading below' : 'Read answer →'}
                     </span>
@@ -221,14 +259,14 @@ export default function QAPage() {
           open={isQuestionTrayOpen}
           onClose={() => setIsQuestionTrayOpen(false)}
           source="qa"
-          title="Have a question for Sonika?"
-          lede="Share what is alive for you. Only your question is required."
-          questionLabel="Your question"
-          questionPlaceholder="Ask your question..."
-          questionHint="Be as clear and specific as you can."
-          submitLabel="Submit question"
-          successTitle="Thanks for asking"
-          successBody="Your question has been received for review. Sonika reads each inquiry personally."
+          title="Submit your inquiry"
+          lede={INQUIRE_WITH_SONIKA_HERO.invitation}
+          questionLabel="Inquiry"
+          questionPlaceholder=""
+          questionHint=""
+          submitLabel="Submit your inquiry"
+          successTitle="Thank you"
+          successBody=""
           showOptionalDetails
           topics={TOPICS}
         />
@@ -256,7 +294,6 @@ function SelectedAnswerPanel({ inquiry }: { inquiry: SonikaInquiry }) {
           <p className="mt-3 font-serif text-[1.35rem] leading-[1.28] text-[#f0e6d4] md:text-[1.55rem]">
             {inquiry.question}
           </p>
-          <p className="mt-4 text-[0.65rem] uppercase tracking-[0.2em] text-[#cfa970]">{inquiry.topic}</p>
         </div>
 
         <div>

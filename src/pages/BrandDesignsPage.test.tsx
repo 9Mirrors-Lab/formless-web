@@ -22,10 +22,12 @@ describe('BrandDesignsPage', () => {
     expect(html).toContain('Final files');
     expect(html).toContain('Shipped');
     expect(html).toContain('Email');
+    expect(html).toContain('Concepts');
   });
 
   it('includes shipped and email shelves in the tab list', () => {
     expect(html).toContain('Live pages and letters');
     expect(html).toContain('Zoho letters and previews');
+    expect(html).toContain('Design system lockup boards');
   });
 });

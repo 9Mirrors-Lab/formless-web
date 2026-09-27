@@ -27,6 +27,11 @@ import {
   type PageExplorationGroup,
 } from '@/data/brandPageExplorations';
 import {
+  BRAND_DESIGN_CONCEPTS,
+  brandDesignConceptPreviews,
+  type BrandDesignConcept,
+} from '@/data/brandDesignConcepts';
+import {
   CANVA_TEMPLATE_IDEAS,
   FORMLESS_3D_MOCKUPS,
   canvaChannelLabel,
@@ -35,7 +40,14 @@ import {
   type Formless3dMockup,
 } from '@/data/canvaTemplateIdeas';
 
-type StudioSection = 'review' | 'shipped' | 'pages' | 'email' | 'print' | 'files';
+type StudioSection =
+  | 'review'
+  | 'shipped'
+  | 'pages'
+  | 'email'
+  | 'print'
+  | 'files'
+  | 'concepts';
 
 const STUDIO_SECTIONS: Array<{ id: StudioSection; label: string; hint: string }> = [
   {
@@ -67,6 +79,11 @@ const STUDIO_SECTIONS: Array<{ id: StudioSection; label: string; hint: string }>
     id: 'files',
     label: 'Final files',
     hint: 'Cover art and marks',
+  },
+  {
+    id: 'concepts',
+    label: 'Concepts',
+    hint: 'Design system lockup boards',
   },
 ];
 
@@ -405,6 +422,39 @@ function MockupCard({
   );
 }
 
+function ConceptCard({
+  concept,
+  index,
+  onOpen,
+}: {
+  concept: BrandDesignConcept;
+  index: number;
+  onOpen: (items: DesignPreviewItem[], index: number) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(brandDesignConceptPreviews(), index)}
+      className="flex flex-col gap-2 border border-cream/12 p-2 text-left transition-colors hover:border-cream/30"
+      aria-label={`Preview ${concept.title}`}
+    >
+      <div className="aspect-[16/10] bg-[#0c0e0d]">
+        <img
+          src={concept.previewSrc}
+          alt=""
+          className="h-full w-full object-cover object-center"
+        />
+      </div>
+      <div className="px-1 pb-1">
+        <p className="font-sans text-sm font-medium text-cream">{concept.title}</p>
+        <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-cream/45">
+          {concept.label}
+        </p>
+      </div>
+    </button>
+  );
+}
+
 function AssetCard({ variant }: { variant: BrandAssetVariant }) {
   const [src, setSrc] = useState(variant.src);
 
@@ -603,6 +653,25 @@ export default function BrandDesignsPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            ) : null}
+
+            {section === 'concepts' ? (
+              <div className="flex flex-col gap-4">
+                <SectionIntro
+                  title="Concepts"
+                  body="Design system lockup boards. Exploration only; not in Review or shipped work."
+                />
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {BRAND_DESIGN_CONCEPTS.map((concept, index) => (
+                    <ConceptCard
+                      key={concept.id}
+                      concept={concept}
+                      index={index}
+                      onOpen={openGallery}
+                    />
+                  ))}
+                </div>
               </div>
             ) : null}
           </div>

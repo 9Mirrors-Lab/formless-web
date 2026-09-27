@@ -20,7 +20,7 @@ export const INQUIRE_WITH_SONIKA_HERO = {
 export const SONIKA_INQUIRIES: readonly SonikaInquiry[] = [
   {
     id: 'overthinking',
-    question: 'How do I stop overthinking when my mind just won\u2019t turn off?',
+    question: 'How do I stop overthinking when my mind just won\u2019t turn\u00a0off?',
     topic: 'Presence & mind',
     answerParagraphs: [
       'Overthinking happens when your attention is pulled away from the present moment and into the stream of thought. The mind continues because you continue feeding it with your attention, in other words that\u2019s where all of your attention is. You don\u2019t need to fight your thoughts or force them to stop. Simply recognize when you\u2019ve become absorbed in them. The moment you notice, a small space has already opened between you and the mind.',
