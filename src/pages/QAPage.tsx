@@ -48,7 +48,7 @@ export default function QAPage() {
             <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch lg:justify-between lg:gap-16">
               <div className="inquire-rise min-w-0 max-w-3xl flex-1 lg:max-w-none">
                 <div className="flex max-w-md items-center gap-4">
-                  <span className="shrink-0 font-mono text-[0.88rem] font-medium leading-none tracking-[0.18em] text-[#f2eee6]/85 md:text-[0.95rem]">
+                  <span className="shrink-0 font-sans text-[0.9rem] font-medium leading-none tracking-[0.14em] text-[#f2eee6]/85 md:text-[1rem]">
                     01
                   </span>
                   <span className="h-px w-28 shrink-0 bg-[#d9b978] md:w-36" aria-hidden />
