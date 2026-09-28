@@ -2,8 +2,10 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageLayout } from '../components/PageLayout';
+import { PageEyebrowLockup } from '../components/PageEyebrowLockup';
 import { ParticleButton } from '../components/ParticleButton';
 import { useContent, type ContentApi } from '@/context/ContentContext';
+import { useIconAnimations } from '@/hooks/useIconAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -68,6 +70,8 @@ export default function WorkPage() {
   }, []);
 
   const ctaBook = getLink('work', 'reframe', 'cta_book');
+  const practiceEyebrow = getText('work', 'header', 'eyebrow') || 'The Practice';
+  useIconAnimations(pageRef);
 
   return (
     <PageLayout briefSpectrum>
@@ -81,16 +85,28 @@ export default function WorkPage() {
             <div className="sci-blob-2 absolute bottom-[5%] right-[10%] w-[400px] h-[400px] rounded-full bg-clay/6 blur-[100px] will-change-transform" />
           </div>
           <div className="max-w-6xl mx-auto relative z-10">
-            <div className="max-w-5xl">
-              <span className="font-mono text-xs tracking-[0.3em] uppercase text-charcoal/40 mb-6 block">
-                {getText('work', 'header', 'eyebrow')}
-              </span>
-              <h1 className="work-title font-serif italic text-5xl md:text-7xl lg:text-[5.5rem] text-charcoal leading-[1.08]">
+            <div className="max-w-3xl">
+              <PageEyebrowLockup
+                direction="c"
+                iconId="molecule"
+                word={practiceEyebrow}
+                tone="dark"
+                className="mb-5 max-w-md"
+              />
+              <h1 className="work-title font-serif italic text-[clamp(2.25rem,4.2vw,3.25rem)] leading-[1.12] tracking-[-0.01em] text-cream">
                 {getText('work', 'header', 'title_line1')}
                 <br />
                 {getText('work', 'header', 'title_line2')}
               </h1>
-              <p className="mt-8 text-charcoal/60 font-sans text-lg max-w-none leading-relaxed">
+              <PageEyebrowLockup
+                direction="c"
+                iconId="molecule"
+                word={practiceEyebrow}
+                tone="dark"
+                piece="under"
+                className="mt-5"
+              />
+              <p className="mt-7 max-w-2xl font-sans text-lg leading-relaxed text-cream/60">
                 {getText('work', 'header', 'lede')}
               </p>
             </div>

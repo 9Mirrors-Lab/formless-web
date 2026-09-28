@@ -179,6 +179,15 @@ export const BRAND_PAGE_EXPLORATIONS: readonly PageExploration[] = [
       'Live Ask Sonika / inquire doorway. Archived prior layout at /inquire-archive.',
   },
   {
+    id: 'page-marks-explore',
+    title: 'Page marks · eyebrow system',
+    href: '/page-marks-explore',
+    area: 'other',
+    previewSrc: '/design/previews/page-layout-tests.jpg',
+    description:
+      'Unify Inquire / Practice / Science top accents: icon + gold rule directions. Lab only.',
+  },
+  {
     id: 'colors',
     title: 'Supporting page themes',
     href: '/colors',

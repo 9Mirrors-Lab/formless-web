@@ -436,6 +436,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
     source: 'src/pages/ScienceExplorePage.tsx',
   },
   {
+    id: 'page-marks-explore',
+    title: 'Page marks · eyebrow system',
+    path: '/page-marks-explore',
+    category: 'design',
+    description:
+      'Explore shared page-top accents (icon + gold rule) for Inquire, The Practice, and Science. Not design-system yet.',
+    source: 'src/pages/PageMarksExplorePage.tsx',
+  },
+  {
     id: 'cosmic-concepts',
     title: 'Cosmic concepts (A–D)',
     path: '/cosmic-concepts',

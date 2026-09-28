@@ -40,6 +40,7 @@ import CosmicConceptsPage from './pages/CosmicConceptsPage';
 import MonumentHomeExplorePage from './pages/MonumentHomeExplorePage';
 import MonumentBookExplorePage from './pages/MonumentBookExplorePage';
 import ScienceExplorePage from './pages/ScienceExplorePage';
+import PageMarksExplorePage from './pages/PageMarksExplorePage';
 import PatternMirrorPage from './pages/PatternMirrorPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
@@ -175,6 +176,7 @@ export function Root({ path }: { path: string }) {
   const isMonumentHome = path === '/monument-home';
   const isMonumentBook = path === '/monument-book';
   const isScienceExplore = path === '/science-explore';
+  const isPageMarksExplore = path === '/page-marks-explore';
   const isPatternMirror = path === '/pattern-mirror';
   const isPrivacy = path === '/privacy';
   const isTerms = path === '/terms';
@@ -248,6 +250,7 @@ export function Root({ path }: { path: string }) {
   if (isMonumentHome) return <MonumentHomeExplorePage />;
   if (isMonumentBook) return <MonumentBookExplorePage />;
   if (isScienceExplore) return <ScienceExplorePage />;
+  if (isPageMarksExplore) return <PageMarksExplorePage />;
   if (isPatternMirror) return <PatternMirrorPage />;
   if (isPrivacy) return <PrivacyPage />;
   if (isTerms) return <TermsPage />;
@@ -336,6 +339,7 @@ function isUnrestrictedPath(path: string): boolean {
     path === '/book-preview' ||
     path === '/book-lockups' ||
     path === '/science-explore' ||
+    path === '/page-marks-explore' ||
     path === '/monument-home' ||
     path === '/monument-book' ||
     path === '/preorder' ||

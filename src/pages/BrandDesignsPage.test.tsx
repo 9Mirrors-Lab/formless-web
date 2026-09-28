@@ -28,6 +28,6 @@ describe('BrandDesignsPage', () => {
   it('includes shipped and email shelves in the tab list', () => {
     expect(html).toContain('Live pages and letters');
     expect(html).toContain('Zoho letters and previews');
-    expect(html).toContain('Design system lockup boards');
+    expect(html).toContain('Lockup boards and page-top directions');
   });
 });

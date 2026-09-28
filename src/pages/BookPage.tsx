@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageLayout } from '../components/PageLayout';
+import { PageEyebrowLockup } from '../components/PageEyebrowLockup';
 import { ParticleButton } from '../components/ParticleButton';
 import { BookHeroPurchasePanel } from '../components/BookHeroPurchasePanel';
 import { BookAvailabilitySection } from '../components/BookAvailabilitySection';
@@ -176,9 +177,13 @@ export default function BookPage() {
               </div>
 
               <div className="relative z-10 mt-28 max-w-[85%]">
-                <span className="mb-4 block font-mono text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-cream/40">
-                  {headerEyebrow}
-                </span>
+                <PageEyebrowLockup
+                  direction="b"
+                  iconId="space"
+                  word={headerEyebrow}
+                  tone="dark"
+                  className="mb-4"
+                />
                 <h1 className="text-cream">
                   <span className="block font-serif text-[clamp(4.25rem,22vw,6rem)] italic leading-[0.9] tracking-[-0.03em]">
                     Formless
@@ -200,9 +205,13 @@ export default function BookPage() {
 
             {/* Desktop: incumbent title block */}
             <div className="hidden max-w-xl md:block">
-              <span className="mb-6 block font-mono text-xs uppercase tracking-[0.3em] text-cream/30">
-                {headerEyebrow}
-              </span>
+              <PageEyebrowLockup
+                direction="b"
+                iconId="space"
+                word={headerEyebrow}
+                tone="dark"
+                className="mb-6"
+              />
               <h1 className="book-title mb-8 pb-[0.06em] font-serif text-[clamp(1.85rem,3.2vw,2.75rem)] leading-[1.18] tracking-[-0.01em] text-cream">
                 {headerTitleMatch ? (
                   <>

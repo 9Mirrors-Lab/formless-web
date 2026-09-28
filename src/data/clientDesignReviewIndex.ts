@@ -131,6 +131,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/ScienceExplorePage.tsx',
   },
   {
+    id: 'page-marks-explore',
+    title: 'Page marks · eyebrow system',
+    href: '/page-marks-explore',
+    section: 'layout-pages',
+    status: 'experiment',
+    description:
+      'Shared top accents for Inquire, Practice, and Science: icon + gold rule directions. Lab only; not design-system.',
+    source: 'src/pages/PageMarksExplorePage.tsx',
+  },
+  {
     id: 'science-directions',
     title: 'Science · dark directions',
     href: '/design/science-page-v2-directions.html',

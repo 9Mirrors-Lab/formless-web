@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { PageLayout } from '../components/PageLayout';
+import { PageEyebrowLockup } from '../components/PageEyebrowLockup';
 import { SonikaInquiryTray } from '../components/SonikaInquiryTray';
 import {
   FEATURED_INQUIRY_ID,
@@ -7,6 +8,7 @@ import {
   SONIKA_INQUIRIES,
   type SonikaInquiry,
 } from '../data/sonikaInquiriesContent';
+import { useIconAnimations } from '@/hooks/useIconAnimations';
 
 const RECENT_QUESTIONS = SONIKA_INQUIRIES.filter((item) => item.id !== FEATURED_INQUIRY_ID).slice(
   0,
@@ -14,8 +16,10 @@ const RECENT_QUESTIONS = SONIKA_INQUIRIES.filter((item) => item.id !== FEATURED_
 );
 
 export default function InquireWithSonikaPage() {
+  const pageRef = useRef<HTMLDivElement>(null);
   const [isQuestionTrayOpen, setIsQuestionTrayOpen] = useState(false);
   const [activeQuestionId, setActiveQuestionId] = useState(RECENT_QUESTIONS[0]?.id ?? '');
+  useIconAnimations(pageRef);
 
   const featured = SONIKA_INQUIRIES.find((item) => item.id === FEATURED_INQUIRY_ID)!;
   const activeQuestion =
@@ -25,7 +29,7 @@ export default function InquireWithSonikaPage() {
 
   return (
     <PageLayout dark>
-      <div className="relative overflow-hidden bg-[#07090b] text-[#f2eee6]">
+      <div ref={pageRef} className="relative overflow-hidden bg-[#07090b] text-[#f2eee6]">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -39,12 +43,13 @@ export default function InquireWithSonikaPage() {
           <div className="mx-auto max-w-6xl">
             <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch lg:justify-between lg:gap-16">
               <div className="inquire-rise min-w-0 max-w-3xl flex-1 lg:max-w-none">
-                <div className="flex max-w-md items-center gap-4">
-                  <span className="shrink-0 font-sans text-[0.9rem] font-medium leading-none tracking-[0.14em] text-[#f2eee6]/85 md:text-[1rem]">
-                    01
-                  </span>
-                  <span className="h-px w-28 shrink-0 bg-[#d9b978] md:w-36" aria-hidden />
-                </div>
+                <PageEyebrowLockup
+                  direction="a"
+                  iconId="formless"
+                  word="Inquire"
+                  tone="dark"
+                  className="max-w-md"
+                />
 
                 <h1 className="mt-7 text-balance font-serif text-[2.85rem] font-medium uppercase leading-[0.98] tracking-[0.01em] text-[#f5f1e9] md:mt-8 md:text-[3.75rem] lg:text-[4.15rem]">
                   <span className="block">Inquire</span>

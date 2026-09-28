@@ -172,7 +172,8 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
     {
       id: "seed", title: "Seed of life", desc: "The first overlap opens into a full pattern of equal relations", category: "Philosophy",
       render: ({ theme, instanceId = theme }: TeachingIconRenderProps) => {
-        const circleClass = theme === 'dark' ? 'text-cream/30' : 'text-charcoal/50';
+        // Soft outlines stay behind the clay lenses so the colored seed reads at lockup size.
+        const circleClass = theme === 'dark' ? 'text-cream/20' : 'text-charcoal/35';
         // Same vesica foundation as space: central left (40,50), first neighbor right (60,50), r=20.
         // Remaining centers sit on successive intersections (centers exactly one radius apart).
         const centers = [
@@ -186,6 +187,8 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
         ] as const;
         // Every pair whose centers are distance r apart — each gets a clay vesica lens
         // (fill circle B clipped by circle A), matching the space mark technique.
+        // Modest fill: enough clay to read at 24px without washing the stroke loop.
+        const lensClass = theme === 'dark' ? 'text-clay/20' : 'text-clay/18';
         const lenses = [
           [1, 2],
           [1, 3],
@@ -221,7 +224,7 @@ export const TEACHING_ICONS: TeachingIconSpec[] = [
               return (
                 <circle
                   key={`lens-${a}-${b}`}
-                  className={`seed-lens seed-lens-${a}-${b} seed-lens-fill-${b}${b > 1 ? ' seed-lens-orbit' : ''} text-clay`}
+                  className={`seed-lens seed-lens-${a}-${b} seed-lens-fill-${b}${b > 1 ? ' seed-lens-orbit' : ''} ${lensClass}`}
                   cx={fill.cx}
                   cy={fill.cy}
                   r="20"

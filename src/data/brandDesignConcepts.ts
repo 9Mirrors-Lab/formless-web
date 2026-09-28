@@ -10,6 +10,8 @@ export type BrandDesignConcept = {
   notes: string;
   previewSrc: string;
   filename: string;
+  /** Live lab page. When set, Concepts card opens the page instead of a lightbox. */
+  href?: string;
 };
 
 export const BRAND_DESIGN_CONCEPTS: readonly BrandDesignConcept[] = [
@@ -40,6 +42,16 @@ export const BRAND_DESIGN_CONCEPTS: readonly BrandDesignConcept[] = [
     previewSrc: '/design/previews/formless-design-system-beyond-boundaries-lockup.jpg',
     filename: 'formless-design-system-beyond-boundaries-lockup.jpg',
   },
+  {
+    id: 'page-marks-explore',
+    title: 'Page marks · eyebrow system',
+    label: 'Page tops · all directions',
+    notes:
+      'Shared page-top grammars (rail, compact pair, understroke, meta rail) with animated teaching marks across Inquire, Practice, Science, and About. Live lab of every direction in one place.',
+    previewSrc: '/design/previews/page-layout-tests.jpg',
+    filename: 'page-layout-tests.jpg',
+    href: '/page-marks-explore',
+  },
 ] as const;
 
 export function brandDesignConceptPreviews(): Array<{
@@ -48,7 +60,7 @@ export function brandDesignConceptPreviews(): Array<{
   notes?: string;
   previewSrc: string;
 }> {
-  return BRAND_DESIGN_CONCEPTS.map((concept) => ({
+  return BRAND_DESIGN_CONCEPTS.filter((concept) => !concept.href).map((concept) => ({
     title: concept.title,
     label: concept.label,
     notes: concept.notes,

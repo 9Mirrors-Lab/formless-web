@@ -2,8 +2,10 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageLayout } from '../components/PageLayout';
+import { PageEyebrowLockup } from '../components/PageEyebrowLockup';
 import { ParticleButton } from '../components/ParticleButton';
 import { useContent, type ContentApi } from '@/context/ContentContext';
+import { useIconAnimations } from '@/hooks/useIconAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -295,6 +297,9 @@ export default function SciencePage({ embedded = false }: SciencePageProps = {})
   const pillars = pillarsFromContent(content);
   const ctaWork = getLink('science', 'closing', 'cta_work');
   const ctaBook = getLink('science', 'closing', 'cta_book');
+  const scienceEyebrow =
+    getText('science', 'header', 'eyebrow') || 'Two Languages One Truth';
+  useIconAnimations(pageRef);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -389,9 +394,13 @@ export default function SciencePage({ embedded = false }: SciencePageProps = {})
         <section className="site-page-header relative z-10 w-full overflow-hidden px-6 pb-14 md:pb-16 md:px-16 lg:px-24">
           <div className="max-w-6xl mx-auto grid md:grid-cols-[1.4fr_1fr] gap-16 items-end">
             <div className="sci-hero-text">
-              <span className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#ECE9DD]/70 mb-7 block">
-                {getText('science', 'header', 'eyebrow') || 'Two Languages One Truth'}
-              </span>
+              <PageEyebrowLockup
+                direction="b"
+                iconId="quantum"
+                word={scienceEyebrow}
+                tone="dark"
+                className="mb-7"
+              />
               <h1 className="font-serif font-normal text-[clamp(44px,6.2vw,76px)] leading-[1.04] tracking-[-0.012em] text-[#ECE9DD]">
                 {getText('science', 'header', 'title') ||
                   'A bridge for the part of you that needs to understand.'}

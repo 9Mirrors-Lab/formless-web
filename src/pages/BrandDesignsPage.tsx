@@ -83,7 +83,7 @@ const STUDIO_SECTIONS: Array<{ id: StudioSection; label: string; hint: string }>
   {
     id: 'concepts',
     label: 'Concepts',
-    hint: 'Design system lockup boards',
+    hint: 'Lockup boards and page-top directions',
   },
 ];
 
@@ -424,20 +424,15 @@ function MockupCard({
 
 function ConceptCard({
   concept,
-  index,
+  galleryIndex,
   onOpen,
 }: {
   concept: BrandDesignConcept;
-  index: number;
+  galleryIndex: number;
   onOpen: (items: DesignPreviewItem[], index: number) => void;
 }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onOpen(brandDesignConceptPreviews(), index)}
-      className="flex flex-col gap-2 border border-cream/12 p-2 text-left transition-colors hover:border-cream/30"
-      aria-label={`Preview ${concept.title}`}
-    >
+  const body = (
+    <>
       <div className="aspect-[16/10] bg-[#0c0e0d]">
         <img
           src={concept.previewSrc}
@@ -450,7 +445,36 @@ function ConceptCard({
         <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-cream/45">
           {concept.label}
         </p>
+        {concept.href ? (
+          <p className="mt-2 inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.14em] text-clay">
+            Open directions
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+          </p>
+        ) : null}
       </div>
+    </>
+  );
+
+  if (concept.href) {
+    return (
+      <a
+        href={concept.href}
+        className="flex flex-col gap-2 border border-cream/12 p-2 text-left transition-colors hover:border-cream/30"
+        aria-label={`Open ${concept.title}`}
+      >
+        {body}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(brandDesignConceptPreviews(), galleryIndex)}
+      className="flex flex-col gap-2 border border-cream/12 p-2 text-left transition-colors hover:border-cream/30"
+      aria-label={`Preview ${concept.title}`}
+    >
+      {body}
     </button>
   );
 }
@@ -660,17 +684,23 @@ export default function BrandDesignsPage() {
               <div className="flex flex-col gap-4">
                 <SectionIntro
                   title="Concepts"
-                  body="Design system lockup boards. Exploration only; not in Review or shipped work."
+                  body="Design system lockup boards plus the live page-top directions lab. Exploration only; not in Review or shipped work."
                 />
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {BRAND_DESIGN_CONCEPTS.map((concept, index) => (
-                    <ConceptCard
-                      key={concept.id}
-                      concept={concept}
-                      index={index}
-                      onOpen={openGallery}
-                    />
-                  ))}
+                  {(() => {
+                    let galleryIndex = 0;
+                    return BRAND_DESIGN_CONCEPTS.map((concept) => {
+                      const index = concept.href ? -1 : galleryIndex++;
+                      return (
+                        <ConceptCard
+                          key={concept.id}
+                          concept={concept}
+                          galleryIndex={index}
+                          onOpen={openGallery}
+                        />
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             ) : null}

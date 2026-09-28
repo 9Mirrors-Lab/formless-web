@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { DesignReviewSwitcher } from '@/components/design-lab/DesignReviewSwitcher';
 import { PageLayout } from '../components/PageLayout';
+import { PageEyebrowLockup } from '../components/PageEyebrowLockup';
 import { StayCloseNotifyForm } from '../components/StayCloseNotifyForm';
 import { textFromEntry } from '@/lib/content';
 import { captureCtaClick } from '@/lib/analytics';
 import { useContent, type ContentApi } from '@/context/ContentContext';
+import { useIconAnimations } from '@/hooks/useIconAnimations';
 import './AboutPage.css';
 
 type FutureItem = { title: string; desc: string };
@@ -55,7 +57,13 @@ function Layout1({
             </div>
           </div>
           <div className="l1-copy">
-            <span className="eyebrow">{eyebrow} <span className="dot">●</span></span>
+            <PageEyebrowLockup
+              direction="b"
+              iconId="seed"
+              word={eyebrow}
+              tone="dark"
+              className="mb-6"
+            />
             <h1>{getText('about', 'hero', 'title')}</h1>
             <div className="body-copy measure">
               {bodyParagraphs.map((paragraph) => (
@@ -103,7 +111,13 @@ function Layout4({
     <section className="layout is-active">
       <div className="l4-wrap">
         <aside className="l4-aside">
-          <span className="eyebrow">{eyebrow} <span className="dot">●</span></span>
+          <PageEyebrowLockup
+            direction="b"
+            iconId="seed"
+            word={eyebrow}
+            tone="dark"
+            className="mb-5"
+          />
           <div className="name">Sonika<br />Cottman</div>
           <div className="frame relative">
             <img src={PORTRAIT_PHOTO} alt="Portrait of Sonika Cottman" />
@@ -176,16 +190,18 @@ function StayCloseSection({ content }: { content: ContentApi }) {
 }
 
 export default function AboutPage({ defaultLayout = 1 }: { defaultLayout?: 1 | 4 } = {}) {
+  const pageRef = useRef<HTMLDivElement>(null);
   const [layout, setLayout] = useState<1 | 4>(defaultLayout);
   const content = useContent();
   const { getLink } = content;
   const futureItems = futureFromContent(content);
   const bodyParagraphs = heroBodyParagraphs(content);
   const emailLink = getLink('about', 'stay_close', 'email_link');
+  useIconAnimations(pageRef);
 
   return (
     <PageLayout briefSpectrum>
-      <div id="about-page-scope">
+      <div ref={pageRef} id="about-page-scope">
         {layout === 1 && (
           <Layout1
             content={content}
