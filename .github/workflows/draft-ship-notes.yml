@@ -1,0 +1,31 @@
+name: Draft ship notes
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: draft-ship-notes
+  cancel-in-progress: true
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild draft release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRAFT_RELEASE_TAG: draft-ship-notes
+          DRAFT_RELEASE_TITLE: Draft ship notes
+        run: |
+          chmod +x scripts/draft-ship-notes.sh
+          ./scripts/draft-ship-notes.sh

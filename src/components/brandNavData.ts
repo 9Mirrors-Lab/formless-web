@@ -16,6 +16,7 @@ export type BrandNavId =
   | "zoom-backgrounds"
   | "brand-kit"
   | "designs"
+  | "workflow"
   | "client-review"
   | "design-system";
 
@@ -106,6 +107,12 @@ export const NAV_ROOMS: BrandNavRoom[] = [
         title: "Designs",
         href: "/brand/designs",
         description: "Live pages and files",
+      },
+      {
+        id: "workflow",
+        title: "Ship flow",
+        href: "/brand/workflow",
+        description: "How we ship on GitHub",
       },
       {
         id: "brand-kit",
@@ -244,6 +251,9 @@ export function navIdFromPath(pathname: string): BrandNavId {
   if (pathname === "/brand/designs" || pathname.startsWith("/brand/designs")) {
     return "designs";
   }
+  if (pathname === "/brand/workflow" || pathname.startsWith("/brand/workflow")) {
+    return "workflow";
+  }
   if (pathname === "/brand") return "brand";
   return "brand";
 }
@@ -283,6 +293,7 @@ export function brandNavPlace(activeId: BrandNavId): {
     case "zoom-backgrounds":
     case "brand-kit":
     case "designs":
+    case "workflow":
       return { title: "Eyes Closed", room: "Toolkit" };
     default: {
       const _never: never = activeId;

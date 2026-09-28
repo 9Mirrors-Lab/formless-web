@@ -380,6 +380,16 @@ export const CLIENT_DESIGN_REVIEW_INDEX: ClientReviewEntry[] = [
     source: 'src/pages/BrandDesignsPage.tsx, src/data/canvaTemplateIdeas.ts',
   },
   {
+    id: 'brand-workflow',
+    title: 'Ship flow',
+    href: '/brand/workflow',
+    section: 'brand-identity',
+    status: 'live',
+    description:
+      'Solo-scale GitHub lanes: everyday main pushes, tracked issues, branch PRs, and milestone releases.',
+    source: 'src/pages/BrandWorkflowPage.tsx, src/data/shipFlow.ts',
+  },
+  {
     id: 'preorder-waitlist',
     title: 'Special preview · waitlist',
     href: '/special-preview',

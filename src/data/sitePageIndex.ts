@@ -313,6 +313,15 @@ export const SITE_PAGE_INDEX: SitePageEntry[] = [
       'src/pages/BrandDesignsPage.tsx, src/data/brandMaterials.ts, src/data/canvaTemplateIdeas.ts',
   },
   {
+    id: 'brand-workflow',
+    title: 'Ship flow',
+    path: '/brand/workflow',
+    category: 'design',
+    description:
+      'Solo-scale GitHub lanes: everyday main pushes, tracked issues, branch PRs, and milestone releases.',
+    source: 'src/pages/BrandWorkflowPage.tsx, src/data/shipFlow.ts',
+  },
+  {
     id: 'speaker-sheet',
     title: 'Speaker sheet',
     path: '/speaker-sheet',
