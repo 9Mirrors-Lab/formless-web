@@ -1,0 +1,34 @@
+name: Idea
+description: Park something to build so it survives between sessions
+title: "Add "
+labels: ["idea"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: One or two sentences. Plain language.
+      placeholder: Add a ship flow page under Brand Studio materials.
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - site
+        - book
+        - audio
+        - brand-desk
+        - data
+        - unsure
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why now
+      description: Optional. Why this matters this week.
+      placeholder: Releases sidebar is empty and we keep losing track of batches.
+    validations:
+      required: false

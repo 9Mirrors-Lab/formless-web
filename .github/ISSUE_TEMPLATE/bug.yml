@@ -1,0 +1,42 @@
+name: Bug
+description: Something broken on the site or a brand desk
+title: "Fix "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What broke
+      description: What you expected vs what happened.
+      placeholder: /inquire form submits but no email lands in the inbox.
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - site
+        - book
+        - audio
+        - brand-desk
+        - data
+        - unsure
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      description: Local or production page if you have one.
+      placeholder: http://localhost:5173/inquire
+    validations:
+      required: false
+  - type: textarea
+    id: why
+    attributes:
+      label: Why now
+      description: Optional. Is this blocking a launch or ship?
+      placeholder: Blocks Sonika inquiry follow-up.
+    validations:
+      required: false
